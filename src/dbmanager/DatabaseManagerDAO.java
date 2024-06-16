@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
@@ -67,12 +66,19 @@ public class DatabaseManagerDAO {
 
 			try (Statement statement = connection.createStatement()) {
 				String createTableSQL = "CREATE TABLE IF NOT EXISTS albumbbdd ("
-						+ "idCarta INTEGER PRIMARY KEY AUTOINCREMENT, " + "nomCarta TEXT NOT NULL, "
-						+ "numCarta INTEGER NOT NULL, " + "editorialCarta TEXT NOT NULL, "
-						+ "coleccionCarta TEXT NOT NULL, " + "rarezaCarta TEXT NOT NULL, "
-						+ "esFoilCarta INTEGER NOT NULL, " + "gradeoCarta TEXT, " + "estadoCarta TEXT NOT NULL, "
-						+ "precioCarta REAL NOT NULL, " + "urlReferenciaCarta TEXT NOT NULL, "
-						+ "direccionImagenCarta TEXT NOT NULL)";
+				        + "idCarta INTEGER PRIMARY KEY AUTOINCREMENT, "
+				        + "nomCarta TEXT NOT NULL, "
+				        + "numCarta INTEGER NOT NULL, "
+				        + "editorialCarta TEXT NOT NULL, "
+				        + "coleccionCarta TEXT NOT NULL, "
+				        + "rarezaCarta TEXT NOT NULL, "
+				        + "esFoilCarta INTEGER NOT NULL, "
+				        + "gradeoCarta TEXT, "
+				        + "estadoCarta TEXT NOT NULL, "
+				        + "precioCarta REAL NOT NULL, "
+				        + "urlReferenciaCarta TEXT NOT NULL, "
+				        + "direccionImagenCarta TEXT NOT NULL, "
+				        + "normasCarta TEXT NOT NULL)";
 				statement.executeUpdate(createTableSQL);
 			}
 		} catch (SQLException e) {
@@ -118,9 +124,9 @@ public class DatabaseManagerDAO {
 			if (tables.next()) {
 				// La tabla existe, ahora verifiquemos las columnas
 				ResultSet columns = metaData.getColumns(nombreDatabase, null, "albumbbdd", null);
-				Set<String> expectedColumns = Set.of("idCarta", "nomCarta", "numCarta","editorialCarta", "coleccionCarta", "rarezaCarta",
-						"esFoilCarta", "gradeoCarta", "estadoCarta", "precioCarta", "urlReferenciaCarta",
-						"direccionImagenCarta");
+				Set<String> expectedColumns = Set.of("idCarta", "nomCarta", "numCarta", "editorialCarta",
+						"coleccionCarta", "rarezaCarta", "esFoilCarta", "gradeoCarta", "estadoCarta", "precioCarta",
+						"urlReferenciaCarta", "direccionImagenCarta", "normasCarta");
 
 				Set<String> actualColumns = new HashSet<>();
 

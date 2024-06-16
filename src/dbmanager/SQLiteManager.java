@@ -39,7 +39,7 @@ public class SQLiteManager {
 					+ "coleccionCarta TEXT NOT NULL, " + "rarezaCarta TEXT NOT NULL, "
 					+ "esFoilCarta INTEGER NOT NULL, " + "gradeoCarta TEXT, " + "estadoCarta TEXT NOT NULL, "
 					+ "precioCarta REAL NOT NULL, " + "urlReferenciaCarta TEXT NOT NULL, "
-					+ "direccionImagenCarta TEXT NOT NULL)";
+					+ "direccionImagenCarta TEXT NOT NULL, " + "normasCarta TEXT NOT NULL)";
 
 			statement.executeUpdate(createTableSQL);
 

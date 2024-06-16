@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.ConectManager;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
@@ -44,7 +44,7 @@ public class AccionAniadir {
 	 * 
 	 * @throws Exception
 	 */
-	public void subidaComic() throws Exception {
+	public void subidaCarta() throws Exception {
 
 		Utilidades.convertirNombresCarpetas(AccionFuncionesComunes.carpetaPortadas(ConectManager.DB_NAME));
 
@@ -63,48 +63,48 @@ public class AccionAniadir {
 			}
 		}
 		
-		Comic comic = AccionControlUI.camposComic(controls, true);
+		Carta comic = AccionControlUI.camposCarta(controls, true);
 		accionRellenoDatos.actualizarCamposUnicos(comic);
 
 		referenciaVentana.getProntInfo().setOpacity(1);
 
-		accionFuncionesComunes.procesarComic(comic, false);
+		accionFuncionesComunes.procesarCarta(comic, false);
 	}
 
 	public static void guardarContenidoLista() {
 		
-		if (!ListaComicsDAO.comicsImportados.isEmpty() && nav.alertaInsertar()) {
-			Collections.sort(ListaComicsDAO.comicsImportados, Comparator.comparing(Comic::getNombre));
+		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaInsertar()) {
+			Collections.sort(ListasCartasDAO.cartasImportados, Comparator.comparing(Carta::getNomCarta));
 
-			for (Comic c : ListaComicsDAO.comicsImportados) {
+			for (Carta c : ListasCartasDAO.cartasImportados) {
 				AccionControlUI.comprobarListaValidacion(c);
-				ComicManagerDAO.insertarDatos(c, true);
+				CartaManagerDAO.insertarDatos(c, true);
 			}
 
-			ListaComicsDAO.listasAutoCompletado();
+			ListasCartasDAO.listasAutoCompletado();
 			List<ComboBox<String>> comboboxes = referenciaVentana.getComboboxes();
 			funcionesCombo.rellenarComboBox(comboboxes);
 
-			ListaComicsDAO.comicsImportados.clear();
+			ListasCartasDAO.cartasImportados.clear();
 			referenciaVentana.getTablaBBDD().getItems().clear();
 			AccionControlUI.validarCamposClave(true);
-			FuncionesTableView.tablaBBDD(ListaComicsDAO.comicsImportados);
+			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 			AccionControlUI.limpiarAutorellenos(false);
 
-			String mensajePront = "Has introducido los comics correctamente\n";
+			String mensajePront = "Has introducido los cartas correctamente\n";
 			AlarmaList.mostrarMensajePront(mensajePront, true, referenciaVentana.getProntInfo());
 		}
 
 	}
 
 	public void mostrarElementosAniadir(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getDibujanteComic(),
-				referenciaVentana.getEditorialComic(), referenciaVentana.getEstadoComic(),
-				referenciaVentana.getFechaComic(), referenciaVentana.getFirmaComic(),
-				referenciaVentana.getFormatoComic(), referenciaVentana.getGuionistaComic(),
-				referenciaVentana.getNombreKeyIssue(), referenciaVentana.getGradeoComic(),
-				referenciaVentana.getProcedenciaComic(), referenciaVentana.getUrlReferencia(),
-				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getPrecioComic(),
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getDibujanteCarta(),
+				referenciaVentana.getEditorialCarta(), referenciaVentana.getEstadoCarta(),
+				referenciaVentana.getFechaCarta(), referenciaVentana.getFirmaCarta(),
+				referenciaVentana.getFormatoCarta(), referenciaVentana.getGuionistaCarta(),
+				referenciaVentana.getNombreKeyIssue(), referenciaVentana.getGradeoCarta(),
+				referenciaVentana.getProcedenciaCarta(), referenciaVentana.getUrlReferencia(),
+				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getPrecioCarta(),
 				referenciaVentana.getDireccionImagen(), referenciaVentana.getLabel_portada(),
 				referenciaVentana.getLabel_precio(), referenciaVentana.getLabel_gradeo(),
 				referenciaVentana.getLabel_dibujante(), referenciaVentana.getLabel_editorial(),
@@ -112,10 +112,10 @@ public class AccionAniadir {
 				referenciaVentana.getLabel_firma(), referenciaVentana.getLabel_formato(),
 				referenciaVentana.getLabel_guionista(), referenciaVentana.getLabel_key(),
 				referenciaVentana.getLabel_procedencia(), referenciaVentana.getLabel_referencia(),
-				referenciaVentana.getCodigoComicTratar(), referenciaVentana.getLabel_codigo_comic(),
+				referenciaVentana.getCodigoCartaTratar(), referenciaVentana.getLabel_codigo_comic(),
 				referenciaVentana.getTablaBBDD(), referenciaVentana.getRootVBox(),
-				referenciaVentana.getBotonSubidaPortada(), referenciaVentana.getIdComicTratar(),
-				referenciaVentana.getLabel_id_mod(), referenciaVentana.getBotonGuardarCambioComic()));
+				referenciaVentana.getBotonSubidaPortada(), referenciaVentana.getIdCartaTratar(),
+				referenciaVentana.getLabel_id_mod(), referenciaVentana.getBotonGuardarCambioCarta()));
 	}
 	
 	public static AccionReferencias getReferenciaVentana() {

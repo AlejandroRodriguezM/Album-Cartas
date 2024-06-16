@@ -21,12 +21,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.ConectManager;
 import dbmanager.DBUtilidades;
 import dbmanager.DBUtilidades.TipoBusqueda;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import ficherosFunciones.FuncionesExcel;
 import funcionesAuxiliares.Utilidades;
@@ -52,7 +52,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -80,116 +79,89 @@ import webScrap.WebScraperCatalogPreviews;
  */
 public class MenuPrincipalController implements Initializable {
 
-	/**
-	 * Botón para realizar una limpieza.
-	 */
 	@FXML
-	private Button botonLimpiar;
+	private TableColumn<Carta, String> ID;
 
-	/**
-	 * Botón para mostrar un parámetro.
-	 */
 	@FXML
-	private Button botonMostrarParametro;
+	private Label alarmaConexionInternet;
+
+	@FXML
+	private AnchorPane anchoPaneInfo;
+
+	@FXML
+	private ImageView backgroundImage;
+
+	@FXML
+	private Rectangle barraCambioAltura;
 
 	@FXML
 	private Button botonCancelarSubida;
 
-	/**
-	 * Botón que permite imprimir el resultado de una busqueda por parametro
-	 */
 	@FXML
-	private Button botonImprimir;
+	private Button botonEliminar;
 
-	/**
-	 * Botón que permite guardar el resultado de una busqueda por parametro
-	 */
 	@FXML
 	private Button botonGuardarResultado;
 
-	/**
-	 * Botón para acceder a la base de datos.
-	 */
 	@FXML
-	private Button botonbbdd;
+	private Button botonImprimir;
+
+	@FXML
+	private Button botonIntroducir;
+
+	@FXML
+	private Button botonLimpiar;
+
+	@FXML
+	private Button botonModificar;
 
 	@FXML
 	private Button botonMostrarGuardados;
 
-	/**
-	 * Campo de texto para realizar una búsqueda general.
-	 */
+	@FXML
+	private Button botonMostrarParametro;
+
+	@FXML
+	private Button botonbbdd;
+
 	@FXML
 	private TextField busquedaGeneral;
 
-	/**
-	 * Campo de texto para ingresar un código de búsqueda.
-	 */
 	@FXML
-	private TextField busquedaCodigo;
+	private TableColumn<Carta, String> coleccion;
 
-	/**
-	 * Selector de fecha de publicación.
-	 */
 	@FXML
-	private DatePicker fechaPublicacion;
+	private ComboBox<String> coleccionCarta;
 
-	/**
-	 * Imagen de un cómic.
-	 */
+	@FXML
+	private VBox comboboxVbox;
+
+	@FXML
+	private TableColumn<Carta, String> editorial;
+
+	@FXML
+	private ComboBox<String> editorialCarta;
+
+	@FXML
+	private TableColumn<Carta, String> esFoil;
+
+	@FXML
+	private ComboBox<String> esFoilCarta;
+
+	@FXML
+	private TableColumn<Carta, String> estado;
+
+	@FXML
+	private ComboBox<String> estadoCarta;
+
+	@FXML
+	private TableColumn<Carta, String> gradeo;
+
+	@FXML
+	private ComboBox<String> gradeoCarta;
+
 	@FXML
 	private ImageView imagencomic;
-
-	/**
-	 * Menú de archivo con opciones relacionadas con la base de datos.
-	 */
-	@FXML
-	private MenuItem menuArchivoCerrar;
-	@FXML
-	private MenuItem menuArchivoDelete;
-	@FXML
-	private MenuItem menuArchivoDesconectar;
-	@FXML
-	private MenuItem menuArchivoExcel;
-	@FXML
-	private MenuItem menuArchivoImportar;
-	@FXML
-	private MenuItem menuArchivoSobreMi;
-
-	/**
-	 * Menú relacionado con operaciones de cómic.
-	 */
-	@FXML
-	private MenuItem menuComicAleatoria;
-	@FXML
-	private MenuItem menuComicAniadir;
-	@FXML
-	private MenuItem menuComicEliminar;
-	@FXML
-	private MenuItem menuComicModificar;
-	@FXML
-	private MenuItem menuComicPuntuar;
-
-	/**
-	 * Menú relacionado con estadísticas de cómics.
-	 */
-	@FXML
-	private MenuItem menuEstadisticaComprados;
-	@FXML
-	private MenuItem menuEstadisticaEstadistica;
-	@FXML
-	private MenuItem menuEstadisticaFirmados;
-	@FXML
-	private MenuItem menuEstadisticaKeyIssue;
-	@FXML
-	private MenuItem menuEstadisticaPosesion;
-	@FXML
-	private MenuItem menuEstadisticaPuntuados;
-	@FXML
-	private MenuItem menuEstadisticaVendidos;
-
-	@FXML
-	private MenuItem menuArchivoAvanzado;
 
 	@FXML
 	private MenuItem menuArchivoApiMarvel;
@@ -197,257 +169,113 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	private MenuItem menuArchivoApiVine;
 
-	/**
-	 * Barra de menús de navegación.
-	 */
 	@FXML
-	private MenuBar menuNavegacion;
+	private MenuItem menuArchivoAvanzado;
 
-	/**
-	 * Menú de navegación para cerrar.
-	 */
 	@FXML
-	private Menu navegacionCerrar;
+	private MenuItem menuArchivoCerrar;
 
-	/**
-	 * Menú de navegación relacionado con cómics.
-	 */
 	@FXML
-	private Menu navegacionComic;
+	private MenuItem menuArchivoDelete;
+
+	@FXML
+	private MenuItem menuArchivoDesconectar;
+
+	@FXML
+	private MenuItem menuArchivoExcel;
+
+	@FXML
+	private MenuItem menuArchivoImportar;
+
+	@FXML
+	private MenuItem menuArchivoSobreMi;
+
+	@FXML
+	private MenuItem menuCartaAniadir;
+
+	@FXML
+	private MenuItem menuCartaEliminar;
+
+	@FXML
+	private MenuItem menuCartaModificar;
 
 	@FXML
 	private Menu menuComprobarApis;
 
-	/**
-	 * Menú de navegación relacionado con estadísticas.
-	 */
+	@FXML
+	private MenuItem menuEstadisticaComprados;
+
+	@FXML
+	private MenuItem menuEstadisticaEstadistica;
+
+	@FXML
+	private MenuItem menuEstadisticaKeyIssue;
+
+	@FXML
+	private MenuItem menuEstadisticaPosesion;
+
+	@FXML
+	private MenuItem menuEstadisticaVendidos;
+
+	@FXML
+	private MenuBar menuNavegacion;
+
+	@FXML
+	private Menu navegacionCerrar;
+
+	@FXML
+	private Menu navegacionCarta;
+
 	@FXML
 	private Menu navegacionEstadistica;
 
-	/**
-	 * Selector para el nombre del cómic.
-	 */
 	@FXML
-	private ComboBox<String> nombreComic;
+	private TableColumn<Carta, String> nombre;
 
-	/**
-	 * Selector para el nombre del dibujante.
-	 */
 	@FXML
-	private ComboBox<String> nombreDibujante;
+	private ComboBox<String> nombreCarta;
 
-	/**
-	 * Selector para el nombre de la editorial.
-	 */
 	@FXML
-	private ComboBox<String> nombreEditorial;
+	private TableColumn<Carta, String> numero;
 
-	/**
-	 * Selector para el nombre de la firma.
-	 */
 	@FXML
-	private ComboBox<String> nombreFirma;
+	private ComboBox<String> numeroCarta;
 
-	/**
-	 * Selector para el nombre del formato.
-	 */
 	@FXML
-	private ComboBox<String> nombreFormato;
+	private TableColumn<?, ?> precio;
 
-	/**
-	 * Selector para el nombre del guionista.
-	 */
 	@FXML
-	private ComboBox<String> nombreGuionista;
+	private ComboBox<String> precioCarta;
 
-	/**
-	 * Selector para el nombre de la procedencia.
-	 */
-	@FXML
-	private ComboBox<String> nombreProcedencia;
-
-	/**
-	 * Selector para el nombre de la variante.
-	 */
-	@FXML
-	private ComboBox<String> nombreVariante;
-
-	/**
-	 * Selector para el número de caja.
-	 */
-	@FXML
-	private ComboBox<String> gradeoComic;
-
-	/**
-	 * Selector para el número del cómic.
-	 */
-	@FXML
-	private ComboBox<String> numeroComic;
-
-	/**
-	 * Área de texto para mostrar información.
-	 */
-	@FXML
-	private TextArea prontInfo;
-
-	/**
-	 * Indicador de progreso.
-	 */
 	@FXML
 	private ProgressIndicator progresoCarga;
 
-	/**
-	 * Columna de la tabla para elid.
-	 */
 	@FXML
-	private TableColumn<Comic, String> id;
+	private TextArea prontInfo;
 
-	/**
-	 * Columna de la tabla para la caja.
-	 */
 	@FXML
-	private TableColumn<Comic, String> gradeo;
+	private TableColumn<Carta, String> rareza;
 
-	/**
-	 * Columna de la tabla para el dibujante.
-	 */
 	@FXML
-	private TableColumn<Comic, String> dibujante;
+	private ComboBox<String> rarezaCarta;
 
-	/**
-	 * Columna de la tabla para la editorial.
-	 */
 	@FXML
-	private TableColumn<Comic, String> editorial;
+	private TableColumn<Carta, String> referencia;
 
-	/**
-	 * Columna de la tabla para la fecha.
-	 */
-	@FXML
-	private TableColumn<Comic, String> fecha;
-
-	/**
-	 * Columna de la tabla para la firma.
-	 */
-	@FXML
-	private TableColumn<Comic, String> firma;
-
-	/**
-	 * Columna de la tabla para el formato.
-	 */
-	@FXML
-	private TableColumn<Comic, String> formato;
-
-	/**
-	 * Columna de la tabla para el guionista.
-	 */
-	@FXML
-	private TableColumn<Comic, String> guionista;
-
-	/**
-	 * Columna de la tabla para el nombre.
-	 */
-	@FXML
-	private TableColumn<Comic, String> nombre;
-
-	/**
-	 * Columna de la tabla para el número.
-	 */
-	@FXML
-	private TableColumn<Comic, String> numero;
-
-	/**
-	 * Columna de la tabla para la procedencia.
-	 */
-	@FXML
-	private TableColumn<Comic, String> procedencia;
-
-	/**
-	 * Columna de la tabla para la referencia.
-	 */
-	@FXML
-	private TableColumn<Comic, String> referencia;
-
-	/**
-	 * Columna de la tabla para la variante.
-	 */
-	@FXML
-	private TableColumn<Comic, String> variante;
-
-	/**
-	 * Tabla que muestra información sobre cómics.
-	 */
-	@FXML
-	public TableView<Comic> tablaBBDD;
-
-	/**
-	 * Contenedor de la interfaz gráfica.
-	 */
-	@FXML
-	private VBox rootVBox;
-
-	/**
-	 * Contenedor del contenido.
-	 */
-	@FXML
-	private VBox vboxContenido;
-
-	/**
-	 * Imagen de fondo.
-	 */
-	@FXML
-	private ImageView backgroundImage;
-
-	/**
-	 * Panel de anclaje principal.
-	 */
 	@FXML
 	private AnchorPane rootAnchorPane;
 
-	/**
-	 * Contenedor de imágenes.
-	 */
+	@FXML
+	private VBox rootVBox;
+
+	@FXML
+	private TableView<Carta> tablaBBDD;
+
+	@FXML
+	private VBox vboxContenido;
+
 	@FXML
 	private VBox vboxImage;
-
-	@FXML
-	private VBox comboboxVbox;
-
-	/**
-	 * Panel de anclaje para información.
-	 */
-	@FXML
-	private AnchorPane anchoPaneInfo;
-
-	/**
-	 * Botón para modificar información.
-	 */
-	@FXML
-	private Button botonModificar;
-
-	/**
-	 * Botón para introducir información.
-	 */
-	@FXML
-	private Button botonIntroducir;
-
-	/**
-	 * Botón para eliminar información.
-	 */
-	@FXML
-	private Button botonEliminar;
-
-	/**
-	 * Botón para agregar una puntuación.
-	 */
-	@FXML
-	private Button botonAgregarPuntuacion;
-
-	@FXML
-	private Label alarmaConexionInternet;
-
-	@FXML
-	private Rectangle barraCambioAltura;
 
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
@@ -471,18 +299,12 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setAlarmaConexionInternet(alarmaConexionInternet);
 		referenciaVentana.setID(id);
 		referenciaVentana.setGradeo(gradeo);
-		referenciaVentana.setDibujante(dibujante);
 		referenciaVentana.setEditorial(editorial);
-		referenciaVentana.setFecha(fecha);
-		referenciaVentana.setFirma(firma);
 		referenciaVentana.setFormato(formato);
-		referenciaVentana.setGuionista(guionista);
 		referenciaVentana.setNombre(nombre);
 		referenciaVentana.setNumero(numero);
 		referenciaVentana.setProcedencia(procedencia);
 		referenciaVentana.setReferencia(referencia);
-		referenciaVentana.setVariante(variante);
-		referenciaVentana.setBotonAgregarPuntuacion(botonAgregarPuntuacion);
 		referenciaVentana.setBotonEliminar(botonEliminar);
 		referenciaVentana.setBotonLimpiar(botonLimpiar);
 		referenciaVentana.setBotonbbdd(botonbbdd);
@@ -492,7 +314,6 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setBotonMostrarGuardados(botonMostrarGuardados);
 		referenciaVentana.setBusquedaCodigo(busquedaCodigo);
 		referenciaVentana.setBusquedaGeneral(busquedaGeneral);
-		referenciaVentana.setFechaPublicacion(fechaPublicacion);
 		referenciaVentana.setImagencomic(imagencomic);
 		referenciaVentana.setMenu_archivo_cerrar(menuArchivoCerrar);
 		referenciaVentana.setMenu_archivo_delete(menuArchivoDelete);
@@ -500,51 +321,36 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setMenu_archivo_excel(menuArchivoExcel);
 		referenciaVentana.setMenu_archivo_importar(menuArchivoImportar);
 		referenciaVentana.setMenu_archivo_sobreMi(menuArchivoSobreMi);
-		referenciaVentana.setMenu_comic_aleatoria(menuComicAleatoria);
-		referenciaVentana.setMenu_comic_aniadir(menuComicAniadir);
-		referenciaVentana.setMenu_comic_eliminar(menuComicEliminar);
-		referenciaVentana.setMenu_comic_modificar(menuComicModificar);
-		referenciaVentana.setMenu_comic_puntuar(menuComicPuntuar);
+		referenciaVentana.setMenu_comic_aniadir(menuCartaAniadir);
+		referenciaVentana.setMenu_comic_eliminar(menuCartaEliminar);
+		referenciaVentana.setMenu_comic_modificar(menuCartaModificar);
 		referenciaVentana.setMenu_estadistica_comprados(menuEstadisticaComprados);
 		referenciaVentana.setMenu_estadistica_estadistica(menuEstadisticaEstadistica);
-		referenciaVentana.setMenu_estadistica_firmados(menuEstadisticaFirmados);
 		referenciaVentana.setMenu_estadistica_key_issue(menuEstadisticaKeyIssue);
 		referenciaVentana.setMenu_estadistica_posesion(menuEstadisticaPosesion);
-		referenciaVentana.setMenu_estadistica_puntuados(menuEstadisticaPuntuados);
 		referenciaVentana.setMenu_estadistica_vendidos(menuEstadisticaVendidos);
 		referenciaVentana.setMenu_archivo_avanzado(menuArchivoAvanzado);
 		referenciaVentana.setMenu_comprobar_apis(menuComprobarApis);
 		referenciaVentana.setMenu_navegacion(menuNavegacion);
 		referenciaVentana.setNavegacion_Opciones(navegacionCerrar);
-		referenciaVentana.setNavegacion_comic(navegacionComic);
+		referenciaVentana.setNavegacion_comic(navegacionCarta);
 		referenciaVentana.setNavegacion_estadistica(navegacionEstadistica);
-		referenciaVentana.setTituloComic(nombreComic);
-		referenciaVentana.setNombreDibujante(nombreDibujante);
+		referenciaVentana.setTituloCarta(nombreCarta);
 		referenciaVentana.setNombreEditorial(nombreEditorial);
-		referenciaVentana.setNombreFirma(nombreFirma);
 		referenciaVentana.setNombreFormato(nombreFormato);
-		referenciaVentana.setNombreGuionista(nombreGuionista);
-		referenciaVentana.setNombreProcedencia(nombreProcedencia);
-		referenciaVentana.setNombreVariante(nombreVariante);
-		referenciaVentana.setGradeoComic(gradeoComic);
-		referenciaVentana.setNumeroComic(numeroComic);
-		referenciaVentana.setFechaComic(fechaPublicacion);
-		referenciaVentana.setNumeroComic(numeroComic);
+		referenciaVentana.setGradeoCarta(gradeoCarta);
+		referenciaVentana.setNumeroCarta(numeroCarta);
+		referenciaVentana.setNumeroCarta(numeroCarta);
 		referenciaVentana.setProntInfo(prontInfo);
 		referenciaVentana.setProgresoCarga(progresoCarga);
 		referenciaVentana.setID(id);
 		referenciaVentana.setGradeo(gradeo);
-		referenciaVentana.setDibujante(dibujante);
 		referenciaVentana.setEditorial(editorial);
-		referenciaVentana.setFecha(fecha);
-		referenciaVentana.setFirma(firma);
 		referenciaVentana.setFormato(formato);
-		referenciaVentana.setGuionista(guionista);
 		referenciaVentana.setNombre(nombre);
 		referenciaVentana.setNumero(numero);
 		referenciaVentana.setProcedencia(procedencia);
 		referenciaVentana.setReferencia(referencia);
-		referenciaVentana.setVariante(variante);
 		referenciaVentana.setTablaBBDD(tablaBBDD);
 		referenciaVentana.setRootVBox(rootVBox);
 		referenciaVentana.setVboxContenido(vboxContenido);
@@ -555,21 +361,18 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setBotonModificar(botonModificar);
 		referenciaVentana.setBotonIntroducir(botonIntroducir);
 		referenciaVentana.setBotonEliminar(botonEliminar);
-		referenciaVentana.setBotonAgregarPuntuacion(botonAgregarPuntuacion);
 		referenciaVentana.setStage(estadoStage());
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
 		referenciaVentana.setBarraCambioAltura(barraCambioAltura);
 
-		referenciaVentana.setComboBoxes(Arrays.asList(nombreComic, numeroComic, nombreVariante, nombreProcedencia,
-				nombreFormato, nombreDibujante, nombreGuionista, nombreEditorial, nombreFirma, gradeoComic));
+		referenciaVentana.setComboBoxes(Arrays.asList(nombreCarta, numeroCarta, gradeoCarta));
 
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
 
 		AccionReferencias.setListaBotones(FXCollections.observableArrayList(botonLimpiar, botonMostrarParametro,
 				botonbbdd, botonImprimir, botonGuardarResultado));
 
-		AccionReferencias.setColumnasTabla(Arrays.asList(nombre, numero, variante, firma, editorial, formato,
-				procedencia, fecha, guionista, dibujante, referencia));
+		AccionReferencias.setColumnasTabla(Arrays.asList(nombre, numero, editorial, referencia));
 
 		return referenciaVentana;
 	}
@@ -610,17 +413,13 @@ public class MenuPrincipalController implements Initializable {
 		menuArchivoDesconectar.setGraphic(Utilidades.createIcon("/Icono/Archivo/apagado.png", 16, 16));
 		menuArchivoCerrar.setGraphic(Utilidades.createIcon("/Icono/Archivo/salir.png", 16, 16));
 
-		menuComicAniadir.setGraphic(Utilidades.createIcon("/Icono/Ventanas/add.png", 16, 16));
-		menuComicEliminar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/delete.png", 16, 16));
-		menuComicModificar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/modify.png", 16, 16));
-		menuComicPuntuar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/puntuar.png", 16, 16));
-		menuComicAleatoria.setGraphic(Utilidades.createIcon("/Icono/Ventanas/aleatorio.png", 16, 16));
+		menuCartaAniadir.setGraphic(Utilidades.createIcon("/Icono/Ventanas/add.png", 16, 16));
+		menuCartaEliminar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/delete.png", 16, 16));
+		menuCartaModificar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/modify.png", 16, 16));
 
 		menuEstadisticaPosesion.setGraphic(Utilidades.createIcon("/Icono/Estadistica/posesion.png", 16, 16));
 		menuEstadisticaComprados.setGraphic(Utilidades.createIcon("/Icono/Estadistica/comprado.png", 16, 16));
 		menuEstadisticaVendidos.setGraphic(Utilidades.createIcon("/Icono/Estadistica/vendido.png", 16, 16));
-		menuEstadisticaPuntuados.setGraphic(Utilidades.createIcon("/Icono/Estadistica/puntuados.png", 16, 16));
-		menuEstadisticaFirmados.setGraphic(Utilidades.createIcon("/Icono/Estadistica/firmados.png", 16, 16));
 		menuEstadisticaKeyIssue.setGraphic(Utilidades.createIcon("/Icono/Estadistica/keys.png", 16, 16));
 		menuEstadisticaEstadistica.setGraphic(Utilidades.createIcon("/Icono/Estadistica/descarga.png", 16, 16));
 
@@ -658,11 +457,11 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void ampliarImagen(MouseEvent event) {
 
-		Comic idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
 
 		if (idRow != null) {
 
-			ImagenAmpliadaController.comicInfo = SelectManager.comicDatos(idRow.getid());
+			ImagenAmpliadaController.cartaInfo = SelectManager.cartaDatos(idRow.getIdCarta());
 
 			nav.verVentanaImagen();
 		}
@@ -721,9 +520,6 @@ public class MenuPrincipalController implements Initializable {
 					botonModificar.setLayoutX(231);
 					botonModificar.setLayoutY(280);
 
-					botonAgregarPuntuacion.setLayoutX(231);
-					botonAgregarPuntuacion.setLayoutY(321);
-
 					botonGuardarResultado.setLayoutX(327);
 					botonGuardarResultado.setLayoutY(32);
 
@@ -740,9 +536,6 @@ public class MenuPrincipalController implements Initializable {
 
 					botonModificar.setLayoutX(439);
 					botonModificar.setLayoutY(31);
-
-					botonAgregarPuntuacion.setLayoutX(439);
-					botonAgregarPuntuacion.setLayoutY(72);
 
 					botonGuardarResultado.setLayoutX(231);
 					botonGuardarResultado.setLayoutY(337);
@@ -764,7 +557,7 @@ public class MenuPrincipalController implements Initializable {
 
 		// Ajustar el máximo altura permitido según la posición del AnchorPane
 		// numeroCaja
-		return windowHeight - gradeoComic.getLayoutY() - 80;
+		return windowHeight - gradeoCarta.getLayoutY() - 80;
 	}
 
 	/**
@@ -783,7 +576,7 @@ public class MenuPrincipalController implements Initializable {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		try {
 			scheduler.schedule(() -> Platform.runLater(() -> {
-				ListaComicsDAO.listasAutoCompletado();
+				ListasCartasDAO.listasAutoCompletado();
 
 				Task<Void> task = new Task<Void>() {
 					@Override
@@ -842,25 +635,15 @@ public class MenuPrincipalController implements Initializable {
 
 	/**
 	 * Funcion que permite restringir entrada de datos de todo aquello que no sea un
-	 * numero entero en los comboBox numeroComic y caja_comic
+	 * numero entero en los comboBox numeroCarta y caja_comic
 	 */
 	public void formatearTextField() {
-		numeroComic.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
+		numeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
 	}
 
 	/////////////////////////////////
 	//// METODOS LLAMADA A VENTANAS//
 	/////////////////////////////////
-
-	/**
-	 * Permite el cambio de ventana a la ventana de RecomendacionesController
-	 *
-	 * @param event
-	 */
-	@FXML
-	void ventanaRecomendar(ActionEvent event) {
-		nav.verRecomendacion();
-	}
 
 	/**
 	 * Permite el cambio de ventana a la ventana de SobreMiController
@@ -881,7 +664,7 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void mostrarPorParametro(ActionEvent event) {
 		enviarReferencias();
-		mostrarComics(false);
+		mostrarCartas(false);
 
 	}
 
@@ -895,10 +678,10 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void verTodabbdd(ActionEvent event) {
 		enviarReferencias();
-		mostrarComics(true);
+		mostrarCartas(true);
 	}
 
-	private void mostrarComics(boolean esCompleto) {
+	private void mostrarCartas(boolean esCompleto) {
 
 		if (esCompleto) {
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, null);
@@ -908,7 +691,7 @@ public class MenuPrincipalController implements Initializable {
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
 
-			Comic comic = AccionControlUI.camposComic(controls, false);
+			Carta comic = AccionControlUI.camposCarta(controls, false);
 
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, comic);
 		}
@@ -924,7 +707,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsPuntuacion(ActionEvent event) {
-		imprimirComicsEstado(TipoBusqueda.PUNTUACION, false);
+		imprimirCartasEstado(TipoBusqueda.PUNTUACION, false);
 	}
 
 	/**
@@ -936,7 +719,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsVendidos(ActionEvent event) {
-		imprimirComicsEstado(TipoBusqueda.VENDIDOS, false);
+		imprimirCartasEstado(TipoBusqueda.VENDIDOS, false);
 	}
 
 	/**
@@ -948,7 +731,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsFirmados(ActionEvent event) {
-		imprimirComicsEstado(TipoBusqueda.FIRMADOS, false);
+		imprimirCartasEstado(TipoBusqueda.FIRMADOS, false);
 	}
 
 	/**
@@ -960,7 +743,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsComprados(ActionEvent event) {
-		imprimirComicsEstado(TipoBusqueda.COMPRADOS, false);
+		imprimirCartasEstado(TipoBusqueda.COMPRADOS, false);
 	}
 
 	/**
@@ -972,12 +755,12 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsEnPosesion(ActionEvent event) {
-		imprimirComicsEstado(TipoBusqueda.POSESION, false);
+		imprimirCartasEstado(TipoBusqueda.POSESION, false);
 	}
 
 	@FXML
 	void comicsGuardados(ActionEvent event) {
-		imprimirComicsEstado(null, true);
+		imprimirCartasEstado(null, true);
 
 	}
 
@@ -995,28 +778,28 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsKeyIssue(ActionEvent event) throws SQLException {
-		imprimirComicsEstado(TipoBusqueda.KEY_ISSUE, false);
+		imprimirCartasEstado(TipoBusqueda.KEY_ISSUE, false);
 	}
 
-	private void imprimirComicsEstado(TipoBusqueda tipoBusqueda, boolean esGuardado) {
+	private void imprimirCartasEstado(TipoBusqueda tipoBusqueda, boolean esGuardado) {
 
 		limpiezaDeDatos();
 		limpiarComboBox();
-		ListaComicsDAO.reiniciarListaComics();
+		ListasCartasDAO.reiniciarListaCartas();
 		FuncionesTableView.nombreColumnas();
 		FuncionesTableView.actualizarBusquedaRaw();
-		List<Comic> listaComics;
+		List<Carta> listaCartas;
 		if (esGuardado) {
-			listaComics = ListaComicsDAO.comicsGuardadosList;
+			listaCartas = ListasCartasDAO.cartasGuardadosList;
 		} else {
 			String sentenciaSQL = DBUtilidades.construirSentenciaSQL(tipoBusqueda);
 
 			System.out.println(sentenciaSQL);
 
-			listaComics = SelectManager.verLibreria(sentenciaSQL, false);
+			listaCartas = SelectManager.verLibreria(sentenciaSQL, false);
 		}
 
-		FuncionesTableView.tablaBBDD(listaComics);
+		FuncionesTableView.tablaBBDD(listaCartas);
 	}
 
 	////////////////////////////
@@ -1040,9 +823,9 @@ public class MenuPrincipalController implements Initializable {
 
 		guardarDatosCSV();
 
-		ListaComicsDAO.listasAutoCompletado();
+		ListasCartasDAO.listasAutoCompletado();
 
-		ListaComicsDAO.limpiarListaGuardados();
+		ListasCartasDAO.limpiarListaGuardados();
 
 	}
 
@@ -1058,16 +841,16 @@ public class MenuPrincipalController implements Initializable {
 
 		boolean estaVacia = false;
 		String mensaje = "";
-		if (!ListaComicsDAO.listaNombre.isEmpty()) {
+		if (!ListasCartasDAO.listaNombre.isEmpty()) {
 			limpiezaDeDatos();
 			limpiarComboBox();
 			String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
 
-			List<Comic> listaComics = SelectManager.verLibreria(sentenciaSQL, false);
+			List<Carta> listaCartas = SelectManager.verLibreria(sentenciaSQL, false);
 
-			cargaExportExcel(listaComics, DBUtilidades.TipoBusqueda.COMPLETA.toString());
+			cargaExportExcel(listaCartas, DBUtilidades.TipoBusqueda.COMPLETA.toString());
 
-			ListaComicsDAO.limpiarListaGuardados();
+			ListasCartasDAO.limpiarListaGuardados();
 
 			estaVacia = true;
 		} else {
@@ -1093,11 +876,11 @@ public class MenuPrincipalController implements Initializable {
 		botonGuardarResultado.setVisible(false);
 		botonGuardarResultado.setDisable(true);
 
-		int tamanioListaGuardada = ListaComicsDAO.comicsGuardadosList.size();
+		int tamanioListaGuardada = ListasCartasDAO.cartasGuardadosList.size();
 
 		if (tamanioListaGuardada > 0 && nav.borrarListaGuardada()) {
 
-			ListaComicsDAO.limpiarListaGuardados();
+			ListasCartasDAO.limpiarListaGuardados();
 
 			String mensaje = "Has eliminado el contenido de la lista guardada que contenia un total de: "
 					+ tamanioListaGuardada + " comics guardados.\n \n \n";
@@ -1118,7 +901,7 @@ public class MenuPrincipalController implements Initializable {
 	void verEstadistica(ActionEvent event) {
 
 		AlarmaList.iniciarAnimacionEstadistica(prontInfo);
-		ListaComicsDAO.generar_fichero_estadisticas();
+		ListasCartasDAO.generar_fichero_estadisticas();
 		AlarmaList.detenerAnimacionPront(prontInfo);
 		String mensaje = "Fichero creado correctamente";
 
@@ -1142,7 +925,7 @@ public class MenuPrincipalController implements Initializable {
 
 		if (!tablaBBDD.isDisabled()) {
 			enviarReferencias();
-			AccionSeleccionar.seleccionarComics(true);
+			AccionSeleccionar.seleccionarCartas(true);
 		}
 	}
 
@@ -1158,7 +941,7 @@ public class MenuPrincipalController implements Initializable {
 	void teclasDireccion(KeyEvent event) {
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			enviarReferencias();
-			AccionSeleccionar.seleccionarComics(true);
+			AccionSeleccionar.seleccionarCartas(true);
 		}
 
 	}
@@ -1181,8 +964,8 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.clear();
 		String tipoBusqueda = "Parcial";
 
-		if (!ListaComicsDAO.comicsGuardadosList.isEmpty()) {
-			cargaExportExcel(ListaComicsDAO.comicsGuardadosList, tipoBusqueda);
+		if (!ListasCartasDAO.cartasGuardadosList.isEmpty()) {
+			cargaExportExcel(ListasCartasDAO.cartasGuardadosList, tipoBusqueda);
 
 			String mensaje = "Lista guardada de forma correcta";
 			AlarmaList.mostrarMensajePront(mensaje, true, prontInfo);
@@ -1205,20 +988,20 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void guardarResultado(ActionEvent event) throws SQLException {
 
-		Comic comicRaw = tablaBBDD.getSelectionModel().getSelectedItem();
+		Carta cartaRaw = tablaBBDD.getSelectionModel().getSelectedItem();
 		String mensaje = "";
-		if (comicRaw != null) {
-			boolean existeComic = ListaComicsDAO.verificarIDExistente(comicRaw.getid(), true);
-			if (existeComic) {
-				mensaje = "Este comic con dichaid: " + comicRaw.getid() + " ya existe. No se ha guardado \n \n \n";
+		if (cartaRaw != null) {
+			boolean existeCarta = ListasCartasDAO.verificarIDExistente(cartaRaw.getIdCarta(), true);
+			if (existeCarta) {
+				mensaje = "Este comic con dichaid: " + cartaRaw.getIdCarta() + " ya existe. No se ha guardado \n \n \n";
 				AlarmaList.mostrarMensajePront(mensaje, false, prontInfo);
 				return;
 			}
 
-			ListaComicsDAO.agregarElementoUnico(comicRaw);
+			ListasCartasDAO.agregarElementoUnico(cartaRaw);
 
-			mensaje = "Hay un total de: " + ListaComicsDAO.comicsGuardadosList.size()
-					+ ". Comics guardados a la espera de ser impresos \n \n \n";
+			mensaje = "Hay un total de: " + ListasCartasDAO.cartasGuardadosList.size()
+					+ ". Cartas guardados a la espera de ser impresos \n \n \n";
 			AlarmaList.mostrarMensajePront(mensaje, true, prontInfo);
 
 		} else {
@@ -1241,11 +1024,11 @@ public class MenuPrincipalController implements Initializable {
 						AlarmaList.iniciarAnimacionCarga(referenciaVentana.getProgresoCarga());
 						String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
 
-						List<Comic> listaComics = SelectManager.verLibreria(sentenciaSQL, false);
+						List<Carta> listaCartas = SelectManager.verLibreria(sentenciaSQL, false);
 						FuncionesExcel excelFuntions = new FuncionesExcel();
 						// Configuración de la tarea para crear el archivo Excel
 
-						Task<Boolean> crearExcelTask = excelFuntions.crearExcelTask(listaComics,
+						Task<Boolean> crearExcelTask = excelFuntions.crearExcelTask(listaCartas,
 								TipoBusqueda.ELIMINAR.toString(), dateFormat);
 						Thread excelThread = new Thread(crearExcelTask);
 
@@ -1264,7 +1047,7 @@ public class MenuPrincipalController implements Initializable {
 								estadoStage().setOnCloseRequest(closeEvent -> {
 									crearExcelTask.cancel(true);
 									excelThread.interrupt(); // Interrumpir el hilo
-									Utilidades.cerrarCargaComics();
+									Utilidades.cerrarCargaCartas();
 								});
 
 								cerradoPorOperaciones();
@@ -1278,14 +1061,14 @@ public class MenuPrincipalController implements Initializable {
 								botonCancelarSubida.setVisible(false);
 								boolean deleteCompleted;
 								try {
-									deleteCompleted = ComicManagerDAO.deleteTable().get();
+									deleteCompleted = CartaManagerDAO.deleteTable().get();
 									String mensaje = deleteCompleted
 											? "Base de datos borrada y reiniciada correctamente"
 											: "ERROR. No se ha podido eliminar y reiniciar la base de datos";
 
 									if (deleteCompleted) {
 										AlarmaList.detenerAnimacionCarga(referenciaVentana.getProgresoCarga());
-										ListaComicsDAO.limpiarListaGuardados();
+										ListasCartasDAO.limpiarListaGuardados();
 										Utilidades.eliminarContenidoCarpeta(FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH);
 									}
 									FuncionesManejoFront.cambiarEstadoMenuBar(false, guardarReferencia());
@@ -1345,9 +1128,9 @@ public class MenuPrincipalController implements Initializable {
 	 * Carga y ejecuta una tarea para exportar datos a un archivo Excel.
 	 *
 	 * @param fichero     El archivo Excel de destino.
-	 * @param listaComics La lista de cómics a exportar.
+	 * @param listaCartas La lista de cómics a exportar.
 	 */
-	private void cargaExportExcel(List<Comic> listaComics, String tipoBusqueda) {
+	private void cargaExportExcel(List<Carta> listaCartas, String tipoBusqueda) {
 
 		FuncionesExcel excelFuntions = new FuncionesExcel();
 		String mensajeErrorExportar = "ERROR. No se ha podido exportar correctamente.";
@@ -1360,7 +1143,7 @@ public class MenuPrincipalController implements Initializable {
 		imagencomic.setImage(null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		// Configuración de la tarea para crear el archivo Excel
-		Task<Boolean> crearExcelTask = excelFuntions.crearExcelTask(listaComics, tipoBusqueda, dateFormat);
+		Task<Boolean> crearExcelTask = excelFuntions.crearExcelTask(listaCartas, tipoBusqueda, dateFormat);
 		Thread excelThread = new Thread(crearExcelTask);
 
 		if (crearExcelTask == null) {
@@ -1377,7 +1160,7 @@ public class MenuPrincipalController implements Initializable {
 
 				estadoStage().setOnCloseRequest(event -> {
 					crearExcelTask.cancel(true);
-					Utilidades.cerrarCargaComics();
+					Utilidades.cerrarCargaCartas();
 				});
 
 				cerradoPorOperaciones();
@@ -1460,7 +1243,7 @@ public class MenuPrincipalController implements Initializable {
 
 				estadoStage().setOnCloseRequest(event -> {
 					lecturaTask.cancel(true);
-					Utilidades.cerrarCargaComics();
+					Utilidades.cerrarCargaCartas();
 				});
 				cerradoPorOperaciones();
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, guardarReferencia());
@@ -1509,8 +1292,6 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	private void limpiezaDeDatos() {
 
-		// Limpiar elementos adicionales de la interfaz
-		fechaPublicacion.setValue(null);
 		prontInfo.clear();
 		prontInfo.setText(null);
 		prontInfo.setOpacity(0);
@@ -1537,7 +1318,7 @@ public class MenuPrincipalController implements Initializable {
 	 * @param event El evento de acción que desencadenó la llamada a esta función.
 	 */
 	@FXML
-	void accionComic(ActionEvent event) {
+	void accionCarta(ActionEvent event) {
 		Object fuente = event.getSource();
 		tablaBBDD.getItems().clear();
 
@@ -1551,51 +1332,21 @@ public class MenuPrincipalController implements Initializable {
 				AccionFuncionesComunes.setTipoAccion("modificar");
 			} else if (botonPresionado == botonEliminar) {
 				AccionFuncionesComunes.setTipoAccion("eliminar");
-			} else if (botonPresionado == botonAgregarPuntuacion) {
-				AccionFuncionesComunes.setTipoAccion("puntuar");
 			}
 		} else if (fuente instanceof MenuItem menuItemPresionado) {
-			if (menuItemPresionado == menuComicAniadir) {
+			if (menuItemPresionado == menuCartaAniadir) {
 				AccionFuncionesComunes.setTipoAccion("aniadir");
-			} else if (menuItemPresionado == menuComicModificar) {
+			} else if (menuItemPresionado == menuCartaModificar) {
 				AccionFuncionesComunes.setTipoAccion("modificar");
-			} else if (menuItemPresionado == menuComicEliminar) {
+			} else if (menuItemPresionado == menuCartaEliminar) {
 				AccionFuncionesComunes.setTipoAccion("eliminar");
-			} else if (menuItemPresionado == menuComicPuntuar) {
-				AccionFuncionesComunes.setTipoAccion("puntuar");
 			}
 		}
 
 		imagencomic.setVisible(false);
 		imagencomic.setImage(null);
 		prontInfo.setOpacity(0);
-		nav.verAccionComic();
-	}
-
-	/**
-	 * Maneja la acción del usuario en relación a los cómics, como agregar,
-	 * modificar, eliminar o puntuar un cómic.
-	 *
-	 * @param event El evento de acción que desencadenó la llamada a esta función.
-	 */
-	@FXML
-	void modificarApiMarvel(ActionEvent event) {
-		tablaBBDD.getItems().clear();
-		ModificarApiDatosController.tipoAccion("Marvel");
-		nav.verModificarApis(true);
-	}
-
-	/**
-	 * Maneja la acción del usuario en relación a los cómics, como agregar,
-	 * modificar, eliminar o puntuar un cómic.
-	 *
-	 * @param event El evento de acción que desencadenó la llamada a esta función.
-	 */
-	@FXML
-	void modificarApiVine(ActionEvent event) {
-		tablaBBDD.getItems().clear();
-		ModificarApiDatosController.tipoAccion("Vine");
-		nav.verModificarApis(false);
+		nav.verAccionCarta();
 	}
 
 	/////////////////////////////
@@ -1637,7 +1388,7 @@ public class MenuPrincipalController implements Initializable {
 		}
 
 		ConectManager.close();
-		nav.cerrarCargaComics();
+		nav.cerrarCargaCartas();
 		nav.verAccesoBBDD();
 		estadoStage().close();
 
@@ -1651,7 +1402,7 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	public void salirPrograma(ActionEvent event) {
 		// Lógica para manejar la acción de "Salir"
-		nav.cerrarCargaComics();
+		nav.cerrarCargaCartas();
 		if (nav.salirPrograma(event)) {
 			estadoStage().close();
 		}
@@ -1682,7 +1433,7 @@ public class MenuPrincipalController implements Initializable {
 	 *
 	 */
 	public void closeWindows() {
-		nav.cerrarCargaComics();
+		nav.cerrarCargaCartas();
 		Platform.exit();
 	}
 
@@ -1691,7 +1442,7 @@ public class MenuPrincipalController implements Initializable {
 		cerradoPorOperaciones();
 		alarmaList.detenerThreadChecker();
 		nav.cerrarMenuOpciones();
-		nav.cerrarCargaComics();
+		nav.cerrarCargaCartas();
 		nav.cerrarVentanaAccion();
 		Utilidades.cerrarOpcionesAvanzadas();
 

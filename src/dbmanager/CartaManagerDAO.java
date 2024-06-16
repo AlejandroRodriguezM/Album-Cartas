@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 
 public class CartaManagerDAO {
 

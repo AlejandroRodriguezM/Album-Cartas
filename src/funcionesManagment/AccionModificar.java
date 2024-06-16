@@ -8,11 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.ConectManager;
 import dbmanager.DBUtilidades;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
@@ -50,67 +50,26 @@ public class AccionModificar {
 	 * Oculta y deshabilita varios campos y elementos en la interfaz gráfica.
 	 */
 	public void ocultarCamposMod() {
-		List<Node> elementos = Arrays.asList(getReferenciaVentana().getNombreKeyIssue(),
+		List<Node> elementos = Arrays.asList(
 				getReferenciaVentana().getUrlReferencia(), getReferenciaVentana().getLabel_id_mod(),
-				getReferenciaVentana().getIdComicTratar(), getReferenciaVentana().getPrecioComic(),
+				getReferenciaVentana().getIdCartaTratar(), getReferenciaVentana().getPrecioCarta(),
 				getReferenciaVentana().getDireccionImagen(), getReferenciaVentana().getLabel_portada(),
-				getReferenciaVentana().getLabel_precio(), getReferenciaVentana().getLabel_key(),
-				getReferenciaVentana().getLabel_referencia(), getReferenciaVentana().getBotonModificarComic(),
-				getReferenciaVentana().getCodigoComicTratar(), getReferenciaVentana().getLabel_codigo_comic());
+				getReferenciaVentana().getLabel_precio(),
+				getReferenciaVentana().getLabel_referencia(), getReferenciaVentana().getBotonModificarCarta(),
+				getReferenciaVentana().getCodigoCartaTratar());
 
 		Utilidades.cambiarVisibilidad(elementos, true);
 	}
 
-	/**
-	 * Realiza la acción de puntuar un cómic, ya sea agregar una nueva puntuación o
-	 * borrar la existente.
-	 * 
-	 * @param esAgregar Indica si la acción es agregar una nueva puntuación (true) o
-	 *                  borrar la existente (false).
-	 * @throws SQLException Excepción lanzada en caso de errores de acceso a la base
-	 *                      de datos.
-	 */
-	public static void accionPuntuar(boolean esAgregar) {
+	public static void venderCarta() throws SQLException {
 
-		String idComic = getReferenciaVentana().getIdComicTratar().getText();
-		if (accionFuncionesComunes.comprobarExistenciaComic(idComic)) {
+		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
+		getReferenciaVentana().getIdCartaTratar().setStyle("");
+		Carta comicActualizar = CartaManagerDAO.comicDatos(idCarta);
+		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			if (nav.alertaAccionGeneral()) {
-				String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
-				List<Comic> listaComics;
-				String mensaje = "";
-				if (esAgregar) {
-					ComicManagerDAO.actualizarOpinion(idComic,
-							FuncionesComboBox.puntuacionCombobox(getReferenciaVentana().getPuntuacionMenu()));
-					mensaje = "Has agregado una puntuacion correctamente";
-				} else {
-					ComicManagerDAO.actualizarOpinion(idComic, "0");
-					mensaje = "Has borrado correctamente la puntuacion";
-				}
-
-				AlarmaList.mostrarMensajePront(mensaje, true, getReferenciaVentana().getProntInfo());
-
-				listaComics = ComicManagerDAO.verLibreria(sentenciaSQL);
-				getReferenciaVentana().getTablaBBDD().refresh();
-				FuncionesTableView.nombreColumnas();
-				FuncionesTableView.tablaBBDD(listaComics);
-
-			} else {
-				String mensaje = "Accion cancelada";
-				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
-			}
-
-		}
-	}
-
-	public static void venderComic() throws SQLException {
-
-		String idComic = getReferenciaVentana().getIdComicTratar().getText();
-		getReferenciaVentana().getIdComicTratar().setStyle("");
-		Comic comicActualizar = ComicManagerDAO.comicDatos(idComic);
-		if (accionFuncionesComunes.comprobarExistenciaComic(idComic)) {
-			if (nav.alertaAccionGeneral()) {
-				ComicManagerDAO.actualizarComicBBDD(comicActualizar, "vender");
-				ListaComicsDAO.reiniciarListaComics();
+				CartaManagerDAO.actualizarCartaBBDD(comicActualizar, "vender");
+				ListasCartasDAO.reiniciarListaCartas();
 				String mensaje = ". Has puesto a la venta el comic";
 				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
 
@@ -119,7 +78,7 @@ public class AccionModificar {
 				funcionesCombo.rellenarComboBox(comboboxes);
 				getReferenciaVentana().getTablaBBDD().refresh();
 				FuncionesTableView.nombreColumnas();
-				FuncionesTableView.tablaBBDD(ListaComicsDAO.comicsImportados);
+				FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 
 			} else {
 				String mensaje = "Accion cancelada";
@@ -129,47 +88,47 @@ public class AccionModificar {
 		}
 	}
 
-	public static void modificarComic() throws Exception {
+	public static void modificarCarta() throws Exception {
 
-		String idComic = getReferenciaVentana().getIdComicTratar().getText();
-		getReferenciaVentana().getIdComicTratar().setStyle("");
+		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
+		getReferenciaVentana().getIdCartaTratar().setStyle("");
 
-		if (accionFuncionesComunes.comprobarExistenciaComic(idComic)) {
+		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
-			List<Comic> listaComics;
+			List<Carta> listaCartas;
 			if (nav.alertaAccionGeneral()) {
 
 				Utilidades.convertirNombresCarpetas(AccionFuncionesComunes.carpetaPortadas(Utilidades.nombreDB()));
 
-				Comic comicModificado = AccionControlUI.comicModificado();
+				Carta comicModificado = AccionControlUI.comicModificado();
 
-				accionFuncionesComunes.procesarComic(comicModificado, true);
+				accionFuncionesComunes.procesarCarta(comicModificado, true);
 
-				ListaComicsDAO.listasAutoCompletado();
+				ListasCartasDAO.listasAutoCompletado();
 
-				listaComics = ComicManagerDAO.verLibreria(sentenciaSQL);
+				listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
 				getReferenciaVentana().getTablaBBDD().refresh();
 				FuncionesTableView.nombreColumnas();
-				FuncionesTableView.tablaBBDD(listaComics);
+				FuncionesTableView.tablaBBDD(listaCartas);
 			}
 
 			else {
 
-				listaComics = ComicManagerDAO.verLibreria(sentenciaSQL);
+				listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
 
-				ComicManagerDAO.borrarComic(idComic);
-				ListaComicsDAO.reiniciarListaComics();
-				ListaComicsDAO.listasAutoCompletado();
+				CartaManagerDAO.borrarCarta(idCarta);
+				ListasCartasDAO.reiniciarListaCartas();
+				ListasCartasDAO.listasAutoCompletado();
 				FuncionesTableView.nombreColumnas(); // Llamada a funcion
 				FuncionesTableView.actualizarBusquedaRaw();
-				FuncionesTableView.tablaBBDD(listaComics);
+				FuncionesTableView.tablaBBDD(listaCartas);
 			}
 		}
 	}
 
-	public static void actualizarComicLista() {
+	public static void actualizarCartaLista() {
 
-		if (!accionRellenoDatos.camposComicSonValidos()) {
+		if (!accionRellenoDatos.camposCartaSonValidos()) {
 			String mensaje = "Error. Debes de introducir los datos correctos";
 			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
 			return; // Agregar return para salir del método en este punto
@@ -189,68 +148,61 @@ public class AccionModificar {
 				}
 			}
 		}
-		Comic datos = AccionControlUI.camposComic(controls, true);
+		Carta datos = AccionControlUI.camposCarta(controls, true);
 
-		if (!ListaComicsDAO.comicsImportados.isEmpty()) {
+		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
 
-			if (datos.getid() == null || datos.getid().isEmpty()) {
-				datos = ListaComicsDAO.buscarComicPorID(ListaComicsDAO.comicsImportados, datos.getid());
+			if (datos.getIdCarta() == null || datos.getIdCarta().isEmpty()) {
+				datos = ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, datos.getIdCarta());
 			}
 
 			// Si hay elementos en la lista
-			for (Comic c : ListaComicsDAO.comicsImportados) {
-				if (c.getid().equals(datos.getid())) {
+			for (Carta c : ListasCartasDAO.cartasImportados) {
+				if (c.getIdCarta().equals(datos.getIdCarta())) {
 					// Si se encuentra un cómic con el mismo ID, reemplazarlo con los nuevos datos
-					ListaComicsDAO.comicsImportados.set(ListaComicsDAO.comicsImportados.indexOf(c), datos);
+					ListasCartasDAO.cartasImportados.set(ListasCartasDAO.cartasImportados.indexOf(c), datos);
 					break; // Salir del bucle una vez que se actualice el cómic
 				}
 			}
 		} else {
-			String id = "A" + 0 + "" + (ListaComicsDAO.comicsImportados.size() + 1);
-			datos.setID(id);
-			ListaComicsDAO.comicsImportados.add(datos);
+			String id = "A" + 0 + "" + (ListasCartasDAO.cartasImportados.size() + 1);
+			datos.setIdCarta(id);
+			ListasCartasDAO.cartasImportados.add(datos);
 		}
 
 		AccionFuncionesComunes.cambiarEstadoBotones(false);
 		getReferenciaVentana().getBotonCancelarSubida().setVisible(false); // Oculta el botón de cancelar
 
-		Comic.limpiarCamposComic(datos);
+		Carta.limpiarCamposCarta(datos);
 		AccionControlUI.limpiarAutorellenos(false);
 
 		FuncionesTableView.nombreColumnas();
-		FuncionesTableView.tablaBBDD(ListaComicsDAO.comicsImportados);
+		FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 	}
 
 	public void mostrarElementosPuntuar(List<Node> elementosAMostrarYHabilitar) {
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(getReferenciaVentana().getBotonBorrarOpinion(),
-				getReferenciaVentana().getPuntuacionMenu(), getReferenciaVentana().getLabelPuntuacion(),
-				getReferenciaVentana().getBotonAgregarPuntuacion(), getReferenciaVentana().getLabel_id_mod(),
-				getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonbbdd(),
-				getReferenciaVentana().getRootVBox(), getReferenciaVentana().getBotonParametroComic(),
-				getReferenciaVentana().getIdComicTratar()));
+				getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getTablaBBDD(),
+				getReferenciaVentana().getBotonbbdd(), getReferenciaVentana().getRootVBox(),
+				getReferenciaVentana().getBotonParametroCarta(), getReferenciaVentana().getIdCartaTratar()));
 		getReferenciaVentana().getRootVBox().toFront();
 	}
 
 	public void mostrarElementosModificar(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(
-				Arrays.asList(getReferenciaVentana().getDibujanteComic(), getReferenciaVentana().getEditorialComic(),
-						getReferenciaVentana().getEstadoComic(), getReferenciaVentana().getFechaComic(),
-						getReferenciaVentana().getFirmaComic(), getReferenciaVentana().getFormatoComic(),
-						getReferenciaVentana().getGuionistaComic(), getReferenciaVentana().getNombreKeyIssue(),
-						getReferenciaVentana().getGradeoComic(), getReferenciaVentana().getProcedenciaComic(),
-						getReferenciaVentana().getUrlReferencia(), getReferenciaVentana().getBotonModificarComic(),
-						getReferenciaVentana().getPrecioComic(), getReferenciaVentana().getDireccionImagen(),
-						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getLabel_portada(),
-						getReferenciaVentana().getLabel_precio(), getReferenciaVentana().getLabel_gradeo(),
-						getReferenciaVentana().getLabel_dibujante(), getReferenciaVentana().getLabel_editorial(),
-						getReferenciaVentana().getLabel_estado(), getReferenciaVentana().getLabel_fecha(),
-						getReferenciaVentana().getLabel_firma(), getReferenciaVentana().getLabel_formato(),
-						getReferenciaVentana().getLabel_guionista(), getReferenciaVentana().getLabel_key(),
-						getReferenciaVentana().getLabel_procedencia(), getReferenciaVentana().getLabel_referencia(),
-						getReferenciaVentana().getBotonbbdd(), getReferenciaVentana().getIdComicTratar(),
-						getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getBotonParametroComic(),
-						getReferenciaVentana().getCodigoComicTratar(), getReferenciaVentana().getLabel_codigo_comic(),
-						getReferenciaVentana().getRootVBox(), getReferenciaVentana().getBotonSubidaPortada()));
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(getReferenciaVentana().getEditorialCarta(),
+				getReferenciaVentana().getEstadoCarta(), getReferenciaVentana().getFormatoCarta(),
+
+				getReferenciaVentana().getGradeoCarta(), getReferenciaVentana().getUrlReferencia(),
+				getReferenciaVentana().getBotonModificarCarta(), getReferenciaVentana().getPrecioCarta(),
+				getReferenciaVentana().getDireccionImagen(), getReferenciaVentana().getTablaBBDD(),
+				getReferenciaVentana().getLabel_portada(), getReferenciaVentana().getLabel_precio(),
+				getReferenciaVentana().getLabel_gradeo(), getReferenciaVentana().getLabel_editorial(),
+				getReferenciaVentana().getLabel_estado(), getReferenciaVentana().getLabel_fecha(),
+				getReferenciaVentana().getLabel_formato(), getReferenciaVentana().getLabel_referencia(),
+				getReferenciaVentana().getBotonbbdd(), getReferenciaVentana().getIdCartaTratar(),
+				getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getBotonParametroCarta(),
+				getReferenciaVentana().getCodigoCartaTratar(), getReferenciaVentana().getRootVBox(),
+				getReferenciaVentana().getBotonSubidaPortada()));
 		getReferenciaVentana().getRootVBox().toFront();
 	}
 
@@ -263,7 +215,7 @@ public class AccionModificar {
 		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("portada");
 		Utilidades.borrarArchivosNoEnLista(inputPortadas);
 
-		boolean estaBaseLlena = ListaComicsDAO.comprobarLista();
+		boolean estaBaseLlena = ListasCartasDAO.comprobarLista();
 
 		if (!estaBaseLlena) {
 			String cadenaCancelado = "La base de datos esta vacia";
@@ -272,11 +224,11 @@ public class AccionModificar {
 		}
 
 		String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
-		List<Comic> listaComicsDatabase = SelectManager.verLibreria(sentenciaSQL, true);
+		List<Carta> listaCartasDatabase = SelectManager.verLibreria(sentenciaSQL, true);
 
-		Collections.sort(listaComicsDatabase, (comic1, comic2) -> {
-			int id1 = Integer.parseInt(comic1.getid());
-			int id2 = Integer.parseInt(comic2.getid());
+		Collections.sort(listaCartasDatabase, (comic1, comic2) -> {
+			int id1 = Integer.parseInt(comic1.getIdCarta());
+			int id2 = Integer.parseInt(comic2.getIdCarta());
 			return Integer.compare(id1, id2);
 		});
 
@@ -288,12 +240,12 @@ public class AccionModificar {
 			}
 		}
 
-		AccionFuncionesComunes.busquedaPorListaDatabase(listaComicsDatabase, tipoUpdate, actualizarFima);
+		AccionFuncionesComunes.busquedaPorListaDatabase(listaCartasDatabase, tipoUpdate, actualizarFima);
 
 		if (getReferenciaVentana().getTablaBBDD() != null) {
 			getReferenciaVentana().getTablaBBDD().refresh();
 			FuncionesTableView.nombreColumnas();
-			FuncionesTableView.tablaBBDD(ListaComicsDAO.comicsImportados);
+			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 		}
 
 	}

@@ -8,7 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-import cartaManagement.Comic;
+import cartaManagement.Carta;
+import cartaManagement.Carta;
 import dbmanager.ConectManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesInterfaz.FuncionesManejoFront;
@@ -37,13 +38,13 @@ public class ImagenAmpliadaController implements Initializable {
 	 */
 	private Stage stage;
 
-	public static Comic comicInfo;
+	public static Carta cartaInfo;
 
 	@FXML
 	private ImageView imagenAmpliada;
 
 	@FXML
-	private TextArea infoComic;
+	private TextArea infoCarta;
 
 	/**
 	 * Inicializa el controlador cuando se carga la vista.
@@ -54,11 +55,11 @@ public class ImagenAmpliadaController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		mostrarImagen();
-		String infoComicString = "";
+		String infoCartaString = "";
 		// Crear el menú contextual
 		ContextMenu contextMenu = new ContextMenu();
 		MenuItem guardarItem = new MenuItem("Guardar imagen");
-		guardarItem.setOnAction(event -> guardarImagen(comicInfo.getImagen()));
+		guardarItem.setOnAction(event -> guardarImagen(cartaInfo.getDireccionImagenCarta()));
 		contextMenu.getItems().add(guardarItem);
 
 		// Manejar el evento de clic derecho para mostrar el menú contextual
@@ -68,21 +69,21 @@ public class ImagenAmpliadaController implements Initializable {
 			}
 		});
 
-		if (!comicInfo.devolverKeyIssue().isEmpty()) {
-			infoComicString = comicInfo.infoComic() + "\n" + comicInfo.devolverKeyIssue();
+		if (!cartaInfo.devolverNormas().isEmpty()) {
+			infoCartaString = cartaInfo.infoCarta() + "\n" + cartaInfo.devolverNormas();
 
 		} else {
-			infoComicString = comicInfo.infoComic();
+			infoCartaString = cartaInfo.infoCarta();
 
 		}
 
-		infoComic.setText(infoComicString);
+		infoCarta.setText(infoCartaString);
 
 		// Obtener el ancho del TextArea desde el FXML
-		double textAreaWidth = infoComic.getPrefWidth();
-		double textAreaHeight = infoComic.getPrefHeight();
+		double textAreaWidth = infoCarta.getPrefWidth();
+		double textAreaHeight = infoCarta.getPrefHeight();
 
-		infoComic.setPrefHeight(computeTextHeight(infoComicString, infoComic.getFont(), textAreaWidth, textAreaHeight));
+		infoCarta.setPrefHeight(computeTextHeight(infoCartaString, infoCarta.getFont(), textAreaWidth, textAreaHeight));
 		Platform.runLater(() -> {
 			FuncionesManejoFront.getStageVentanas().add(estadoStage());
 		});
@@ -123,8 +124,8 @@ public class ImagenAmpliadaController implements Initializable {
 
 		String direccionFinalImg = "";
 		Image imagenCargada = null;
-		if (Utilidades.existePortada(comicInfo.getImagen())) {
-			direccionFinalImg = comicInfo.getImagen();
+		if (Utilidades.existePortada(cartaInfo.getDireccionImagenCarta())) {
+			direccionFinalImg = cartaInfo.getDireccionImagenCarta();
 			imagenCargada = new Image(new File(direccionFinalImg).toURI().toString(), true);
 		} else {
 			InputStream is = getClass().getResourceAsStream("/imagenes/sinPortada.jpg");

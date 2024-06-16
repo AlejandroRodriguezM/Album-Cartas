@@ -42,19 +42,19 @@ import javafx.stage.Stage;
 /**
  * Controlador para la carga de cómics en una interfaz gráfica JavaFX.
  */
-public class CargaComicsController implements Initializable {
+public class CargaCartasController implements Initializable {
 
 	/**
 	 * Barra de progreso para mostrar el progreso de carga de cómics.
 	 */
 	@FXML
-	private ProgressBar cargaComics;
+	private ProgressBar cargaCartas;
 
 	/**
 	 * Área de texto para mostrar información sobre la carga de cómics.
 	 */
 	@FXML
-	private TextArea comicsCarga;
+	private TextArea cartasCarga;
 
 	/**
 	 * Etiqueta para mostrar el porcentaje de carga de cómics.
@@ -81,7 +81,7 @@ public class CargaComicsController implements Initializable {
 	 * @param progress El progreso de la carga (valor entre 0.0 y 1.0).
 	 */
 	public void updateProgress(double progress) {
-		cargaComics.setProgress(progress);
+		cargaCartas.setProgress(progress);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class CargaComicsController implements Initializable {
 	 * @param text El texto que se va a añadir al área de texto.
 	 */
 	public void appendTextToTextArea(String text) {
-		comicsCarga.appendText(text);
+		cartasCarga.appendText(text);
 
 	}
 
@@ -114,7 +114,7 @@ public class CargaComicsController implements Initializable {
 
 	public Stage estadoStage() {
 
-		return (Stage) comicsCarga.getScene().getWindow();
+		return (Stage) cartasCarga.getScene().getWindow();
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class CargaComicsController implements Initializable {
 	 * @param porcentaje  El porcentaje de carga a mostrar.
 	 * @param progreso    El progreso de carga a mostrar.
 	 */
-	public void cargarDatosEnCargaComics(String nombreComic, String porcentaje, Double progreso) {
+	public void cargarDatosEnCargaCartas(String nombreComic, String porcentaje, Double progreso) {
 		appendTextToTextArea(nombreComic);
 		updateLabel(porcentaje);
 		updateProgress(progreso);
@@ -140,7 +140,7 @@ public class CargaComicsController implements Initializable {
 				FuncionesManejoFront.getStageVentanas().remove(estadoStage());
 			}
 
-			Stage myStage = (Stage) comicsCarga.getScene().getWindow();
+			Stage myStage = (Stage) cartasCarga.getScene().getWindow();
 			myStage.close();
 		}
 

@@ -2,7 +2,7 @@ package funcionesManagment;
 
 import java.util.List;
 
-import cartaManagement.Comic;
+import cartaManagement.Carta;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -30,22 +30,17 @@ public class AccionReferencias {
 	/**
 	 * Columna de la tabla para la procedencia.
 	 */
-	private TableColumn<Comic, String> procedencia;
+	private TableColumn<Carta, String> procedencia;
 
 	/**
 	 * Columna de la tabla para la referencia.
 	 */
-	private TableColumn<Comic, String> referencia;
-
-	/**
-	 * Columna de la tabla para la variante.
-	 */
-	private TableColumn<Comic, String> variante;
+	private TableColumn<Carta, String> referencia;
 
 	/**
 	 * Tabla que muestra información sobre cómics.
 	 */
-	public TableView<Comic> tablaBBDD;
+	public TableView<Carta> tablaBBDD;
 
 	/**
 	 * Contenedor de la interfaz gráfica.
@@ -96,11 +91,6 @@ public class AccionReferencias {
 
 	private Button botonReCopiarPortadas;
 
-	/**
-	 * Botón para agregar una puntuación.
-	 */
-	private Button botonAgregarPuntuacion;
-
 	private Rectangle barraCambioAltura;
 
 	private Label alarmaConexionInternet;
@@ -113,52 +103,32 @@ public class AccionReferencias {
 	/**
 	 * Columna de la tabla para el ID.
 	 */
-	private TableColumn<Comic, String> ID;
+	private TableColumn<Carta, String> ID;
 
 	/**
 	 * Columna de la tabla para la gradeo.
 	 */
-	private TableColumn<Comic, String> gradeo;
-
-	/**
-	 * Columna de la tabla para la fecha.
-	 */
-	private TableColumn<Comic, String> fecha;
-
-	/**
-	 * Columna de la tabla para la firma.
-	 */
-	private TableColumn<Comic, String> firma;
+	private TableColumn<Carta, String> gradeo;
 
 	/**
 	 * Columna de la tabla para el formato.
 	 */
-	private TableColumn<Comic, String> formato;
+	private TableColumn<Carta, String> formato;
 
 	/**
 	 * Columna de la tabla para mostrar el nombre del cómic.
 	 */
-	private TableColumn<Comic, String> nombre;
+	private TableColumn<Carta, String> nombre;
 
 	/**
 	 * Columna de la tabla para mostrar el número del cómic.
 	 */
-	private TableColumn<Comic, String> numero;
+	private TableColumn<Carta, String> numero;
 
 	/**
 	 * Columna de la tabla para mostrar la editorial del cómic.
 	 */
-	private TableColumn<Comic, String> editorial;
-
-	/**
-	 * Columna de la tabla para mostrar el guionista del cómic.
-	 */
-	private TableColumn<Comic, String> guionista;
-
-	/**
-	 * Columna de la tabla para mostrar el dibujante del cómic.
-	 */
-	private TableColumn<Comic, String> dibujante;
+	private TableColumn<Carta, String> editorial;
 
 	/**
 	 * Botón para cancelar la subida de imagenes.
@@ -188,12 +158,12 @@ public class AccionReferencias {
 	/**
 	 * Botón para modificar un cómic.
 	 */
-	private Button botonModificarComic;
+	private Button botonModificarCarta;
 
 	/**
 	 * Botón para buscar mediante parametro un cómic.
 	 */
-	private Button botonParametroComic;
+	private Button botonParametroCarta;
 
 	/**
 	 * Botón para vender un cómic.
@@ -209,18 +179,18 @@ public class AccionReferencias {
 	 * Botón para guardar un comic correctamente para el importado de comics
 	 * mediante fichero.
 	 */
-	private Button botonGuardarComic;
+	private Button botonGuardarCarta;
 
 	/**
 	 * Boton que guarda un cambio en un comic especifico de los importados
 	 */
-	private Button botonGuardarCambioComic;
+	private Button botonGuardarCambioCarta;
 
 	/**
 	 * Boton que elimina un comic seleccionado de los comics importados mediante
 	 * fichero
 	 */
-	private Button botonEliminarImportadoComic;
+	private Button botonEliminarImportadoCarta;
 
 	/**
 	 * Boton que sirve para subir una imagen a un comic que escojamos
@@ -234,50 +204,30 @@ public class AccionReferencias {
 	private TextField busquedaCodigo;
 
 	/**
-	 * Campo de texto para el dibujante del cómic.
-	 */
-	private TextField dibujanteComic;
-
-	/**
 	 * Campo de texto para la editorial del cómic.
 	 */
-	private TextField editorialComic;
-
-	/**
-	 * Campo de texto para la firma del cómic.
-	 */
-	private TextField firmaComic;
-
-	/**
-	 * Campo de texto para el guionista del cómic.
-	 */
-	private TextField guionistaComic;
+	private TextField editorialCarta;
 
 	/**
 	 * Campo de texto para el ID del cómic a tratar en modificacion.
 	 */
-	private TextField idComicTratar;
+	private TextField idCartaTratar;
 
 	/**
 	 * Campo de texto para el codigo del cómic a tratar en modificacion o para
 	 * añadir.
 	 */
-	private TextField codigoComicTratar;
+	private TextField codigoCartaTratar;
 
 	/**
 	 * Campo de texto para el nombre del cómic.
 	 */
-	private TextField nombreComic;
-
-	/**
-	 * Campo de texto para el nombre del Key Issue del cómic.
-	 */
-	private TextField nombreKeyIssue;
+	private TextField nombreCarta;
 
 	/**
 	 * Campo de texto para el precio del cómic.
 	 */
-	private TextField precioComic;
+	private TextField precioCarta;
 
 	/**
 	 * Campo de texto para la URL de referencia del cómic.
@@ -285,25 +235,9 @@ public class AccionReferencias {
 	private TextField urlReferencia;
 
 	/**
-	 * Campo de texto para la variante del cómic.
-	 */
-	private TextField varianteComic;
-
-	// Etiquetas (Label)
-	/**
-	 * Etiqueta para mostrar la puntuación.
-	 */
-	private Label labelPuntuacion;
-
-	/**
 	 * Etiqueta para mostrar la gradeo.
 	 */
 	private Label label_gradeo;
-
-	/**
-	 * Etiqueta para mostrar el dibujante.
-	 */
-	private Label label_dibujante;
 
 	/**
 	 * Etiqueta para mostrar la editorial.
@@ -321,34 +255,14 @@ public class AccionReferencias {
 	private Label label_fecha;
 
 	/**
-	 * Etiqueta para mostrar la firma.
-	 */
-	private Label label_firma;
-
-	/**
 	 * Etiqueta para mostrar el formato.
 	 */
 	private Label label_formato;
 
 	/**
-	 * Etiqueta para mostrar el guionista.
-	 */
-	private Label label_guionista;
-
-	/**
 	 * Etiqueta para mostrar el ID en modificacion.
 	 */
 	private Label label_id_mod;
-
-	/**
-	 * Etiqueta para mostrar el codigo en modificacion o aniadir.
-	 */
-	private Label label_codigo_comic;
-
-	/**
-	 * Etiqueta para mostrar el Key Issue.
-	 */
-	private Label label_key;
 
 	/**
 	 * Etiqueta para mostrar la portada.
@@ -361,11 +275,6 @@ public class AccionReferencias {
 	private Label label_precio;
 
 	/**
-	 * Etiqueta para mostrar la procedencia.
-	 */
-	private Label label_procedencia;
-
-	/**
 	 * Etiqueta para mostrar la referencia.
 	 */
 	private Label label_referencia;
@@ -374,42 +283,27 @@ public class AccionReferencias {
 	/**
 	 * ComboBox para seleccionar el estado del cómic.
 	 */
-	private ComboBox<String> estadoComic;
-
-	/**
-	 * DatePicker para seleccionar la fecha de publicación del cómic.
-	 */
-	private DatePicker fechaComic;
+	private ComboBox<String> estadoCarta;
 
 	/**
 	 * ComboBox para seleccionar el formato del cómic.
 	 */
-	private ComboBox<String> tituloComic;
+	private ComboBox<String> tituloCarta;
 
 	/**
 	 * ComboBox para seleccionar el formato del cómic.
 	 */
-	private ComboBox<String> formatoComic;
+	private ComboBox<String> formatoCarta;
 
 	/**
 	 * ComboBox para seleccionar el número de gradeo del cómic.
 	 */
-	private ComboBox<String> gradeoComic;
+	private ComboBox<String> gradeoCarta;
 
 	/**
 	 * ComboBox para seleccionar el número del cómic.
 	 */
-	private ComboBox<String> numeroComic;
-
-	/**
-	 * ComboBox para seleccionar la procedencia del cómic.
-	 */
-	private ComboBox<String> procedenciaComic;
-
-	/**
-	 * ComboBox para seleccionar la puntuación en el menú.
-	 */
-	private ComboBox<String> puntuacionMenu;
+	private ComboBox<String> numeroCarta;
 
 	/**
 	 * ImageView para mostrar la imagen del cómic.
@@ -432,17 +326,11 @@ public class AccionReferencias {
 
 	private MenuItem menuComprobarApis;
 
-	private MenuItem menu_leer_CodigoBarras;
-
-	private MenuItem menu_comic_aleatoria;
-
 	private MenuItem menu_comic_aniadir;
 
 	private MenuItem menu_comic_eliminar;
 
 	private MenuItem menu_comic_modificar;
-
-	private MenuItem menu_comic_puntuar;
 
 	private MenuItem menu_estadistica_estadistica;
 
@@ -483,12 +371,6 @@ public class AccionReferencias {
 	private TextField busquedaGeneral;
 
 	/**
-	 * Selector de fecha de publicación.
-	 */
-
-	private DatePicker fechaPublicacion;
-
-	/**
 	 * Menú de archivo con opciones relacionadas con la base de datos.
 	 */
 
@@ -505,39 +387,14 @@ public class AccionReferencias {
 	private MenuItem menu_archivo_avanzado;
 
 	/**
-	 * Selector para el nombre del dibujante.
-	 */
-	private ComboBox<String> nombreDibujante;
-
-	/**
 	 * Selector para el nombre de la editorial.
 	 */
 	private ComboBox<String> nombreEditorial;
 
 	/**
-	 * Selector para el nombre de la firma.
-	 */
-	private ComboBox<String> nombreFirma;
-
-	/**
 	 * Selector para el nombre del formato.
 	 */
 	private ComboBox<String> nombreFormato;
-
-	/**
-	 * Selector para el nombre del guionista.
-	 */
-	private ComboBox<String> nombreGuionista;
-
-	/**
-	 * Selector para el nombre de la procedencia.
-	 */
-	private ComboBox<String> nombreProcedencia;
-
-	/**
-	 * Selector para el nombre de la variante.
-	 */
-	private ComboBox<String> nombreVariante;
 
 	/**
 	 * Declaramos una lista de ComboBox de tipo String
@@ -548,7 +405,7 @@ public class AccionReferencias {
 	private static ObservableList<Button> listaBotones;
 	private static ObservableList<Node> listaElementosFondo;
 
-	private static List<TableColumn<Comic, String>> columnasTabla;
+	private static List<TableColumn<Carta, String>> columnasTabla;
 
 	private ProgressIndicator progresoCarga;
 
@@ -582,19 +439,15 @@ public class AccionReferencias {
 
 	private Stage stage;
 
-	public TableColumn<Comic, String> getProcedencia() {
+	public TableColumn<Carta, String> getProcedencia() {
 		return procedencia;
 	}
 
-	public TableColumn<Comic, String> getReferencia() {
+	public TableColumn<Carta, String> getReferencia() {
 		return referencia;
 	}
 
-	public TableColumn<Comic, String> getVariante() {
-		return variante;
-	}
-
-	public TableView<Comic> getTablaBBDD() {
+	public TableView<Carta> getTablaBBDD() {
 		return tablaBBDD;
 	}
 
@@ -634,10 +487,6 @@ public class AccionReferencias {
 		return botonEliminar;
 	}
 
-	public Button getBotonAgregarPuntuacion() {
-		return botonAgregarPuntuacion;
-	}
-
 	public Rectangle getBarraCambioAltura() {
 		return barraCambioAltura;
 	}
@@ -650,44 +499,28 @@ public class AccionReferencias {
 		return direccionImagen;
 	}
 
-	public TableColumn<Comic, String> getID() {
+	public TableColumn<Carta, String> getID() {
 		return ID;
 	}
 
-	public TableColumn<Comic, String> getGradeo() {
+	public TableColumn<Carta, String> getGradeo() {
 		return gradeo;
 	}
 
-	public TableColumn<Comic, String> getFecha() {
-		return fecha;
-	}
-
-	public TableColumn<Comic, String> getFirma() {
-		return firma;
-	}
-
-	public TableColumn<Comic, String> getFormato() {
+	public TableColumn<Carta, String> getFormato() {
 		return formato;
 	}
 
-	public TableColumn<Comic, String> getNombre() {
+	public TableColumn<Carta, String> getNombre() {
 		return nombre;
 	}
 
-	public TableColumn<Comic, String> getNumero() {
+	public TableColumn<Carta, String> getNumero() {
 		return numero;
 	}
 
-	public TableColumn<Comic, String> getEditorial() {
+	public TableColumn<Carta, String> getEditorial() {
 		return editorial;
-	}
-
-	public TableColumn<Comic, String> getGuionista() {
-		return guionista;
-	}
-
-	public TableColumn<Comic, String> getDibujante() {
-		return dibujante;
 	}
 
 	public Button getBotonCancelarSubida() {
@@ -710,12 +543,12 @@ public class AccionReferencias {
 		return botonLimpiar;
 	}
 
-	public Button getBotonModificarComic() {
-		return botonModificarComic;
+	public Button getBotonModificarCarta() {
+		return botonModificarCarta;
 	}
 
-	public Button getBotonParametroComic() {
-		return botonParametroComic;
+	public Button getBotonParametroCarta() {
+		return botonParametroCarta;
 	}
 
 	public Button getBotonVender() {
@@ -726,32 +559,24 @@ public class AccionReferencias {
 		return botonbbdd;
 	}
 
-	public Button getBotonGuardarComic() {
-		return botonGuardarComic;
+	public Button getBotonGuardarCarta() {
+		return botonGuardarCarta;
 	}
 
-	public Button getBotonGuardarCambioComic() {
-		return botonGuardarCambioComic;
+	public Button getBotonGuardarCambioCarta() {
+		return botonGuardarCambioCarta;
 	}
 
-	public Button getBotonEliminarImportadoComic() {
-		return botonEliminarImportadoComic;
+	public Button getBotonEliminarImportadoCarta() {
+		return botonEliminarImportadoCarta;
 	}
 
 	public Button getBotonSubidaPortada() {
 		return botonSubidaPortada;
 	}
 
-	public Label getLabelPuntuacion() {
-		return labelPuntuacion;
-	}
-
 	public Label getLabel_gradeo() {
 		return label_gradeo;
-	}
-
-	public Label getLabel_dibujante() {
-		return label_dibujante;
 	}
 
 	public Label getLabel_editorial() {
@@ -766,28 +591,12 @@ public class AccionReferencias {
 		return label_fecha;
 	}
 
-	public Label getLabel_firma() {
-		return label_firma;
-	}
-
 	public Label getLabel_formato() {
 		return label_formato;
 	}
 
-	public Label getLabel_guionista() {
-		return label_guionista;
-	}
-
 	public Label getLabel_id_mod() {
 		return label_id_mod;
-	}
-
-	public Label getLabel_codigo_comic() {
-		return label_codigo_comic;
-	}
-
-	public Label getLabel_key() {
-		return label_key;
 	}
 
 	public Label getLabel_portada() {
@@ -796,10 +605,6 @@ public class AccionReferencias {
 
 	public Label getLabel_precio() {
 		return label_precio;
-	}
-
-	public Label getLabel_procedencia() {
-		return label_procedencia;
 	}
 
 	public Label getLabel_referencia() {
@@ -822,14 +627,6 @@ public class AccionReferencias {
 		return menu_Importar_Fichero_CodigoBarras;
 	}
 
-	public MenuItem getMenu_leer_CodigoBarras() {
-		return menu_leer_CodigoBarras;
-	}
-
-	public MenuItem getMenu_comic_aleatoria() {
-		return menu_comic_aleatoria;
-	}
-
 	public MenuItem getMenu_comic_aniadir() {
 		return menu_comic_aniadir;
 	}
@@ -840,10 +637,6 @@ public class AccionReferencias {
 
 	public MenuItem getMenu_comic_modificar() {
 		return menu_comic_modificar;
-	}
-
-	public MenuItem getMenu_comic_puntuar() {
-		return menu_comic_puntuar;
 	}
 
 	public MenuItem getMenu_estadistica_estadistica() {
@@ -888,10 +681,6 @@ public class AccionReferencias {
 
 	public TextField getBusquedaGeneral() {
 		return busquedaGeneral;
-	}
-
-	public DatePicker getFechaPublicacion() {
-		return fechaPublicacion;
 	}
 
 	public MenuItem getMenu_archivo_cerrar() {
@@ -962,7 +751,7 @@ public class AccionReferencias {
 		return listaElementosFondo;
 	}
 
-	public List<TableColumn<Comic, String>> getColumnasTabla() {
+	public List<TableColumn<Carta, String>> getColumnasTabla() {
 		return columnasTabla;
 	}
 
@@ -1114,7 +903,7 @@ public class AccionReferencias {
 		AccionReferencias.listaTextFields = listaTextFields;
 	}
 
-	public static void setColumnasTabla(List<TableColumn<Comic, String>> columnasTabla) {
+	public static void setColumnasTabla(List<TableColumn<Carta, String>> columnasTabla) {
 		AccionReferencias.columnasTabla = columnasTabla;
 	}
 
@@ -1134,19 +923,15 @@ public class AccionReferencias {
 		comboboxes = comboBoxes;
 	}
 
-	public void setProcedencia(TableColumn<Comic, String> procedencia) {
+	public void setProcedencia(TableColumn<Carta, String> procedencia) {
 		this.procedencia = procedencia;
 	}
 
-	public void setReferencia(TableColumn<Comic, String> referencia) {
+	public void setReferencia(TableColumn<Carta, String> referencia) {
 		this.referencia = referencia;
 	}
 
-	public void setVariante(TableColumn<Comic, String> variante) {
-		this.variante = variante;
-	}
-
-	public void setTablaBBDD(TableView<Comic> tablaBBDD) {
+	public void setTablaBBDD(TableView<Carta> tablaBBDD) {
 		this.tablaBBDD = tablaBBDD;
 	}
 
@@ -1186,10 +971,6 @@ public class AccionReferencias {
 		this.botonEliminar = botonEliminar;
 	}
 
-	public void setBotonAgregarPuntuacion(Button botonAgregarPuntuacion) {
-		this.botonAgregarPuntuacion = botonAgregarPuntuacion;
-	}
-
 	public void setBarraCambioAltura(Rectangle barraCambioAltura) {
 		this.barraCambioAltura = barraCambioAltura;
 	}
@@ -1202,44 +983,28 @@ public class AccionReferencias {
 		this.direccionImagen = direccionImagen;
 	}
 
-	public void setID(TableColumn<Comic, String> iD) {
+	public void setID(TableColumn<Carta, String> iD) {
 		ID = iD;
 	}
 
-	public void setGradeo(TableColumn<Comic, String> gradeo) {
+	public void setGradeo(TableColumn<Carta, String> gradeo) {
 		this.gradeo = gradeo;
 	}
 
-	public void setFecha(TableColumn<Comic, String> fecha) {
-		this.fecha = fecha;
-	}
-
-	public void setFirma(TableColumn<Comic, String> firma) {
-		this.firma = firma;
-	}
-
-	public void setFormato(TableColumn<Comic, String> formato) {
+	public void setFormato(TableColumn<Carta, String> formato) {
 		this.formato = formato;
 	}
 
-	public void setNombre(TableColumn<Comic, String> nombre) {
+	public void setNombre(TableColumn<Carta, String> nombre) {
 		this.nombre = nombre;
 	}
 
-	public void setNumero(TableColumn<Comic, String> numero) {
+	public void setNumero(TableColumn<Carta, String> numero) {
 		this.numero = numero;
 	}
 
-	public void setEditorial(TableColumn<Comic, String> editorial) {
+	public void setEditorial(TableColumn<Carta, String> editorial) {
 		this.editorial = editorial;
-	}
-
-	public void setGuionista(TableColumn<Comic, String> guionista) {
-		this.guionista = guionista;
-	}
-
-	public void setDibujante(TableColumn<Comic, String> dibujante) {
-		this.dibujante = dibujante;
 	}
 
 	public void setBotonCancelarSubida(Button botonCancelarSubida) {
@@ -1262,12 +1027,12 @@ public class AccionReferencias {
 		this.botonLimpiar = botonLimpiar;
 	}
 
-	public void setBotonModificarComic(Button botonModificarComic) {
-		this.botonModificarComic = botonModificarComic;
+	public void setBotonModificarCarta(Button botonModificarCarta) {
+		this.botonModificarCarta = botonModificarCarta;
 	}
 
-	public void setBotonParametroComic(Button botonParametroComic) {
-		this.botonParametroComic = botonParametroComic;
+	public void setBotonParametroCarta(Button botonParametroCarta) {
+		this.botonParametroCarta = botonParametroCarta;
 	}
 
 	public void setBotonVender(Button botonVender) {
@@ -1278,32 +1043,24 @@ public class AccionReferencias {
 		this.botonbbdd = botonbbdd;
 	}
 
-	public void setBotonGuardarComic(Button botonGuardarComic) {
-		this.botonGuardarComic = botonGuardarComic;
+	public void setBotonGuardarCarta(Button botonGuardarCarta) {
+		this.botonGuardarCarta = botonGuardarCarta;
 	}
 
-	public void setBotonGuardarCambioComic(Button botonGuardarCambioComic) {
-		this.botonGuardarCambioComic = botonGuardarCambioComic;
+	public void setBotonGuardarCambioCarta(Button botonGuardarCambioCarta) {
+		this.botonGuardarCambioCarta = botonGuardarCambioCarta;
 	}
 
-	public void setBotonEliminarImportadoComic(Button botonEliminarImportadoComic) {
-		this.botonEliminarImportadoComic = botonEliminarImportadoComic;
+	public void setBotonEliminarImportadoCarta(Button botonEliminarImportadoCarta) {
+		this.botonEliminarImportadoCarta = botonEliminarImportadoCarta;
 	}
 
 	public void setBotonSubidaPortada(Button botonSubidaPortada) {
 		this.botonSubidaPortada = botonSubidaPortada;
 	}
 
-	public void setLabelPuntuacion(Label labelPuntuacion) {
-		this.labelPuntuacion = labelPuntuacion;
-	}
-
 	public void setLabel_gradeo(Label label_gradeo) {
 		this.label_gradeo = label_gradeo;
-	}
-
-	public void setLabel_dibujante(Label label_dibujante) {
-		this.label_dibujante = label_dibujante;
 	}
 
 	public void setLabel_editorial(Label label_editorial) {
@@ -1318,28 +1075,12 @@ public class AccionReferencias {
 		this.label_fecha = label_fecha;
 	}
 
-	public void setLabel_firma(Label label_firma) {
-		this.label_firma = label_firma;
-	}
-
 	public void setLabel_formato(Label label_formato) {
 		this.label_formato = label_formato;
 	}
 
-	public void setLabel_guionista(Label label_guionista) {
-		this.label_guionista = label_guionista;
-	}
-
 	public void setLabel_id_mod(Label label_id_mod) {
 		this.label_id_mod = label_id_mod;
-	}
-
-	public void setLabel_codigo_comic(Label label_codigo_comic) {
-		this.label_codigo_comic = label_codigo_comic;
-	}
-
-	public void setLabel_key(Label label_key) {
-		this.label_key = label_key;
 	}
 
 	public void setLabel_portada(Label label_portada) {
@@ -1348,10 +1089,6 @@ public class AccionReferencias {
 
 	public void setLabel_precio(Label label_precio) {
 		this.label_precio = label_precio;
-	}
-
-	public void setLabel_procedencia(Label label_procedencia) {
-		this.label_procedencia = label_procedencia;
 	}
 
 	public void setLabel_referencia(Label label_referencia) {
@@ -1386,14 +1123,6 @@ public class AccionReferencias {
 		return menuComprobarApis;
 	}
 
-	public void setMenu_leer_CodigoBarras(MenuItem menu_leer_CodigoBarras) {
-		this.menu_leer_CodigoBarras = menu_leer_CodigoBarras;
-	}
-
-	public void setMenu_comic_aleatoria(MenuItem menu_comic_aleatoria) {
-		this.menu_comic_aleatoria = menu_comic_aleatoria;
-	}
-
 	public void setMenu_comic_aniadir(MenuItem menu_comic_aniadir) {
 		this.menu_comic_aniadir = menu_comic_aniadir;
 	}
@@ -1404,10 +1133,6 @@ public class AccionReferencias {
 
 	public void setMenu_comic_modificar(MenuItem menu_comic_modificar) {
 		this.menu_comic_modificar = menu_comic_modificar;
-	}
-
-	public void setMenu_comic_puntuar(MenuItem menu_comic_puntuar) {
-		this.menu_comic_puntuar = menu_comic_puntuar;
 	}
 
 	public void setMenu_estadistica_estadistica(MenuItem menu_estadistica_estadistica) {
@@ -1448,10 +1173,6 @@ public class AccionReferencias {
 
 	public void setBotonMostrarGuardados(Button botonMostrarGuardados) {
 		this.botonMostrarGuardados = botonMostrarGuardados;
-	}
-
-	public void setFechaPublicacion(DatePicker fechaPublicacion) {
-		this.fechaPublicacion = fechaPublicacion;
 	}
 
 	public void setMenu_archivo_cerrar(MenuItem menu_archivo_cerrar) {
@@ -1512,120 +1233,60 @@ public class AccionReferencias {
 
 	// ComboBox
 
-	public ComboBox<String> getEstadoComic() {
-		return estadoComic;
+	public ComboBox<String> getEstadoCarta() {
+		return estadoCarta;
 	}
 
-	public ComboBox<String> getFormatoComic() {
-		return formatoComic;
+	public ComboBox<String> getFormatoCarta() {
+		return formatoCarta;
 	}
 
-	public ComboBox<String> getGradeoComic() {
-		return gradeoComic;
+	public ComboBox<String> getGradeoCarta() {
+		return gradeoCarta;
 	}
 
-	public ComboBox<String> getNumeroComic() {
-		return numeroComic;
-	}
-
-	public ComboBox<String> getProcedenciaComic() {
-		return procedenciaComic;
-	}
-
-	public ComboBox<String> getPuntuacionMenu() {
-		return puntuacionMenu;
-	}
-
-	public ComboBox<String> getNombreDibujante() {
-		return nombreDibujante;
+	public ComboBox<String> getNumeroCarta() {
+		return numeroCarta;
 	}
 
 	public ComboBox<String> getNombreEditorial() {
 		return nombreEditorial;
 	}
 
-	public ComboBox<String> getNombreFirma() {
-		return nombreFirma;
-	}
-
 	public ComboBox<String> getNombreFormato() {
 		return nombreFormato;
 	}
 
-	public ComboBox<String> getNombreGuionista() {
-		return nombreGuionista;
+	public ComboBox<String> getTituloCarta() {
+		return tituloCarta;
 	}
 
-	public ComboBox<String> getNombreProcedencia() {
-		return nombreProcedencia;
+	public void setEstadoCarta(ComboBox<String> estadoCarta) {
+		this.estadoCarta = estadoCarta;
 	}
 
-	public ComboBox<String> getNombreVariante() {
-		return nombreVariante;
-	}
-
-	public ComboBox<String> getTituloComic() {
-		return tituloComic;
-	}
-
-	public void setEstadoComic(ComboBox<String> estadoComic) {
-		this.estadoComic = estadoComic;
-	}
-
-	public void setFechaComic(DatePicker fechaComic) {
-		this.fechaComic = fechaComic;
-	}
-
-	public void setTituloComic(ComboBox<String> tituloComic) {
-		this.tituloComic = tituloComic;
-	}
-
-	public void setNombreDibujante(ComboBox<String> nombreDibujante) {
-		this.nombreDibujante = nombreDibujante;
+	public void setTituloCarta(ComboBox<String> tituloCarta) {
+		this.tituloCarta = tituloCarta;
 	}
 
 	public void setNombreEditorial(ComboBox<String> nombreEditorial) {
 		this.nombreEditorial = nombreEditorial;
 	}
 
-	public void setNombreFirma(ComboBox<String> nombreFirma) {
-		this.nombreFirma = nombreFirma;
-	}
-
 	public void setNombreFormato(ComboBox<String> nombreFormato) {
 		this.nombreFormato = nombreFormato;
 	}
 
-	public void setNombreGuionista(ComboBox<String> nombreGuionista) {
-		this.nombreGuionista = nombreGuionista;
+	public void setFormatoCarta(ComboBox<String> formatoCarta) {
+		this.formatoCarta = formatoCarta;
 	}
 
-	public void setNombreProcedencia(ComboBox<String> nombreProcedencia) {
-		this.nombreProcedencia = nombreProcedencia;
+	public void setGradeoCarta(ComboBox<String> gradeoCarta) {
+		this.gradeoCarta = gradeoCarta;
 	}
 
-	public void setNombreVariante(ComboBox<String> nombreVariante) {
-		this.nombreVariante = nombreVariante;
-	}
-
-	public void setFormatoComic(ComboBox<String> formatoComic) {
-		this.formatoComic = formatoComic;
-	}
-
-	public void setGradeoComic(ComboBox<String> gradeoComic) {
-		this.gradeoComic = gradeoComic;
-	}
-
-	public void setNumeroComic(ComboBox<String> numeroComic) {
-		this.numeroComic = numeroComic;
-	}
-
-	public void setProcedenciaComic(ComboBox<String> procedenciaComic) {
-		this.procedenciaComic = procedenciaComic;
-	}
-
-	public void setPuntuacionMenu(ComboBox<String> puntuacionMenu) {
-		this.puntuacionMenu = puntuacionMenu;
+	public void setNumeroCarta(ComboBox<String> numeroCarta) {
+		this.numeroCarta = numeroCarta;
 	}
 
 	// TextField
@@ -1634,48 +1295,24 @@ public class AccionReferencias {
 		this.busquedaCodigo = busquedaCodigo;
 	}
 
-	public void setDibujanteComic(TextField dibujanteComic) {
-		this.dibujanteComic = dibujanteComic;
+	public void setEditorialCarta(TextField editorialCarta) {
+		this.editorialCarta = editorialCarta;
 	}
 
-	public void setEditorialComic(TextField editorialComic) {
-		this.editorialComic = editorialComic;
+	public void setIdCartaTratar(TextField idCartaTratar) {
+		this.idCartaTratar = idCartaTratar;
 	}
 
-	public void setFirmaComic(TextField firmaComic) {
-		this.firmaComic = firmaComic;
+	public void setNombreCarta(TextField nombreCarta) {
+		this.nombreCarta = nombreCarta;
 	}
 
-	public void setGuionistaComic(TextField guionistaComic) {
-		this.guionistaComic = guionistaComic;
-	}
-
-	public void setIdComicTratar(TextField idComicTratar) {
-		this.idComicTratar = idComicTratar;
-	}
-
-	public void setCodigoComicTratar(TextField codigoComicTratar) {
-		this.codigoComicTratar = codigoComicTratar;
-	}
-
-	public void setNombreComic(TextField nombreComic) {
-		this.nombreComic = nombreComic;
-	}
-
-	public void setNombreKeyIssue(TextField nombreKeyIssue) {
-		this.nombreKeyIssue = nombreKeyIssue;
-	}
-
-	public void setPrecioComic(TextField precioComic) {
-		this.precioComic = precioComic;
+	public void setPrecioCarta(TextField precioCarta) {
+		this.precioCarta = precioCarta;
 	}
 
 	public void setUrlReferencia(TextField urlReferencia) {
 		this.urlReferencia = urlReferencia;
-	}
-
-	public void setVarianteComic(TextField varianteComic) {
-		this.varianteComic = varianteComic;
 	}
 
 	public void setBusquedaGeneral(TextField busquedaGeneral) {
@@ -1686,52 +1323,28 @@ public class AccionReferencias {
 		return busquedaCodigo;
 	}
 
-	public TextField getDibujanteComic() {
-		return dibujanteComic;
+	public TextField getEditorialCarta() {
+		return editorialCarta;
 	}
 
-	public TextField getEditorialComic() {
-		return editorialComic;
+	public TextField getIdCartaTratar() {
+		return idCartaTratar;
 	}
 
-	public TextField getFirmaComic() {
-		return firmaComic;
+	public TextField getCodigoCartaTratar() {
+		return codigoCartaTratar;
 	}
 
-	public TextField getGuionistaComic() {
-		return guionistaComic;
+	public TextField getNombreCarta() {
+		return nombreCarta;
 	}
 
-	public TextField getIdComicTratar() {
-		return idComicTratar;
-	}
-
-	public TextField getCodigoComicTratar() {
-		return codigoComicTratar;
-	}
-
-	public TextField getNombreComic() {
-		return nombreComic;
-	}
-
-	public TextField getNombreKeyIssue() {
-		return nombreKeyIssue;
-	}
-
-	public TextField getPrecioComic() {
-		return precioComic;
+	public TextField getPrecioCarta() {
+		return precioCarta;
 	}
 
 	public TextField getUrlReferencia() {
 		return urlReferencia;
-	}
-
-	public TextField getVarianteComic() {
-		return varianteComic;
-	}
-
-	public DatePicker getFechaComic() {
-		return fechaComic;
 	}
 
 }

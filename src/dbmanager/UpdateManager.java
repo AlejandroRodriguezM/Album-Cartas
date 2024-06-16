@@ -5,17 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 import funcionesAuxiliares.Utilidades;
 
 public class UpdateManager {
 
-	private static final String UPDATE_PUNTUACION = "UPDATE albumbbdd set puntuacion = ? where ID = ?";
-	private static final String UPDATE_COMIC = "UPDATE albumbbdd SET "
-			+ "nomComic = ?, nivel_gradeo = ?, precio_comic = ?, codigo_comic = ?, numComic = ?, nomVariante = ?, "
-			+ "Firma = ?, nomEditorial = ?, formato = ?, procedencia = ?, fecha_publicacion = ?, "
-			+ "nomGuionista = ?, nomDibujante = ?,puntuacion = ?, portada = ?, key_issue = ?, "
-			+ "url_referencia = ?, estado = ? " + "WHERE ID = ?";
+	private static final String UPDATE_CARTA = "UPDATE albumbbdd SET "
+	        + "nomCarta = ?, numCarta = ?, editorialCarta = ?, coleccionCarta = ?, rarezaCarta = ?, "
+	        + "esFoilCarta = ?, gradeoCarta = ?, estadoCarta = ?, precioCarta = ?, urlReferenciaCarta = ?, "
+	        + "direccionImagenCarta = ?, normasCarta = ? "
+	        + "WHERE idCarta = ?";
+
 
 	private static final String UPDATE_ESTADO_VENDIDO = "UPDATE albumbbdd SET estado = 'Vendido' WHERE ID = ?";
 
@@ -40,7 +39,7 @@ public class UpdateManager {
 			sentenciaSQL = UPDATE_ESTADO_VENTA;
 			break;
 		case "modificar":
-			sentenciaSQL = UPDATE_COMIC;
+			sentenciaSQL = UPDATE_CARTA;
 			break;
 		default:
 			// Manejar un caso no válido si es necesario
@@ -48,33 +47,6 @@ public class UpdateManager {
 		}
 
 		modificarComic(carta, sentenciaSQL);
-	}
-
-	/**
-	 * Función que comprueba si la opinión ha sido introducida correctamente.
-	 *
-	 * @param sentenciaSQL La sentencia SQL a ejecutar
-	 * @param ID           La ID del cómic
-	 * @param puntuacion   La puntuación a insertar
-	 * @throws SQLException Si ocurre un error en la base de datos
-	 */
-	public static void actualizarOpinion(String idComic, String puntuacion) {
-		ListaComicsDAO.listaComics.clear();
-
-		try (Connection conn = ConectManager.conexion();
-				PreparedStatement ps = conn.prepareStatement(UPDATE_PUNTUACION);) {
-			if (SelectManager.comprobarIdentificadorComic(idComic)) { // Comprueba si la ID introducida existe en la
-																		// base de datos
-				Comic comic = SelectManager.comicDatos(idComic);
-				ps.setString(1, puntuacion);
-				ps.setString(2, idComic);
-				if (ps.executeUpdate() == 1) { // Si se ha modificado correctamente, se añade el cómic a la lista
-					ListaComicsDAO.listaComics.add(comic);
-				}
-			}
-		} catch (SQLException ex) {
-			Utilidades.manejarExcepcion(ex);
-		}
 	}
 
 	// Método que fusiona las dos funciones originales
@@ -85,8 +57,8 @@ public class UpdateManager {
 				DBUtilidades.setParameters(ps, datos, true); // Configurar los parámetros de la consulta
 
 				if (ps.executeUpdate() == 1) {
-					ListaComicsDAO.listaComics.clear();
-					ListaComicsDAO.listaComics.add(datos);
+					ListasCartasDAO.listaCartas.clear();
+					ListasCartasDAO.listaCartas.add(datos);
 				}
 			} catch (SQLException ex) {
 				Utilidades.manejarExcepcion(ex);

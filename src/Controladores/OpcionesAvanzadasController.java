@@ -18,12 +18,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.imageio.ImageIO;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.ConectManager;
 import dbmanager.DBUtilidades;
 import dbmanager.DatabaseManagerDAO;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import ficherosFunciones.FuncionesExcel;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
@@ -145,10 +145,10 @@ public class OpcionesAvanzadasController implements Initializable {
 
 	public static AtomicBoolean actualizarFima = new AtomicBoolean(false);
 
-	private static AtomicInteger comicsProcesados;
+	private static AtomicInteger cartasProcesados;
 	private static AtomicInteger mensajeIdCounter;
 	private static AtomicInteger numLineas;
-	private static AtomicReference<CargaComicsController> cargaComicsControllerRef;
+	private static AtomicReference<CargaCartasController> cargaCartasControllerRef;
 	private static StringBuilder codigoFaltante;
 	private static HashSet<String> mensajesUnicos = new HashSet<>();
 
@@ -236,8 +236,8 @@ public class OpcionesAvanzadasController implements Initializable {
 	void descargarSQL(ActionEvent event) {
 
 		AlarmaList.detenerAnimacionEspera();
-		DatabaseManagerDAO.makeSQL(prontInfo, estadoStage());
-		Utilidades.borrarArchivosNoEnLista(ListaComicsDAO.listaImagenes);
+		DatabaseManagerDAO.makeSQL(prontInfo);
+		Utilidades.borrarArchivosNoEnLista(ListasCartasDAO.listaImagenes);
 
 	}
 
@@ -275,11 +275,11 @@ public class OpcionesAvanzadasController implements Initializable {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				DatabaseManagerDAO.comprobarNormalizado("nomComic", prontInfo);
+				DatabaseManagerDAO.comprobarNormalizado("nomCarta", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("nivel_gradeo", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("precio_comic", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("codigo_comic", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("numComic", prontInfo);
+				DatabaseManagerDAO.comprobarNormalizado("numCarta", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("firma", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("nomEditorial", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("formato", prontInfo);
@@ -293,8 +293,8 @@ public class OpcionesAvanzadasController implements Initializable {
 				DatabaseManagerDAO.comprobarNormalizado("nomVariante", prontInfo);
 				DatabaseManagerDAO.comprobarNormalizado("", prontInfo);
 
-				ListaComicsDAO.reiniciarListaComics();
-				ListaComicsDAO.listasAutoCompletado();
+				ListasCartasDAO.reiniciarListaCartas();
+				ListasCartasDAO.listasAutoCompletado();
 				List<String> inputPaths = DBUtilidades.obtenerValoresColumna("portada");
 
 				Utilidades.borrarArchivosNoEnLista(inputPaths);
@@ -399,7 +399,7 @@ public class OpcionesAvanzadasController implements Initializable {
 	}
 
 	@FXML
-	void actualizarCompletoComic(ActionEvent event) {
+	void actualizarCompletoCarta(ActionEvent event) {
 		Utilidades.crearCarpeta();
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
@@ -408,14 +408,14 @@ public class OpcionesAvanzadasController implements Initializable {
 	}
 
 	@FXML
-	void actualizarDatosComic(ActionEvent event) {
+	void actualizarDatosCarta(ActionEvent event) {
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
 		AccionModificar.actualizarDatabase("actualizar datos", actualizarFima.get(), estadoStage());
 	}
 
 	@FXML
-	void actualizarPortadaComic(ActionEvent event) {
+	void actualizarPortadaCarta(ActionEvent event) {
 		Utilidades.crearCarpeta();
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
@@ -427,12 +427,12 @@ public class OpcionesAvanzadasController implements Initializable {
 	void comprimirPortadas(ActionEvent event) {
 		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("portada");
 		Utilidades.borrarArchivosNoEnLista(inputPortadas);
-		List<String> inputPaths = ListaComicsDAO.listaImagenes;
-		comicsProcesados = new AtomicInteger(0);
+		List<String> inputPaths = ListasCartasDAO.listaImagenes;
+		cartasProcesados = new AtomicInteger(0);
 		mensajeIdCounter = new AtomicInteger(0);
 		numLineas = new AtomicInteger(0);
 		numLineas.set(inputPaths.size());
-		cargaComicsControllerRef = new AtomicReference<>();
+		cargaCartasControllerRef = new AtomicReference<>();
 		codigoFaltante = new StringBuilder();
 		codigoFaltante.setLength(0);
 		mensajesUnicos = new HashSet<>();
@@ -440,7 +440,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 		final String DOCUMENTS_PATH = Utilidades.DOCUMENTS_PATH;
 		final String DB_NAME = Utilidades.nombreDB();
-		final String directorioComun = DOCUMENTS_PATH + File.separator + "libreria_comics" + File.separator + DB_NAME
+		final String directorioComun = DOCUMENTS_PATH + File.separator + "libreria_cartas" + File.separator + DB_NAME
 				+ File.separator;
 		final String directorioOriginal = directorioComun + "portadas" + File.separator;
 		final String directorioNuevo = directorioComun + "portadas_originales";
@@ -455,12 +455,12 @@ public class OpcionesAvanzadasController implements Initializable {
 		thread.start();
 	}
 
-	private static void processComic(String codigo) {
+	private static void processCarta(String codigo) {
 		StringBuilder textoBuilder = new StringBuilder();
 
-		codigoFaltante.append("Comprimiendo: ").append(comicsProcesados.get()).append(" de ").append(numLineas)
+		codigoFaltante.append("Comprimiendo: ").append(cartasProcesados.get()).append(" de ").append(numLineas)
 				.append("\n");
-		textoBuilder.append("Comprimiendo: ").append(comicsProcesados.get()).append(" de ").append(numLineas)
+		textoBuilder.append("Comprimiendo: ").append(cartasProcesados.get()).append(" de ").append(numLineas)
 				.append("\n");
 
 		updateUI(textoBuilder);
@@ -472,8 +472,8 @@ public class OpcionesAvanzadasController implements Initializable {
 			@Override
 			protected Void call() throws Exception {
 				Utilidades.copiarDirectorio(directorioNuevo, directorioOriginal);
-				nav.verCargaComics(cargaComicsControllerRef);
-				boolean estaBaseLlena = ListaComicsDAO.comprobarLista();
+				nav.verCargaCartas(cargaCartasControllerRef);
+				boolean estaBaseLlena = ListasCartasDAO.comprobarLista();
 
 				if (!estaBaseLlena) {
 					String cadenaCancelado = "La base de datos esta vacia";
@@ -487,7 +487,7 @@ public class OpcionesAvanzadasController implements Initializable {
 						return;
 					}
 
-					processComic(codigo);
+					processCarta(codigo);
 					comprimirImagenes(codigo);
 				});
 
@@ -535,15 +535,15 @@ public class OpcionesAvanzadasController implements Initializable {
 
 		String mensaje = mensajeId + ": " + textoBuilder.toString();
 		mensajesUnicos.add(mensaje);
-		comicsProcesados.getAndIncrement();
+		cartasProcesados.getAndIncrement();
 
-		long finalProcessedItems = comicsProcesados.get();
+		long finalProcessedItems = cartasProcesados.get();
 		double progress = (double) finalProcessedItems / (numLineas.get());
 		String porcentaje = String.format("%.2f%%", progress * 100);
 
 		if (nav.isVentanaCerrada()) {
 			// Código para actualizar la interfaz de usuario cuando la ventana está cerrada
-			nav.verCargaComics(cargaComicsControllerRef);
+			nav.verCargaCartas(cargaCartasControllerRef);
 
 			StringBuilder textoFiltrado = new StringBuilder();
 			List<String> mensajesOrdenados = new ArrayList<>(mensajesUnicos);
@@ -558,11 +558,11 @@ public class OpcionesAvanzadasController implements Initializable {
 				}
 			}
 
-			Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics(textoFiltrado.toString(),
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas(textoFiltrado.toString(),
 					porcentaje, progress));
 		}
 
-		Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics(textoBuilder.toString(),
+		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas(textoBuilder.toString(),
 				porcentaje, progress));
 	}
 
@@ -570,7 +570,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		task.setOnRunning(ev -> {
 			estadoStage().setOnCloseRequest(closeEvent -> {
 				task.cancel(true);
-				Utilidades.cerrarCargaComics();
+				Utilidades.cerrarCargaCartas();
 				FuncionesManejoFront.cambiarEstadoMenuBar(false, guardarReferencia());
 				FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
 				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, referenciaVentana);
@@ -587,7 +587,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		task.setOnSucceeded(ev -> {
 			String mensaje = "Portadas comprimidas";
 			AlarmaList.iniciarAnimacionAvanzado(prontInfoPortadas, mensaje);
-			Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics("", "100%", 100.0));
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 			botonCancelarSubidaPortadas.setVisible(false);
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, guardarReferencia());
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
@@ -602,7 +602,7 @@ public class OpcionesAvanzadasController implements Initializable {
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
 			FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, referenciaVentana);
 
-			Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics("", "100%", 100.0));
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 
 			task.cancel(true);
 		});
@@ -634,7 +634,7 @@ public class OpcionesAvanzadasController implements Initializable {
 			@Override
 			protected Void call() throws Exception {
 				try {
-					boolean estaBaseLlena = ListaComicsDAO.comprobarLista();
+					boolean estaBaseLlena = ListasCartasDAO.comprobarLista();
 					if (!estaBaseLlena) {
 						String cadenaCancelado = "La base de datos esta vacia";
 						AlarmaList.iniciarAnimacionAvanzado(prontInfoPortadas, cadenaCancelado);
@@ -642,7 +642,7 @@ public class OpcionesAvanzadasController implements Initializable {
 						return null; // Salir del método call() para finalizar el Task
 					}
 
-					List<String> listaID = ListaComicsDAO.listaID;
+					List<String> listaID = ListasCartasDAO.listaID;
 					// Mostrar el diálogo de selección de carpeta
 
 					if (esCopia) {
@@ -653,10 +653,10 @@ public class OpcionesAvanzadasController implements Initializable {
 								FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH);
 					}
 
-					for (String idComic : listaID) {
-						Comic comicNuevo = ComicManagerDAO.comicDatos(idComic);
+					for (String idCarta : listaID) {
+						Carta comicNuevo = CartaManagerDAO.comicDatos(idCarta);
 
-						String nombre_portada = Utilidades.obtenerNombrePortada(false, comicNuevo.getImagen());
+						String nombre_portada = Utilidades.obtenerNombrePortada(false, comicNuevo.getDireccionImagenCarta());
 						String nombre_modificado = Utilidades.convertirNombreArchivo(nombre_portada);
 						if (!Utilidades.existeArchivo(FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH, nombre_portada)) {
 							FuncionesExcel.copiarPortadaPredeterminada(selectedDirectory.getAbsolutePath(),
@@ -677,7 +677,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 			estadoStage().setOnCloseRequest(closeEvent -> {
 				task.cancel(true);
-				Utilidades.cerrarCargaComics();
+				Utilidades.cerrarCargaCartas();
 				FuncionesManejoFront.cambiarEstadoMenuBar(false, guardarReferencia());
 			});
 
@@ -745,7 +745,7 @@ public class OpcionesAvanzadasController implements Initializable {
 				FuncionesManejoFront.getStageVentanas().remove(estadoStage());
 			}
 			Utilidades.cerrarOpcionesAvanzadas();
-			nav.cerrarCargaComics();
+			nav.cerrarCargaCartas();
 			estadoStage().close();
 		}
 	}

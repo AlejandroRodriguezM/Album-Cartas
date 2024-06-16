@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
-import dbmanager.ConectManager;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.DBUtilidades;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesComboBox;
@@ -34,26 +33,26 @@ public class AccionEliminar {
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabel_id_mod(),
 				referenciaVentana.getBotonVender(), referenciaVentana.getBotonEliminar(),
 				referenciaVentana.getTablaBBDD(), referenciaVentana.getBotonbbdd(), referenciaVentana.getRootVBox(),
-				referenciaVentana.getBotonParametroComic(), referenciaVentana.getIdComicTratar()));
+				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratar()));
 		referenciaVentana.getRootVBox().toFront();
 	}
 
-	public static void eliminarComic() {
+	public static void eliminarCarta() {
 		
-		String idComic = getReferenciaVentana().getIdComicTratar().getText();
-		getReferenciaVentana().getIdComicTratar().setStyle("");
-		if (accionFuncionesComunes.comprobarExistenciaComic(idComic)) {
+		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
+		getReferenciaVentana().getIdCartaTratar().setStyle("");
+		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			if (nav.alertaAccionGeneral()) {
 
-				ComicManagerDAO.borrarComic(idComic);
-				ListaComicsDAO.reiniciarListaComics();
-				ListaComicsDAO.listasAutoCompletado();
+				CartaManagerDAO.borrarCarta(idCarta);
+				ListasCartasDAO.reiniciarListaCartas();
+				ListasCartasDAO.listasAutoCompletado();
 
 				String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
-				List<Comic> listaComics = ComicManagerDAO.verLibreria(sentenciaSQL);
+				List<Carta> listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
 				getReferenciaVentana().getTablaBBDD().refresh();
 				FuncionesTableView.nombreColumnas();
-				FuncionesTableView.tablaBBDD(listaComics);
+				FuncionesTableView.tablaBBDD(listaCartas);
 
 				List<ComboBox<String>> comboboxes = getReferenciaVentana().getComboboxes();
 
@@ -70,20 +69,20 @@ public class AccionEliminar {
 		}
 	}
 
-	public static void eliminarComicLista() {
+	public static void eliminarCartaLista() {
 		
-		String idComic = getReferenciaVentana().getIdComicTratar().getText();
+		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
 
-		if (nav.alertaEliminar() && idComic != null) {
+		if (nav.alertaEliminar() && idCarta != null) {
 
-				ListaComicsDAO.comicsImportados.removeIf(c -> c.getid().equals(idComic));
+				ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(idCarta));
 				AccionControlUI.limpiarAutorellenos(false);
 				FuncionesTableView.nombreColumnas();
 
-				FuncionesTableView.tablaBBDD(ListaComicsDAO.comicsImportados);
+				FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 				getReferenciaVentana().getTablaBBDD().refresh();
 
-				if (ListaComicsDAO.comicsImportados.isEmpty()) {
+				if (ListasCartasDAO.cartasImportados.isEmpty()) {
 					AccionFuncionesComunes.cambiarEstadoBotones(false);
 				}
 

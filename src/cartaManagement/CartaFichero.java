@@ -32,6 +32,7 @@ public class CartaFichero extends Carta {
 			double precioCarta = Double.parseDouble(data[9]);
 			String urlReferenciaCarta = data[10];
 			String direccionImagenCarta = data[11];
+			String normasCarta = data[12];
 			String nombrePortada = Utilidades.obtenerNombrePortada(false, direccionImagenCarta);
 			String imagen = FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH + File.separator + nombrePortada;
 
@@ -43,7 +44,8 @@ public class CartaFichero extends Carta {
 			return new Carta.CartaBuilder("", nombre).numCarta(numCarta).editorialCarta(editorialCarta)
 					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta)
 					.gradeoCarta(gradeoCarta).estadoCarta(estadoCarta).precioCarta(precioCarta)
-					.urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen).build();
+					.urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen).normasCarta(normasCarta)
+					.build();
 		} else {
 			return null;
 		}

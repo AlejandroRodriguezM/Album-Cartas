@@ -42,20 +42,17 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Controladores.CargaComicsController;
-import cartaManagement.Comic;
-import cartaManagement.ComicFichero;
-import dbmanager.ComicManagerDAO;
-import dbmanager.ConectManager;
+import Controladores.CargaCartasController;
+import cartaManagement.Carta;
+import cartaManagement.CartaFichero;
+import dbmanager.CartaManagerDAO;
 import dbmanager.DBUtilidades.TipoBusqueda;
+import dbmanager.InsertManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
-import funcionesInterfaz.FuncionesManejoFront;
-import dbmanager.InsertManager;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 /**
  * Esta clase sirve para crear tanto los ficheros Excel como los ficheros CSV,
@@ -162,7 +159,6 @@ public class FuncionesExcel {
 		if (directorio == null) {
 			return null; // O puedes lanzar una excepción o hacer algo más, dependiendo de tu lógica
 		}
-		System.out.println(directorio.toPath());
 		String carpetaImagenes = directorio.getAbsolutePath() + File.separator + "copiaPortadas";
 		return new File(carpetaImagenes);
 	}
@@ -201,7 +197,7 @@ public class FuncionesExcel {
 	 * @return Una tarea que realiza la exportación y devuelve true si se realiza
 	 *         con éxito, o false si ocurre un error.
 	 */
-	public Task<Boolean> crearExcelTask(List<Comic> listaComics, String tipoBusqueda, SimpleDateFormat dateFormat) {
+	public Task<Boolean> crearExcelTask(List<Carta> listaCartas, String tipoBusqueda, SimpleDateFormat dateFormat) {
 		File[] directorioImagenes = { null };
 		File[] directorioFichero = { null };
 
@@ -215,7 +211,7 @@ public class FuncionesExcel {
 
 			String userDir = System.getProperty("user.home");
 			String ubicacion = userDir + File.separator + "AppData" + File.separator + "Roaming";
-			String direccion = ubicacion + File.separator + "libreria" + File.separator + Utilidades.nombreDB()
+			String direccion = ubicacion + File.separator + "album" + File.separator + Utilidades.nombreDB()
 					+ File.separator + "backups" + File.separator + nombreCarpeta;
 
 			try {
@@ -254,12 +250,12 @@ public class FuncionesExcel {
 
 		}
 
-		numeroLineas.set(ComicManagerDAO.countRows());
+		numeroLineas.set(CartaManagerDAO.countRows());
 
-		return trabajarFichero(listaComics, tipoBusqueda, directorioImagenes, directorioFichero);
+		return trabajarFichero(listaCartas, tipoBusqueda, directorioImagenes, directorioFichero);
 	}
 
-	public Task<Boolean> trabajarFichero(List<Comic> listaComics, String tipoBusqueda, File[] directorioImagenes,
+	public Task<Boolean> trabajarFichero(List<Carta> listaCartas, String tipoBusqueda, File[] directorioImagenes,
 			File[] directorioFichero) {
 		return new Task<Boolean>() {
 			@Override
@@ -276,14 +272,14 @@ public class FuncionesExcel {
 					}
 
 					crearEncabezados(hoja);
-					AtomicReference<CargaComicsController> cargaComicsControllerRef = new AtomicReference<>();
-					nav.verCargaComics(cargaComicsControllerRef);
+					AtomicReference<CargaCartasController> cargaCartasControllerRef = new AtomicReference<>();
+					nav.verCargaCartas(cargaCartasControllerRef);
 					if (directorioFichero[0] != null) {
 
-						List<Comic> listaComicsCopia = new ArrayList<>(listaComics);
-						escribirDatosComics(listaComicsCopia, hoja, cargaComicsControllerRef, directorioImagenes[0]);
+						List<Carta> listaCartasCopia = new ArrayList<>(listaCartas);
+						escribirDatosCartas(listaCartasCopia, hoja, cargaCartasControllerRef, directorioImagenes[0]);
 						escribirLibroYCSV(libro, directorioFichero[0]);
-						actualizarProgreso(cargaComicsControllerRef);
+						actualizarProgreso(cargaCartasControllerRef);
 					}
 
 					if (directorioImagenes[0] != null) {
@@ -309,9 +305,10 @@ public class FuncionesExcel {
 	}
 
 	private void crearEncabezados(Sheet hoja) {
-		String[] encabezados = { "ID", "nomComic", "nivel_gradeo", "precio_comic", "codigo_comic", "numComic",
-				"nomVariante", "Firma", "nomEditorial", "Formato", "Procedencia", "fecha_publicacion", "nomGuionista",
-				"nomDibujante", "puntuacion", "portada", "key_issue", "url_referencia", "estado" };
+		String[] encabezados = { "idCarta", "nomCarta", "numCarta", "editorialCarta", "coleccionCarta", "rarezaCarta",
+				"esFoilCarta", "gradeoCarta", "estadoCarta", "precioCarta", "urlReferenciaCarta",
+				"direccionImagenCarta", "normasCarta" };
+
 		Row fila = hoja.createRow(0);
 		for (int i = 0; i < encabezados.length; i++) {
 			fila.createCell(i).setCellValue(encabezados[i]);
@@ -326,14 +323,14 @@ public class FuncionesExcel {
 		}
 	}
 
-	private int escribirDatosComics(List<Comic> listaComics, Sheet hoja,
-			AtomicReference<CargaComicsController> cargaComicsControllerRef, File directorioImagenes) {
+	private int escribirDatosCartas(List<Carta> listaCartas, Sheet hoja,
+			AtomicReference<CargaCartasController> cargaCartasControllerRef, File directorioImagenes) {
 		int indiceFinal = 1; // Comenzar desde 1 para omitir la fila de encabezado
-		for (Comic comic : listaComics) {
+		for (Carta comic : listaCartas) {
 			Row fila = hoja.createRow(indiceFinal);
 			llenarFilaConDatos(comic, fila);
 
-			cargaComics(comic, cargaComicsControllerRef, directorioImagenes, false);
+			cargaCartas(comic, cargaCartasControllerRef, directorioImagenes, false);
 
 			indiceFinal++;
 
@@ -348,30 +345,24 @@ public class FuncionesExcel {
 		return indiceFinal;
 	}
 
-	private void llenarFilaConDatos(Comic comic, Row fila) {
+	private void llenarFilaConDatos(Carta comic, Row fila) {
 		fila.createCell(0).setCellValue("");
-		fila.createCell(1).setCellValue(comic.getNombre());
-		fila.createCell(2).setCellValue(comic.getValorGradeo());
-		fila.createCell(3).setCellValue(comic.getprecioComic());
-		fila.createCell(4).setCellValue(comic.getcodigoComic());
-		fila.createCell(5).setCellValue(comic.getNumero());
-		fila.createCell(6).setCellValue(comic.getVariante());
-		fila.createCell(7).setCellValue(comic.getFirma());
-		fila.createCell(8).setCellValue(comic.getEditorial());
-		fila.createCell(9).setCellValue(comic.getFormato());
-		fila.createCell(10).setCellValue(comic.getProcedencia());
-		fila.createCell(11).setCellValue(comic.getFecha());
-		fila.createCell(12).setCellValue(comic.getGuionista());
-		fila.createCell(13).setCellValue(comic.getDibujante());
-		fila.createCell(14).setCellValue(comic.getPuntuacion());
-		fila.createCell(15).setCellValue(comic.getImagen());
-		fila.createCell(16).setCellValue(comic.getkeyIssue());
-		fila.createCell(17).setCellValue(comic.getUrlReferencia());
-		fila.createCell(18).setCellValue(comic.getEstado());
+		fila.createCell(1).setCellValue(comic.getNomCarta());
+		fila.createCell(2).setCellValue(comic.getNumCarta());
+		fila.createCell(3).setCellValue(comic.getEditorialCarta());
+		fila.createCell(4).setCellValue(comic.getColeccionCarta());
+		fila.createCell(5).setCellValue(comic.getRarezaCarta());
+		fila.createCell(6).setCellValue(comic.getEsFoilCarta());
+		fila.createCell(7).setCellValue(comic.getGradeoCarta());
+		fila.createCell(8).setCellValue(comic.getEstadoCarta());
+		fila.createCell(9).setCellValue(comic.getPrecioCarta());
+		fila.createCell(10).setCellValue(comic.getUrlReferenciaCarta());
+		fila.createCell(11).setCellValue(comic.getDireccionImagenCarta());
+		fila.createCell(12).setCellValue(comic.getNormasCarta());
 	}
 
-	private void actualizarProgreso(AtomicReference<CargaComicsController> cargaComicsControllerRef) {
-		Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics("", "100%", 100.0));
+	private void actualizarProgreso(AtomicReference<CargaCartasController> cargaCartasControllerRef) {
+		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 	}
 
 	private void escribirLibroYCSV(Workbook libro, File directorioFichero) throws IOException {
@@ -439,8 +430,8 @@ public class FuncionesExcel {
 			}
 
 			// Inicializar referencia al controlador de carga de cómics
-			AtomicReference<CargaComicsController> cargaComicsControllerRef = new AtomicReference<>();
-			nav.verCargaComics(cargaComicsControllerRef);
+			AtomicReference<CargaCartasController> cargaCartasControllerRef = new AtomicReference<>();
+			nav.verCargaCartas(cargaCartasControllerRef);
 
 			// Leer la primera línea del archivo
 			lineReader.readLine();
@@ -461,13 +452,13 @@ public class FuncionesExcel {
 						return;
 					}
 
-					Comic comicNuevo = ComicFichero.datosComicFichero(lineText);
+					Carta comicNuevo = CartaFichero.datosCartaFichero(lineText);
 
 					if (comicNuevo != null) {
 						InsertManager.insertarDatos(comicNuevo, true);
 					}
 
-					cargaComics(comicNuevo, cargaComicsControllerRef, directorioRef.get(), true);
+					cargaCartas(comicNuevo, cargaCartasControllerRef, directorioRef.get(), true);
 
 				} catch (Exception e) {
 					// Manejar cualquier excepción durante el procesamiento de la línea
@@ -483,7 +474,7 @@ public class FuncionesExcel {
 			});
 
 			// Actualizar UI con el progreso final
-			Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics("", "100%", 100.0));
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 
 			// Abrir el archivo de registro
 			Platform.runLater(() -> Utilidades.abrirArchivo(DEFAULT_IMAGE_PATH_BASE + File.separator + LOG_FILE_NAME));
@@ -495,10 +486,10 @@ public class FuncionesExcel {
 		}
 	}
 
-	public static void cargaComics(Comic comicNuevo, AtomicReference<CargaComicsController> cargaComicsControllerRef,
+	public static void cargaCartas(Carta comicNuevo, AtomicReference<CargaCartasController> cargaCartasControllerRef,
 			File directorio, boolean esImportado) {
 		// Verificar si el cómic es nulo
-		if (comicNuevo == null || cargaComicsControllerRef == null) {
+		if (comicNuevo == null || cargaCartasControllerRef == null) {
 			return;
 		}
 
@@ -506,7 +497,7 @@ public class FuncionesExcel {
 		String nombrePortada = "";
 		String nombreModificado = "";
 		if (esImportado) {
-			nombrePortada = Utilidades.obtenerNombrePortada(false, comicNuevo.getImagen());
+			nombrePortada = Utilidades.obtenerNombrePortada(false, comicNuevo.getDireccionImagenCarta());
 			nombreModificado = Utilidades.convertirNombreArchivo(nombrePortada);
 			if (directorio != null && !Utilidades.existeArchivo(directorio.getAbsolutePath(), nombrePortada)) {
 				copiarPortadaPredeterminada(DEFAULT_PORTADA_IMAGE_PATH, nombreModificado);
@@ -517,11 +508,10 @@ public class FuncionesExcel {
 		String mensajeId = String.valueOf(mensajeIdCounter.getAndIncrement());
 
 		// Construir información del cómic
-		String comicInfo = buildComicInfo(comicNuevo);
+		String comicInfo = buildCartaInfo(comicNuevo);
 
 		// Añadir información del cómic a la lista mensajesUnicos
 		mensajesUnicos.add(mensajeId + ": " + comicInfo);
-
 
 		if (esImportado && !Utilidades.existeArchivo(DEFAULT_PORTADA_IMAGE_PATH, nombreModificado)) {
 			mensajesUnicos.add(comicInfo);
@@ -531,11 +521,11 @@ public class FuncionesExcel {
 		double progress = calculateProgress();
 
 		// Actualizar la interfaz de usuario
-		updateUI(progress, comicInfo, cargaComicsControllerRef);
+		updateUI(progress, comicInfo, cargaCartasControllerRef);
 	}
 
-	private static String buildComicInfo(Comic comic) {
-		return "Comic: " + comic.getNombre() + " - " + comic.getNumero() + " - " + comic.getVariante() + "\n";
+	private static String buildCartaInfo(Carta comic) {
+		return "Carta: " + comic.getNomCarta() + " - " + comic.getNumCarta() + " - " + comic.getColeccionCarta() + "\n";
 	}
 
 	private static double calculateProgress() {
@@ -543,13 +533,13 @@ public class FuncionesExcel {
 	}
 
 	private static void updateUI(double progress, String comicInfo,
-			AtomicReference<CargaComicsController> cargaComicsControllerRef) {
+			AtomicReference<CargaCartasController> cargaCartasControllerRef) {
 
 		StringBuilder textoBuilder = new StringBuilder();
 		String porcentaje = String.format("%.2f%%", progress * 100);
 		if (nav.isVentanaCerrada()) {
 			// Código para actualizar la interfaz de usuario cuando la ventana está cerrada
-			nav.verCargaComics(cargaComicsControllerRef);
+			nav.verCargaCartas(cargaCartasControllerRef);
 
 			StringBuilder textoFiltrado = new StringBuilder();
 			List<String> mensajesOrdenados = new ArrayList<>(mensajesUnicos);
@@ -564,12 +554,12 @@ public class FuncionesExcel {
 				}
 			}
 
-			Platform.runLater(() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics(textoFiltrado.toString(),
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas(textoFiltrado.toString(),
 					porcentaje, progress));
 		}
 
 		Platform.runLater(
-				() -> cargaComicsControllerRef.get().cargarDatosEnCargaComics(comicInfo, porcentaje, progress));
+				() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas(comicInfo, porcentaje, progress));
 
 		numeroLeidos.incrementAndGet();
 	}
@@ -621,9 +611,9 @@ public class FuncionesExcel {
 
 	private static void checkCSVColumns(String filePath) throws IOException {
 		// Columnas esperadas
-		String[] expectedColumns = { "ID", "nomComic", "nivel_gradeo", "precio_comic", "codigo_comic", "numComic",
-				"nomVariante", "Firma", "nomEditorial", "Formato", "Procedencia", "fecha_publicacion", "nomGuionista",
-				"nomDibujante", "puntuacion", "portada", "key_issue", "url_referencia", "estado" };
+		String[] expectedColumns = { "idCarta", "nomCarta", "numCarta", "editorialCarta", "coleccionCarta",
+				"rarezaCarta", "esFoilCarta", "gradeoCarta", "estadoCarta", "precioCarta", "urlReferenciaCarta",
+				"direccionImagenCarta", "normasCarta" };
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String line;

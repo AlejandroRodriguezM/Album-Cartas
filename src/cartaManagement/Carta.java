@@ -5,7 +5,7 @@
 package cartaManagement;
 
 import dbmanager.CartaManagerDAO;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import funcionesAuxiliares.Utilidades;
 
 /**
@@ -74,6 +74,8 @@ public class Carta {
 	 * Dirección de la imagen de la carta.
 	 */
 	protected String direccionImagenCarta;
+	
+	protected String normasCarta;
 
 	/**
 	 * Constructor para crear un objeto Carta con todos los atributos.
@@ -91,6 +93,7 @@ public class Carta {
 		this.precioCarta = builder.precioCarta;
 		this.urlReferenciaCarta = builder.urlReferenciaCarta;
 		this.direccionImagenCarta = builder.direccionImagenCarta;
+		this.normasCarta = builder.normasCarta;
 	}
 
 	/**
@@ -109,6 +112,7 @@ public class Carta {
 		this.precioCarta = 0.0;
 		this.urlReferenciaCarta = "";
 		this.direccionImagenCarta = "";
+		this.normasCarta = "";
 	}
 
 	public static class CartaBuilder {
@@ -124,6 +128,7 @@ public class Carta {
 		private double precioCarta;
 		private String urlReferenciaCarta;
 		private String direccionImagenCarta;
+		private String normasCarta;
 
 		public CartaBuilder(String idCarta, String nomCarta) {
 			this.idCarta = idCarta;
@@ -177,6 +182,11 @@ public class Carta {
 
 		public CartaBuilder direccionImagenCarta(String direccionImagenCarta) {
 			this.direccionImagenCarta = direccionImagenCarta;
+			return this;
+		}
+		
+		public CartaBuilder normasCarta(String normasCarta) {
+			this.normasCarta = normasCarta;
 			return this;
 		}
 
@@ -234,6 +244,14 @@ public class Carta {
 		return direccionImagenCarta;
 	}
 
+	public String getNormasCarta() {
+		return normasCarta;
+	}
+
+	public void setNormasCarta(String normasCarta) {
+		this.normasCarta = normasCarta;
+	}
+
 	public void setIdCarta(String idCarta) {
 		this.idCarta = idCarta;
 	}
@@ -282,6 +300,19 @@ public class Carta {
 		this.direccionImagenCarta = direccionImagenCarta;
 	}
 
+	public static Carta obtenerCarta(String idCarta) {
+		boolean existeComic = CartaManagerDAO.comprobarIdentificadorCarta(idCarta);
+		if (!existeComic) {
+			existeComic = ListasCartasDAO.verificarIDExistente(idCarta, false);
+			if (existeComic) {
+				return ListasCartasDAO.devolverCartaLista(idCarta);
+			}
+		} else {
+			return CartaManagerDAO.comicDatos(idCarta);
+		}
+		return null;
+	}
+	
 	/**
 	 * Verifica si todos los campos del objeto Carta están vacíos o nulos.
 	 * 
@@ -360,6 +391,23 @@ public class Carta {
 	}
 
 	/**
+	 * Genera una representación en forma de cadena de texto del cómic, incluyendo
+	 * sus atributos no nulos.
+	 *
+	 * @return Una cadena de texto que representa el cómic.
+	 */
+	public String devolverNormas() {
+		StringBuilder contenidoCarta = new StringBuilder();
+
+		if (!normasCarta.equalsIgnoreCase("Vacio")) {
+			Utilidades.appendIfNotEmpty(contenidoCarta, "Key issue", normasCarta);
+			return contenidoCarta.toString();
+		}
+		return "";
+
+	}
+	
+	/**
 	 * Genera una representación en forma de cadena de texto de la carta, incluyendo
 	 * sus atributos no nulos.
 	 *
@@ -381,6 +429,33 @@ public class Carta {
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
 
 		return contenidoCarta.toString();
+	}
+	
+	/**
+	 * Genera una representación en forma de cadena de texto del cómic, incluyendo
+	 * sus atributos no nulos.
+	 *
+	 * @return Una cadena de texto que representa el cómic.
+	 */
+	public String infoCarta() {
+
+	    StringBuilder contenidoCarta = new StringBuilder();
+
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Identificador", idCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Nombre", nomCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Número", String.valueOf(numCarta));
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Editorial", editorialCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Colección", coleccionCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Rareza", rarezaCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Es Foil", String.valueOf(esFoilCarta));
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Gradeo", gradeoCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Estado", estadoCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Precio", String.valueOf(precioCarta));
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "URL Referencia", urlReferenciaCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
+	    Utilidades.appendIfNotEmpty(contenidoCarta, "Normas", normasCarta);
+
+	    return contenidoCarta.toString();
 	}
 
 	// Otros métodos de la clase Carta

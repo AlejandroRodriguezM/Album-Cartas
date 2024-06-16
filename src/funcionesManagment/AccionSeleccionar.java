@@ -4,12 +4,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
-import dbmanager.ComicManagerDAO;
+import cartaManagement.Carta;
+import dbmanager.CartaManagerDAO;
 import dbmanager.DBUtilidades;
 import dbmanager.DBUtilidades.TipoBusqueda;
 import funcionesAuxiliares.Utilidades;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
@@ -29,39 +29,39 @@ public class AccionSeleccionar {
 	 * 
 	 * @throws SQLException Si se produce un error al acceder a la base de datos.
 	 */
-	public static void seleccionarComics(boolean esPrincipal) {
+	public static void seleccionarCartas(boolean esPrincipal) {
 
 		FuncionesTableView.nombreColumnas(); // funcion
-		Utilidades.comprobacionListaComics();
+		Utilidades.comprobacionListaCartas();
 
-		Comic newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
+		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 
 		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
 		if (newSelection != null) {
-			String idComic = newSelection.getid();
+			String idCarta = newSelection.getIdCarta();
 
-			mostrarComic(idComic, esPrincipal);
+			mostrarCarta(idCarta, esPrincipal);
 		}
 	}
 
-	public static void mostrarComic(String idComic, boolean esPrincipal) {
+	public static void mostrarCarta(String idCarta, boolean esPrincipal) {
 
-		Comic comicTemp = null;
+		Carta comicTemp = null;
 		AlarmaList.detenerAnimacion();
 		String mensaje = "";
 
-		if (!ListaComicsDAO.comicsImportados.isEmpty() && !esPrincipal) {
-			comicTemp = ListaComicsDAO.buscarComicPorID(ListaComicsDAO.comicsImportados, idComic);
+		if (!ListasCartasDAO.cartasImportados.isEmpty() && !esPrincipal) {
+			comicTemp = ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, idCarta);
 		} else {
-			comicTemp = ComicManagerDAO.comicDatos(idComic);
+			comicTemp = CartaManagerDAO.comicDatos(idCarta);
 		}
 
-		if (idComic == null || idComic.isEmpty() || comicTemp == null) {
+		if (idCarta == null || idCarta.isEmpty() || comicTemp == null) {
 			AccionControlUI.limpiarAutorellenos(esPrincipal);
 			return;
 		}
 
-		Comic.limpiarCamposComic(comicTemp);
+		Carta.limpiarCamposCarta(comicTemp);
 
 		if (!esPrincipal) {
 			accionRellenoDatos.setAtributosDesdeTabla(comicTemp);
@@ -69,16 +69,16 @@ public class AccionSeleccionar {
 
 			if (AccionFuncionesComunes.TIPO_ACCION.equals("modificar")) {
 				AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
-				getReferenciaVentana().getIdComicTratar().setText(comicTemp.getid());
+				getReferenciaVentana().getIdCartaTratar().setText(comicTemp.getIdCarta());
 			}
 		} else {
-			Utilidades.cargarImagenAsync(comicTemp.getImagen(), getReferenciaVentana().getImagencomic());
+			Utilidades.cargarImagenAsync(comicTemp.getDireccionImagenCarta(), getReferenciaVentana().getImagencomic());
 		}
 
 		getReferenciaVentana().getProntInfo().setOpacity(1);
 
-		if (!ListaComicsDAO.comicsImportados.isEmpty() && ComicManagerDAO.comprobarIdentificadorComic(idComic)) {
-			mensaje = ComicManagerDAO.comicDatos(idComic).toString().replace("[", "").replace("]", "");
+		if (!ListasCartasDAO.cartasImportados.isEmpty() && CartaManagerDAO.comprobarIdentificadorCarta(idCarta)) {
+			mensaje = CartaManagerDAO.comicDatos(idCarta).toString().replace("[", "").replace("]", "");
 		} else {
 			mensaje = comicTemp.toString().replace("[", "").replace("]", "");
 		}
@@ -87,9 +87,9 @@ public class AccionSeleccionar {
 
 	}
 
-	public static void verBasedeDatos(boolean completo, boolean esAccion, Comic comic) {
+	public static void verBasedeDatos(boolean completo, boolean esAccion, Carta comic) {
 
-		ListaComicsDAO.reiniciarListaComics();
+		ListasCartasDAO.reiniciarListaCartas();
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getProntInfo().setOpacity(0);
 		getReferenciaVentana().getImagencomic().setVisible(false);
@@ -100,18 +100,18 @@ public class AccionSeleccionar {
 		FuncionesTableView.nombreColumnas();
 		FuncionesTableView.actualizarBusquedaRaw();
 
-		if (ComicManagerDAO.countRows() > 0) {
+		if (CartaManagerDAO.countRows() > 0) {
 			if (completo) {
 
 				String sentenciaSQL = DBUtilidades.construirSentenciaSQL(TipoBusqueda.COMPLETA);
 
-				List<Comic> listaComics = ComicManagerDAO.verLibreria(sentenciaSQL);
+				List<Carta> listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
 
-				FuncionesTableView.tablaBBDD(listaComics);
+				FuncionesTableView.tablaBBDD(listaCartas);
 
 			} else {
 
-				List<Comic> listaParametro = listaPorParametro(comic, esAccion);
+				List<Carta> listaParametro = listaPorParametro(comic, esAccion);
 
 				FuncionesTableView.tablaBBDD(listaParametro);
 
@@ -140,29 +140,29 @@ public class AccionSeleccionar {
 	 * 
 	 * @throws SQLException
 	 */
-	public static List<Comic> listaPorParametro(Comic datos, boolean esAccion) {
+	public static List<Carta> listaPorParametro(Carta datos, boolean esAccion) {
 		String busquedaGeneralTextField = "";
 
 		if (!esAccion) {
 			busquedaGeneralTextField = getReferenciaVentana().getBusquedaGeneral().getText();
 		}
 
-		List<Comic> listComic = FXCollections
+		List<Carta> listCarta = FXCollections
 				.observableArrayList(SelectManager.busquedaParametro(datos, busquedaGeneralTextField));
 
-		if (!listComic.isEmpty()) {
+		if (!listCarta.isEmpty()) {
 			getReferenciaVentana().getProntInfo().setOpacity(1);
 			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: black;"); // Reset the text color to black
 			getReferenciaVentana().getProntInfo()
-					.setText("El número de cómics donde aparece la búsqueda es: " + listComic.size() + "\n \n \n");
-		} else if (listComic.isEmpty() && esAccion) {
+					.setText("El número de cómics donde aparece la búsqueda es: " + listCarta.size() + "\n \n \n");
+		} else if (listCarta.isEmpty() && esAccion) {
 			getReferenciaVentana().getProntInfo().setOpacity(1);
 			// Show error message in red when no search fields are specified
 			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: red;");
 			getReferenciaVentana().getProntInfo().setText("Error. No existen con dichos parametros.");
 		}
 
-		return listComic;
+		return listCarta;
 	}
 
 	public static AccionReferencias getReferenciaVentana() {

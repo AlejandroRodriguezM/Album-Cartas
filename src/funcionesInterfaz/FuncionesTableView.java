@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cartaManagement.Comic;
-import dbmanager.ListaComicsDAO;
+import cartaManagement.Carta;
+import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesManagment.AccionReferencias;
@@ -43,13 +43,13 @@ public class FuncionesTableView {
 	/**
 	 * Fuente utilizada para los tooltips en la interfaz gráfica.
 	 */
-	private static final Font TOOLTIP_FONT = Font.font("Comic Sans MS", FontWeight.NORMAL, FontPosture.REGULAR, 13);
+	private static final Font TOOLTIP_FONT = Font.font("Carta Sans MS", FontWeight.NORMAL, FontPosture.REGULAR, 13);
 	private static Tooltip currentTooltip;
 
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 
-	public static void busquedaHyperLink(TableColumn<Comic, String> columna) {
-		columna.setCellFactory(column -> new TableCell<Comic, String>() {
+	public static void busquedaHyperLink(TableColumn<Carta, String> columna) {
+		columna.setCellFactory(column -> new TableCell<Carta, String>() {
 			private VBox vbox = new VBox();
 			private String lastItem = null;
 
@@ -117,8 +117,8 @@ public class FuncionesTableView {
 		disableFocusTraversal();
 	}
 
-	private static TableRow<Comic> createRow() {
-		TableRow<Comic> row = new TableRow<>();
+	private static TableRow<Carta> createRow() {
+		TableRow<Carta> row = new TableRow<>();
 		Tooltip tooltip = createTooltip();
 
 		row.setOnMouseMoved(event -> showTooltip(event, row, tooltip));
@@ -135,10 +135,10 @@ public class FuncionesTableView {
 		return tooltip;
 	}
 
-	private static void showTooltip(MouseEvent event, TableRow<Comic> row, Tooltip tooltip) {
+	private static void showTooltip(MouseEvent event, TableRow<Carta> row, Tooltip tooltip) {
 		if (!row.isEmpty()) {
 			row.setStyle("-fx-background-color: #BFEFFF;");
-			Comic comic = row.getItem();
+			Carta comic = row.getItem();
 			if (comic != null) {
 				String mensaje = generateTooltipMessage(comic);
 				adjustTooltipPosition(event, tooltip);
@@ -158,15 +158,13 @@ public class FuncionesTableView {
 		});
 	}
 
-	private static String generateTooltipMessage(Comic comic) {
+	private static String generateTooltipMessage(Carta carta) {
 		StringBuilder mensajeBuilder = new StringBuilder();
-		mensajeBuilder.append("Nombre: ").append(comic.getNombre()).append("\nNúmero: ").append(comic.getNumero())
-				.append("\nVariante: ").append(comic.getVariante()).append("\nPrecio: ")
-				.append(!comic.getprecioComic().isEmpty() ? comic.getprecioComic() + " $" : "");
+		mensajeBuilder.append("Nombre: ").append(carta.getNomCarta()).append("\nNumero: ").append(carta.getNumCarta())
+				.append("\nEditorial: ").append(carta.getEditorialCarta()).append("\nColeccion: ")
+				.append(carta.getColeccionCarta()).append("\nPrecio: ")
+				.append(carta.getPrecioCarta() == 0 ? carta.getPrecioCarta() + " $" : "");
 
-		if (!comic.getFirma().isEmpty()) {
-			mensajeBuilder.append("\nFirma: ").append(comic.getFirma());
-		}
 		return mensajeBuilder.toString();
 	}
 
@@ -185,7 +183,7 @@ public class FuncionesTableView {
 		tooltip.setY(posY);
 	}
 
-	private static void hideTooltipIfOutside(MouseEvent event, TableRow<Comic> row, Tooltip tooltip) {
+	private static void hideTooltipIfOutside(MouseEvent event, TableRow<Carta> row, Tooltip tooltip) {
 		if (!row.isEmpty() && !row.getBoundsInLocal().contains(event.getSceneX(), event.getSceneY())) {
 			row.setStyle("");
 			tooltip.hide();
@@ -196,10 +194,9 @@ public class FuncionesTableView {
 		getReferenciaVentana().getTablaBBDD().setFocusTraversable(false);
 	}
 
-
 	public static void actualizarBusquedaRaw() {
 		getReferenciaVentana().getColumnasTabla()
-				.forEach(columna -> columna.setCellFactory(column -> new TableCell<Comic, String>() {
+				.forEach(columna -> columna.setCellFactory(column -> new TableCell<Carta, String>() {
 					private VBox vbox = new VBox();
 					private String lastItem = null;
 
@@ -222,7 +219,7 @@ public class FuncionesTableView {
 				}));
 	}
 
-	private static void createLabels(TableColumn<Comic, String> columna, String item, VBox vbox) {
+	private static void createLabels(TableColumn<Carta, String> columna, String item, VBox vbox) {
 		String[] nombres = item.split(" - ");
 		for (String nombre : nombres) {
 			if (!nombre.isEmpty()) {
@@ -230,17 +227,17 @@ public class FuncionesTableView {
 				Hyperlink hyperlink = createHyperlinkForText(text, nombre, columna);
 				hyperlink.getStyleClass().add("hyperlink");
 				vbox.getChildren().add(hyperlink);
-				
+
 				adjustVBoxSizeOnContentChange(vbox);
 			}
 		}
 	}
 
-	private static Hyperlink createHyperlinkForText(Text text, String nombre, TableColumn<Comic, String> columna) {
+	private static Hyperlink createHyperlinkForText(Text text, String nombre, TableColumn<Carta, String> columna) {
 		Hyperlink hyperlink = new Hyperlink();
 		text.setWrappingWidth(columna.getWidth() - (columna.getWidth() * 0.3));
 		hyperlink.setGraphic(text);
-		
+
 		hyperlink.setOnAction(event -> columnaSeleccionada(getReferenciaVentana().getTablaBBDD(), nombre));
 		return hyperlink;
 	}
@@ -251,7 +248,7 @@ public class FuncionesTableView {
 
 	}
 
-	private static Text createTextForColumn(TableColumn<Comic, String> columna, String nombre) {
+	private static Text createTextForColumn(TableColumn<Carta, String> columna, String nombre) {
 		Text text = new Text(nombre);
 		text.setFont(Font.font("System", FontWeight.NORMAL, 13));
 		if (columna.getText().equalsIgnoreCase("referencia")) {
@@ -259,7 +256,7 @@ public class FuncionesTableView {
 		} else if (isSpecialColumn(columna.getText())) {
 			text.setText("◉ " + nombre);
 		} else if (columna.getText().equalsIgnoreCase("Fecha")) {
-			text.setFont(Font.font("Comic Sans MS", FontWeight.NORMAL, 12));
+			text.setFont(Font.font("Carta Sans MS", FontWeight.NORMAL, 12));
 		}
 
 		text.setFill(Color.web("#4ea0f2"));
@@ -277,11 +274,11 @@ public class FuncionesTableView {
 	 * Obtiene los datos de los comics de la base de datos y los devuelve en el
 	 * textView
 	 *
-	 * @param listaComic
+	 * @param listaCarta
 	 */
-	public static void tablaBBDD(List<Comic> listaComic) {
+	public static void tablaBBDD(List<Carta> listaCarta) {
 		getReferenciaVentana().getTablaBBDD().getColumns().setAll(getReferenciaVentana().getColumnasTabla());
-		getReferenciaVentana().getTablaBBDD().getItems().setAll(listaComic);
+		getReferenciaVentana().getTablaBBDD().getItems().setAll(listaCarta);
 		getReferenciaVentana().getImagencomic().setVisible(true);
 	}
 
@@ -293,8 +290,8 @@ public class FuncionesTableView {
 	 * @param rawSelecionado El comic seleccionado en su forma cruda.
 	 * @throws SQLException Si ocurre un error de base de datos.
 	 */
-	public static void columnaSeleccionada(TableView<Comic> tablaBBDD, String rawSelecionado) {
-		ListaComicsDAO.reiniciarListaComics();
+	public static void columnaSeleccionada(TableView<Carta> tablaBBDD, String rawSelecionado) {
+		ListasCartasDAO.reiniciarListaCartas();
 		nombreColumnas();
 
 		tablaBBDD(SelectManager.libreriaSeleccionado(rawSelecionado));
@@ -312,11 +309,11 @@ public class FuncionesTableView {
 	 * @param tablaBBDD  La TableView en la que se aplicarán las configuraciones.
 	 */
 	public static void nombreColumnas() {
-		for (TableColumn<Comic, String> column : referenciaVentana.getColumnasTabla()) {
+		for (TableColumn<Carta, String> column : referenciaVentana.getColumnasTabla()) {
 			String columnName = column.getText(); // Obtiene el nombre de la columna
 
 			// Realiza la correspondencia entre los nombres de columna y las propiedades de
-			// Comic
+			// Carta
 			if (columnName.equalsIgnoreCase("Nº")) {
 				columnName = "Numero";
 			} else if (columnName.equalsIgnoreCase("Gradeo")) {
@@ -328,7 +325,7 @@ public class FuncionesTableView {
 			}
 
 			// Crea una PropertyValueFactory con el nombre de la propiedad actual
-			PropertyValueFactory<Comic, String> valueFactory = new PropertyValueFactory<>(columnName);
+			PropertyValueFactory<Carta, String> valueFactory = new PropertyValueFactory<>(columnName);
 			column.setCellValueFactory(valueFactory);
 		}
 	}
@@ -343,7 +340,7 @@ public class FuncionesTableView {
 	 */
 	public static void modificarColumnas(boolean esPrincipal) {
 
-		for (TableColumn<Comic, String> column : getReferenciaVentana().getColumnasTabla()) {
+		for (TableColumn<Carta, String> column : getReferenciaVentana().getColumnasTabla()) {
 			column.prefWidthProperty().unbind(); // Desvincular cualquier propiedad prefWidth existente
 		}
 
@@ -378,7 +375,7 @@ public class FuncionesTableView {
 
 		// Aplicar los anchos específicos a cada columna
 		for (int i = 0; i < getReferenciaVentana().getColumnasTabla().size(); i++) {
-			TableColumn<Comic, String> column = getReferenciaVentana().getColumnasTabla().get(i);
+			TableColumn<Carta, String> column = getReferenciaVentana().getColumnasTabla().get(i);
 			Double columnWidth = columnWidths[i];
 			column.setPrefWidth(columnWidth);
 		}

@@ -13,14 +13,14 @@ import java.util.ResourceBundle;
 import com.gluonhq.charm.glisten.control.ProgressIndicator;
 
 import alarmas.AlarmaList;
-import apisFunciones.FuncionesApis;
 import dbmanager.ConectManager;
 import dbmanager.DatabaseManagerDAO;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.FuncionesManejoFront;
+import funcionesManagment.AccionReferencias;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -177,6 +177,22 @@ public class AccesoBBDDController implements Initializable {
 
 	private static boolean estaConectado = false;
 
+	public static final AccionReferencias referenciaVentana = new AccionReferencias();
+
+	public AccionReferencias guardarReferencia() {
+		referenciaVentana.setBotonIntroducir(botonEnviar);
+		referenciaVentana.setStage(myStage());
+		referenciaVentana.setLabelComprobar(prontEstadoConexion);
+		referenciaVentana.setProntInfoLabel(prontEstadoConexionBase);
+		referenciaVentana.setLabelVersion(alarmaConexion);
+
+		return referenciaVentana;
+	}
+
+	public void enviarReferencias() {
+		OpcionesDatosController.setReferenciaVentana(guardarReferencia());
+	}
+
 	/**
 	 * Inicializa el controlador cuando se carga la vista.
 	 *
@@ -187,22 +203,19 @@ public class AccesoBBDDController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		System.out.println(Utilidades.verificarVersionJava());
-		
-		if(!Utilidades.verificarVersionJava()) {
+
+		if (!Utilidades.verificarVersionJava()) {
 			Platform.exit();
 		}
-		
+
 		ConectManager.estadoConexion = false;
 		estaConectado = false;
-		FuncionesApis.guardarDatosClavesMarvel();
-
-		FuncionesApis.guardarApiComicVine();
 
 		alarmaList.setAlarmaConexion(alarmaConexion);
 		alarmaList.setAlarmaConexionInternet(alarmaConexionInternet);
 		alarmaList.setAlarmaConexionSql(alarmaConexionSql);
 		alarmaList.setAlarmaConexionPrincipal(prontEstadoConexion);
-		
+
 		menuItemSalir.setGraphic(Utilidades.createIcon("/Icono/Archivo/salir.png", 16, 16));
 		menuItemOpciones.setGraphic(Utilidades.createIcon("/Icono/Archivo/configuraciones.png", 16, 16));
 		menuItemSobreMi.setGraphic(Utilidades.createIcon("/Icono/Archivo/about.png", 16, 16));
@@ -217,13 +230,10 @@ public class AccesoBBDDController implements Initializable {
 			AlarmaList.iniciarAnimacionAvanzado(prontEstadoConexionBase, "No conectado");
 
 			myStage().setOnCloseRequest(event -> stop());
-			Utilidades.crearDBPRedeterminada();
 
 			ConectManager.asignarValoresPorDefecto();
-			ListaComicsDAO.reiniciarListas();
+			ListasCartasDAO.reiniciarListas();
 			ConectManager.close();
-
-			FuncionesApis.comprobarApisComics();
 
 			alarmaList.iniciarThreadChecker();
 
@@ -231,12 +241,35 @@ public class AccesoBBDDController implements Initializable {
 				Utilidades.cargarTasasDeCambioDesdeArchivo();
 			}
 
-			// Crear estructura si no existe
 			FuncionesFicheros.crearEstructura();
+			Utilidades.crearDBPRedeterminada();
 			Utilidades.crearCarpeta();
+			
 			ConectManager.closeConnection();
 		});
+	}
 
+	public static void estadoBotonConexion(AccionReferencias referenciaDatos) {
+
+		String datosFichero = FuncionesFicheros.datosEnvioFichero();
+
+		String[] nombreDB = datosFichero.split("\\.");
+
+		if (!estaConectado) {
+
+			referenciaDatos.getBotonIntroducir().setText("Desconectar bbdd");
+			alarmaList.manejarConexionExitosa(referenciaDatos.getLabelComprobar());
+			AlarmaList.iniciarAnimacionAvanzado(referenciaDatos.getProntInfoLabel(), "Conectado a " + nombreDB[0]);
+			AlarmaList.iniciarAnimacionConectado(referenciaDatos.getLabelComprobar());
+			estaConectado = true;
+		} else {
+			referenciaDatos.getBotonIntroducir().setText("Conectar bbdd");
+			ConectManager.estadoConexion = false;
+			AlarmaList.iniciarAnimacionAlarma(referenciaDatos.getLabelVersion());
+			AlarmaList.iniciarAnimacionAvanzado(referenciaDatos.getProntInfoLabel(), "No conectado");
+			AlarmaList.iniciarAnimacionEspera(referenciaDatos.getLabelComprobar());
+			estaConectado = false;
+		}
 	}
 
 	/**
@@ -299,7 +332,7 @@ public class AccesoBBDDController implements Initializable {
 		String datosFichero = FuncionesFicheros.datosEnvioFichero();
 
 		String[] nombreDB = datosFichero.split("\\.");
-		
+
 		if (Utilidades.comprobarDB() && ConectManager.loadDriver()
 				&& DatabaseManagerDAO.checkTablesAndColumns(datosFichero)) {
 
@@ -368,6 +401,14 @@ public class AccesoBBDDController implements Initializable {
 	 */
 	@FXML
 	void opcionesPrograma(ActionEvent event) {
+		enviarReferencias();
+		boolean estadoConexionMenu = ConectManager.estadoConexion;
+
+		if (estadoConexionMenu) {
+			estadoBotonConexion(guardarReferencia());
+			ConectManager.estadoConexion = false;
+		}
+
 		nav.verOpciones();
 	}
 

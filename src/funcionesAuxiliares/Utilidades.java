@@ -56,14 +56,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
-
-import Apis.ApiISBNGeneral;
-import Apis.ApiMarvel;
 import Controladores.OpcionesAvanzadasController;
-import cartaManagement.Comic;
+import cartaManagement.Carta;
 import dbmanager.ConectManager;
 import dbmanager.DBUtilidades;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import dbmanager.SQLiteManager;
 import dbmanager.SelectManager;
 import ficherosFunciones.FuncionesFicheros;
@@ -124,7 +121,7 @@ public class Utilidades {
 	private static AccionReferencias referenciaVentanaPrincipal = getReferenciaVentanaPrincipal();
 
 	private static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData"
-			+ File.separator + "Roaming" + File.separator + "libreria" + File.separator;
+			+ File.separator + "Roaming" + File.separator + "album" + File.separator;
 
 	/**
 	 * Verifica si el sistema operativo es Windows.
@@ -380,7 +377,7 @@ public class Utilidades {
 	 * @param datos Los datos del cómic.
 	 * @return El nombre completo del cómic con formato para archivo.
 	 */
-	public String obtenerNombreCompleto(Comic datos) {
+	public String obtenerNombreCompleto(Carta datos) {
 		String userDir = System.getProperty("user.home");
 		String documentsPath = userDir + File.separator + "Documents";
 		String defaultImagePath = documentsPath + File.separator + "libreria_comics" + File.separator
@@ -394,15 +391,14 @@ public class Utilidades {
 	 * @param datos Los datos del cómic.
 	 * @return El nuevo nombre de archivo del cómic con formato para archivo.
 	 */
-	public String crearNuevoNombre(Comic datos) {
-		String nombre_comic = datos.getNombre().replace(" ", "_").replace(":", "_").replace("-", "_");
-		String numero_comic = datos.getNumero();
-		String variante_comic = datos.getVariante().replace(" ", "_").replace(",", "_").replace("-", "_").replace(":",
-				"_");
-		String fecha_comic = datos.getFecha();
-		String nombre_completo = nombre_comic + "_" + numero_comic + "_" + variante_comic + "_" + fecha_comic;
+	public String crearNuevoNombre(Carta datos) {
+		String nombreCarta = datos.getNomCarta().replace(" ", "_").replace(":", "_").replace("-", "_");
+		int numeroCarta = datos.getNumCarta();
+		String editorialCarta = datos.getEditorialCarta().replace(" ", "_").replace(",", "_").replace("-", "_")
+				.replace(":", "_");
+		String nombreCompleto = nombreCarta + "_" + numeroCarta + "_" + editorialCarta;
 		String extension = ".jpg";
-		return nombre_completo + extension;
+		return nombreCompleto + extension;
 	}
 
 	/**
@@ -691,7 +687,7 @@ public class Utilidades {
 	public static String obtenerCarpetaConfiguracion() {
 		String userDir = System.getProperty("user.home");
 		String ubicacion = userDir + File.separator + "AppData" + File.separator + "Roaming";
-		String direccion = ubicacion + File.separator + "libreria";
+		String direccion = ubicacion + File.separator + "album";
 
 		File directorio = new File(direccion);
 		if (!directorio.exists()) {
@@ -1040,7 +1036,7 @@ public class Utilidades {
 		String nombreCompletoDB = obtenerDatoDespuesDeDosPuntos("Database");
 		String[] nombreCortado = nombreCompletoDB.split("\\.");
 		String nombredb = nombreCortado[0];
-		String defaultImagePath = documentsPath + File.separator + "libreria_comics" + File.separator + nombredb
+		String defaultImagePath = documentsPath + File.separator + "album_cartas" + File.separator + nombredb
 				+ File.separator + "portadas";
 
 		File portadasFolder = new File(defaultImagePath);
@@ -1061,7 +1057,7 @@ public class Utilidades {
 	 */
 	public static String obtenerDatoDespuesDeDosPuntos(String linea) {
 		String archivoConfiguracion = obtenerCarpetaConfiguracion() + File.separator + "configuracion_local.conf";
-
+		
 		try (BufferedReader reader = new BufferedReader(new FileReader(archivoConfiguracion))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -1312,9 +1308,9 @@ public class Utilidades {
 	 * Realiza la comprobación previa para determinar si la lista de cómics está
 	 * vacía. En caso afirmativo, se inicializa la librería.
 	 */
-	public static void comprobacionListaComics() {
+	public static void comprobacionListaCartas() {
 
-		if (ListaComicsDAO.listaComics.isEmpty()) {
+		if (ListasCartasDAO.listaCartas.isEmpty()) {
 			return;
 		}
 
@@ -1329,24 +1325,24 @@ public class Utilidades {
 	 * 
 	 * @return El ID del cómic seleccionado o null si no hay selección.
 	 */
-	public static String obtenerIdComicSeleccionado(TableView<Comic> tablaBBDD) {
-		Comic idRow = tablaBBDD.getSelectionModel().getSelectedItem();
-		return (idRow != null) ? idRow.getid() : null;
+	public static String obtenerIdCartaSeleccionado(TableView<Carta> tablaBBDD) {
+		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		return (idRow != null) ? idRow.getIdCarta() : null;
 	}
 
 	/**
-	 * Obtiene el objeto Comic seleccionado según el ID proporcionado.
+	 * Obtiene el objeto Carta seleccionado según el ID proporcionado.
 	 * 
-	 * @param idComic El ID del cómic a obtener.
-	 * @return El objeto Comic correspondiente al ID proporcionado.
+	 * @param idCarta El ID del cómic a obtener.
+	 * @return El objeto Carta correspondiente al ID proporcionado.
 	 * @throws SQLException Si hay un error al acceder a la base de datos.
 	 */
-	public static Comic obtenerComicSeleccionado(String idComic) {
+	public static Carta obtenerCartaSeleccionado(String idCarta) {
 
-		if (!ListaComicsDAO.comicsImportados.isEmpty()) {
-			return ListaComicsDAO.buscarComicPorID(ListaComicsDAO.comicsImportados, idComic);
+		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
+			return ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, idCarta);
 		} else {
-			return SelectManager.comicDatos(idComic);
+			return SelectManager.cartaDatos(idCarta);
 		}
 	}
 
@@ -1475,19 +1471,17 @@ public class Utilidades {
 	public static boolean codigoCorrectoImportado(String valorCodigo) {
 		try {
 			String finalValorCodigo = eliminarEspacios(valorCodigo).replace("-", "");
-			ApiISBNGeneral isbnGeneral = new ApiISBNGeneral();
-			Comic comicInfo = null;
+			Carta cartaInfo = null;
 
-			if (finalValorCodigo.length() == 9) {
-				comicInfo = WebScraperPreviewsWorld.displayComicInfo(finalValorCodigo.trim(), null);
-			} else {
-				comicInfo = ApiMarvel.infoComicCode(finalValorCodigo.trim(), null);
-
-				if (comicInfo == null) {
-					comicInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(), null);
-				}
-			}
-			return comicInfo != null; // Devuelve true si se encontró información del cómic.
+//			if (finalValorCodigo.length() == 9) {
+//				cartaInfo = WebScraperPreviewsWorld.displayCartaInfo(finalValorCodigo.trim(), null);
+//			} else {
+//
+//				if (cartaInfo== null) {
+//					cartaInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(), null);
+//				}
+//			}
+			return cartaInfo != null; // Devuelve true si se encontró información del cómic.
 		} catch (Exception e) {
 			manejarExcepcion(e);
 			return false;
@@ -1508,10 +1502,10 @@ public class Utilidades {
 		return contador;
 	}
 
-	public static Image devolverImagenComic(String direccionComic) {
-		if (direccionComic != null && !direccionComic.isEmpty()) {
+	public static Image devolverImagenCarta(String direccionCarta) {
+		if (direccionCarta != null && !direccionCarta.isEmpty()) {
 			try {
-				Image imagen = new Image(new File(direccionComic).toURI().toString());
+				Image imagen = new Image(new File(direccionCarta).toURI().toString());
 				return new Image(imagen.getUrl(), 250, 0, true, true);
 			} catch (Exception e) {
 				Utilidades.manejarExcepcion(e);
@@ -1575,7 +1569,7 @@ public class Utilidades {
 	 */
 	public static String defaultIfNullOrEmpty(String value, String defaultValue) {
 
-		Comic.limpiarCampo(value);
+		Carta.limpiarCampo(value);
 
 		return (value == null || value.isEmpty()) ? defaultValue : value;
 	}
@@ -1827,7 +1821,7 @@ public class Utilidades {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				String urlDescarga = "https://github.com/AlejandroRodriguezM/Libreria-Comics/releases/latest/download/Libreria.exe";
+				String urlDescarga = "https://github.com/AlejandroRodriguezM/Libreria-Cartas/releases/latest/download/Libreria.exe";
 				URI uri = new URI(urlDescarga);
 
 				HttpURLConnection httpConn = (HttpURLConnection) uri.toURL().openConnection();
@@ -1929,22 +1923,22 @@ public class Utilidades {
 		return resultadoFinal.toString().trim(); // Elimina espacios en blanco al inicio y al final
 	}
 
-	public static String extraerNombreLimpio(String nombreComic) {
+	public static String extraerNombreLimpio(String nombreCarta) {
 		// Encontrar la posición del símbolo #
-		int indiceNumeral = nombreComic.indexOf("#");
+		int indiceNumeral = nombreCarta.indexOf("#");
 
 		// Eliminar todos los números si no hay #
-		if (!nombreComic.contains("#")) {
-			nombreComic = nombreComic.replaceAll("\\d+", "");
+		if (!nombreCarta.contains("#")) {
+			nombreCarta = nombreCarta.replaceAll("\\d+", "");
 		}
 
 		// Si no se encuentra el símbolo #, devuelve el nombre completo
 		if (indiceNumeral == -1) {
-			return eliminarPalabrasClave(nombreComic.trim());
+			return eliminarPalabrasClave(nombreCarta.trim());
 		}
 
 		// Extraer el texto antes del símbolo #
-		return eliminarPalabrasClave(nombreComic.substring(0, indiceNumeral).trim());
+		return eliminarPalabrasClave(nombreCarta.substring(0, indiceNumeral).trim());
 	}
 
 	private static String eliminarPalabrasClave(String texto) {
@@ -2025,79 +2019,6 @@ public class Utilidades {
 			resultado.append("Grapa (Issue individual)");
 		}
 		return resultado.toString();
-	}
-
-	public static String extraerNumeroLimpio(String numComic) {
-
-		numComic = numComic.replaceAll("\\(.*?\\)", "");
-
-		// Encontrar la posición del símbolo #
-		int indiceNumeral = numComic.indexOf("#");
-
-		// Si no se encuentra el símbolo #, buscar cualquier número en la cadena
-		if (indiceNumeral == -1) {
-			// Buscar cualquier número en la cadena
-			String posibleNumero = numComic.replaceAll("\\D", "").trim();
-			if (!posibleNumero.isEmpty()) {
-				return posibleNumero;
-			} else {
-				return "0";
-			}
-		}
-
-		// Encontrar la posición del primer espacio después del #
-		int indiceEspacioDespuesNumeral = numComic.indexOf(" ", indiceNumeral);
-
-		// Si no se encuentra el espacio después del símbolo #,
-		// devuelve el texto después del #
-		if (indiceEspacioDespuesNumeral == -1) {
-			return numComic.substring(indiceNumeral + 1).trim();
-		}
-
-		// Buscar "hc", "vol", "omnibus" o "tp" después del espacio
-		String textoDespuesNumeral = numComic.substring(indiceNumeral + 1, indiceEspacioDespuesNumeral).trim()
-				.toLowerCase();
-		int indiceHc = textoDespuesNumeral.indexOf("hc ");
-		int indiceVol = textoDespuesNumeral.indexOf("vol ");
-		int indiceOmnibus = textoDespuesNumeral.indexOf("omnibus ");
-		int indiceTp = textoDespuesNumeral.indexOf("tp ");
-		int indiceTermino = Math.min(Math.min(Math.min(indiceHc, indiceVol), indiceOmnibus), indiceTp);
-
-		// Si se encuentra alguna palabra clave, buscar un número después de esa palabra
-		// clave
-		if (indiceTermino != -1) {
-			int indiceEspacioDespuesTermino = numComic.indexOf(" ", indiceEspacioDespuesNumeral + 1);
-			if (indiceEspacioDespuesTermino != -1) {
-				String posibleNumero = numComic.substring(indiceEspacioDespuesNumeral + 1, indiceEspacioDespuesTermino)
-						.trim();
-				if (posibleNumero.matches("\\d+")) {
-					return posibleNumero;
-				}
-			}
-		}
-
-		// Si no se encontró ningún número después de las palabras clave, buscar un
-		// número después del espacio
-		// que sigue al símbolo #
-		int indiceEspacioDespuesNumeral2 = numComic.indexOf(" ", indiceNumeral + 1);
-		if (indiceEspacioDespuesNumeral2 != -1) {
-			String posibleNumero = numComic.substring(indiceNumeral + 1, indiceEspacioDespuesNumeral2).trim();
-			if (posibleNumero.matches("\\d+")) {
-				return posibleNumero;
-			}
-		}
-
-		// Si no se encontró ningún número después de los términos clave o el espacio
-		// después del símbolo #,
-		// buscar cualquier número al final de la cadena
-		Pattern pattern = Pattern.compile("\\d+$");
-		Matcher matcher = pattern.matcher(numComic);
-		if (matcher.find()) {
-			return matcher.group();
-		}
-
-		// Si no se encontró ningún número en la cadena, devolver "0"
-		return "0";
 	}
 
 	public static void copiarDirectorio(String directorioNuevo, String directorioOriginal) {
@@ -2259,7 +2180,7 @@ public class Utilidades {
 		}
 	}
 
-	public static void cerrarCargaComics() {
+	public static void cerrarCargaCartas() {
 		List<Stage> stageVentanas = FuncionesManejoFront.getStageVentanas();
 		for (Stage stage : stageVentanas) {
 
@@ -2329,10 +2250,13 @@ public class Utilidades {
 
 	public static String nombreDB() {
 		String nombreCompletoDB = FuncionesFicheros.datosEnvioFichero();
-		String nombreCortado[] = nombreCompletoDB.split("\\.");
-		String nombredb = nombreCortado[0];
+		if (!nombreCompletoDB.isEmpty()) {
+			String nombreCortado[] = nombreCompletoDB.split("\\.");
+			String nombredb = nombreCortado[0];
+			return nombredb;
+		}
 
-		return nombredb;
+		return "";
 	}
 
 	public static boolean verificarVersionJava() {
@@ -2374,16 +2298,14 @@ public class Utilidades {
 
 	public static void crearDBPRedeterminada() {
 
-		String dbName = "comic_predeterminada";
+		String dbName = "album_predeterminada";
 		Ventanas nav = new Ventanas();
 		if (!comprobarDB()) {
-			FuncionesFicheros.guardarDatosBaseLocal((" "), null, null);
+//			FuncionesFicheros.guardarDatosBaseLocal((""), null, null);
 			if (nav.alertaCreacionDB()) {
 				SQLiteManager.createTable(dbName);
-
-				Utilidades.crearCarpeta();
-
 				FuncionesFicheros.guardarDatosBaseLocal((dbName + ".db"), null, null);
+				Utilidades.crearCarpeta();
 			}
 		}
 

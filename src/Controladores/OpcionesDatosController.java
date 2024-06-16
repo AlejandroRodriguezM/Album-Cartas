@@ -38,10 +38,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import alarmas.AlarmaList;
+import dbmanager.ConectManager;
 import dbmanager.SQLiteManager;
 import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
+import funcionesManagment.AccionReferencias;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -117,6 +119,8 @@ public class OpcionesDatosController implements Initializable {
 	@FXML
 	private ImageView imagenAzul;
 
+	private static AccionReferencias referenciaVentana = getReferenciaVentana();
+
 	// Tamaño original del Pane
 	private final double originalHeight = 333;
 
@@ -132,7 +136,7 @@ public class OpcionesDatosController implements Initializable {
 	private static AlarmaList alarmaList = new AlarmaList();
 
 	private static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData"
-			+ File.separator + "Roaming" + File.separator + "libreria" + File.separator;
+			+ File.separator + "Roaming" + File.separator + "album" + File.separator;
 
 	/**
 	 * Inicializa el controlador cuando se carga la vista.
@@ -151,7 +155,7 @@ public class OpcionesDatosController implements Initializable {
 
 		rellenarComboDB();
 		String datosFichero = FuncionesFicheros.datosEnvioFichero();
-		seleccionarValor(nombreBBDD,datosFichero);
+		seleccionarValor(nombreBBDD, datosFichero);
 
 		AlarmaList.iniciarAnimacionEspera(prontEstadoFichero);
 		AlarmaList.iniciarAnimacionEspera(prontInformativo);
@@ -282,16 +286,27 @@ public class OpcionesDatosController implements Initializable {
 				AlarmaList.iniciarAnimacionBaseExiste(prontInformativo, dbNombre);
 			} else {
 				SQLiteManager.createTable(dbNombre);
+				guardarBaseFichero(dbNombre + ".db");
 				Utilidades.crearCarpeta();
 				AlarmaList.iniciarAnimacionBaseCreada(prontInformativo, dbNombre);
 				rellenarComboDB();
-
 				seleccionarValor(nombreBBDD, dbNombre + ".db");
 			}
 		} else {
 			String errorMessage = "El nombre de la base de datos está vacío.\n";
 			AlarmaList.iniciarAnimacionBaseError(errorMessage, prontInformativo);
 		}
+	}
+
+	public void guardarBaseFichero(String nombredb) {
+
+		FuncionesFicheros.guardarDatosBaseLocal(nombredb, prontEstadoFichero, alarmaConexion);
+
+		if (ConectManager.estadoConexion) {
+			AccesoBBDDController.estadoBotonConexion(getReferenciaVentana());
+			ConectManager.estadoConexion = false;
+		}
+
 	}
 
 	// Método para seleccionar un valor en el ComboBox según el contenido
@@ -441,6 +456,14 @@ public class OpcionesDatosController implements Initializable {
 
 	private Stage myStage() {
 		return (Stage) miSceneVentana().getWindow();
+	}
+
+	public static AccionReferencias getReferenciaVentana() {
+		return referenciaVentana;
+	}
+
+	public static void setReferenciaVentana(AccionReferencias referenciaVentana) {
+		OpcionesDatosController.referenciaVentana = referenciaVentana;
 	}
 
 	/**

@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import Controladores.OpcionesAvanzadasController;
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 import funcionesAuxiliares.Utilidades;
-import funcionesAuxiliares.Ventanas;
 import funcionesManagment.AccionReferencias;
 
 public class DBUtilidades {
@@ -33,9 +30,10 @@ public class DBUtilidades {
 		ps.setDouble(8, datos.getPrecioCarta());
 		ps.setString(9, datos.getUrlReferenciaCarta());
 		ps.setString(10, datos.getDireccionImagenCarta());
+		ps.setString(11, datos.getNormasCarta());
 
 		if (includeID) {
-			ps.setInt(11, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
+			ps.setString(12, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
 		}
 	}
 
@@ -48,43 +46,38 @@ public class DBUtilidades {
 		switch (tipoBusqueda) {
 		case POSESION:
 			return SelectManager.SENTENCIA_POSESION;
-		case KEY_ISSUE:
-			return SelectManager.SENTENCIA_KEY_ISSUE;
 		case COMPLETA:
 			return SelectManager.SENTENCIA_COMPLETA;
 		case VENDIDOS:
 			return SelectManager.SENTENCIA_VENDIDOS;
 		case COMPRADOS:
 			return SelectManager.SENTENCIA_COMPRADOS;
-		case PUNTUACION:
-			return SelectManager.SENTENCIA_PUNTUACION;
-		case FIRMADOS:
-			return SelectManager.SENTENCIA_FIRMADOS;
 		default:
 			throw new IllegalArgumentException("Tipo de búsqueda no válido");
 		}
 	}
 
 	public static String datosConcatenados(Carta carta) {
-	    String connector = " WHERE ";
+		String connector = " WHERE ";
 
-	    StringBuilder sql = new StringBuilder(SelectManager.SENTENCIA_BUSQUEDA_COMPLETA);
+		StringBuilder sql = new StringBuilder(SelectManager.SENTENCIA_BUSQUEDA_COMPLETA);
 
-	    connector = agregarCondicion(sql, connector, "idCarta", carta.getIdCarta());
-	    connector = agregarCondicion(sql, connector, "nomCarta", carta.getNomCarta());
-	    connector = agregarCondicion(sql, connector, "gradeoCarta", carta.getGradeoCarta());
-	    connector = agregarCondicion(sql, connector, "numCarta", Integer.toString(carta.getNumCarta()));
-	    connector = agregarCondicionLike(sql, connector, "coleccionCarta", carta.getColeccionCarta());
-	    connector = agregarCondicionLike(sql, connector, "rarezaCarta", carta.getRarezaCarta());
-	    connector = agregarCondicion(sql, connector, "esFoilCarta", carta.getEsFoilCarta() ? "1" : "0");
-	    connector = agregarCondicionLike(sql, connector, "estadoCarta", carta.getEstadoCarta());
-	    connector = agregarCondicion(sql, connector, "precioCarta", Double.toString(carta.getPrecioCarta()));
+		connector = agregarCondicion(sql, connector, "idCarta", carta.getIdCarta());
+		connector = agregarCondicion(sql, connector, "nomCarta", carta.getNomCarta());
+		connector = agregarCondicion(sql, connector, "gradeoCarta", carta.getGradeoCarta());
+		connector = agregarCondicion(sql, connector, "numCarta", Integer.toString(carta.getNumCarta()));
+		connector = agregarCondicion(sql, connector, "editorialCarta", carta.getEditorialCarta());
+		connector = agregarCondicionLike(sql, connector, "coleccionCarta", carta.getColeccionCarta());
+		connector = agregarCondicionLike(sql, connector, "rarezaCarta", carta.getRarezaCarta());
+		connector = agregarCondicion(sql, connector, "esFoilCarta", carta.getEsFoilCarta() ? "1" : "0");
+		connector = agregarCondicionLike(sql, connector, "estadoCarta", carta.getEstadoCarta());
+		connector = agregarCondicion(sql, connector, "precioCarta", Double.toString(carta.getPrecioCarta()));
 
-	    if (connector.trim().equalsIgnoreCase("WHERE")) {
-	        return "";
-	    }
+		if (connector.trim().equalsIgnoreCase("WHERE")) {
+			return "";
+		}
 
-	    return (connector.length() > 0) ? sql.toString() : "";
+		return (connector.length() > 0) ? sql.toString() : "";
 	}
 
 	public static String agregarCondicion(StringBuilder sql, String connector, String columna, String valor) {
@@ -118,20 +111,14 @@ public class DBUtilidades {
 		sql.append("SELECT * FROM albumbbdd");
 
 		switch (tipoBusqueda.toLowerCase()) {
-		case "nomcomic":
-			sql.append(connector).append("nomComic LIKE '%" + busquedaGeneral + "%';");
+		case "nomCarta":
+			sql.append(connector).append("nomCarta LIKE '%" + busquedaGeneral + "%';");
 			break;
-		case "nomvariante":
-			sql.append(connector).append("nomVariante LIKE '%" + busquedaGeneral + "%';");
+		case "coleccionCarta":
+			sql.append(connector).append("coleccionCarta LIKE '%" + busquedaGeneral + "%';");
 			break;
-		case "firma":
-			sql.append(connector).append("firma LIKE '%" + busquedaGeneral + "%';");
-			break;
-		case "nomguionista":
-			sql.append(connector).append("nomGuionista LIKE '%" + busquedaGeneral + "%';");
-			break;
-		case "nomdibujante":
-			sql.append(connector).append("nomDibujante LIKE '%" + busquedaGeneral + "%';");
+		case "editorialCarta":
+			sql.append(connector).append("editorialCarta LIKE '%" + busquedaGeneral + "%';");
 			break;
 		default:
 			// Tipo de búsqueda no válido, puedes manejarlo según tus necesidades
@@ -152,32 +139,24 @@ public class DBUtilidades {
 	public static List<Carta> verBusquedaGeneral(String busquedaGeneral) {
 		String sql1 = datosGenerales("nomCarta", busquedaGeneral);
 		String sql2 = datosGenerales("coleccionCarta", busquedaGeneral);
-		String sql3 = datosGenerales("firma", busquedaGeneral);
-		String sql4 = datosGenerales("nomguionista", busquedaGeneral);
-		String sql5 = datosGenerales("nomdibujante", busquedaGeneral);
-
+		String sql3 = datosGenerales("editorialCarta", busquedaGeneral);
 		try (Connection conn = ConectManager.conexion();
 				PreparedStatement ps1 = conn.prepareStatement(sql1);
 				PreparedStatement ps2 = conn.prepareStatement(sql2);
 				PreparedStatement ps3 = conn.prepareStatement(sql3);
-				PreparedStatement ps4 = conn.prepareStatement(sql4);
-				PreparedStatement ps5 = conn.prepareStatement(sql5);
+
 				ResultSet rs1 = ps1.executeQuery();
 				ResultSet rs2 = ps2.executeQuery();
-				ResultSet rs3 = ps3.executeQuery();
-				ResultSet rs4 = ps4.executeQuery();
-				ResultSet rs5 = ps5.executeQuery()) {
+				ResultSet rs3 = ps3.executeQuery()) {
 
-			ListaComicsDAO.listaCartas.clear();
+			ListasCartasDAO.listaCartas.clear();
 
 			agregarSiHayDatos(rs1);
 			agregarSiHayDatos(rs2);
 			agregarSiHayDatos(rs3);
-			agregarSiHayDatos(rs4);
-			agregarSiHayDatos(rs5);
 
-			ListaComicsDAO.listaCartas = ListaComicsDAO.listaArreglada(ListaComicsDAO.listaCartas);
-			return ListaComicsDAO.listaCartas;
+			ListasCartasDAO.listaCartas = ListasCartasDAO.listaArreglada(ListasCartasDAO.listaCartas);
+			return ListasCartasDAO.listaCartas;
 
 		} catch (SQLException ex) {
 			Utilidades.manejarExcepcion(ex);
@@ -210,7 +189,7 @@ public class DBUtilidades {
 	public static List<Carta> filtroBBDD(Carta datos, String busquedaGeneral) {
 
 		// Reiniciar la lista de cómics antes de realizar el filtrado
-		ListaComicsDAO.listaCartas.clear();
+		ListasCartasDAO.listaCartas.clear();
 
 		// Crear la consulta SQL a partir de los datos proporcionados
 		String sql = datosConcatenados(datos);
@@ -223,10 +202,10 @@ public class DBUtilidades {
 
 				// Llenar la lista de cómics con los resultados obtenidos
 				while (rs.next()) {
-					ListaComicsDAO.listaCartas.add(obtenerCartaDesdeResultSet(rs));
+					ListasCartasDAO.listaCartas.add(obtenerCartaDesdeResultSet(rs));
 				}
 
-				return ListaComicsDAO.listaCartas;
+				return ListasCartasDAO.listaCartas;
 			} catch (SQLException ex) {
 				// Manejar la excepción según tus necesidades (en este caso, mostrar una alerta)
 				Utilidades.manejarExcepcion(ex);
@@ -246,7 +225,7 @@ public class DBUtilidades {
 			getReferenciaVentana().getProntInfo().setText("Todos los campos estan vacios");
 		}
 
-		return ListaComicsDAO.listaCartas;
+		return ListasCartasDAO.listaCartas;
 	}
 
 	/**
@@ -258,8 +237,8 @@ public class DBUtilidades {
 	 */
 	public static List<String> obtenerValoresColumna(String columna) {
 		String sentenciaSQL = "SELECT " + columna + " FROM albumbbdd ORDER BY " + columna + " ASC";
-		ListaComicsDAO.listaComics.clear();
-		return ListaComicsDAO.guardarDatosAutoCompletado(sentenciaSQL, columna);
+		ListasCartasDAO.listaCartas.clear();
+		return ListasCartasDAO.guardarDatosAutoCompletado(sentenciaSQL, columna);
 	}
 
 	/**
@@ -283,6 +262,7 @@ public class DBUtilidades {
 			double precioCarta = rs.getDouble("precioCarta");
 			String urlReferenciaCarta = rs.getString("urlReferenciaCarta");
 			String direccionImagenCarta = rs.getString("direccionImagenCarta");
+			String normasCarta = rs.getString("normasCarta");
 
 			// Verificaciones y asignaciones predeterminadas
 			precioCarta = (precioCarta <= 0) ? 0.0 : precioCarta;
@@ -290,7 +270,7 @@ public class DBUtilidades {
 			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).coleccionCarta(coleccionCarta)
 					.rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta).gradeoCarta(gradeoCarta).estadoCarta(estadoCarta)
 					.precioCarta(precioCarta).urlReferenciaCarta(urlReferenciaCarta)
-					.direccionImagenCarta(direccionImagenCarta).build();
+					.direccionImagenCarta(direccionImagenCarta).normasCarta(normasCarta).build();
 		} catch (SQLException e) {
 			// Manejar la excepción según tus necesidades
 			Utilidades.manejarExcepcion(e);

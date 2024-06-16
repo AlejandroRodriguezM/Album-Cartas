@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 
 public class InsertManager {
 
 	public static final String INSERT_SENTENCIA = "INSERT INTO albumbbdd ("
-			+ "nomComic, nivel_gradeo, precio_comic, codigo_comic, numComic, nomVariante, firma, nomEditorial, "
-			+ "formato, procedencia, fecha_publicacion, nomGuionista, nomDibujante, puntuacion, portada, "
-			+ "key_issue, url_referencia, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "nomCarta, numCarta, editorialCarta, coleccionCarta, rarezaCarta, esFoilCarta, gradeoCarta, estadoCarta, "
+			+ "precioCarta, urlReferenciaCarta, direccionImagenCarta, normasCarta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	/**
 	 * Inserta los datos de un cómic en la base de datos.

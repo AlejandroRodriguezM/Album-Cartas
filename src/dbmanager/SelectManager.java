@@ -9,25 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cartaManagement.Carta;
-import cartaManagement.Comic;
 import funcionesAuxiliares.Utilidades;
 
 public class SelectManager {
 
 	public static final String TAMANIO_DATABASE = "SELECT COUNT(*) FROM albumbbdd;";
 	private static final String SENTENCIA_BUSQUEDA_INDIVIDUAL = "SELECT * FROM albumbbdd WHERE ID = ?;";
-	private static final String SENTENCIA_CONTAR_COMICS_POR_ID = "SELECT COUNT(*) FROM albumbbdd WHERE ID = ?;";
+	private static final String SENTENCIA_CONTAR_CARTAS_POR_ID = "SELECT COUNT(*) FROM albumbbdd WHERE ID = ?;";
 	private static final String SENTENCIA_BUSCAR_PORTADA = "SELECT portada FROM albumbbdd WHERE ID = ?;";
 	public static final String SENTENCIA_BUSQUEDA_COMPLETA = "SELECT * FROM albumbbdd";
 	public static final String SENTENCIA_TOTAL_BUSQUEDA = "SELECT COUNT(*) FROM albumbbdd WHERE 1=1;";
 
-	public static final String SENTENCIA_POSESION = "SELECT * FROM albumbbdd WHERE estado = 'En posesion' ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_KEY_ISSUE = "SELECT * FROM albumbbdd WHERE key_issue <> 'Vacio' ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_COMPLETA = "SELECT * FROM albumbbdd ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_VENDIDOS = "SELECT * FROM albumbbdd WHERE estado = 'Vendido' ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_COMPRADOS = "SELECT * FROM albumbbdd WHERE estado = 'Comprado' ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_PUNTUACION = "SELECT * FROM albumbbdd WHERE puntuacion <> 'Sin puntuar' ORDER BY nomComic, fecha_publicacion, numComic;";
-	public static final String SENTENCIA_FIRMADOS = "SELECT * FROM albumbbdd WHERE Firma <> '' ORDER BY nomComic, fecha_publicacion, numComic;";
+	public static final String SENTENCIA_POSESION = "SELECT * FROM albumbbdd WHERE estado = 'En posesion' ORDER BY nomCarta, numCarta, esFoil;";
+	public static final String SENTENCIA_COMPLETA = "SELECT * FROM albumbbdd ORDER BY nomCarta, numCarta, esFoil;";
+	public static final String SENTENCIA_VENDIDOS = "SELECT * FROM albumbbdd WHERE estado = 'Vendido' ORDER BY nomCarta, numCarta, esFoil;";
+	public static final String SENTENCIA_COMPRADOS = "SELECT * FROM albumbbdd WHERE estado = 'Comprado' ORDER BY nomCarta, numCarta, esFoil;";
 
 	/**
 	 * Funcion que permite contar cuantas filas hay en la base de datos.
@@ -83,7 +79,7 @@ public class SelectManager {
 
 			try (ResultSet rs = statement.executeQuery()) {
 				if (rs.next()) {
-					carta = DBUtilidades.obtenerComicDesdeResultSet(rs);
+					carta = DBUtilidades.obtenerCartaDesdeResultSet(rs);
 				}
 			} catch (SQLException e) {
 				Utilidades.manejarExcepcion(e);
@@ -112,7 +108,7 @@ public class SelectManager {
 		boolean existe = false; // Variable para almacenar si el identificador existe en la base de datos
 
 		try (Connection conn = ConectManager.conexion();
-				PreparedStatement preparedStatement = conn.prepareStatement(SENTENCIA_CONTAR_COMICS_POR_ID)) {
+				PreparedStatement preparedStatement = conn.prepareStatement(SENTENCIA_CONTAR_CARTAS_POR_ID)) {
 
 			preparedStatement.setString(1, identificador.trim());
 
@@ -237,7 +233,7 @@ public class SelectManager {
 	 * @return Una lista de objetos Comic que representan los cómics de la librería.
 	 */
 	public static List<Carta> verLibreria(String sentenciaSQL, boolean esActualizacion) {
-		ListaComicsDAO.listaCartas.clear(); // Limpiar la lista existente de cómics
+		ListasCartasDAO.listaCartas.clear(); // Limpiar la lista existente de cómics
 		List<Carta> listaCartas = new ArrayList<>();
 
 		try (Connection conn = ConectManager.conexion();

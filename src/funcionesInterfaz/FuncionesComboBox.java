@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import cartaManagement.Comic;
+import cartaManagement.Carta;
 import dbmanager.DBUtilidades;
-import dbmanager.ListaComicsDAO;
+import dbmanager.ListasCartasDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -52,15 +52,15 @@ public class FuncionesComboBox {
 	private Popup popup = new Popup();
 
 	/**
-	 * Crea y devuelve un objeto Comic con valores obtenidos de los ComboBoxes.
+	 * Crea y devuelve un objeto Carta con valores obtenidos de los ComboBoxes.
 	 *
 	 * @param totalComboboxes El número total de ComboBoxes.
 	 * @param comboboxes      La lista de ComboBoxes que contienen los valores del
-	 *                        Comic.
-	 * @return Un objeto Comic con los valores seleccionados en los ComboBoxes.
+	 *                        Carta.
+	 * @return Un objeto Carta con los valores seleccionados en los ComboBoxes.
 	 */
-	private Comic getComicFromComboBoxes(List<ComboBox<String>> comboboxes) {
-		Comic comic = new Comic();
+	private Carta getCartaFromComboBoxes(List<ComboBox<String>> comboboxes) {
+		Carta comic = new Carta();
 		int cantidadDeComboBoxes = comboboxes.size();
 		for (int i = 0; i < cantidadDeComboBoxes; i++) {
 			ComboBox<String> comboBox = comboboxes.get(i);
@@ -143,34 +143,34 @@ public class FuncionesComboBox {
 
 	/**
 	 * Actualiza los ComboBoxes con los resultados obtenidos de la base de datos
-	 * según el Comic proporcionado.
+	 * según el Carta proporcionado.
 	 *
 	 * @param totalComboboxes El número total de ComboBoxes.
 	 * @param comboboxes      La lista de ComboBoxes.
-	 * @param comic           El Comic que se utilizará como base para obtener los
+	 * @param comic           El Carta que se utilizará como base para obtener los
 	 *                        resultados de la base de datos.
 	 * @throws SQLException
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public void actualizarComboBoxes(List<ComboBox<String>> comboboxes, Comic comic) {
+	public void actualizarComboBoxes(List<ComboBox<String>> comboboxes, Carta comic) {
 
-		Comic comicTemp = new Comic.ComicBuilder("", comic.getNombre()).valorGradeo("").numero(comic.getNumero())
+		Carta comicTemp = new Carta.CartaBuilder("", comic.getNombre()).valorGradeo("").numero(comic.getNumero())
 				.variante(comic.getVariante()).firma(comic.getFirma()).editorial(comic.getEditorial())
 				.formato(comic.getFormato()).procedencia(comic.getProcedencia()).fecha("")
 				.guionista(comic.getGuionista()).dibujante(comic.getDibujante()).estado("").keyIssue("").puntuacion("")
-				.imagen("").referenciaComic("").precioComic("").codigoComic("").build();
+				.imagen("").referenciaCarta("").precioCarta("").codigoCarta("").build();
 
 		String sql = DBUtilidades.datosConcatenados(comicTemp);
 
 		if (!sql.isEmpty()) {
 			isUserInput = false; // Disable user input during programmatic updates
 
-			ListaComicsDAO.actualizarDatosAutoCompletado(sql);
+			ListasCartasDAO.actualizarDatosAutoCompletado(sql);
 			int cantidadDeComboBoxes = comboboxes.size();
 			for (int i = 0; i < cantidadDeComboBoxes; i++) {
 				comboboxes.get(i).hide();
-				List<String> itemsActuales = ListaComicsDAO.listaOrdenada.get(i);
+				List<String> itemsActuales = ListasCartasDAO.listaOrdenada.get(i);
 				if (itemsActuales != null && !itemsActuales.isEmpty()) {
 					ObservableList<String> itemsObservable = FXCollections.observableArrayList(itemsActuales);
 					comboboxes.get(i).setItems(itemsObservable);
@@ -266,7 +266,7 @@ public class FuncionesComboBox {
 					handleComboBoxEmptyChange(comboBox, comboboxes);
 				} else {
 					modificarPopup(comboBox);
-					Comic comic = getComicFromComboBoxes(comboboxes);
+					Carta comic = getCartaFromComboBoxes(comboboxes);
 					actualizarComboBoxes(comboboxes, comic);
 				}
 			});
@@ -281,7 +281,7 @@ public class FuncionesComboBox {
 				continue; // Evitar operaciones en ComboBox nulos
 			}
 
-			List<String> items = ListaComicsDAO.itemsList.get(i);
+			List<String> items = ListasCartasDAO.itemsList.get(i);
 			if (items != null && !items.isEmpty() && !comboBox.getItems().equals(items)) {
 				comboBox.setItems(FXCollections.observableArrayList(items));
 			}
@@ -302,12 +302,12 @@ public class FuncionesComboBox {
 		boolean atLeastOneNotEmpty = comboboxes.stream()
 				.anyMatch(cb -> cb.getValue() != null && !cb.getValue().isEmpty());
 
-		List<String> currentItems = ListaComicsDAO.listaOrdenada.get(index);
+		List<String> currentItems = ListasCartasDAO.listaOrdenada.get(index);
 
 		setupFilteredPopup(comboboxes, comboBox,
-				atLeastOneNotEmpty ? currentItems : ListaComicsDAO.itemsList.get(index));
+				atLeastOneNotEmpty ? currentItems : ListasCartasDAO.itemsList.get(index));
 
-		Comic comic = getComicFromComboBoxes(comboboxes);
+		Carta comic = getCartaFromComboBoxes(comboboxes);
 		actualizarComboBoxes(comboboxes, comic);
 	}
 
@@ -344,7 +344,7 @@ public class FuncionesComboBox {
 			List<String> currentFilteredItems = comboBoxFilteredItemsMap.get(originalComboBox);
 			if (newValue != null && !newValue.isEmpty()) {
 
-				List<String> newFilteredItems = ListaComicsDAO.itemsList.get(comboboxes.indexOf(originalComboBox))
+				List<String> newFilteredItems = ListasCartasDAO.itemsList.get(comboboxes.indexOf(originalComboBox))
 						.stream().filter(item -> item.toLowerCase().contains(newValue.toLowerCase())).toList();
 
 				currentFilteredItems.clear();
@@ -352,11 +352,11 @@ public class FuncionesComboBox {
 				listView.setItems(FXCollections.observableArrayList(currentFilteredItems));
 			} else {
 				originalComboBox.setValue("");
-				Comic comic = getComicFromComboBoxes(comboboxes);
+				Carta comic = getCartaFromComboBoxes(comboboxes);
 				actualizarComboBoxes(comboboxes, comic);
 				
 				List<String> allFilteredItems = new ArrayList<>(
-						ListaComicsDAO.listaOrdenada.get(comboboxes.indexOf(originalComboBox)));
+						ListasCartasDAO.listaOrdenada.get(comboboxes.indexOf(originalComboBox)));
 				currentFilteredItems.clear();
 				currentFilteredItems.addAll(allFilteredItems);
 				listView.setItems(FXCollections.observableArrayList(currentFilteredItems));
@@ -579,7 +579,7 @@ public class FuncionesComboBox {
 				{ "Grapa (Issue individual)", "Tapa blanda (Paperback)", "Edicion absolute (Absolute Edition)",
 						"Cómic de bolsillo (Pocket)", "Edicion de lujo (Deluxe Edition)", "Edicion omnibus (Omnibus)",
 						"Edicion integral (Integral)", "Tapa dura (Hardcover)", "eBook (libro electrónico)",
-						"Comic digital (Digital Comic)", "Manga digital (Digital Manga)", "Manga (Manga tome)",
+						"Carta digital (Digital Carta)", "Manga digital (Digital Manga)", "Manga (Manga tome)",
 						"PDF (Portable Document Format)", "Revista (Magazine)",
 						"Edicion de coleccionista (Collector's Edition)", "Edicion especial (Special Edition)",
 						"Edicion con extras (Bonus Edition)", "Libro (Book)" },
@@ -594,7 +594,7 @@ public class FuncionesComboBox {
 						"Finlandia (Finland)", "Noruega (Norway)", "Dinamarca (Denmark)" },
 				{ "0/0", "0.5/5", "1/5", "1.5/5", "2/5", "2.5/5", "3/5", "3.5/5", "4/5", "4.5/5", "5/5" } };
 
-		String[] ids = { "formatoComic", "gradeoComic", "estadoComic", "procedenciaComic", "puntuacionMenu" };
+		String[] ids = { "formatoCarta", "gradeoCarta", "estadoCarta", "procedenciaCarta", "puntuacionMenu" };
 
 		// Verificar que la lista de ComboBox tenga al menos el mismo tamaño que los
 		// arreglos
@@ -625,19 +625,19 @@ public class FuncionesComboBox {
 	}
 
 	/**
-	 * Funcion que permite seleccionar en el comboBox "numeroComic" y lo devuelve,
+	 * Funcion que permite seleccionar en el comboBox "numeroCarta" y lo devuelve,
 	 * para la busqueda de comic
 	 * 
 	 * @return
 	 */
-	public static String numeroCombobox(ComboBox<String> numeroComic) {
-		String numComic = "";
+	public static String numeroCombobox(ComboBox<String> numeroCarta) {
+		String numCarta = "";
 
-		if (numeroComic.getSelectionModel().getSelectedItem() != null) {
-			numComic = numeroComic.getSelectionModel().getSelectedItem();
+		if (numeroCarta.getSelectionModel().getSelectedItem() != null) {
+			numCarta = numeroCarta.getSelectionModel().getSelectedItem();
 		}
 
-		return numComic;
+		return numCarta;
 	}
 
 	/**
@@ -646,15 +646,15 @@ public class FuncionesComboBox {
 	 * 
 	 * @return
 	 */
-	public static String cajaCombobox(ComboBox<String> numeroCajaComic) {
+	public static String cajaCombobox(ComboBox<String> numeroCajaCarta) {
 
-		String cajaComics = "";
+		String cajaCartas = "";
 
-		if (numeroCajaComic.getSelectionModel().getSelectedItem() != null) {
-			cajaComics = numeroCajaComic.getSelectionModel().getSelectedItem();
+		if (numeroCajaCarta.getSelectionModel().getSelectedItem() != null) {
+			cajaCartas = numeroCajaCarta.getSelectionModel().getSelectedItem();
 		}
 
-		return cajaComics;
+		return cajaCartas;
 	}
 
 	/**
@@ -663,12 +663,12 @@ public class FuncionesComboBox {
 	 * 
 	 * @return
 	 */
-	public static String estadoCombobox(ComboBox<String> estadoComic) {
+	public static String estadoCombobox(ComboBox<String> estadoCarta) {
 
 		String estadoNuevo = "";
 
-		if (estadoComic.getSelectionModel().getSelectedItem() != null) {
-			estadoNuevo = estadoComic.getSelectionModel().getSelectedItem();
+		if (estadoCarta.getSelectionModel().getSelectedItem() != null) {
+			estadoNuevo = estadoCarta.getSelectionModel().getSelectedItem();
 		}
 
 		return estadoNuevo;
@@ -680,11 +680,11 @@ public class FuncionesComboBox {
 	 * 
 	 * @return
 	 */
-	public static String formatoCombobox(ComboBox<String> formatoComic) {
+	public static String formatoCombobox(ComboBox<String> formatoCarta) {
 
 		String formatoEstado = "";
-		if (formatoComic.getSelectionModel().getSelectedItem() != null) {
-			formatoEstado = formatoComic.getSelectionModel().getSelectedItem();
+		if (formatoCarta.getSelectionModel().getSelectedItem() != null) {
+			formatoEstado = formatoCarta.getSelectionModel().getSelectedItem();
 		}
 		return formatoEstado;
 	}
@@ -695,11 +695,11 @@ public class FuncionesComboBox {
 	 * @param ps
 	 * @return
 	 */
-	public static String procedenciaCombobox(ComboBox<String> procedenciaComic) {
+	public static String procedenciaCombobox(ComboBox<String> procedenciaCarta) {
 
 		String procedenciaEstadoNuevo = "";
-		if (procedenciaComic.getSelectionModel().getSelectedItem() != null) {
-			procedenciaEstadoNuevo = procedenciaComic.getSelectionModel().getSelectedItem();
+		if (procedenciaCarta.getSelectionModel().getSelectedItem() != null) {
+			procedenciaEstadoNuevo = procedenciaCarta.getSelectionModel().getSelectedItem();
 		}
 
 		return procedenciaEstadoNuevo;

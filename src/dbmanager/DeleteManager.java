@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
-import cartaManagement.Comic;
+import cartaManagement.Carta;
 import funcionesAuxiliares.Utilidades;
 
 public class DeleteManager {
@@ -25,7 +25,7 @@ public class DeleteManager {
 	public static CompletableFuture<Boolean> deleteAndRestartDatabaseAsync() {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				ListaComicsDAO.limpiarListasPrincipales();
+				ListasCartasDAO.limpiarListasPrincipales();
 				CompletableFuture<Boolean> result = CompletableFuture.supplyAsync(() -> {
 					try (Connection conn = ConectManager.conexion();
 							PreparedStatement deleteStatement = conn.prepareStatement(DELETE_SENTENCIA_COMPLETA);
@@ -59,16 +59,16 @@ public class DeleteManager {
 	 * @throws SQLException Si ocurre un error en la base de datos
 	 */
 	public static void borrarCarta(String idComic) {
-		ListaComicsDAO.listaComics.clear();
+		ListasCartasDAO.listaCartas.clear();
 
 		try (Connection conn = ConectManager.conexion();
 				PreparedStatement ps = conn.prepareStatement(DELETE_SENTENCIA);) {
-			if (SelectManager.comprobarIdentificadorComic(idComic)) { // Comprueba si la ID introducida existe en la
+			if (SelectManager.comprobarIdentificadorCarta(idComic)) { // Comprueba si la ID introducida existe en la
 																		// base de datos
-				Comic comic = SelectManager.comicDatos(idComic);
+				Carta carta = SelectManager.cartaDatos(idComic);
 				ps.setString(1, idComic);
 				if (ps.executeUpdate() == 1) { // Si se ha modificado correctamente, se añade el cómic a la lista
-					ListaComicsDAO.listaComics.add(comic);
+					ListasCartasDAO.listaCartas.add(carta);
 				}
 			}
 		} catch (SQLException ex) {

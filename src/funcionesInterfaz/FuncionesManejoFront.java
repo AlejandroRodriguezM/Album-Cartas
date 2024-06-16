@@ -7,9 +7,8 @@ import java.util.List;
 import org.controlsfx.control.textfield.TextFields;
 
 import alarmas.AlarmaList;
-import cartaManagement.Comic;
+import cartaManagement.Carta;
 import funcionesAuxiliares.Utilidades;
-import funcionesManagment.AccionFuncionesComunes;
 import funcionesManagment.AccionReferencias;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -21,7 +20,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -29,7 +27,7 @@ import javafx.stage.Stage;
 
 public class FuncionesManejoFront {
 
-	public static ImageView imagenComic;
+	public static ImageView imagenCarta;
 
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 
@@ -52,7 +50,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoColumnas(double numColumns) {
-		for (TableColumn<Comic, String> columna : referenciaVentana.getColumnasTabla()) {
+		for (TableColumn<Carta, String> columna : referenciaVentana.getColumnasTabla()) {
 			columna.prefWidthProperty().bind(referenciaVentana.getTablaBBDD().widthProperty().divide(numColumns));
 		}
 	}
@@ -276,9 +274,7 @@ public class FuncionesManejoFront {
 		disableMenuItems(estadoAccion, referenciaVentana.getMenu_archivo_excel(),
 				referenciaVentana.getMenu_archivo_importar(), referenciaVentana.getMenu_archivo_delete(),
 				referenciaVentana.getMenu_comic_aniadir(), referenciaVentana.getMenu_comic_eliminar(),
-				referenciaVentana.getMenu_comic_modificar(), referenciaVentana.getMenu_comic_puntuar(),
-				referenciaVentana.getMenu_comic_aleatoria(), referenciaVentana.getMenu_archivo_avanzado(),
-				referenciaVentana.getMenu_leer_CodigoBarras(),
+				referenciaVentana.getMenu_comic_modificar(), referenciaVentana.getMenu_archivo_avanzado(),
 				referenciaVentana.getMenu_Importar_Fichero_CodigoBarras(),
 				referenciaVentana.getNavegacion_estadistica(),
 				referenciaVentana.getMenu_Importar_Fichero_CodigoBarras(), referenciaVentana.getMenu_archivo_sobreMi(),
@@ -286,40 +282,29 @@ public class FuncionesManejoFront {
 				referenciaVentana.getMenu_archivo_cerrar());
 
 		disableButtons(estadoAccion, referenciaVentana.getBotonIntroducir(), referenciaVentana.getBotonModificar(),
-				referenciaVentana.getBotonEliminar(), referenciaVentana.getBotonAgregarPuntuacion(),
-				referenciaVentana.getBotonLimpiar(), referenciaVentana.getBotonMostrarParametro(),
-				referenciaVentana.getBotonImprimir(), referenciaVentana.getBotonGuardarResultado(),
-				referenciaVentana.getBotonbbdd(), referenciaVentana.getBotonLimpiar(),
-				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getBotonLimpiar(),
-				referenciaVentana.getBotonSubidaPortada(), referenciaVentana.getBotonGuardarComic(),
-				referenciaVentana.getBotonGuardarCambioComic(), referenciaVentana.getBotonEliminarImportadoComic(),
-				referenciaVentana.getBotonParametroComic(), referenciaVentana.getBotonbbdd(),
-				referenciaVentana.getBotonBusquedaCodigo(), referenciaVentana.getBotonGuardarResultado());
+				referenciaVentana.getBotonEliminar(), referenciaVentana.getBotonLimpiar(),
+				referenciaVentana.getBotonMostrarParametro(), referenciaVentana.getBotonImprimir(),
+				referenciaVentana.getBotonGuardarResultado(), referenciaVentana.getBotonbbdd(),
+				referenciaVentana.getBotonLimpiar(), referenciaVentana.getBotonBusquedaAvanzada(),
+				referenciaVentana.getBotonLimpiar(), referenciaVentana.getBotonSubidaPortada(),
+				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonGuardarCambioCarta(),
+				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonParametroCarta(),
+				referenciaVentana.getBotonbbdd(), referenciaVentana.getBotonBusquedaCodigo(),
+				referenciaVentana.getBotonGuardarResultado());
 
-		disableControls(estadoAccion, referenciaVentana.getTituloComic(), referenciaVentana.getNombreDibujante(),
-				referenciaVentana.getNombreEditorial(), referenciaVentana.getNombreFirma(),
-				referenciaVentana.getNombreFormato(), referenciaVentana.getNombreGuionista(),
-				referenciaVentana.getNombreProcedencia(), referenciaVentana.getNombreVariante(),
-				referenciaVentana.getGradeoComic(), referenciaVentana.getNumeroComic(),
-				referenciaVentana.getFechaPublicacion(), referenciaVentana.getBusquedaGeneral(),
-				referenciaVentana.getEstadoComic(), referenciaVentana.getProcedenciaComic(),
-				referenciaVentana.getNumeroComic(), referenciaVentana.getFormatoComic(),
-				referenciaVentana.getFechaComic(), referenciaVentana.getBusquedaCodigo(),
-				referenciaVentana.getNombreDibujante());
+		disableControls(estadoAccion, referenciaVentana.getTituloCarta(), referenciaVentana.getNombreEditorial(),
+				referenciaVentana.getNombreFormato(), referenciaVentana.getGradeoCarta(),
+				referenciaVentana.getNumeroCarta(), referenciaVentana.getBusquedaGeneral(),
+				referenciaVentana.getEstadoCarta(), referenciaVentana.getNumeroCarta(),
+				referenciaVentana.getFormatoCarta(), referenciaVentana.getBusquedaCodigo());
 
-		disableTextFields(estadoAccion, referenciaVentana.getNombreComic(), referenciaVentana.getVarianteComic(),
-				referenciaVentana.getFirmaComic(), referenciaVentana.getEditorialComic(),
-				referenciaVentana.getPrecioComic(), referenciaVentana.getCodigoComicTratar(),
-				referenciaVentana.getDireccionImagen(), referenciaVentana.getIdComicTratar(),
-				referenciaVentana.getGuionistaComic(), referenciaVentana.getDibujanteComic(),
-				referenciaVentana.getNombreKeyIssue(), referenciaVentana.getUrlReferencia());
+		disableTextFields(estadoAccion, referenciaVentana.getNombreCarta(), referenciaVentana.getEditorialCarta(),
+				referenciaVentana.getPrecioCarta(), referenciaVentana.getCodigoCartaTratar(),
+				referenciaVentana.getDireccionImagen(), referenciaVentana.getIdCartaTratar(),
+				referenciaVentana.getUrlReferencia());
 
 		if (referenciaVentana.getBotonModificar() != null) {
 			// Limpiar elementos adicionales de la interfaz
-			referenciaVentana.getFechaPublicacion().setDisable(estadoAccion);
-//			referenciaVentana.getProntInfo().clear();
-//			referenciaVentana.getProntInfo().setText(null);
-//			referenciaVentana.getProntInfo().setOpacity(0);
 			referenciaVentana.getBarraCambioAltura().setDisable(estadoAccion);
 			referenciaVentana.getTablaBBDD().getItems().clear();
 			referenciaVentana.getImagencomic().setImage(null);
@@ -327,7 +312,7 @@ public class FuncionesManejoFront {
 			referenciaVentana.getTablaBBDD().setDisable(estadoAccion);
 		}
 
-		if (referenciaVentana.getNombreComic() != null) {
+		if (referenciaVentana.getNombreCarta() != null) {
 			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonBusquedaCodigo(),
 					getReferenciaVentana().getBusquedaCodigo());
 			Utilidades.cambiarVisibilidad(elementos, true);
