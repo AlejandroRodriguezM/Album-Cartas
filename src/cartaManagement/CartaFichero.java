@@ -21,15 +21,15 @@ public class CartaFichero extends Carta {
 		if (data.length >= 11) { // Ajusta este valor según la cantidad de campos esperados
 
 			String nombre = data[1];
-			int numCarta = Integer.parseInt(data[2]);
+			String numCarta = data[2];
 			String editorialCarta = data[3];
 			String coleccionCarta = data[4];
 			String rarezaCarta = data[5];
 			String esFoilCartaStr = data[6];
-			boolean esFoilCarta = Boolean.parseBoolean(esFoilCartaStr);
+			String esFoilCarta = esFoilCartaStr;
 			String gradeoCarta = data[7];
 			String estadoCarta = data[8];
-			double precioCarta = Double.parseDouble(data[9]);
+			String precioCarta = data[9];
 			String urlReferenciaCarta = data[10];
 			String direccionImagenCarta = data[11];
 			String normasCarta = data[12];
@@ -37,7 +37,7 @@ public class CartaFichero extends Carta {
 			String imagen = FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH + File.separator + nombrePortada;
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCarta = (precioCarta <= 0) ? 0.0 : precioCarta;
+			precioCarta = (Integer.parseInt(precioCarta) <= 0) ? "0.0" : precioCarta;
 			gradeoCarta = comprobarGradeo(gradeoCarta);
 			urlReferenciaCarta = (urlReferenciaCarta.isEmpty()) ? "Sin referencia" : urlReferenciaCarta;
 

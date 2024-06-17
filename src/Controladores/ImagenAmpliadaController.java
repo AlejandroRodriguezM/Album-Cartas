@@ -45,6 +45,8 @@ public class ImagenAmpliadaController implements Initializable {
 
 	@FXML
 	private TextArea infoCarta;
+	
+	public String idCarta;
 
 	/**
 	 * Inicializa el controlador cuando se carga la vista.
@@ -70,13 +72,13 @@ public class ImagenAmpliadaController implements Initializable {
 		});
 
 		if (!cartaInfo.devolverNormas().isEmpty()) {
-			infoCartaString = cartaInfo.infoCarta() + "\n" + cartaInfo.devolverNormas();
-
-		} else {
 			infoCartaString = cartaInfo.infoCarta();
 
+		} else {
+			infoCartaString = "ERROR. Datos vacios";
 		}
 
+		
 		infoCarta.setText(infoCartaString);
 
 		// Obtener el ancho del TextArea desde el FXML
@@ -188,6 +190,20 @@ public class ImagenAmpliadaController implements Initializable {
 	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	/**
+	 * @return the idCarta
+	 */
+	public String getIdCarta() {
+		return idCarta;
+	}
+
+	/**
+	 * @param idCarta the idCarta to set
+	 */
+	public void setIdCarta(String idCarta) {
+		this.idCarta = idCarta;
 	}
 
 	/**

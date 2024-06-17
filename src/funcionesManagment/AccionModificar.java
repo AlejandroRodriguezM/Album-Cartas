@@ -50,30 +50,29 @@ public class AccionModificar {
 	 * Oculta y deshabilita varios campos y elementos en la interfaz gráfica.
 	 */
 	public void ocultarCamposMod() {
-		List<Node> elementos = Arrays.asList(
-				getReferenciaVentana().getUrlReferencia(), getReferenciaVentana().getLabel_id_mod(),
-				getReferenciaVentana().getIdCartaTratar(), getReferenciaVentana().getPrecioCarta(),
-				getReferenciaVentana().getDireccionImagen(), getReferenciaVentana().getLabel_portada(),
-				getReferenciaVentana().getLabel_precio(),
-				getReferenciaVentana().getLabel_referencia(), getReferenciaVentana().getBotonModificarCarta(),
-				getReferenciaVentana().getCodigoCartaTratar());
-
-		Utilidades.cambiarVisibilidad(elementos, true);
+//		List<Node> elementos = Arrays.asList(getReferenciaVentana().getUrlReferencia(),
+//				getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getIdCartaTratar(),
+//				getReferenciaVentana().getPrecioCarta(), getReferenciaVentana().getDireccionImagen(),
+//				getReferenciaVentana().getLabel_portada(), getReferenciaVentana().getLabel_precio(),
+//				getReferenciaVentana().getLabel_referencia(), getReferenciaVentana().getBotonModificarCarta(),
+//				getReferenciaVentana().getCodigoCartaTratar());
+//
+//		Utilidades.cambiarVisibilidad(elementos, true);
 	}
 
 	public static void venderCarta() throws SQLException {
 
-		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
-		getReferenciaVentana().getIdCartaTratar().setStyle("");
-		Carta comicActualizar = CartaManagerDAO.comicDatos(idCarta);
+		String idCarta = getReferenciaVentana().getIdCartaTratarTextField().getText();
+		getReferenciaVentana().getIdCartaTratarTextField().setStyle("");
+		Carta comicActualizar = CartaManagerDAO.cartaDatos(idCarta);
 		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			if (nav.alertaAccionGeneral()) {
 				CartaManagerDAO.actualizarCartaBBDD(comicActualizar, "vender");
 				ListasCartasDAO.reiniciarListaCartas();
 				String mensaje = ". Has puesto a la venta el comic";
-				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
+				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 
-				List<ComboBox<String>> comboboxes = getReferenciaVentana().getComboboxes();
+				List<ComboBox<String>> comboboxes = getReferenciaVentana().getListaComboboxes();
 
 				funcionesCombo.rellenarComboBox(comboboxes);
 				getReferenciaVentana().getTablaBBDD().refresh();
@@ -82,7 +81,7 @@ public class AccionModificar {
 
 			} else {
 				String mensaje = "Accion cancelada";
-				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
+				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 			}
 
 		}
@@ -90,8 +89,8 @@ public class AccionModificar {
 
 	public static void modificarCarta() throws Exception {
 
-		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
-		getReferenciaVentana().getIdCartaTratar().setStyle("");
+		String idCarta = getReferenciaVentana().getIdCartaTratarTextField().getText();
+		getReferenciaVentana().getIdCartaTratarTextField().setStyle("");
 
 		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			String sentenciaSQL = DBUtilidades.construirSentenciaSQL(DBUtilidades.TipoBusqueda.COMPLETA);
@@ -100,7 +99,7 @@ public class AccionModificar {
 
 				Utilidades.convertirNombresCarpetas(AccionFuncionesComunes.carpetaPortadas(Utilidades.nombreDB()));
 
-				Carta comicModificado = AccionControlUI.comicModificado();
+				Carta comicModificado = AccionControlUI.cartaModificado();
 
 				accionFuncionesComunes.procesarCarta(comicModificado, true);
 
@@ -130,7 +129,7 @@ public class AccionModificar {
 
 		if (!accionRellenoDatos.camposCartaSonValidos()) {
 			String mensaje = "Error. Debes de introducir los datos correctos";
-			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
+			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 			return; // Agregar return para salir del método en este punto
 		}
 
@@ -180,29 +179,28 @@ public class AccionModificar {
 		FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 	}
 
-	public void mostrarElementosPuntuar(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(getReferenciaVentana().getBotonBorrarOpinion(),
-				getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getTablaBBDD(),
-				getReferenciaVentana().getBotonbbdd(), getReferenciaVentana().getRootVBox(),
-				getReferenciaVentana().getBotonParametroCarta(), getReferenciaVentana().getIdCartaTratar()));
-		getReferenciaVentana().getRootVBox().toFront();
-	}
-
 	public void mostrarElementosModificar(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(getReferenciaVentana().getEditorialCarta(),
-				getReferenciaVentana().getEstadoCarta(), getReferenciaVentana().getFormatoCarta(),
 
-				getReferenciaVentana().getGradeoCarta(), getReferenciaVentana().getUrlReferencia(),
-				getReferenciaVentana().getBotonModificarCarta(), getReferenciaVentana().getPrecioCarta(),
-				getReferenciaVentana().getDireccionImagen(), getReferenciaVentana().getTablaBBDD(),
-				getReferenciaVentana().getLabel_portada(), getReferenciaVentana().getLabel_precio(),
-				getReferenciaVentana().getLabel_gradeo(), getReferenciaVentana().getLabel_editorial(),
-				getReferenciaVentana().getLabel_estado(), getReferenciaVentana().getLabel_fecha(),
-				getReferenciaVentana().getLabel_formato(), getReferenciaVentana().getLabel_referencia(),
-				getReferenciaVentana().getBotonbbdd(), getReferenciaVentana().getIdCartaTratar(),
-				getReferenciaVentana().getLabel_id_mod(), getReferenciaVentana().getBotonParametroCarta(),
-				getReferenciaVentana().getCodigoCartaTratar(), getReferenciaVentana().getRootVBox(),
-				getReferenciaVentana().getBotonSubidaPortada()));
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelRareza(),
+				referenciaVentana.getLabelEsFoil(), referenciaVentana.getLabelGradeo(),
+				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecio(),
+				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(),
+				referenciaVentana.getLabelEstado(), referenciaVentana.getLabelReferencia()));
+
+		elementosAMostrarYHabilitar.addAll(
+				Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEsFoilCombobox(),
+						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(),
+						getReferenciaVentana().getBotonModificarCarta(), getReferenciaVentana().getRootVBox(),
+						getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
+						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
+
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
+				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
+				referenciaVentana.getUrlReferenciaTextField(),referenciaVentana.getGradeoCartaCombobox()));
+
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada()));
+
 		getReferenciaVentana().getRootVBox().toFront();
 	}
 

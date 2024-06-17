@@ -72,7 +72,7 @@ public class FuncionesComboBox {
 				carta.setNomCarta(value);
 				break;
 			case 1:
-				carta.setNumCarta(Integer.parseInt(value));
+				carta.setNumCarta(value);
 				break;
 			case 2:
 				carta.setEditorialCarta(value);
@@ -84,7 +84,7 @@ public class FuncionesComboBox {
 				carta.setRarezaCarta(value);
 				break;
 			case 5:
-				carta.setEsFoilCarta("1".equals(value) || "true".equalsIgnoreCase(value));
+				carta.setEsFoilCarta(value);
 				break;
 			case 6:
 				carta.setGradeoCarta(value);
@@ -93,7 +93,7 @@ public class FuncionesComboBox {
 				carta.setEstadoCarta(value);
 				break;
 			case 8:
-				carta.setPrecioCarta(Double.parseDouble(value));
+				carta.setPrecioCarta(value);
 				break;
 			// Add more cases for additional comboboxes if needed
 			default:
@@ -168,6 +168,7 @@ public class FuncionesComboBox {
 			int cantidadDeComboBoxes = comboboxes.size();
 			for (int i = 0; i < cantidadDeComboBoxes; i++) {
 				comboboxes.get(i).hide();
+
 				List<String> itemsActuales = ListasCartasDAO.listaOrdenada.get(i);
 				if (itemsActuales != null && !itemsActuales.isEmpty()) {
 					ObservableList<String> itemsObservable = FXCollections.observableArrayList(itemsActuales);
@@ -249,7 +250,6 @@ public class FuncionesComboBox {
 
 	public void lecturaComboBox(List<ComboBox<String>> comboboxes) {
 		isUserInput = true; // Establecemos isUserInput en true inicialmente.
-
 		// Configuración de los escuchadores para cada ComboBox mediante un bucle
 		for (ComboBox<String> comboBox : comboboxes) {
 			originalComboBoxItems.put(comboBox, FXCollections.observableArrayList(comboBox.getItems()));
@@ -283,7 +283,6 @@ public class FuncionesComboBox {
 			if (items != null && !items.isEmpty() && !comboBox.getItems().equals(items)) {
 				comboBox.setItems(FXCollections.observableArrayList(items));
 			}
-
 			// Configurar el evento de clic del mouse fuera del bucle
 			setupComboBoxMouseClickEvent(comboboxes, comboBox, i);
 		}
@@ -302,8 +301,11 @@ public class FuncionesComboBox {
 
 		List<String> currentItems = ListasCartasDAO.listaOrdenada.get(index);
 
-		setupFilteredPopup(comboboxes, comboBox,
-				atLeastOneNotEmpty ? currentItems : ListasCartasDAO.itemsList.get(index));
+		if (atLeastOneNotEmpty) {
+			setupFilteredPopup(comboboxes, comboBox, currentItems);
+		} else {
+			setupFilteredPopup(comboboxes, comboBox, ListasCartasDAO.itemsList.get(index));
+		}
 
 		Carta comic = getCartaFromComboBoxes(comboboxes);
 		actualizarComboBoxes(comboboxes, comic);
@@ -318,6 +320,9 @@ public class FuncionesComboBox {
 	 */
 	private void setupFilteredPopup(List<ComboBox<String>> comboboxes, ComboBox<String> originalComboBox,
 			List<String> filteredItems) {
+
+		System.out.println(123);
+
 		modificarPopup(originalComboBox);
 
 		ListView<String> listView = new ListView<>(FXCollections.observableArrayList(filteredItems));

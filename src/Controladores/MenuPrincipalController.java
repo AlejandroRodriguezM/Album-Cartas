@@ -99,7 +99,7 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	private ImageView backgroundImage;
 	@FXML
-	private ImageView imagencomic;
+	private ImageView imagenCarta;
 
 	@FXML
 	private Rectangle barraCambioAltura;
@@ -256,7 +256,7 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setBusquedaGeneralTextField(busquedaGeneral);
 
 		// ImageViews
-		referenciaVentana.setImagenCarta(imagencomic);
+		referenciaVentana.setImagenCarta(imagenCarta);
 		referenciaVentana.setBackgroundImage(backgroundImage);
 
 		// MenuItems
@@ -319,13 +319,14 @@ public class MenuPrincipalController implements Initializable {
 
 		// ComboBox List
 		referenciaVentana.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
-				comboboxGradeoCarta, comboboxColeccionCarta, comboboxEditorialCarta, comboboxEsFoilCarta,
-				comboboxEstadoCarta, comboboxPrecioCarta, comboboxRarezaCarta));
+				comboboxEditorialCarta, comboboxColeccionCarta, comboboxRarezaCarta, comboboxEsFoilCarta,
+				comboboxGradeoCarta, comboboxEstadoCarta, comboboxPrecioCarta));
 
 		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
 		AccionReferencias.setListaBotones(FXCollections.observableArrayList(botonLimpiar, botonMostrarParametro,
-				botonbbdd, botonImprimir, botonGuardarResultado));
+				botonbbdd, botonImprimir, botonGuardarResultado, botonCancelarSubida));
+
 		AccionReferencias.setListaColumnasTabla(
 				Arrays.asList(columnaNombre, columnaNumero, columnaEditorial, columnaReferencia, columnaColeccion,
 						columnaEsFoil, columnaEstado, columnaGradeo, columnaId, columnaPrecio, columnaRareza));
@@ -398,10 +399,9 @@ public class MenuPrincipalController implements Initializable {
 			FuncionesManejoFront.getStageVentanas().add(estadoStage());
 
 			cargarDatosDataBase();
-
 		});
 
-//		AccionControlUI.establecerTooltips();
+		AccionControlUI.establecerTooltips();
 
 		formatearTextField();
 
@@ -415,7 +415,6 @@ public class MenuPrincipalController implements Initializable {
 		if (idRow != null) {
 
 			ImagenAmpliadaController.cartaInfo = SelectManager.cartaDatos(idRow.getIdCarta());
-
 			nav.verVentanaImagen();
 		}
 	}
@@ -524,7 +523,7 @@ public class MenuPrincipalController implements Initializable {
 	public void cargarDatosDataBase() {
 		tablaBBDD.refresh();
 		prontInfo.setOpacity(0);
-		imagencomic.setImage(null);
+		imagenCarta.setImage(null);
 
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		try {
@@ -1093,7 +1092,7 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.setText(null);
 		prontInfo.setOpacity(0);
 		tablaBBDD.getItems().clear();
-		imagencomic.setImage(null);
+		imagenCarta.setImage(null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		// Configuración de la tarea para crear el archivo Excel
 		Task<Boolean> crearExcelTask = excelFuntions.crearExcelTask(listaCartas, tipoBusqueda, dateFormat);
@@ -1249,7 +1248,7 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.setText(null);
 		prontInfo.setOpacity(0);
 		tablaBBDD.getItems().clear();
-		imagencomic.setImage(null);
+		imagenCarta.setImage(null);
 		tablaBBDD.refresh();
 	}
 
@@ -1296,8 +1295,8 @@ public class MenuPrincipalController implements Initializable {
 			}
 		}
 
-		imagencomic.setVisible(false);
-		imagencomic.setImage(null);
+		imagenCarta.setVisible(false);
+		imagenCarta.setImage(null);
 		prontInfo.setOpacity(0);
 		nav.verAccionCarta();
 	}

@@ -36,7 +36,7 @@
             <Font size="10.0" />
          </font>
       </TextField>
-      <TextField fx:id="firmaComic" layoutX="56.0" layoutY="104.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce coleccion carta">
+      <TextField fx:id="textFieldColeccion" layoutX="56.0" layoutY="104.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce coleccion carta">
          <font>
             <Font size="10.0" />
          </font>
@@ -67,13 +67,13 @@
       <Label layoutX="5.0" layoutY="30.0" prefHeight="21.0" prefWidth="45.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Nombre" />
       <Label layoutX="5.0" layoutY="55.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Numero" />
       <Label layoutX="5.0" layoutY="81.0" prefHeight="12.0" prefWidth="46.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Editorial" />
-      <Label fx:id="labelFirma" layoutX="5.0" layoutY="104.0" prefHeight="21.0" prefWidth="47.0" style="-fx-background-color: white; -fx-font-size: 9;" stylesheets="@../style/genericos_style.css" text="Coleccion">
+      <Label fx:id="labelcoleccion" layoutX="5.0" layoutY="104.0" prefHeight="21.0" prefWidth="47.0" style="-fx-background-color: white; -fx-font-size: 9;" stylesheets="@../style/genericos_style.css" text="Coleccion">
          <font>
             <Font size="10.0" />
          </font></Label>
-      <Label fx:id="labelEditorial" layoutX="5.0" layoutY="128.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Rareza" />
-      <Label fx:id="labelFormato" layoutX="5.0" layoutY="153.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Foil" />
-      <Label fx:id="labelGuionista" layoutX="5.0" layoutY="206.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Normas" />
+      <Label fx:id="labelRareza" layoutX="5.0" layoutY="128.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Rareza" />
+      <Label fx:id="labelFoil" layoutX="5.0" layoutY="153.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Foil" />
+      <Label fx:id="labelNormas" layoutX="5.0" layoutY="206.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Normas" />
       <Label fx:id="labelEstado" layoutX="188.0" layoutY="70.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Estado" />
       <Label fx:id="labelGradeo" layoutX="5.0" layoutY="181.0" prefHeight="21.0" prefWidth="43.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Gradeo" wrapText="true">
          <font>
@@ -104,7 +104,7 @@
             <Font size="10.0" />
          </font>
       </Button>
-      <Label fx:id="labelCodigo" focusTraversable="false" layoutX="5.0" layoutY="231.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Precio" />
+      <Label fx:id="labelPrecio" focusTraversable="false" layoutX="5.0" layoutY="231.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Precio" />
       <TextField fx:id="textFieldPrecioCarta" layoutX="56.0" layoutY="231.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce precio carta">
          <font>
             <Font size="10.0" />
@@ -138,7 +138,6 @@
          <menus>
             <Menu fx:id="navegacionOpciones" mnemonicParsing="false" text="Archivo">
                <items>
-                  <MenuItem fx:id="menuCodigoBarras" mnemonicParsing="false" onAction="#verMenuCodigoBarras" text="Leer codigo de barras" />
                   <MenuItem fx:id="menuImportarFichero" mnemonicParsing="false" onAction="#importarFicheroCodigoBarras" text="Importar fichero" />
                </items>
             </Menu>

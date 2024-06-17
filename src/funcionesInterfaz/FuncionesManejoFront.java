@@ -172,9 +172,7 @@ public class FuncionesManejoFront {
 		if (textField != null) {
 
 			textField.textProperty().addListener((observable, oldValue, newValue) -> {
-				String allowedPattern = "[\\p{L}\\p{N}\\s,.!'`´\"-]*"; // Expresión regular para permitir letras,
-																		// números, espacios, ",", "-", "'", "`", "´", y
-																		// '"'
+				String allowedPattern = "[\\p{L}\\p{N}\\s,.!'`´\"-]*";
 
 				if (newValue != null) {
 

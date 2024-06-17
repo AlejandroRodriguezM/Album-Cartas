@@ -193,7 +193,7 @@ public class AccionFuncionesComunes {
 		comicOriginal.setIdCarta(comicOriginal.getIdCarta());
 		if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
 
-			int numCarta = comicOriginal.getNumCarta();
+			String numCarta = comicOriginal.getNumCarta();
 			String nombreCorregido = Utilidades.eliminarParentesis(comicOriginal.getNomCarta());
 			String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
 			nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
@@ -247,7 +247,7 @@ public class AccionFuncionesComunes {
 		if (comicInfo.getRarezaCarta() == null || comicInfo.getRarezaCarta().isEmpty()) {
 			comicInfo.setRarezaCarta(comicOriginal.getRarezaCarta());
 		}
-		if (comicInfo.getPrecioCarta() == 0) {
+		if (comicInfo.getPrecioCarta().equals("0")) {
 			comicInfo.setPrecioCarta(comicOriginal.getPrecioCarta());
 		}
 		comicInfo.setEstadoCarta(comicOriginal.getEstadoCarta());
@@ -378,38 +378,33 @@ public class AccionFuncionesComunes {
 	private static void rellenarTablaImport(Carta comic) {
 		Platform.runLater(() -> {
 
-			String numCarta = Integer.toString(comic.getNumCarta());
+			String numCartaStr = comic.getNumCarta();
 			String nombreCorregido = Utilidades.eliminarParentesis(comic.getNomCarta());
-
-			System.out.println(comic.toString());
-
-			String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
-
 			// Variables relacionadas con la importación de cómics
 			String id = "A" + 0 + "" + (ListasCartasDAO.cartasImportados.size() + 1);
-			String titulo = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirPatrones(nombreLimpio), "Vacio");
+			String titulo = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirPatrones(nombreCorregido),
+					"Vacio");
+
+			String numero = Utilidades.defaultIfNullOrEmpty(numCartaStr, "0");
+			String editorial = Utilidades
+					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getEditorialCarta()), "Vacio");
+			String coleccion = Utilidades
+					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getColeccionCarta()), "Vacio");
+			String rareza = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getRarezaCarta()),
+					"Vacio");
+			String esFoil = comic.getEsFoilCarta();
+			String gradeo = "NM (Noir Medium)";
 			String normas = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getNormasCarta()),
 					"Vacio");
-			String numero = Utilidades.defaultIfNullOrEmpty(numCarta, "0");
-			String variante = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getVariante()),
-					"Vacio");
-			String precio = Utilidades.defaultIfNullOrEmpty(comic.getprecioCarta(), "0");
-			String dibujantes = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getDibujante()),
-					"Vacio");
-			String escritores = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getGuionista()),
-					"Vacio");
-			String fechaVenta = comic.getFecha();
-			LocalDate fecha = Utilidades.parseFecha(fechaVenta);
-
+			String precio = Utilidades.defaultIfNullOrEmpty(comic.getPrecioCarta(), "0");
 			// Variables relacionadas con la imagen del cómic
-			String urlReferencia = Utilidades.defaultIfNullOrEmpty(comic.getUrlReferencia(), "Vacio");
-			String urlImagen = comic.getImagen();
-			String editorial = Utilidades
-					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirPatrones(comic.getEditorial()), "Vacio");
-			File file = new File(urlImagen);
 
+			String urlImagen = comic.getDireccionImagenCarta();
+			String estado = "Comprado";
+			String urlReferencia = Utilidades.defaultIfNullOrEmpty(comic.getUrlReferenciaCarta(), "Vacio");
+			File file = new File(urlImagen);
 			// Manejo de la ruta de la imagen
-			if (comic.getImagen() == null || comic.getImagen().isEmpty()) {
+			if (urlImagen == null || urlImagen.isEmpty()) {
 				String rutaImagen = "/imagenes/sinPortada.jpg";
 				URL url = Utilidades.class.getClass().getResource(rutaImagen);
 				if (url != null) {
@@ -419,11 +414,6 @@ public class AccionFuncionesComunes {
 				file = new File(urlImagen);
 				urlImagen = file.toString();
 			}
-
-			String formatoLimpio = Utilidades.devolverPalabrasClave(comic.getNombre());
-			String formato = Utilidades.defaultIfNullOrEmpty(formatoLimpio, "Grapa (Issue individual)");
-			String procedencia = Utilidades.defaultIfNullOrEmpty(comic.getProcedencia(),
-					"Estados Unidos (United States)");
 
 			// Corrección y generación de la URL final de la imagen
 			String correctedUrl = urlImagen.replace("\\", "/").replace("http:", "https:").replace("https:", "https:/");
@@ -436,16 +426,14 @@ public class AccionFuncionesComunes {
 				e.printStackTrace();
 			}
 			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
-			String codigoCarta = Utilidades.defaultIfNullOrEmpty(comic.getcodigoCarta(), "0");
 			// Descarga y conversión asíncrona de la imagen
 			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
 					codigoImagen + ".jpg");
 
-			Carta comicImport = new Carta.CartaBuilder(id, titulo).valorGradeo("NM (Noir Medium)").numero(numero)
-					.variante(variante).firma("").editorial(editorial).formato(formato).procedencia(procedencia)
-					.fecha(fecha.toString()).guionista(escritores).dibujante(dibujantes).estado("Comprado")
-					.keyIssue(keyIssue).puntuacion("Sin puntuar").imagen(imagen).referenciaCarta(urlReferencia)
-					.precioCarta(precio).codigoCarta(codigoCarta).build();
+			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).coleccionCarta(coleccion)
+					.rarezaCarta(rareza).esFoilCarta(estado).gradeoCarta(gradeo).estadoCarta(estado)
+					.precioCarta(precio).urlReferenciaCarta(urlReferencia)
+					.direccionImagenCarta(urlImagen).normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
 //
@@ -461,7 +449,7 @@ public class AccionFuncionesComunes {
 			if (finalValorCodigo.matches("[A-Z]{3}\\d{6}")) {
 
 				return WebScraperPreviewsWorld.displayCartaInfo(finalValorCodigo.trim(),
-						getReferenciaVentana().getProntInfo());
+						getReferenciaVentana().getProntInfoTextArea());
 			} else {
 				// Si no, intentar obtener la información del cómic de diferentes fuentes
 				Carta comicInfo = ApiMarvel.infoCartaCode(finalValorCodigo.trim(),
@@ -471,7 +459,8 @@ public class AccionFuncionesComunes {
 				}
 				if (comicInfo == null) {
 					ApiISBNGeneral isbnGeneral = new ApiISBNGeneral();
-					comicInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(), getReferenciaVentana().getProntInfo());
+					comicInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(),
+							getReferenciaVentana().getProntInfoTextArea());
 				}
 
 				if (comicInfo == null) {
@@ -574,7 +563,8 @@ public class AccionFuncionesComunes {
 					}
 				} else {
 					listaCartasDatabase.forEach(codigo -> {
-						String finalValorCodigo = Utilidades.eliminarEspacios(codigo.getcodigoCarta()).replace("-", "");
+						String finalValorCodigo = Utilidades.eliminarEspacios(codigo.getcodigoCartaTextField())
+								.replace("-", "");
 						codigo.setcodigoCarta(finalValorCodigo);
 						processCarta(codigo, tipoUpdate, actualizarFirma);
 
@@ -588,14 +578,14 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta comic, String tipoUpdate, boolean actualizarFirma) {
 		StringBuilder textoBuilder = new StringBuilder();
 
-		if (comic.getcodigoCarta().isEmpty()) {
+		if (comic.getUrlReferenciaCarta().isEmpty() || comic.getUrlReferenciaCarta().equalsIgnoreCase("vacio")) {
 
 			if (tipoUpdate.isEmpty()) {
-				codigoFaltante.append("Falta cómic con código: ").append(comic.getcodigoCarta()).append("\n");
-				textoBuilder.append("Cómic no capturado: ").append(comic.getcodigoCarta()).append("\n");
+				codigoFaltante.append("Falta carta con código: ").append(comic.getNomCarta()).append("\n");
+				textoBuilder.append("Cómic no capturado: ").append(comic.getNomCarta()).append("\n");
 			} else {
-				codigoFaltante.append("ID no procesado: ").append(comic.getid()).append("\n");
-				textoBuilder.append("ID no procesado: ").append(comic.getid()).append("\n");
+				codigoFaltante.append("ID no procesado: ").append(comic.getIdCarta()).append("\n");
+				textoBuilder.append("ID no procesado: ").append(comic.getIdCarta()).append("\n");
 			}
 
 			contadorErrores.getAndIncrement();
@@ -603,8 +593,8 @@ public class AccionFuncionesComunes {
 		} else {
 
 			if (tipoUpdate.isEmpty()) {
-				textoBuilder.append("Código: ").append(comic.getcodigoCarta()).append(" procesado.").append("\n");
-				AccionFuncionesComunes.procesarCartaPorCodigo(comic.getcodigoCarta());
+				textoBuilder.append("Código: ").append(comic.getNomCarta()).append(" procesado.").append("\n");
+				AccionFuncionesComunes.procesarCartaPorCodigo(comic.getUrlReferenciaCarta());
 			} else {
 				textoBuilder.append("ID: ").append(comic.getIdCarta()).append(" actualizado.").append("\n");
 				AccionFuncionesComunes.actualizarCartasDatabase(comic, tipoUpdate, actualizarFirma);
@@ -818,11 +808,11 @@ public class AccionFuncionesComunes {
 	 */
 	public static void borrarErrores() {
 
-		getReferenciaVentana().getNombreCarta().setStyle("");
-		getReferenciaVentana().getNumeroCarta().setStyle("");
-		getReferenciaVentana().getEditorialCarta().setStyle("");
-		getReferenciaVentana().getGuionistaCarta().setStyle("");
-		getReferenciaVentana().getDibujanteCarta().setStyle("");
+		getReferenciaVentana().getNombreCartaTextField().setStyle("");
+		getReferenciaVentana().getNumeroCartaCombobox().setStyle("");
+		getReferenciaVentana().getEditorialCartaTextField().setStyle("");
+		getReferenciaVentana().getColeccionCartaTextField().setStyle("");
+		getReferenciaVentana().getPrecioCartaTextField().setStyle("");
 	}
 
 	/**
@@ -857,6 +847,7 @@ public class AccionFuncionesComunes {
 			elementos.add(getReferenciaVentana().getBotonSubidaPortada());
 		}
 
+		
 		getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
 		getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
 		getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);

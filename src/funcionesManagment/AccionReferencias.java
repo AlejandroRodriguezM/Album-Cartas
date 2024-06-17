@@ -624,7 +624,7 @@ public class AccionReferencias {
 		return listaColumnasTabla;
 	}
 
-	public static ObservableList<Control> getListaTextFields() {
+	public ObservableList<Control> getListaTextFields() {
 		return listaTextFields;
 	}
 
@@ -852,11 +852,11 @@ public class AccionReferencias {
 		this.labelEstado = labelEstado;
 	}
 
-	public void setLabelFecha(Label labelColeccion) {
+	public void setLabelColeccion(Label labelColeccion) {
 		this.labelColeccion = labelColeccion;
 	}
 
-	public void setLabelFormato(Label labelRareza) {
+	public void setLabelRareza(Label labelRareza) {
 		this.labelRareza = labelRareza;
 	}
 
@@ -1100,7 +1100,7 @@ public class AccionReferencias {
 		AccionReferencias.listaColumnasTabla = listaColumnasTabla;
 	}
 
-	public static void setListaTextFields(ObservableList<Control> listaTextFields) {
+	public void setListaTextFields(ObservableList<Control> listaTextFields) {
 		AccionReferencias.listaTextFields = listaTextFields;
 	}
 

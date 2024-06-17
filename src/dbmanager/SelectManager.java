@@ -14,16 +14,16 @@ import funcionesAuxiliares.Utilidades;
 public class SelectManager {
 
 	public static final String TAMANIO_DATABASE = "SELECT COUNT(*) FROM albumbbdd;";
-	private static final String SENTENCIA_BUSQUEDA_INDIVIDUAL = "SELECT * FROM albumbbdd WHERE ID = ?;";
-	private static final String SENTENCIA_CONTAR_CARTAS_POR_ID = "SELECT COUNT(*) FROM albumbbdd WHERE ID = ?;";
-	private static final String SENTENCIA_BUSCAR_PORTADA = "SELECT portada FROM albumbbdd WHERE ID = ?;";
+	private static final String SENTENCIA_BUSQUEDA_INDIVIDUAL = "SELECT * FROM albumbbdd WHERE idCarta = ?;";
+	private static final String SENTENCIA_CONTAR_CARTAS_POR_ID = "SELECT COUNT(*) FROM albumbbdd WHERE idCarta = ?;";
+	private static final String SENTENCIA_BUSCAR_PORTADA = "SELECT portada FROM albumbbdd WHERE idCarta = ?;";
 	public static final String SENTENCIA_BUSQUEDA_COMPLETA = "SELECT * FROM albumbbdd";
 	public static final String SENTENCIA_TOTAL_BUSQUEDA = "SELECT COUNT(*) FROM albumbbdd WHERE 1=1;";
 
-	public static final String SENTENCIA_POSESION = "SELECT * FROM albumbbdd WHERE estado = 'En posesion' ORDER BY nomCarta, numCarta, esFoil;";
-	public static final String SENTENCIA_COMPLETA = "SELECT * FROM albumbbdd ORDER BY nomCarta, numCarta, esFoil;";
-	public static final String SENTENCIA_VENDIDOS = "SELECT * FROM albumbbdd WHERE estado = 'Vendido' ORDER BY nomCarta, numCarta, esFoil;";
-	public static final String SENTENCIA_COMPRADOS = "SELECT * FROM albumbbdd WHERE estado = 'Comprado' ORDER BY nomCarta, numCarta, esFoil;";
+	public static final String SENTENCIA_POSESION = "SELECT * FROM albumbbdd WHERE estado = 'En posesion' ORDER BY nomCarta, numCarta, esFoilCarta;";
+	public static final String SENTENCIA_COMPLETA = "SELECT * FROM albumbbdd ORDER BY nomCarta, numCarta, esFoilCarta;";
+	public static final String SENTENCIA_VENDIDOS = "SELECT * FROM albumbbdd WHERE estado = 'Vendido' ORDER BY nomCarta, numCarta, esFoilCarta;";
+	public static final String SENTENCIA_COMPRADOS = "SELECT * FROM albumbbdd WHERE estado = 'Comprado' ORDER BY nomCarta, numCarta, esFoilCarta;";
 
 	/**
 	 * Funcion que permite contar cuantas filas hay en la base de datos.

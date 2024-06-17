@@ -30,17 +30,20 @@ public class AccionEliminar {
 	private static FuncionesComboBox funcionesCombo = new FuncionesComboBox();
 
 	public void mostrarElementosEliminar(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabel_id_mod(),
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelIdMod(),
 				referenciaVentana.getBotonVender(), referenciaVentana.getBotonEliminar(),
 				referenciaVentana.getTablaBBDD(), referenciaVentana.getBotonbbdd(), referenciaVentana.getRootVBox(),
-				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratar()));
+				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratarTextField(),
+				referenciaVentana.getNumeroCartaCombobox()));
+		getReferenciaVentana().getLabelColeccion().setVisible(false);
+		getReferenciaVentana().getLabelIdMod().setLayoutX(5);
 		referenciaVentana.getRootVBox().toFront();
 	}
 
 	public static void eliminarCarta() {
-		
-		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
-		getReferenciaVentana().getIdCartaTratar().setStyle("");
+
+		String idCarta = getReferenciaVentana().getIdCartaTratarTextField().getText();
+		getReferenciaVentana().getIdCartaTratarTextField().setStyle("");
 		if (accionFuncionesComunes.comprobarExistenciaCarta(idCarta)) {
 			if (nav.alertaAccionGeneral()) {
 
@@ -54,40 +57,40 @@ public class AccionEliminar {
 				FuncionesTableView.nombreColumnas();
 				FuncionesTableView.tablaBBDD(listaCartas);
 
-				List<ComboBox<String>> comboboxes = getReferenciaVentana().getComboboxes();
+				List<ComboBox<String>> comboboxes = getReferenciaVentana().getListaComboboxes();
 
 				funcionesCombo.rellenarComboBox(comboboxes);
-				getReferenciaVentana().getImagencomic().setImage(null);
-				getReferenciaVentana().getImagencomic().setVisible(true);
-				getReferenciaVentana().getProntInfo().clear();
-				getReferenciaVentana().getProntInfo().setOpacity(0);
+				getReferenciaVentana().getImagenCarta().setImage(null);
+				getReferenciaVentana().getImagenCarta().setVisible(true);
+				getReferenciaVentana().getProntInfoTextArea().clear();
+				getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
 
 			} else {
 				String mensaje = "Accion cancelada";
-				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
+				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 			}
 		}
 	}
 
 	public static void eliminarCartaLista() {
-		
-		String idCarta = getReferenciaVentana().getIdCartaTratar().getText();
+
+		String idCarta = getReferenciaVentana().getIdCartaTratarTextField().getText();
 
 		if (nav.alertaEliminar() && idCarta != null) {
 
-				ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(idCarta));
-				AccionControlUI.limpiarAutorellenos(false);
-				FuncionesTableView.nombreColumnas();
+			ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(idCarta));
+			AccionControlUI.limpiarAutorellenos(false);
+			FuncionesTableView.nombreColumnas();
 
-				FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
-				getReferenciaVentana().getTablaBBDD().refresh();
+			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
+			getReferenciaVentana().getTablaBBDD().refresh();
 
-				if (ListasCartasDAO.cartasImportados.isEmpty()) {
-					AccionFuncionesComunes.cambiarEstadoBotones(false);
-				}
-
+			if (ListasCartasDAO.cartasImportados.isEmpty()) {
+				AccionFuncionesComunes.cambiarEstadoBotones(false);
 			}
-		
+
+		}
+
 	}
 
 	public static AccionReferencias getReferenciaVentana() {

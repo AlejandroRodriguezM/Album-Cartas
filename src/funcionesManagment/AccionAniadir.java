@@ -62,7 +62,7 @@ public class AccionAniadir {
 				}
 			}
 		}
-		
+
 		Carta comic = AccionControlUI.camposCarta(controls, true);
 		accionRellenoDatos.actualizarCamposUnicos(comic);
 
@@ -72,7 +72,7 @@ public class AccionAniadir {
 	}
 
 	public static void guardarContenidoLista() {
-		
+
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaInsertar()) {
 			Collections.sort(ListasCartasDAO.cartasImportados, Comparator.comparing(Carta::getNomCarta));
 
@@ -98,26 +98,26 @@ public class AccionAniadir {
 	}
 
 	public void mostrarElementosAniadir(List<Node> elementosAMostrarYHabilitar) {
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getDibujanteCarta(),
-				referenciaVentana.getEditorialCarta(), referenciaVentana.getEstadoCarta(),
-				referenciaVentana.getFechaCarta(), referenciaVentana.getFirmaCarta(),
-				referenciaVentana.getFormatoCarta(), referenciaVentana.getGuionistaCarta(),
-				referenciaVentana.getNombreKeyIssue(), referenciaVentana.getGradeoCarta(),
-				referenciaVentana.getProcedenciaCarta(), referenciaVentana.getUrlReferencia(),
-				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getPrecioCarta(),
-				referenciaVentana.getDireccionImagen(), referenciaVentana.getLabel_portada(),
-				referenciaVentana.getLabel_precio(), referenciaVentana.getLabel_gradeo(),
-				referenciaVentana.getLabel_dibujante(), referenciaVentana.getLabel_editorial(),
-				referenciaVentana.getLabel_estado(), referenciaVentana.getLabel_fecha(),
-				referenciaVentana.getLabel_firma(), referenciaVentana.getLabel_formato(),
-				referenciaVentana.getLabel_guionista(), referenciaVentana.getLabel_key(),
-				referenciaVentana.getLabel_procedencia(), referenciaVentana.getLabel_referencia(),
-				referenciaVentana.getCodigoCartaTratar(), referenciaVentana.getLabel_codigo_comic(),
-				referenciaVentana.getTablaBBDD(), referenciaVentana.getRootVBox(),
-				referenciaVentana.getBotonSubidaPortada(), referenciaVentana.getIdCartaTratar(),
-				referenciaVentana.getLabel_id_mod(), referenciaVentana.getBotonGuardarCambioCarta()));
+
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelRareza(),
+				referenciaVentana.getLabelEsFoil(), referenciaVentana.getLabelGradeo(),
+				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecio(),
+				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(),
+				referenciaVentana.getLabelEstado(), referenciaVentana.getLabelReferencia()));
+
+		elementosAMostrarYHabilitar.addAll(
+				Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEsFoilCombobox(),
+						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox()));
+
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
+				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
+				referenciaVentana.getUrlReferenciaTextField()));
+
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),
+				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getBotonGuardarCambioCarta()));
 	}
-	
+
 	public static AccionReferencias getReferenciaVentana() {
 		return referenciaVentana;
 	}

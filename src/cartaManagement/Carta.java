@@ -28,7 +28,7 @@ public class Carta {
 	/**
 	 * Número de la carta.
 	 */
-	protected int numCarta;
+	protected String numCarta;
 
 	/**
 	 * Editorial de la carta.
@@ -48,7 +48,7 @@ public class Carta {
 	/**
 	 * Indica si la carta es foil (brillante).
 	 */
-	protected boolean esFoilCarta;
+	protected String esFoilCarta;
 
 	/**
 	 * Valor del gradeo de la carta.
@@ -63,7 +63,7 @@ public class Carta {
 	/**
 	 * Precio de la carta.
 	 */
-	protected double precioCarta;
+	protected String precioCarta;
 
 	/**
 	 * URL de referencia relacionada con la carta.
@@ -74,7 +74,7 @@ public class Carta {
 	 * Dirección de la imagen de la carta.
 	 */
 	protected String direccionImagenCarta;
-	
+
 	protected String normasCarta;
 
 	/**
@@ -102,14 +102,14 @@ public class Carta {
 	public Carta() {
 		this.idCarta = "";
 		this.nomCarta = "";
-		this.numCarta = 0;
+		this.numCarta = "0";
 		this.editorialCarta = "";
 		this.coleccionCarta = "";
 		this.rarezaCarta = "";
-		this.esFoilCarta = false;
+		this.esFoilCarta = "";
 		this.gradeoCarta = "";
 		this.estadoCarta = "";
-		this.precioCarta = 0.0;
+		this.precioCarta = "0.0";
 		this.urlReferenciaCarta = "";
 		this.direccionImagenCarta = "";
 		this.normasCarta = "";
@@ -118,14 +118,14 @@ public class Carta {
 	public static class CartaBuilder {
 		private String idCarta;
 		private String nomCarta;
-		private int numCarta;
+		private String numCarta;
 		private String editorialCarta;
 		private String coleccionCarta;
 		private String rarezaCarta;
-		private boolean esFoilCarta;
+		private String esFoilCarta;
 		private String gradeoCarta;
 		private String estadoCarta;
-		private double precioCarta;
+		private String precioCarta;
 		private String urlReferenciaCarta;
 		private String direccionImagenCarta;
 		private String normasCarta;
@@ -135,7 +135,7 @@ public class Carta {
 			this.nomCarta = nomCarta;
 		}
 
-		public CartaBuilder numCarta(int numCarta) {
+		public CartaBuilder numCarta(String numCarta) {
 			this.numCarta = numCarta;
 			return this;
 		}
@@ -155,7 +155,7 @@ public class Carta {
 			return this;
 		}
 
-		public CartaBuilder esFoilCarta(boolean esFoilCarta) {
+		public CartaBuilder esFoilCarta(String esFoilCarta) {
 			this.esFoilCarta = esFoilCarta;
 			return this;
 		}
@@ -170,7 +170,7 @@ public class Carta {
 			return this;
 		}
 
-		public CartaBuilder precioCarta(double precioCarta) {
+		public CartaBuilder precioCarta(String precioCarta) {
 			this.precioCarta = precioCarta;
 			return this;
 		}
@@ -184,7 +184,7 @@ public class Carta {
 			this.direccionImagenCarta = direccionImagenCarta;
 			return this;
 		}
-		
+
 		public CartaBuilder normasCarta(String normasCarta) {
 			this.normasCarta = normasCarta;
 			return this;
@@ -204,7 +204,7 @@ public class Carta {
 		return nomCarta;
 	}
 
-	public int getNumCarta() {
+	public String getNumCarta() {
 		return numCarta;
 	}
 
@@ -220,7 +220,7 @@ public class Carta {
 		return rarezaCarta;
 	}
 
-	public boolean getEsFoilCarta() {
+	public String getEsFoilCarta() {
 		return esFoilCarta;
 	}
 
@@ -232,7 +232,7 @@ public class Carta {
 		return estadoCarta;
 	}
 
-	public double getPrecioCarta() {
+	public String getPrecioCarta() {
 		return precioCarta;
 	}
 
@@ -260,7 +260,7 @@ public class Carta {
 		this.nomCarta = nomCarta;
 	}
 
-	public void setNumCarta(int numCarta) {
+	public void setNumCarta(String numCarta) {
 		this.numCarta = numCarta;
 	}
 
@@ -276,7 +276,7 @@ public class Carta {
 		this.rarezaCarta = rarezaCarta;
 	}
 
-	public void setEsFoilCarta(boolean esFoilCarta) {
+	public void setEsFoilCarta(String esFoilCarta) {
 		this.esFoilCarta = esFoilCarta;
 	}
 
@@ -288,7 +288,7 @@ public class Carta {
 		this.estadoCarta = estadoCarta;
 	}
 
-	public void setPrecioCarta(double precioCarta) {
+	public void setPrecioCarta(String precioCarta) {
 		this.precioCarta = precioCarta;
 	}
 
@@ -312,16 +312,16 @@ public class Carta {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Verifica si todos los campos del objeto Carta están vacíos o nulos.
 	 * 
 	 * @return true si todos los campos están vacíos o nulos, false de lo contrario.
 	 */
 	public boolean estaVacio() {
-		return isNullOrEmpty(this.nomCarta) && this.numCarta == 0 && isNullOrEmpty(this.coleccionCarta)
+		return isNullOrEmpty(this.nomCarta) && this.numCarta.equals("0") && isNullOrEmpty(this.coleccionCarta)
 				&& isNullOrEmpty(this.rarezaCarta) && isNullOrEmpty(this.gradeoCarta) && isNullOrEmpty(this.estadoCarta)
-				&& this.precioCarta == 0.0 && isNullOrEmpty(this.urlReferenciaCarta)
+				&& this.precioCarta.equals("0.0") && isNullOrEmpty(this.urlReferenciaCarta)
 				&& isNullOrEmpty(this.direccionImagenCarta) && isNullOrEmpty(this.editorialCarta);
 	}
 
@@ -368,7 +368,7 @@ public class Carta {
 		if (carta.getNomCarta() != null && !carta.getNomCarta().isEmpty()) {
 			return true;
 		}
-		if (carta.getNumCarta() != 0) {
+		if (!carta.getNumCarta().equals("0")) {
 			return true;
 		}
 		if (carta.getColeccionCarta() != null && !carta.getColeccionCarta().isEmpty()) {
@@ -406,7 +406,7 @@ public class Carta {
 		return "";
 
 	}
-	
+
 	/**
 	 * Genera una representación en forma de cadena de texto de la carta, incluyendo
 	 * sus atributos no nulos.
@@ -430,7 +430,7 @@ public class Carta {
 
 		return contenidoCarta.toString();
 	}
-	
+
 	/**
 	 * Genera una representación en forma de cadena de texto del cómic, incluyendo
 	 * sus atributos no nulos.
@@ -439,23 +439,23 @@ public class Carta {
 	 */
 	public String infoCarta() {
 
-	    StringBuilder contenidoCarta = new StringBuilder();
+		StringBuilder contenidoCarta = new StringBuilder();
 
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Identificador", idCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Nombre", nomCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Número", String.valueOf(numCarta));
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Editorial", editorialCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Colección", coleccionCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Rareza", rarezaCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Es Foil", String.valueOf(esFoilCarta));
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Gradeo", gradeoCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Estado", estadoCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Precio", String.valueOf(precioCarta));
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "URL Referencia", urlReferenciaCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
-	    Utilidades.appendIfNotEmpty(contenidoCarta, "Normas", normasCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Identificador", idCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Nombre", nomCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Número", String.valueOf(numCarta));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Editorial", editorialCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Colección", coleccionCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Rareza", rarezaCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Es Foil", String.valueOf(esFoilCarta));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Gradeo", gradeoCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Estado", estadoCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio", String.valueOf(precioCarta));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "URL Referencia", urlReferenciaCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Normas", normasCarta);
 
-	    return contenidoCarta.toString();
+		return contenidoCarta.toString();
 	}
 
 	// Otros métodos de la clase Carta

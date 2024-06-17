@@ -393,7 +393,7 @@ public class Utilidades {
 	 */
 	public String crearNuevoNombre(Carta datos) {
 		String nombreCarta = datos.getNomCarta().replace(" ", "_").replace(":", "_").replace("-", "_");
-		int numeroCarta = datos.getNumCarta();
+		String numeroCarta = datos.getNumCarta();
 		String editorialCarta = datos.getEditorialCarta().replace(" ", "_").replace(",", "_").replace("-", "_")
 				.replace(":", "_");
 		String nombreCompleto = nombreCarta + "_" + numeroCarta + "_" + editorialCarta;

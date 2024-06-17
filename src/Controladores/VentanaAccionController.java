@@ -78,25 +78,25 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private Label labelCodigo;
 	@FXML
-    private Label labelEstado;
-    @FXML
-    private Label labelFoil;
-    @FXML
-    private Label labelGradeo;
-    @FXML
-    private Label labelId;
-    @FXML
-    private Label labelNormas;
-    @FXML
-    private Label labelPortada;
-    @FXML
-    private Label labelPrecio;
-    @FXML
-    private Label labelRareza;
-    @FXML
-    private Label labelReferencia;
-    @FXML
-    private Label labelcoleccion;
+	private Label labelEstado;
+	@FXML
+	private Label labelFoil;
+	@FXML
+	private Label labelGradeo;
+	@FXML
+	private Label labelId;
+	@FXML
+	private Label labelNormas;
+	@FXML
+	private Label labelPortada;
+	@FXML
+	private Label labelPrecio;
+	@FXML
+	private Label labelRareza;
+	@FXML
+	private Label labelReferencia;
+	@FXML
+	private Label labelcoleccion;
 
 	@FXML
 	private Button botonBusquedaAvanzada;
@@ -128,7 +128,7 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private TextField busquedaCodigo;
 	@FXML
-	private TextField firmaComic;
+	private TextField textFieldColeccion;
 	@FXML
 	private TextField textFieldDireccionPortada;
 	@FXML
@@ -228,19 +228,23 @@ public class VentanaAccionController implements Initializable {
 	public static AccionReferencias referenciaVentanaPrincipal = new AccionReferencias();
 
 	public AccionReferencias guardarReferencia() {
-		referenciaVentana.setAlarmaConexionInternet(alarmaConexionInternet);
-		referenciaVentana.setAlarmaConexionSql(alarmaConexionSql);
-		referenciaVentana.setDireccionImagen(direccionImagen);
-		referenciaVentana.setID(id);
-		referenciaVentana.setGradeo(gradeo);
-		referenciaVentana.setEditorial(editorial);
-		referenciaVentana.setFormato(formato);
-		referenciaVentana.setNombre(nombre);
-		referenciaVentana.setNumero(numero);
-		referenciaVentana.setProcedencia(procedencia);
-		referenciaVentana.setReferencia(referencia);
+
+		referenciaVentana.setNombreCartaTextField(textFieldNombreCarta);
+		referenciaVentana.setNumeroCartaCombobox(comboboxNumeroCarta);
+		referenciaVentana.setEditorialCartaTextField(textFieldEditorialCarta);
+		referenciaVentana.setColeccionCartaTextField(textFieldColeccion);
+		referenciaVentana.setRarezaCartaTextField(textFieldRarezaCarta);
+		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
+		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
+		referenciaVentana.setNormasCartaTextField(textFieldNormasCarta);
+		referenciaVentana.setPrecioCartaTextField(textFieldPrecioCarta);
+		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
+		referenciaVentana.setDireccionImagenTextField(textFieldDireccionPortada);
+		referenciaVentana.setEstadoCartaCombobox(comboboxEstadoCarta);
+		referenciaVentana.setUrlReferenciaTextField(textFieldUrlCarta);
+		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
+
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
-		referenciaVentana.setBotonBorrarOpinion(botonBorrarOpinion);
 		referenciaVentana.setBotonBusquedaCodigo(botonBusquedaCodigo);
 		referenciaVentana.setBotonBusquedaAvanzada(botonBusquedaAvanzada);
 		referenciaVentana.setBotonEliminar(botonEliminar);
@@ -253,49 +257,44 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setBotonGuardarCambioCarta(botonGuardarCambioCarta);
 		referenciaVentana.setBotonEliminarImportadoCarta(botonEliminarImportadoCarta);
 		referenciaVentana.setBotonSubidaPortada(botonSubidaPortada);
-		referenciaVentana.setBusquedaCodigo(busquedaCodigo);
-		referenciaVentana.setEditorialCarta(editorialCarta);
-		referenciaVentana.setNombreCarta(nombreCarta);
-		referenciaVentana.setPrecioCarta(precioCarta);
-		referenciaVentana.setUrlReferencia(urlReferencia);
-		referenciaVentana.setEstadoCarta(estadoCarta);
-		referenciaVentana.setFormatoCarta(formatoCarta);
-		referenciaVentana.setGradeoCarta(gradeoCarta);
-		referenciaVentana.setNumeroCarta(numeroCarta);
-		referenciaVentana.setIdCartaTratar(idCartaTratar);
-		referenciaVentana.setStage(estadoStage());
+		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
+
+		referenciaVentana.setStageVentana(estadoStage());
 		referenciaVentana.setProgresoCarga(progresoCarga);
 
-		referenciaVentana.setLabel_gradeo(labelGradeo);
-		referenciaVentana.setLabel_editorial(labelEditorial);
-		referenciaVentana.setLabel_estado(labelEstado);
-		referenciaVentana.setLabel_fecha(labelFecha);
-		referenciaVentana.setLabel_formato(labelFormato);
-		referenciaVentana.setLabel_id_mod(labelId);
-		referenciaVentana.setLabel_portada(labelPortada);
-		referenciaVentana.setLabel_precio(labelPrecio);
-		referenciaVentana.setLabel_referencia(labelReferencia);
+		referenciaVentana.setLabelColeccion(labelcoleccion);
+		referenciaVentana.setLabelRareza(labelRareza);
+		referenciaVentana.setLabelEsFoil(labelFoil);
+		referenciaVentana.setLabelGradeo(labelGradeo);
+		referenciaVentana.setLabelNormas(labelNormas);
+		referenciaVentana.setLabelPrecio(labelPrecio);
+		referenciaVentana.setLabelIdMod(labelId);
+		referenciaVentana.setLabelPortada(labelPortada);
+		referenciaVentana.setLabelEstado(labelEstado);
+		referenciaVentana.setLabelReferencia(labelReferencia);
+		referenciaVentana.setAlarmaConexionInternet(alarmaConexionInternet);
+		referenciaVentana.setAlarmaConexionSql(alarmaConexionSql);
 
 		referenciaVentana.setTablaBBDD(tablaBBDD);
-		referenciaVentana.setImagencomic(imagencomic);
+		referenciaVentana.setImagenCarta(imagencarta);
 		referenciaVentana.setCargaImagen(cargaImagen);
-		referenciaVentana.setProntInfo(prontInfo);
+		referenciaVentana.setProntInfoTextArea(prontInfo);
 		referenciaVentana.setRootVBox(rootVBox);
-		referenciaVentana.setMenu_Importar_Fichero_CodigoBarras(menuImportarFichero);
-		referenciaVentana.setMenu_estadistica_estadistica(navegacionMostrarEstadistica);
-		referenciaVentana.setMenu_navegacion(menuNavegacion);
-		referenciaVentana.setNavegacion_Opciones(navegacionOpciones);
-		referenciaVentana.setNavegacion_estadistica(navegacionEstadistica);
+		referenciaVentana.setMenuImportarFicheroCodigoBarras(menuImportarFichero);
+		referenciaVentana.setMenuEstadisticaEstadistica(navegacionMostrarEstadistica);
+		referenciaVentana.setMenuNavegacion(menuNavegacion);
+		referenciaVentana.setNavegacionCerrar(navegacionOpciones);
+		referenciaVentana.setNavegacionEstadistica(navegacionEstadistica);
 
-		referenciaVentana.setComboBoxes(
-				Arrays.asList(formatoCarta, gradeoCarta, numeroCarta, procedenciaCarta, estadoCarta, puntuacionMenu));
+		referenciaVentana.setListaComboboxes(
+				Arrays.asList(comboboxEsFoilCarta, comboboxEstadoCarta, comboboxGradeoCarta, comboboxNumeroCarta));
 
-		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(
-				Arrays.asList(nombreCarta, numeroCarta, varianteCarta, procedenciaCarta, formatoCarta, dibujanteCarta,
-						guionistaCarta, editorialCarta, firmaCarta, gradeoCarta, direccionImagen, estadoCarta,
-						nombreKeyIssue, precioCarta, urlReferencia, codigoCartaTratar, idCartaTratar)));
+		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta,
+				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textFieldNormasCarta,
+				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
 
-		AccionReferencias.setColumnasTabla(Arrays.asList(nombre, gradeo, variante, editorial, guionista, dibujante));
+		AccionReferencias.setListaColumnasTabla(
+				Arrays.asList(columnaNombre, columnaEditorial, columnaColeccion, columnaRareza, columnaPrecio));
 
 		return referenciaVentana;
 	}
@@ -381,32 +380,32 @@ public class VentanaAccionController implements Initializable {
 	}
 
 	public void formatearTextField() {
-		FuncionesManejoFront.eliminarEspacioInicialYFinal(nombreCarta);
-		FuncionesManejoFront.eliminarSimbolosEspeciales(nombreCarta);
-		FuncionesManejoFront.restringirSimbolos(editorialCarta);
-		FuncionesManejoFront.restringirSimbolos(guionistaCarta);
-		FuncionesManejoFront.restringirSimbolos(dibujanteCarta);
-		FuncionesManejoFront.restringirSimbolos(varianteCarta);
+		FuncionesManejoFront.eliminarEspacioInicialYFinal(textFieldNombreCarta);
+		FuncionesManejoFront.eliminarSimbolosEspeciales(textFieldNombreCarta);
+		FuncionesManejoFront.restringirSimbolos(textFieldEditorialCarta);
+		FuncionesManejoFront.restringirSimbolos(textFieldColeccion);
+		FuncionesManejoFront.restringirSimbolos(textFieldRarezaCarta);
+		FuncionesManejoFront.restringirSimbolos(textFieldNormasCarta);
 
-		FuncionesManejoFront.reemplazarEspaciosMultiples(nombreCarta);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(editorialCarta);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(guionistaCarta);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(dibujanteCarta);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(varianteCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNombreCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldEditorialCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldColeccion);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNormasCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldRarezaCarta);
 
-		FuncionesManejoFront.permitirUnSimbolo(nombreCarta);
-		FuncionesManejoFront.permitirUnSimbolo(editorialCarta);
-		FuncionesManejoFront.permitirUnSimbolo(guionistaCarta);
-		FuncionesManejoFront.permitirUnSimbolo(dibujanteCarta);
-		FuncionesManejoFront.permitirUnSimbolo(varianteCarta);
+		FuncionesManejoFront.permitirUnSimbolo(textFieldNombreCarta);
+		FuncionesManejoFront.permitirUnSimbolo(textFieldEditorialCarta);
+		FuncionesManejoFront.permitirUnSimbolo(textFieldColeccion);
+		FuncionesManejoFront.permitirUnSimbolo(textFieldRarezaCarta);
+		FuncionesManejoFront.permitirUnSimbolo(textFieldPrecioCarta);
 		FuncionesManejoFront.permitirUnSimbolo(busquedaCodigo);
 
-		numeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
-		idCartaTratar.setTextFormatter(FuncionesComboBox.validador_Nenteros());
-		precioCarta.setTextFormatter(FuncionesComboBox.validador_Ndecimales());
+		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
+		textFieldIdCarta.setTextFormatter(FuncionesComboBox.validador_Nenteros());
+		textFieldPrecioCarta.setTextFormatter(FuncionesComboBox.validador_Ndecimales());
 
 		if (AccionFuncionesComunes.TIPO_ACCION.equalsIgnoreCase("aniadir")) {
-			idCartaTratar.setTextFormatter(FuncionesComboBox.desactivarValidadorNenteros());
+			textFieldIdCarta.setTextFormatter(FuncionesComboBox.desactivarValidadorNenteros());
 		}
 	}
 
@@ -422,23 +421,25 @@ public class VentanaAccionController implements Initializable {
 
 		List<String> controls = new ArrayList<>();
 
-		for (Control control : AccionReferencias.getListaTextFields()) {
+		// Iterar sobre los TextField y ComboBox en referenciaVentana
+		for (Control control : referenciaVentana.getListaTextFields()) {
 			if (control instanceof TextField) {
-				controls.add(((TextField) control).getText()); // Add the Control object itself
+				controls.add(((TextField) control).getText());
 			} else if (control instanceof ComboBox<?>) {
 				Object selectedItem = ((ComboBox<?>) control).getSelectionModel().getSelectedItem();
-				if (selectedItem != null) {
-					controls.add(selectedItem.toString());
-				} else {
-					controls.add(""); // Add the Control object itself
-				}
+				controls.add(selectedItem != null ? selectedItem.toString() : "");
 			}
 		}
 
+		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
+		for (ComboBox<?> comboBox :  referenciaVentana.getListaComboboxes()) {
+			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
+			controls.add(selectedItem != null ? selectedItem.toString() : "");
+		}
+
+		// Crear y procesar la Carta con los controles recogidos
 		Carta comic = AccionControlUI.camposCarta(controls, true);
-
 		AccionSeleccionar.verBasedeDatos(false, true, comic);
-
 	}
 
 	/**

@@ -163,7 +163,7 @@ public class FuncionesTableView {
 		mensajeBuilder.append("Nombre: ").append(carta.getNomCarta()).append("\nNumero: ").append(carta.getNumCarta())
 				.append("\nEditorial: ").append(carta.getEditorialCarta()).append("\nColeccion: ")
 				.append(carta.getColeccionCarta()).append("\nPrecio: ")
-				.append(carta.getPrecioCarta() == 0 ? carta.getPrecioCarta() + " $" : "");
+				.append(carta.getPrecioCarta().equals("0") ? carta.getPrecioCarta() + " $" : "");
 
 		return mensajeBuilder.toString();
 	}
@@ -253,21 +253,12 @@ public class FuncionesTableView {
 		text.setFont(Font.font("System", FontWeight.NORMAL, 13));
 		if (columna.getText().equalsIgnoreCase("referencia")) {
 			busquedaHyperLink(columna); // No estoy seguro de qué hace esta función, por lo que la he dejado aquí
-		} else if (isSpecialColumn(columna.getText())) {
-			text.setText("◉ " + nombre);
-		} else if (columna.getText().equalsIgnoreCase("Fecha")) {
-			text.setFont(Font.font("Carta Sans MS", FontWeight.NORMAL, 12));
 		}
 
 		text.setFill(Color.web("#4ea0f2"));
 		text.getStyleClass().add("hyperlink");
 
 		return text;
-	}
-
-	private static boolean isSpecialColumn(String columnName) {
-		return columnName.equalsIgnoreCase("variante") || columnName.equalsIgnoreCase("firma")
-				|| columnName.equalsIgnoreCase("dibujante") || columnName.equalsIgnoreCase("guionista");
 	}
 
 	/**
@@ -311,24 +302,49 @@ public class FuncionesTableView {
 	public static void nombreColumnas() {
 		for (TableColumn<Carta, String> column : referenciaVentana.getListaColumnasTabla()) {
 			String columnName = column.getText(); // Obtiene el nombre de la columna
-
-			// Realiza la correspondencia entre los nombres de columna y las propiedades de
-			// Carta
-			if (columnName.equalsIgnoreCase("Nº")) {
-				columnName = "Numero";
-			} else if (columnName.equalsIgnoreCase("Gradeo")) {
-				columnName = "valorGradeo";
-			} else if (columnName.equalsIgnoreCase("Referencia")) {
-				columnName = "urlReferencia";
-			} else if (columnName.equalsIgnoreCase("Origen")) {
-				columnName = "Procedencia";
-			}
-
-			// Crea una PropertyValueFactory con el nombre de la propiedad actual
-			PropertyValueFactory<Carta, String> valueFactory = new PropertyValueFactory<>(columnName);
-			column.setCellValueFactory(valueFactory);
+//
+			configureColumn(column, columnName);
 		}
 	}
+	
+    private static void configureColumn(TableColumn<Carta, String> column, String property) {
+        switch (property) {
+            case "Nombre":
+                property = "nomCarta";
+                break;
+            case "Numero":
+                property = "numCarta";
+                break;
+            case "Editorial":
+                property = "editorialCarta";
+                break;
+            case "Referencia":
+                property = "urlReferenciaCarta";
+                break;
+            case "Coleccion":
+                property = "coleccionCarta";
+                break;
+            case "Foil":
+                property = "esFoilCarta";
+                break;
+            case "estado":
+                property = "estadoCarta";
+                break;
+            case "gradeo":
+                property = "gradeoCarta";
+                break;
+            case "ID":
+                property = "idCarta";
+                break;
+            case "Precio":
+                property = "precioCarta";
+                break;
+            case "Rareza":
+                property = "rarezaCarta";
+                break;
+        }
+        column.setCellValueFactory(new PropertyValueFactory<>(property));
+    }
 
 	/**
 	 * Modifica los tamaños de las columnas de una TableView de acuerdo a los

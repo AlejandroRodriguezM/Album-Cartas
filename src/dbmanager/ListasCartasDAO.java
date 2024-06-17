@@ -89,6 +89,10 @@ public class ListasCartasDAO {
 	 */
 	public static List<String> listaEsFoil = new ArrayList<>();
 
+	public static List<String> listaGradeo = new ArrayList<>();
+
+	public static List<String> listaEstado = new ArrayList<>();
+
 	/**
 	 * Lista de procedencias.
 	 */
@@ -107,7 +111,11 @@ public class ListasCartasDAO {
 	/**
 	 * Lista de nombres de variantes.
 	 */
-	public static List<String> nombreVarianteList = new ArrayList<>();
+	public static List<String> nombreGradeoList = new ArrayList<>();
+
+	public static List<String> nombreEstadoList = new ArrayList<>();
+
+	public static List<String> nombrePrecioList = new ArrayList<>();
 
 	/**
 	 * Lista de nombres de procedencia.
@@ -134,6 +142,8 @@ public class ListasCartasDAO {
 	 */
 	public static List<String> listaImagenes = new ArrayList<>();
 
+	public static List<String> listaPrecios = new ArrayList<>();
+
 	/**
 	 * Lista de cómics limpios.
 	 */
@@ -150,13 +160,15 @@ public class ListasCartasDAO {
 	 * Lista ordenada que contiene todas las listas anteriores.
 	 */
 	public static List<List<String>> listaOrdenada = Arrays.asList(nombreCartaList, numeroCartaList,
-			nombreEditorialList, nombreColeccionList, nombreRarezaList, nombreEsFoilList);
+			nombreEditorialList, nombreColeccionList, nombreRarezaList, nombreEsFoilList, nombreGradeoList,
+			nombreEstadoList, nombrePrecioList);
 
 	/**
 	 * Lista de listas de elementos.
 	 */
 	public static List<List<String>> itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaEditorial,
-			listaColeccion, listaRareza, listaEsFoil);
+			listaColeccion, listaRareza, listaEsFoil, nombreEsFoilList, nombreGradeoList, nombreEstadoList,
+			nombrePrecioList);
 
 	/**
 	 * Lista de comics guardados para poder ser impresos
@@ -207,11 +219,14 @@ public class ListasCartasDAO {
 		listaID = DBUtilidades.obtenerValoresColumna("idCarta");
 		listaNombre = DBUtilidades.obtenerValoresColumna("nomCarta");
 		listaNumeroCarta = DBUtilidades.obtenerValoresColumna("numCarta");
-		listaRareza = DBUtilidades.obtenerValoresColumna("rarezaCarta");
 		listaEditorial = DBUtilidades.obtenerValoresColumna("editorialCarta");
-		listaEsFoil = DBUtilidades.obtenerValoresColumna("esFoilCarta");
 		listaColeccion = DBUtilidades.obtenerValoresColumna("coleccionCarta");
+		listaRareza = DBUtilidades.obtenerValoresColumna("rarezaCarta");
+		listaEsFoil = DBUtilidades.obtenerValoresColumna("esFoilCarta");
+		listaGradeo = DBUtilidades.obtenerValoresColumna("gradeoCarta");
+		listaEstado = DBUtilidades.obtenerValoresColumna("estadoCarta");
 		listaImagenes = DBUtilidades.obtenerValoresColumna("urlReferenciaCarta");
+		listaPrecios = DBUtilidades.obtenerValoresColumna("precioCarta");
 
 		listaID = ordenarLista(listaID);
 
@@ -220,8 +235,8 @@ public class ListasCartasDAO {
 		Collections.sort(numerosCarta);
 		listaNumeroCarta = numerosCarta.stream().map(String::valueOf).collect(Collectors.toList());
 
-		itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaColeccion, listaRareza, listaEsFoil,
-				listaEditorial);
+		itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaEditorial, listaColeccion, listaRareza,
+				listaEsFoil, listaGradeo, listaEstado, listaPrecios);
 
 	}
 
@@ -235,29 +250,41 @@ public class ListasCartasDAO {
 			while (rs.next()) {
 				List<String> nombreCartaSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<Integer> numeroCartaSet = new ArrayList<>(); // Cambia el tipo aquí
+				List<String> nombreEditorialSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<String> nombreColeccionSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<String> rarezaCartaSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<String> isFoilSet = new ArrayList<>(); // Cambia el tipo aquí
-				List<String> nombreEditorialSet = new ArrayList<>(); // Cambia el tipo aquí
+				List<String> nombreGradeoSet = new ArrayList<>(); // Cambia el tipo aquí
+				List<String> nombreEstadoSet = new ArrayList<>(); // Cambia el tipo aquí
+				List<String> precioCartaSet = new ArrayList<>(); // Cambia el tipo aquí
 
 				do {
 					String nomCarta = rs.getString("nomCarta").trim();
 					nombreCartaSet.add(nomCarta);
 
-					int numCarta = rs.getInt("numCarta"); // Convertir a entero
-					numeroCartaSet.add(numCarta);
+					String numCarta = rs.getString("numCarta"); // Convertir a entero
+					numeroCartaSet.add(Integer.parseInt(numCarta));
 
 					String nomEditorial = rs.getString("editorialCarta").trim();
 					nombreEditorialSet.add(nomEditorial);
-					
+
 					String nomColeccion = rs.getString("coleccionCarta").trim();
 					nombreColeccionSet.add(nomColeccion);
 
 					String rarezaCarta = rs.getString("rarezaCarta").trim();
 					rarezaCartaSet.add(rarezaCarta);
 
-					String procedencia = rs.getString("procedencia").trim();
-					isFoilSet.add(procedencia);
+					String esFoil = rs.getString("esFoilCarta").trim();
+					isFoilSet.add(esFoil);
+
+					String gradeoCarta = rs.getString("gradeoCarta").trim();
+					nombreGradeoSet.add(gradeoCarta);
+
+					String estadoCarta = rs.getString("estadoCarta").trim();
+					nombreEstadoSet.add(estadoCarta);
+
+					String precioCarta = rs.getString("precioCarta").trim();
+					precioCartaSet.add(precioCarta);
 
 				} while (rs.next());
 
@@ -271,21 +298,21 @@ public class ListasCartasDAO {
 				rarezaCartaSet = listaArregladaAutoComplete(rarezaCartaSet);
 				isFoilSet = listaArregladaAutoComplete(isFoilSet);
 				nombreEditorialSet = listaArregladaAutoComplete(nombreEditorialSet);
+				nombreGradeoSet = listaArregladaAutoComplete(nombreGradeoSet);
+				nombreEstadoSet = listaArregladaAutoComplete(nombreEstadoSet);
+				precioCartaSet = listaArregladaAutoComplete(precioCartaSet);
 
-				// Ordenar lista de números de comic
-				Collections.sort(numeroCartaSet, new Comparator<Integer>() {
-					@Override
-					public int compare(Integer o1, Integer o2) {
-						return o1.compareTo(o2);
-					}
-				});
+				Collections.sort(numeroCartaSet, Comparable::compareTo);
 
 				listaOrdenada.add(nombreCartaSet);
-				listaOrdenada.add(numeroCartaSet.stream().map(String::valueOf).collect(Collectors.toList()));
+				listaOrdenada.add(numeroCartaSet.stream().map(String::valueOf).toList());
 				listaOrdenada.add(nombreColeccionSet);
 				listaOrdenada.add(rarezaCartaSet);
 				listaOrdenada.add(isFoilSet);
 				listaOrdenada.add(nombreEditorialSet);
+				listaOrdenada.add(nombreGradeoSet);
+				listaOrdenada.add(nombreEstadoSet);
+				listaOrdenada.add(precioCartaSet);
 
 				ListasCartasDAO.listaOrdenada = listaOrdenada;
 			}
@@ -340,11 +367,15 @@ public class ListasCartasDAO {
 	public static void limpiarListas() {
 		nombreCartaList.clear();
 		numeroCartaList.clear();
-		nombreVarianteList.clear();
 		nombreColeccionList.clear();
 		nombreRarezaList.clear();
 		nombreEditorialList.clear();
 		nombreEsFoilList.clear();
+
+		nombreEsFoilList.clear();
+		nombreGradeoList.clear();
+		nombreEstadoList.clear();
+		nombrePrecioList.clear();
 	}
 
 	/**
@@ -387,7 +418,10 @@ public class ListasCartasDAO {
 		listaColeccion.clear();
 		nombreCartaList.clear();
 		numeroCartaList.clear();
-		nombreVarianteList.clear();
+		nombreEsFoilList.clear();
+		nombreGradeoList.clear();
+		nombreEstadoList.clear();
+		nombrePrecioList.clear();
 		nombreColeccionList.clear();
 		nombreRarezaList.clear();
 		nombreEditorialList.clear();
@@ -467,34 +501,30 @@ public class ListasCartasDAO {
 	 */
 	public static List<String> guardarDatosAutoCompletado(String sentenciaSQL, String columna) {
 		List<String> listaAutoCompletado = new ArrayList<>();
-
 		try (Connection conn = ConectManager.conexion();
 				PreparedStatement stmt = conn.prepareStatement(sentenciaSQL, ResultSet.TYPE_FORWARD_ONLY,
 						ResultSet.CONCUR_READ_ONLY);
 				ResultSet rs = stmt.executeQuery()) {
 
 			while (rs.next()) {
-				do {
-					String datosAutocompletado = rs.getString(columna);
-					if (columna.equals("nomCarta")) {
-						listaAutoCompletado.add(datosAutocompletado.trim());
-					} else if (columna.equals("portada")) {
-
-						listaAutoCompletado
-								.add(SOURCE_PATH + Utilidades.obtenerUltimoSegmentoRuta(datosAutocompletado));
-					} else {
-						String[] nombres = datosAutocompletado.split("-");
-						for (String nombre : nombres) {
-							nombre = nombre.trim();
-							if (!nombre.isEmpty()) {
-								listaAutoCompletado.add(nombre);
-							}
+				String datosAutocompletado = rs.getString(columna);
+				if (columna.equals("nomCarta")) {
+					listaAutoCompletado.add(datosAutocompletado.trim());
+				} else if (columna.equals("direccionImagenCarta")) {
+					listaAutoCompletado.add(SOURCE_PATH + Utilidades.obtenerUltimoSegmentoRuta(datosAutocompletado));
+				} else {
+					String[] nombres = datosAutocompletado.split("-");
+					for (String nombre : nombres) {
+						nombre = nombre.trim();
+						if (!nombre.isEmpty()) {
+							listaAutoCompletado.add(nombre);
 						}
 					}
-				} while (rs.next());
-
-				listaAutoCompletado = listaArregladaAutoComplete(listaAutoCompletado);
+				}
 			}
+
+			listaAutoCompletado = listaArregladaAutoComplete(listaAutoCompletado);
+
 		} catch (SQLException e) {
 			Utilidades.manejarExcepcion(e);
 		}
@@ -587,7 +617,10 @@ public class ListasCartasDAO {
 		System.out.println("Tamaño de listaColeccion: " + listaColeccion.size());
 		System.out.println("Tamaño de nombreCartaList: " + nombreCartaList.size());
 		System.out.println("Tamaño de numeroCartaList: " + numeroCartaList.size());
-		System.out.println("Tamaño de nombreVarianteList: " + nombreVarianteList.size());
+		System.out.println("Tamaño de nombreEsFoilList: " + nombreEsFoilList.size());
+		System.out.println("Tamaño de nombreGradeoList: " + nombreGradeoList.size());
+		System.out.println("Tamaño de nombreEstadoList: " + nombreEstadoList.size());
+		System.out.println("Tamaño de nombrePrecioList: " + nombrePrecioList.size());
 		System.out.println("Tamaño de nombreColeccionList: " + nombreColeccionList.size());
 		System.out.println("Tamaño de nombreRarezaList: " + nombreRarezaList.size());
 		System.out.println("Tamaño de nombreEditorialList: " + nombreEditorialList.size());

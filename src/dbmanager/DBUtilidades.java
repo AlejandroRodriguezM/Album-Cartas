@@ -21,13 +21,13 @@ public class DBUtilidades {
 
 	public static void setParameters(PreparedStatement ps, Carta datos, boolean includeID) throws SQLException {
 		ps.setString(1, datos.getNomCarta());
-		ps.setInt(2, datos.getNumCarta());
+		ps.setString(2, datos.getNumCarta());
 		ps.setString(3, datos.getColeccionCarta());
 		ps.setString(4, datos.getRarezaCarta());
-		ps.setInt(5, datos.getEsFoilCarta() ? 1 : 0); // Assuming esFoilCarta is a boolean
+		ps.setString(5, datos.getEsFoilCarta()); // Assuming esFoilCarta is a boolean
 		ps.setString(6, datos.getGradeoCarta());
 		ps.setString(7, datos.getEstadoCarta());
-		ps.setDouble(8, datos.getPrecioCarta());
+		ps.setString(8, datos.getPrecioCarta());
 		ps.setString(9, datos.getUrlReferenciaCarta());
 		ps.setString(10, datos.getDireccionImagenCarta());
 		ps.setString(11, datos.getNormasCarta());
@@ -65,13 +65,13 @@ public class DBUtilidades {
 		connector = agregarCondicion(sql, connector, "idCarta", carta.getIdCarta());
 		connector = agregarCondicion(sql, connector, "nomCarta", carta.getNomCarta());
 		connector = agregarCondicion(sql, connector, "gradeoCarta", carta.getGradeoCarta());
-		connector = agregarCondicion(sql, connector, "numCarta", Integer.toString(carta.getNumCarta()));
+		connector = agregarCondicion(sql, connector, "numCarta", carta.getNumCarta());
 		connector = agregarCondicion(sql, connector, "editorialCarta", carta.getEditorialCarta());
 		connector = agregarCondicionLike(sql, connector, "coleccionCarta", carta.getColeccionCarta());
 		connector = agregarCondicionLike(sql, connector, "rarezaCarta", carta.getRarezaCarta());
-		connector = agregarCondicion(sql, connector, "esFoilCarta", carta.getEsFoilCarta() ? "1" : "0");
+		connector = agregarCondicion(sql, connector, "esFoilCarta", carta.getEsFoilCarta());
 		connector = agregarCondicionLike(sql, connector, "estadoCarta", carta.getEstadoCarta());
-		connector = agregarCondicion(sql, connector, "precioCarta", Double.toString(carta.getPrecioCarta()));
+		connector = agregarCondicion(sql, connector, "precioCarta", carta.getPrecioCarta());
 
 		if (connector.trim().equalsIgnoreCase("WHERE")) {
 			return "";
@@ -236,7 +236,8 @@ public class DBUtilidades {
 	 * @throws SQLException Si ocurre un error en la consulta SQL.
 	 */
 	public static List<String> obtenerValoresColumna(String columna) {
-		String sentenciaSQL = "SELECT " + columna + " FROM albumbbdd ORDER BY " + columna + " ASC";
+		String sentenciaSQL = "SELECT " + columna + " FROM albumbbdd ORDER BY " + columna + " ASC;";
+
 		ListasCartasDAO.listaCartas.clear();
 		return ListasCartasDAO.guardarDatosAutoCompletado(sentenciaSQL, columna);
 	}
@@ -253,19 +254,19 @@ public class DBUtilidades {
 		try {
 			String id = rs.getString("idCarta");
 			String nombre = rs.getString("nomCarta");
-			int numCarta = rs.getInt("numCarta");
+			String numCarta = rs.getString("numCarta");
 			String coleccionCarta = rs.getString("coleccionCarta");
 			String rarezaCarta = rs.getString("rarezaCarta");
-			boolean esFoilCarta = rs.getInt("esFoilCarta") == 1;
+			String esFoilCarta = rs.getString("esFoilCarta");
 			String gradeoCarta = rs.getString("gradeoCarta");
 			String estadoCarta = rs.getString("estadoCarta");
-			double precioCarta = rs.getDouble("precioCarta");
+			String precioCarta = rs.getString("precioCarta");
 			String urlReferenciaCarta = rs.getString("urlReferenciaCarta");
 			String direccionImagenCarta = rs.getString("direccionImagenCarta");
 			String normasCarta = rs.getString("normasCarta");
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCarta = (precioCarta <= 0) ? 0.0 : precioCarta;
+			precioCarta = (Double.parseDouble(precioCarta) <= 0) ? "0.0" : precioCarta;
 
 			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).coleccionCarta(coleccionCarta)
 					.rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta).gradeoCarta(gradeoCarta).estadoCarta(estadoCarta)
