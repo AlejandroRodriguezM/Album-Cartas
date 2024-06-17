@@ -509,7 +509,7 @@ public class MenuPrincipalController implements Initializable {
 
 		// Ajustar el máximo altura permitido según la posición del AnchorPane
 		// numeroCaja
-		return windowHeight - comboboxGradeoCarta.getLayoutY() - 80;
+		return windowHeight - comboboxGradeoCarta.getLayoutY() - 125;
 	}
 
 	/**

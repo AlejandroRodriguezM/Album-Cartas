@@ -255,6 +255,7 @@ public class DBUtilidades {
 			String id = rs.getString("idCarta");
 			String nombre = rs.getString("nomCarta");
 			String numCarta = rs.getString("numCarta");
+			String editorialCarta = rs.getString("EditorialCarta");
 			String coleccionCarta = rs.getString("coleccionCarta");
 			String rarezaCarta = rs.getString("rarezaCarta");
 			String esFoilCarta = rs.getString("esFoilCarta");
@@ -268,7 +269,7 @@ public class DBUtilidades {
 			// Verificaciones y asignaciones predeterminadas
 			precioCarta = (Double.parseDouble(precioCarta) <= 0) ? "0.0" : precioCarta;
 
-			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).coleccionCarta(coleccionCarta)
+			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).editorialCarta(editorialCarta).coleccionCarta(coleccionCarta)
 					.rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta).gradeoCarta(gradeoCarta).estadoCarta(estadoCarta)
 					.precioCarta(precioCarta).urlReferenciaCarta(urlReferenciaCarta)
 					.direccionImagenCarta(direccionImagenCarta).normasCarta(normasCarta).build();
