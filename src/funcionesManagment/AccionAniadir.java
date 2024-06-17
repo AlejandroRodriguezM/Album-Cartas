@@ -66,7 +66,7 @@ public class AccionAniadir {
 		Carta comic = AccionControlUI.camposCarta(controls, true);
 		accionRellenoDatos.actualizarCamposUnicos(comic);
 
-		referenciaVentana.getProntInfo().setOpacity(1);
+		referenciaVentana.getProntInfoTextArea().setOpacity(1);
 
 		accionFuncionesComunes.procesarCarta(comic, false);
 	}
@@ -82,7 +82,7 @@ public class AccionAniadir {
 			}
 
 			ListasCartasDAO.listasAutoCompletado();
-			List<ComboBox<String>> comboboxes = referenciaVentana.getComboboxes();
+			List<ComboBox<String>> comboboxes = referenciaVentana.getListaComboboxes();
 			funcionesCombo.rellenarComboBox(comboboxes);
 
 			ListasCartasDAO.cartasImportados.clear();
@@ -92,7 +92,7 @@ public class AccionAniadir {
 			AccionControlUI.limpiarAutorellenos(false);
 
 			String mensajePront = "Has introducido los cartas correctamente\n";
-			AlarmaList.mostrarMensajePront(mensajePront, true, referenciaVentana.getProntInfo());
+			AlarmaList.mostrarMensajePront(mensajePront, true, referenciaVentana.getProntInfoTextArea());
 		}
 
 	}

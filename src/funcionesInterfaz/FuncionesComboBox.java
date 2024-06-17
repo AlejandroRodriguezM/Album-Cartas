@@ -60,7 +60,7 @@ public class FuncionesComboBox {
 	 * @return Un objeto Carta con los valores seleccionados en los ComboBoxes.
 	 */
 	private Carta getCartaFromComboBoxes(List<ComboBox<String>> comboboxes) {
-		Carta comic = new Carta();
+		Carta carta = new Carta();
 		int cantidadDeComboBoxes = comboboxes.size();
 		for (int i = 0; i < cantidadDeComboBoxes; i++) {
 			ComboBox<String> comboBox = comboboxes.get(i);
@@ -69,41 +69,38 @@ public class FuncionesComboBox {
 
 			switch (i) {
 			case 0:
-				comic.setNombre(value);
+				carta.setNomCarta(value);
 				break;
 			case 1:
-				comic.setNumero(value);
+				carta.setNumCarta(Integer.parseInt(value));
 				break;
 			case 2:
-				comic.setVariante(value);
+				carta.setEditorialCarta(value);
 				break;
 			case 3:
-				comic.setProcedencia(value);
+				carta.setColeccionCarta(value);
 				break;
 			case 4:
-				comic.setFormato(value);
+				carta.setRarezaCarta(value);
 				break;
 			case 5:
-				comic.setDibujante(value);
+				carta.setEsFoilCarta("1".equals(value) || "true".equalsIgnoreCase(value));
 				break;
 			case 6:
-				comic.setGuionista(value);
+				carta.setGradeoCarta(value);
 				break;
 			case 7:
-				comic.setEditorial(value);
+				carta.setEstadoCarta(value);
 				break;
 			case 8:
-				comic.setFirma(value);
-				break;
-			case 9:
-				comic.setValorGradeo(value);
+				carta.setPrecioCarta(Double.parseDouble(value));
 				break;
 			// Add more cases for additional comboboxes if needed
 			default:
 				break;
 			}
 		}
-		return comic;
+		return carta;
 	}
 
 	/**
@@ -153,15 +150,16 @@ public class FuncionesComboBox {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public void actualizarComboBoxes(List<ComboBox<String>> comboboxes, Carta comic) {
+	public void actualizarComboBoxes(List<ComboBox<String>> comboboxes, Carta carta) {
 
-		Carta comicTemp = new Carta.CartaBuilder("", comic.getNombre()).valorGradeo("").numero(comic.getNumero())
-				.variante(comic.getVariante()).firma(comic.getFirma()).editorial(comic.getEditorial())
-				.formato(comic.getFormato()).procedencia(comic.getProcedencia()).fecha("")
-				.guionista(comic.getGuionista()).dibujante(comic.getDibujante()).estado("").keyIssue("").puntuacion("")
-				.imagen("").referenciaCarta("").precioCarta("").codigoCarta("").build();
+		Carta cartaTemp = new Carta.CartaBuilder("", carta.getNomCarta()).numCarta(carta.getNumCarta())
+				.editorialCarta(carta.getEditorialCarta()).coleccionCarta(carta.getColeccionCarta())
+				.rarezaCarta(carta.getRarezaCarta()).esFoilCarta(carta.getEsFoilCarta())
+				.gradeoCarta(carta.getGradeoCarta()).estadoCarta(carta.getEstadoCarta())
+				.precioCarta(carta.getPrecioCarta()).urlReferenciaCarta("").direccionImagenCarta("").normasCarta("")
+				.build();
 
-		String sql = DBUtilidades.datosConcatenados(comicTemp);
+		String sql = DBUtilidades.datosConcatenados(cartaTemp);
 
 		if (!sql.isEmpty()) {
 			isUserInput = false; // Disable user input during programmatic updates
@@ -340,7 +338,7 @@ public class FuncionesComboBox {
 		}
 
 		filterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-			
+
 			List<String> currentFilteredItems = comboBoxFilteredItemsMap.get(originalComboBox);
 			if (newValue != null && !newValue.isEmpty()) {
 
@@ -354,7 +352,7 @@ public class FuncionesComboBox {
 				originalComboBox.setValue("");
 				Carta comic = getCartaFromComboBoxes(comboboxes);
 				actualizarComboBoxes(comboboxes, comic);
-				
+
 				List<String> allFilteredItems = new ArrayList<>(
 						ListasCartasDAO.listaOrdenada.get(comboboxes.indexOf(originalComboBox)));
 				currentFilteredItems.clear();

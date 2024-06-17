@@ -80,172 +80,97 @@ import webScrap.WebScraperCatalogPreviews;
 public class MenuPrincipalController implements Initializable {
 
 	@FXML
-	private TableColumn<Carta, String> ID;
+	private AnchorPane anchoPaneInfo;
+	@FXML
+	private AnchorPane rootAnchorPane;
+
+	@FXML
+	private VBox comboboxVbox;
+	@FXML
+	private VBox rootVBox;
+	@FXML
+	private VBox vboxContenido;
+	@FXML
+	private VBox vboxImage;
 
 	@FXML
 	private Label alarmaConexionInternet;
 
 	@FXML
-	private AnchorPane anchoPaneInfo;
-
-	@FXML
 	private ImageView backgroundImage;
+	@FXML
+	private ImageView imagencomic;
 
 	@FXML
 	private Rectangle barraCambioAltura;
 
 	@FXML
 	private Button botonCancelarSubida;
-
 	@FXML
 	private Button botonEliminar;
-
 	@FXML
 	private Button botonGuardarResultado;
-
 	@FXML
 	private Button botonImprimir;
-
 	@FXML
 	private Button botonIntroducir;
-
 	@FXML
 	private Button botonLimpiar;
-
 	@FXML
 	private Button botonModificar;
-
 	@FXML
 	private Button botonMostrarGuardados;
-
 	@FXML
 	private Button botonMostrarParametro;
-
 	@FXML
 	private Button botonbbdd;
 
 	@FXML
 	private TextField busquedaGeneral;
+	@FXML
+	private ComboBox<String> comboboxColeccionCarta;
+	@FXML
+	private ComboBox<String> comboboxEditorialCarta;
+	@FXML
+	private ComboBox<String> comboboxEsFoilCarta;
+	@FXML
+	private ComboBox<String> comboboxEstadoCarta;
+	@FXML
+	private ComboBox<String> comboboxGradeoCarta;
+	@FXML
+	private ComboBox<String> comboboxNombreCarta;
+	@FXML
+	private ComboBox<String> comboboxNumeroCarta;
+	@FXML
+	private ComboBox<String> comboboxPrecioCarta;
+	@FXML
+	private ComboBox<String> comboboxRarezaCarta;
 
 	@FXML
-	private TableColumn<Carta, String> coleccion;
+	private TableView<Carta> tablaBBDD;
 
 	@FXML
-	private ComboBox<String> coleccionCarta;
-
+	private TableColumn<Carta, String> columnaColeccion;
 	@FXML
-	private VBox comboboxVbox;
-
+	private TableColumn<Carta, String> columnaEditorial;
 	@FXML
-	private TableColumn<Carta, String> editorial;
-
+	private TableColumn<Carta, String> columnaEsFoil;
 	@FXML
-	private ComboBox<String> editorialCarta;
-
+	private TableColumn<Carta, String> columnaEstado;
 	@FXML
-	private TableColumn<Carta, String> esFoil;
-
+	private TableColumn<Carta, String> columnaGradeo;
 	@FXML
-	private ComboBox<String> esFoilCarta;
-
+	private TableColumn<Carta, String> columnaId;
 	@FXML
-	private TableColumn<Carta, String> estado;
-
+	private TableColumn<Carta, String> columnaNombre;
 	@FXML
-	private ComboBox<String> estadoCarta;
-
+	private TableColumn<Carta, String> columnaNumero;
 	@FXML
-	private TableColumn<Carta, String> gradeo;
-
+	private TableColumn<Carta, String> columnaPrecio;
 	@FXML
-	private ComboBox<String> gradeoCarta;
-
+	private TableColumn<Carta, String> columnaRareza;
 	@FXML
-	private ImageView imagencomic;
-
-	@FXML
-	private MenuItem menuArchivoApiMarvel;
-
-	@FXML
-	private MenuItem menuArchivoApiVine;
-
-	@FXML
-	private MenuItem menuArchivoAvanzado;
-
-	@FXML
-	private MenuItem menuArchivoCerrar;
-
-	@FXML
-	private MenuItem menuArchivoDelete;
-
-	@FXML
-	private MenuItem menuArchivoDesconectar;
-
-	@FXML
-	private MenuItem menuArchivoExcel;
-
-	@FXML
-	private MenuItem menuArchivoImportar;
-
-	@FXML
-	private MenuItem menuArchivoSobreMi;
-
-	@FXML
-	private MenuItem menuCartaAniadir;
-
-	@FXML
-	private MenuItem menuCartaEliminar;
-
-	@FXML
-	private MenuItem menuCartaModificar;
-
-	@FXML
-	private Menu menuComprobarApis;
-
-	@FXML
-	private MenuItem menuEstadisticaComprados;
-
-	@FXML
-	private MenuItem menuEstadisticaEstadistica;
-
-	@FXML
-	private MenuItem menuEstadisticaKeyIssue;
-
-	@FXML
-	private MenuItem menuEstadisticaPosesion;
-
-	@FXML
-	private MenuItem menuEstadisticaVendidos;
-
-	@FXML
-	private MenuBar menuNavegacion;
-
-	@FXML
-	private Menu navegacionCerrar;
-
-	@FXML
-	private Menu navegacionCarta;
-
-	@FXML
-	private Menu navegacionEstadistica;
-
-	@FXML
-	private TableColumn<Carta, String> nombre;
-
-	@FXML
-	private ComboBox<String> nombreCarta;
-
-	@FXML
-	private TableColumn<Carta, String> numero;
-
-	@FXML
-	private ComboBox<String> numeroCarta;
-
-	@FXML
-	private TableColumn<?, ?> precio;
-
-	@FXML
-	private ComboBox<String> precioCarta;
+	private TableColumn<Carta, String> columnaReferencia;
 
 	@FXML
 	private ProgressIndicator progresoCarga;
@@ -254,28 +179,45 @@ public class MenuPrincipalController implements Initializable {
 	private TextArea prontInfo;
 
 	@FXML
-	private TableColumn<Carta, String> rareza;
+	private MenuItem menuArchivoAvanzado;
+	@FXML
+	private MenuItem menuArchivoCerrar;
+	@FXML
+	private MenuItem menuArchivoDelete;
+	@FXML
+	private MenuItem menuArchivoDesconectar;
+	@FXML
+	private MenuItem menuArchivoExcel;
+	@FXML
+	private MenuItem menuArchivoImportar;
+	@FXML
+	private MenuItem menuArchivoSobreMi;
+	@FXML
+	private MenuItem menuCartaAniadir;
+	@FXML
+	private MenuItem menuCartaEliminar;
+	@FXML
+	private MenuItem menuCartaModificar;
+	@FXML
+	private MenuItem menuEstadisticaComprados;
+	@FXML
+	private MenuItem menuEstadisticaEstadistica;
+	@FXML
+	private MenuItem menuEstadisticaKeyIssue;
+	@FXML
+	private MenuItem menuEstadisticaPosesion;
+	@FXML
+	private MenuItem menuEstadisticaVendidos;
 
 	@FXML
-	private ComboBox<String> rarezaCarta;
+	private MenuBar menuNavegacion;
 
 	@FXML
-	private TableColumn<Carta, String> referencia;
-
+	private Menu navegacionCerrar;
 	@FXML
-	private AnchorPane rootAnchorPane;
-
+	private Menu navegacionCarta;
 	@FXML
-	private VBox rootVBox;
-
-	@FXML
-	private TableView<Carta> tablaBBDD;
-
-	@FXML
-	private VBox vboxContenido;
-
-	@FXML
-	private VBox vboxImage;
+	private Menu navegacionEstadistica;
 
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
@@ -296,15 +238,10 @@ public class MenuPrincipalController implements Initializable {
 	double y = 0;
 
 	public AccionReferencias guardarReferencia() {
+		// Labels
 		referenciaVentana.setAlarmaConexionInternet(alarmaConexionInternet);
-		referenciaVentana.setID(id);
-		referenciaVentana.setGradeo(gradeo);
-		referenciaVentana.setEditorial(editorial);
-		referenciaVentana.setFormato(formato);
-		referenciaVentana.setNombre(nombre);
-		referenciaVentana.setNumero(numero);
-		referenciaVentana.setProcedencia(procedencia);
-		referenciaVentana.setReferencia(referencia);
+
+		// Buttons
 		referenciaVentana.setBotonEliminar(botonEliminar);
 		referenciaVentana.setBotonLimpiar(botonLimpiar);
 		referenciaVentana.setBotonbbdd(botonbbdd);
@@ -312,67 +249,86 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setBotonImprimir(botonImprimir);
 		referenciaVentana.setBotonGuardarResultado(botonGuardarResultado);
 		referenciaVentana.setBotonMostrarGuardados(botonMostrarGuardados);
-		referenciaVentana.setBusquedaCodigo(busquedaCodigo);
-		referenciaVentana.setBusquedaGeneral(busquedaGeneral);
-		referenciaVentana.setImagencomic(imagencomic);
-		referenciaVentana.setMenu_archivo_cerrar(menuArchivoCerrar);
-		referenciaVentana.setMenu_archivo_delete(menuArchivoDelete);
-		referenciaVentana.setMenu_archivo_desconectar(menuArchivoDesconectar);
-		referenciaVentana.setMenu_archivo_excel(menuArchivoExcel);
-		referenciaVentana.setMenu_archivo_importar(menuArchivoImportar);
-		referenciaVentana.setMenu_archivo_sobreMi(menuArchivoSobreMi);
-		referenciaVentana.setMenu_comic_aniadir(menuCartaAniadir);
-		referenciaVentana.setMenu_comic_eliminar(menuCartaEliminar);
-		referenciaVentana.setMenu_comic_modificar(menuCartaModificar);
-		referenciaVentana.setMenu_estadistica_comprados(menuEstadisticaComprados);
-		referenciaVentana.setMenu_estadistica_estadistica(menuEstadisticaEstadistica);
-		referenciaVentana.setMenu_estadistica_key_issue(menuEstadisticaKeyIssue);
-		referenciaVentana.setMenu_estadistica_posesion(menuEstadisticaPosesion);
-		referenciaVentana.setMenu_estadistica_vendidos(menuEstadisticaVendidos);
-		referenciaVentana.setMenu_archivo_avanzado(menuArchivoAvanzado);
-		referenciaVentana.setMenu_comprobar_apis(menuComprobarApis);
-		referenciaVentana.setMenu_navegacion(menuNavegacion);
-		referenciaVentana.setNavegacion_Opciones(navegacionCerrar);
-		referenciaVentana.setNavegacion_comic(navegacionCarta);
-		referenciaVentana.setNavegacion_estadistica(navegacionEstadistica);
-		referenciaVentana.setTituloCarta(nombreCarta);
-		referenciaVentana.setNombreEditorial(nombreEditorial);
-		referenciaVentana.setNombreFormato(nombreFormato);
-		referenciaVentana.setGradeoCarta(gradeoCarta);
-		referenciaVentana.setNumeroCarta(numeroCarta);
-		referenciaVentana.setNumeroCarta(numeroCarta);
-		referenciaVentana.setProntInfo(prontInfo);
+		referenciaVentana.setBotonModificar(botonModificar);
+		referenciaVentana.setBotonIntroducir(botonIntroducir);
+		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
+
+		referenciaVentana.setBusquedaGeneralTextField(busquedaGeneral);
+
+		// ImageViews
+		referenciaVentana.setImagenCarta(imagencomic);
+		referenciaVentana.setBackgroundImage(backgroundImage);
+
+		// MenuItems
+		referenciaVentana.setMenuArchivoCerrar(menuArchivoCerrar);
+		referenciaVentana.setMenuArchivoDelete(menuArchivoDelete);
+		referenciaVentana.setMenuArchivoDesconectar(menuArchivoDesconectar);
+		referenciaVentana.setMenuArchivoExcel(menuArchivoExcel);
+		referenciaVentana.setMenuArchivoImportar(menuArchivoImportar);
+		referenciaVentana.setMenuArchivoSobreMi(menuArchivoSobreMi);
+		referenciaVentana.setMenuCartaAniadir(menuCartaAniadir);
+		referenciaVentana.setMenuCartaEliminar(menuCartaEliminar);
+		referenciaVentana.setMenuCartaModificar(menuCartaModificar);
+		referenciaVentana.setMenuEstadisticaComprados(menuEstadisticaComprados);
+		referenciaVentana.setMenuEstadisticaEstadistica(menuEstadisticaEstadistica);
+		referenciaVentana.setMenuEstadisticaPosesion(menuEstadisticaPosesion);
+		referenciaVentana.setMenuEstadisticaVendidos(menuEstadisticaVendidos);
+		referenciaVentana.setMenuArchivoAvanzado(menuArchivoAvanzado);
+
+		// Menus
+		referenciaVentana.setMenuNavegacion(menuNavegacion);
+		referenciaVentana.setNavegacionCerrar(navegacionCerrar);
+		referenciaVentana.setNavegacionCarta(navegacionCarta);
+		referenciaVentana.setNavegacionEstadistica(navegacionEstadistica);
+
+		// TableColumns
+		referenciaVentana.setiDColumna(columnaId);
+		referenciaVentana.setNombreColumna(columnaNombre);
+		referenciaVentana.setNumeroColumna(columnaNumero);
+		referenciaVentana.setGradeoColumna(columnaGradeo);
+		referenciaVentana.setEditorialColumna(columnaEditorial);
+		referenciaVentana.setColeccionColumna(columnaColeccion);
+		referenciaVentana.setRarezaColumna(columnaRareza);
+		referenciaVentana.setEsFoilColumna(columnaEsFoil);
+		referenciaVentana.setEstadoColumna(columnaEstado);
+		referenciaVentana.setPrecioColumna(columnaPrecio);
+		referenciaVentana.setReferenciaColumna(columnaReferencia);
+
+		// ComboBoxes
+		referenciaVentana.setNombreCartaCombobox(comboboxNombreCarta);
+		referenciaVentana.setNumeroCartaCombobox(comboboxNumeroCarta);
+		referenciaVentana.setNombreEditorialCombobox(comboboxEditorialCarta);
+		referenciaVentana.setNombreColeccionCombobox(comboboxColeccionCarta);
+		referenciaVentana.setNombreRarezaCombobox(comboboxRarezaCarta);
+		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
+		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
+		referenciaVentana.setEstadoCartaCombobox(comboboxEstadoCarta);
+		referenciaVentana.setPrecioCartaCombobox(comboboxPrecioCarta);
+
+		// Others
+		referenciaVentana.setProntInfoTextArea(prontInfo);
 		referenciaVentana.setProgresoCarga(progresoCarga);
-		referenciaVentana.setID(id);
-		referenciaVentana.setGradeo(gradeo);
-		referenciaVentana.setEditorial(editorial);
-		referenciaVentana.setFormato(formato);
-		referenciaVentana.setNombre(nombre);
-		referenciaVentana.setNumero(numero);
-		referenciaVentana.setProcedencia(procedencia);
-		referenciaVentana.setReferencia(referencia);
 		referenciaVentana.setTablaBBDD(tablaBBDD);
 		referenciaVentana.setRootVBox(rootVBox);
 		referenciaVentana.setVboxContenido(vboxContenido);
-		referenciaVentana.setBackgroundImage(backgroundImage);
-		referenciaVentana.setRootAnchorPane(rootAnchorPane);
 		referenciaVentana.setVboxImage(vboxImage);
 		referenciaVentana.setAnchoPaneInfo(anchoPaneInfo);
-		referenciaVentana.setBotonModificar(botonModificar);
-		referenciaVentana.setBotonIntroducir(botonIntroducir);
-		referenciaVentana.setBotonEliminar(botonEliminar);
-		referenciaVentana.setStage(estadoStage());
-		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
+		referenciaVentana.setRootAnchorPane(rootAnchorPane);
 		referenciaVentana.setBarraCambioAltura(barraCambioAltura);
+		referenciaVentana.setStageVentana(estadoStage());
 
-		referenciaVentana.setComboBoxes(Arrays.asList(nombreCarta, numeroCarta, gradeoCarta));
+		// ComboBox List
+		referenciaVentana.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
+				comboboxGradeoCarta, comboboxColeccionCarta, comboboxEditorialCarta, comboboxEsFoilCarta,
+				comboboxEstadoCarta, comboboxPrecioCarta, comboboxRarezaCarta));
 
+		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
-
 		AccionReferencias.setListaBotones(FXCollections.observableArrayList(botonLimpiar, botonMostrarParametro,
 				botonbbdd, botonImprimir, botonGuardarResultado));
-
-		AccionReferencias.setColumnasTabla(Arrays.asList(nombre, numero, editorial, referencia));
+		AccionReferencias.setListaColumnasTabla(
+				Arrays.asList(columnaNombre, columnaNumero, columnaEditorial, columnaReferencia, columnaColeccion,
+						columnaEsFoil, columnaEstado, columnaGradeo, columnaId, columnaPrecio, columnaRareza));
 
 		return referenciaVentana;
 	}
@@ -407,9 +363,6 @@ public class MenuPrincipalController implements Initializable {
 		menuArchivoDelete.setGraphic(Utilidades.createIcon("/Icono/Archivo/basura.png", 16, 16));
 		menuArchivoSobreMi.setGraphic(Utilidades.createIcon("/Icono/Archivo/about.png", 16, 16));
 		menuArchivoAvanzado.setGraphic(Utilidades.createIcon("/Icono/Archivo/configuraciones.png", 16, 16));
-		menuComprobarApis.setGraphic(Utilidades.createIcon("/Icono/Archivo/apis_check.png", 16, 16));
-		menuArchivoApiMarvel.setGraphic(Utilidades.createIcon("/Icono/Archivo/check_apis.png", 16, 16));
-		menuArchivoApiVine.setGraphic(Utilidades.createIcon("/Icono/Archivo/check_apis.png", 16, 16));
 		menuArchivoDesconectar.setGraphic(Utilidades.createIcon("/Icono/Archivo/apagado.png", 16, 16));
 		menuArchivoCerrar.setGraphic(Utilidades.createIcon("/Icono/Archivo/salir.png", 16, 16));
 
@@ -448,7 +401,7 @@ public class MenuPrincipalController implements Initializable {
 
 		});
 
-		AccionControlUI.establecerTooltips();
+//		AccionControlUI.establecerTooltips();
 
 		formatearTextField();
 
@@ -557,7 +510,7 @@ public class MenuPrincipalController implements Initializable {
 
 		// Ajustar el máximo altura permitido según la posición del AnchorPane
 		// numeroCaja
-		return windowHeight - gradeoCarta.getLayoutY() - 80;
+		return windowHeight - comboboxGradeoCarta.getLayoutY() - 80;
 	}
 
 	/**
@@ -581,8 +534,8 @@ public class MenuPrincipalController implements Initializable {
 				Task<Void> task = new Task<Void>() {
 					@Override
 					protected Void call() throws Exception {
-						funcionesCombo.rellenarComboBox(referenciaVentana.getComboboxes());
-						funcionesCombo.lecturaComboBox(referenciaVentana.getComboboxes());
+						funcionesCombo.rellenarComboBox(referenciaVentana.getListaComboboxes());
+						funcionesCombo.lecturaComboBox(referenciaVentana.getListaComboboxes());
 						return null;
 					}
 				};
@@ -638,7 +591,7 @@ public class MenuPrincipalController implements Initializable {
 	 * numero entero en los comboBox numeroCarta y caja_comic
 	 */
 	public void formatearTextField() {
-		numeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
+		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
 	}
 
 	/////////////////////////////////
@@ -687,7 +640,7 @@ public class MenuPrincipalController implements Initializable {
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, null);
 		} else {
 			List<String> controls = new ArrayList<>();
-			for (ComboBox<String> comboBox : referenciaVentana.getComboboxes()) {
+			for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
 
@@ -1303,7 +1256,7 @@ public class MenuPrincipalController implements Initializable {
 	private void limpiarComboBox() {
 
 		// Iterar sobre todos los ComboBox para realizar la limpieza
-		for (ComboBox<String> comboBox : referenciaVentana.getComboboxes()) {
+		for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
 			// Limpiar el campo
 			comboBox.setValue("");
 			comboBox.getEditor().setText("");
@@ -1323,7 +1276,7 @@ public class MenuPrincipalController implements Initializable {
 		tablaBBDD.getItems().clear();
 
 		// Pasar la lista de ComboBoxes a VentanaAccionController
-		referenciaVentana.setComboBoxes(referenciaVentana.getComboboxes());
+		referenciaVentana.setListaComboboxes(referenciaVentana.getListaComboboxes());
 
 		if (fuente instanceof Button botonPresionado) {
 			if (botonPresionado == botonIntroducir) {
@@ -1425,7 +1378,7 @@ public class MenuPrincipalController implements Initializable {
 
 	public Stage estadoStage() {
 
-		return (Stage) menuNavegacion.getScene().getWindow();
+		return (Stage) botonLimpiar.getScene().getWindow();
 	}
 
 	/**

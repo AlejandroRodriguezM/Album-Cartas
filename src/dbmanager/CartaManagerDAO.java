@@ -66,7 +66,7 @@ public class CartaManagerDAO {
 		return SelectManager.countRows();
 	}
 
-	public static Carta comicDatos(String idCarta) {
+	public static Carta cartaDatos(String idCarta) {
 		return SelectManager.cartaDatos(idCarta);
 	}
 

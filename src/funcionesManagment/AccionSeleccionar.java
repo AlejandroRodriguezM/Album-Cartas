@@ -53,7 +53,7 @@ public class AccionSeleccionar {
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && !esPrincipal) {
 			comicTemp = ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, idCarta);
 		} else {
-			comicTemp = CartaManagerDAO.comicDatos(idCarta);
+			comicTemp = CartaManagerDAO.cartaDatos(idCarta);
 		}
 
 		if (idCarta == null || idCarta.isEmpty() || comicTemp == null) {
@@ -69,21 +69,21 @@ public class AccionSeleccionar {
 
 			if (AccionFuncionesComunes.TIPO_ACCION.equals("modificar")) {
 				AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
-				getReferenciaVentana().getIdCartaTratar().setText(comicTemp.getIdCarta());
+				getReferenciaVentana().getIdCartaTratarTextField().setText(comicTemp.getIdCarta());
 			}
 		} else {
-			Utilidades.cargarImagenAsync(comicTemp.getDireccionImagenCarta(), getReferenciaVentana().getImagencomic());
+			Utilidades.cargarImagenAsync(comicTemp.getDireccionImagenCarta(), getReferenciaVentana().getImagenCarta());
 		}
 
-		getReferenciaVentana().getProntInfo().setOpacity(1);
+		getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && CartaManagerDAO.comprobarIdentificadorCarta(idCarta)) {
-			mensaje = CartaManagerDAO.comicDatos(idCarta).toString().replace("[", "").replace("]", "");
+			mensaje = CartaManagerDAO.cartaDatos(idCarta).toString().replace("[", "").replace("]", "");
 		} else {
 			mensaje = comicTemp.toString().replace("[", "").replace("]", "");
 		}
-		getReferenciaVentana().getProntInfo().clear();
-		getReferenciaVentana().getProntInfo().setText(mensaje);
+		getReferenciaVentana().getProntInfoTextArea().clear();
+		getReferenciaVentana().getProntInfoTextArea().setText(mensaje);
 
 	}
 
@@ -91,11 +91,11 @@ public class AccionSeleccionar {
 
 		ListasCartasDAO.reiniciarListaCartas();
 		getReferenciaVentana().getTablaBBDD().refresh();
-		getReferenciaVentana().getProntInfo().setOpacity(0);
-		getReferenciaVentana().getImagencomic().setVisible(false);
-		getReferenciaVentana().getImagencomic().setImage(null);
-		getReferenciaVentana().getProntInfo().setText(null);
-		getReferenciaVentana().getProntInfo().clear();
+		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+		getReferenciaVentana().getImagenCarta().setVisible(false);
+		getReferenciaVentana().getImagenCarta().setImage(null);
+		getReferenciaVentana().getProntInfoTextArea().setText(null);
+		getReferenciaVentana().getProntInfoTextArea().clear();
 
 		FuncionesTableView.nombreColumnas();
 		FuncionesTableView.actualizarBusquedaRaw();
@@ -123,14 +123,14 @@ public class AccionSeleccionar {
 						getReferenciaVentana().getBotonImprimir().setVisible(false);
 						getReferenciaVentana().getBotonGuardarResultado().setVisible(false);
 					}
-					getReferenciaVentana().getBusquedaGeneral().setText("");
+					getReferenciaVentana().getBusquedaGeneralTextField().setText("");
 				}
 
 			}
 		} else {
 			String mensaje = "ERROR. No hay datos en la base de datos";
 
-			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfo());
+			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 		}
 	}
 
@@ -144,22 +144,22 @@ public class AccionSeleccionar {
 		String busquedaGeneralTextField = "";
 
 		if (!esAccion) {
-			busquedaGeneralTextField = getReferenciaVentana().getBusquedaGeneral().getText();
+			busquedaGeneralTextField = getReferenciaVentana().getBusquedaGeneralTextField().getText();
 		}
 
 		List<Carta> listCarta = FXCollections
 				.observableArrayList(SelectManager.busquedaParametro(datos, busquedaGeneralTextField));
 
 		if (!listCarta.isEmpty()) {
-			getReferenciaVentana().getProntInfo().setOpacity(1);
-			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: black;"); // Reset the text color to black
-			getReferenciaVentana().getProntInfo()
+			getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
+			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: black;"); // Reset the text color to black
+			getReferenciaVentana().getProntInfoTextArea()
 					.setText("El número de cómics donde aparece la búsqueda es: " + listCarta.size() + "\n \n \n");
 		} else if (listCarta.isEmpty() && esAccion) {
-			getReferenciaVentana().getProntInfo().setOpacity(1);
+			getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
 			// Show error message in red when no search fields are specified
-			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: red;");
-			getReferenciaVentana().getProntInfo().setText("Error. No existen con dichos parametros.");
+			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: red;");
+			getReferenciaVentana().getProntInfoTextArea().setText("Error. No existen con dichos parametros.");
 		}
 
 		return listCarta;

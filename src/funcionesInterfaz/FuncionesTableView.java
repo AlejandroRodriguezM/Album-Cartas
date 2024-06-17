@@ -195,7 +195,7 @@ public class FuncionesTableView {
 	}
 
 	public static void actualizarBusquedaRaw() {
-		getReferenciaVentana().getColumnasTabla()
+		getReferenciaVentana().getListaColumnasTabla()
 				.forEach(columna -> columna.setCellFactory(column -> new TableCell<Carta, String>() {
 					private VBox vbox = new VBox();
 					private String lastItem = null;
@@ -277,9 +277,9 @@ public class FuncionesTableView {
 	 * @param listaCarta
 	 */
 	public static void tablaBBDD(List<Carta> listaCarta) {
-		getReferenciaVentana().getTablaBBDD().getColumns().setAll(getReferenciaVentana().getColumnasTabla());
+		getReferenciaVentana().getTablaBBDD().getColumns().setAll(getReferenciaVentana().getListaColumnasTabla());
 		getReferenciaVentana().getTablaBBDD().getItems().setAll(listaCarta);
-		getReferenciaVentana().getImagencomic().setVisible(true);
+		getReferenciaVentana().getImagenCarta().setVisible(true);
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class FuncionesTableView {
 
 		// Deseleccionar la fila seleccionada
 		tablaBBDD.getSelectionModel().clearSelection();
-		getReferenciaVentana().getImagencomic().setVisible(true);
+		getReferenciaVentana().getImagenCarta().setVisible(true);
 	}
 
 	/**
@@ -309,7 +309,7 @@ public class FuncionesTableView {
 	 * @param tablaBBDD  La TableView en la que se aplicarán las configuraciones.
 	 */
 	public static void nombreColumnas() {
-		for (TableColumn<Carta, String> column : referenciaVentana.getColumnasTabla()) {
+		for (TableColumn<Carta, String> column : referenciaVentana.getListaColumnasTabla()) {
 			String columnName = column.getText(); // Obtiene el nombre de la columna
 
 			// Realiza la correspondencia entre los nombres de columna y las propiedades de
@@ -340,7 +340,7 @@ public class FuncionesTableView {
 	 */
 	public static void modificarColumnas(boolean esPrincipal) {
 
-		for (TableColumn<Carta, String> column : getReferenciaVentana().getColumnasTabla()) {
+		for (TableColumn<Carta, String> column : getReferenciaVentana().getListaColumnasTabla()) {
 			column.prefWidthProperty().unbind(); // Desvincular cualquier propiedad prefWidth existente
 		}
 
@@ -374,8 +374,8 @@ public class FuncionesTableView {
 		}
 
 		// Aplicar los anchos específicos a cada columna
-		for (int i = 0; i < getReferenciaVentana().getColumnasTabla().size(); i++) {
-			TableColumn<Carta, String> column = getReferenciaVentana().getColumnasTabla().get(i);
+		for (int i = 0; i < getReferenciaVentana().getListaColumnasTabla().size(); i++) {
+			TableColumn<Carta, String> column = getReferenciaVentana().getListaColumnasTabla().get(i);
 			Double columnWidth = columnWidths[i];
 			column.setPrefWidth(columnWidth);
 		}
@@ -392,14 +392,14 @@ public class FuncionesTableView {
 	 */
 	public static void ajustarAnchoVBox() {
 		// Crear un objeto Text con el contenido del TextArea
-		Text text = new Text(getReferenciaVentana().getProntInfo().getText());
+		Text text = new Text(getReferenciaVentana().getProntInfoTextArea().getText());
 
 		// Configurar el mismo estilo que tiene el TextArea
-		text.setFont(getReferenciaVentana().getProntInfo().getFont());
+		text.setFont(getReferenciaVentana().getProntInfoTextArea().getFont());
 
 		double textHeight = text.getLayoutBounds().getHeight();
 
-		getReferenciaVentana().getProntInfo().setPrefHeight(textHeight);
+		getReferenciaVentana().getProntInfoTextArea().setPrefHeight(textHeight);
 	}
 
 	public static AccionReferencias getReferenciaVentana() {

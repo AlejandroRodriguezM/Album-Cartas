@@ -67,451 +67,149 @@ import javafx.stage.Stage;
 public class VentanaAccionController implements Initializable {
 
 	@FXML
-	private Label alarmaConexionInternet;
+	private VBox rootVBox;
+	@FXML
+	private VBox vboxImage;
 
+	@FXML
+	private Label alarmaConexionInternet;
 	@FXML
 	private Label alarmaConexionSql;
-
-	/**
-	 * Indicador de progreso.
-	 */
 	@FXML
-	private ProgressIndicator progresoCarga;
-
-	/**
-	 * Campo de texto para la dirección de la imagen.
-	 */
+	private Label labelCodigo;
 	@FXML
-	private TextField direccionImagen;
+    private Label labelEstado;
+    @FXML
+    private Label labelFoil;
+    @FXML
+    private Label labelGradeo;
+    @FXML
+    private Label labelId;
+    @FXML
+    private Label labelNormas;
+    @FXML
+    private Label labelPortada;
+    @FXML
+    private Label labelPrecio;
+    @FXML
+    private Label labelRareza;
+    @FXML
+    private Label labelReferencia;
+    @FXML
+    private Label labelcoleccion;
 
-	/**
-	 * Columna de la tabla para el ID.
-	 */
-	@FXML
-	private TableColumn<Carta, String> id;
-
-	/**
-	 * Columna de la tabla para la gradeo.
-	 */
-	@FXML
-	private TableColumn<Carta, String> gradeo;
-
-	/**
-	 * Columna de la tabla para el dibujante.
-	 */
-	@FXML
-	private TableColumn<Carta, String> dibujante;
-
-	/**
-	 * Columna de la tabla para la editorial.
-	 */
-	@FXML
-	private TableColumn<Carta, String> editorial;
-
-	/**
-	 * Columna de la tabla para la fecha.
-	 */
-	@FXML
-	private TableColumn<Carta, String> fecha;
-
-	/**
-	 * Columna de la tabla para la firma.
-	 */
-	@FXML
-	private TableColumn<Carta, String> firma;
-
-	/**
-	 * Columna de la tabla para el formato.
-	 */
-	@FXML
-	private TableColumn<Carta, String> formato;
-
-	/**
-	 * Columna de la tabla para el guionista.
-	 */
-	@FXML
-	private TableColumn<Carta, String> guionista;
-
-	/**
-	 * Columna de la tabla para el nombre.
-	 */
-	@FXML
-	private TableColumn<Carta, String> nombre;
-
-	/**
-	 * Columna de la tabla para el número.
-	 */
-	@FXML
-	private TableColumn<Carta, String> numero;
-
-	/**
-	 * Columna de la tabla para la procedencia.
-	 */
-	@FXML
-	private TableColumn<Carta, String> procedencia;
-
-	/**
-	 * Columna de la tabla para la referencia.
-	 */
-	@FXML
-	private TableColumn<Carta, String> referencia;
-
-	/**
-	 * Columna de la tabla para la variante.
-	 */
-	@FXML
-	private TableColumn<Carta, String> variante;
-
-	/**
-	 * Botón para cancelar la subida de imagenes.
-	 */
-	@FXML
-	private Button botonCancelarSubida;
-
-	/**
-	 * Botón para agregar puntuación a un cómic.
-	 */
-	@FXML
-	private Button botonAgregarPuntuacion;
-
-	/**
-	 * Botón para borrar una opinión.
-	 */
-	@FXML
-	private Button botonBorrarOpinion;
-
-	/**
-	 * Botón para realizar una búsqueda por código.
-	 */
-	@FXML
-	private Button botonBusquedaCodigo;
-
-	/**
-	 * Botón para realizar una búsqueda avanzada.
-	 */
 	@FXML
 	private Button botonBusquedaAvanzada;
-
-	/**
-	 * Botón para eliminar un cómic.
-	 */
+	@FXML
+	private Button botonBusquedaCodigo;
+	@FXML
+	private Button botonCancelarSubida;
 	@FXML
 	private Button botonEliminar;
-
-	/**
-	 * Botón para limpiar campos.
-	 */
+	@FXML
+	private Button botonEliminarImportadoCarta;
+	@FXML
+	private Button botonGuardarCambioCarta;
+	@FXML
+	private Button botonGuardarCarta;
 	@FXML
 	private Button botonLimpiar;
-
-	/**
-	 * Botón para modificar un cómic.
-	 */
 	@FXML
 	private Button botonModificarCarta;
-
-	/**
-	 * Botón para buscar mediante parametro un cómic.
-	 */
 	@FXML
 	private Button botonParametroCarta;
-
-	/**
-	 * Botón para vender un cómic.
-	 */
+	@FXML
+	private Button botonSubidaPortada;
 	@FXML
 	private Button botonVender;
-
-	/**
-	 * Botón para acceder a la base de datos.
-	 */
 	@FXML
 	private Button botonbbdd;
 
-	/**
-	 * Botón para guardar un comic correctamente para el importado de cartas
-	 * mediante fichero.
-	 */
-	@FXML
-	private Button botonGuardarCarta;
-
-	/**
-	 * Boton que guarda un cambio en un comic especifico de los importados
-	 */
-	@FXML
-	private Button botonGuardarCambioCarta;
-
-	/**
-	 * Boton que elimina un comic seleccionado de los cartas importados mediante
-	 * fichero
-	 */
-	@FXML
-	private Button botonEliminarImportadoCarta;
-
-	/**
-	 * Boton que sirve para subir una imagen a un comic que escojamos
-	 */
-	@FXML
-	private Button botonSubidaPortada;
-
-	// Campos de texto (TextField)
-	/**
-	 * Campo de texto para la búsqueda por código.
-	 */
 	@FXML
 	private TextField busquedaCodigo;
-
-	/**
-	 * Campo de texto para el dibujante del cómic.
-	 */
 	@FXML
-	private TextField dibujanteCarta;
-
-	/**
-	 * Campo de texto para la editorial del cómic.
-	 */
+	private TextField firmaComic;
 	@FXML
-	private TextField editorialCarta;
-
-	/**
-	 * Campo de texto para la firma del cómic.
-	 */
+	private TextField textFieldDireccionPortada;
 	@FXML
-	private TextField firmaCarta;
-
-	/**
-	 * Campo de texto para el guionista del cómic.
-	 */
+	private TextField textFieldEditorialCarta;
 	@FXML
-	private TextField guionistaCarta;
-
-	/**
-	 * Campo de texto para el ID del cómic a tratar en modificacion.
-	 */
+	private TextField textFieldIdCarta;
 	@FXML
-	private TextField idCartaTratar;
-
-	/**
-	 * Campo de texto para el codigo del cómic a tratar en modificacion o para
-	 * añadir.
-	 */
+	private TextField textFieldNombreCarta;
 	@FXML
-	private TextField codigoCartaTratar;
-
-	/**
-	 * Campo de texto para el nombre del cómic.
-	 */
+	private TextField textFieldNormasCarta;
 	@FXML
-	private TextField nombreCarta;
-
-	/**
-	 * Campo de texto para el nombre del Key Issue del cómic.
-	 */
+	private TextField textFieldPrecioCarta;
 	@FXML
-	private TextField nombreKeyIssue;
-
-	/**
-	 * Campo de texto para el precio del cómic.
-	 */
+	private TextField textFieldRarezaCarta;
 	@FXML
-	private TextField precioCarta;
+	private TextField textFieldUrlCarta;
 
-	/**
-	 * Campo de texto para la URL de referencia del cómic.
-	 */
 	@FXML
-	private TextField urlReferencia;
-
-	/**
-	 * Campo de texto para la variante del cómic.
-	 */
+	private ComboBox<String> comboboxEsFoilCarta;
 	@FXML
-	private TextField varianteCarta;
-
-	// Etiquetas (Label)
-	/**
-	 * Etiqueta para mostrar la puntuación.
-	 */
+	private ComboBox<String> comboboxEstadoCarta;
 	@FXML
-	private Label labelPuntuacion;
-
-	/**
-	 * Etiqueta para mostrar la gradeo.
-	 */
+	private ComboBox<String> comboboxGradeoCarta;
 	@FXML
-	private Label labelGradeo;
+	private ComboBox<String> comboboxNumeroCarta;
 
-	/**
-	 * Etiqueta para mostrar el dibujante.
-	 */
 	@FXML
-	private Label labelDibujante;
-
-	/**
-	 * Etiqueta para mostrar la editorial.
-	 */
+	private ImageView cargaImagen;
 	@FXML
-	private Label labelEditorial;
+	private ImageView imagencarta;
 
-	/**
-	 * Etiqueta para mostrar el estado.
-	 */
-	@FXML
-	private Label labelEstado;
-
-	/**
-	 * Etiqueta para mostrar la fecha.
-	 */
-	@FXML
-	private Label labelFecha;
-
-	/**
-	 * Etiqueta para mostrar la firma.
-	 */
-	@FXML
-	private Label labelFirma;
-
-	/**
-	 * Etiqueta para mostrar el formato.
-	 */
-	@FXML
-	private Label labelFormato;
-
-	/**
-	 * Etiqueta para mostrar el guionista.
-	 */
-	@FXML
-	private Label labelGuionista;
-
-	/**
-	 * Etiqueta para mostrar el ID en modificacion.
-	 */
-	@FXML
-	private Label labelId;
-
-	/**
-	 * Etiqueta para mostrar el codigo en modificacion o aniadir.
-	 */
-	@FXML
-	private Label labelCodigo;
-
-	/**
-	 * Etiqueta para mostrar el Key Issue.
-	 */
-	@FXML
-	private Label labelKey;
-
-	/**
-	 * Etiqueta para mostrar la portada.
-	 */
-	@FXML
-	private Label labelPortada;
-
-	/**
-	 * Etiqueta para mostrar el precio.
-	 */
-	@FXML
-	private Label labelPrecio;
-
-	/**
-	 * Etiqueta para mostrar la procedencia.
-	 */
-	@FXML
-	private Label labelProcedencia;
-
-	/**
-	 * Etiqueta para mostrar la referencia.
-	 */
-	@FXML
-	private Label labelReferencia;
-
-	// Otros controles (ComboBox, DatePicker, TableView, etc.)
-	/**
-	 * ComboBox para seleccionar el estado del cómic.
-	 */
-	@FXML
-	private ComboBox<String> estadoCarta;
-
-	/**
-	 * DatePicker para seleccionar la fecha de publicación del cómic.
-	 */
-	@FXML
-	private DatePicker fechaCarta;
-
-	/**
-	 * ComboBox para seleccionar el formato del cómic.
-	 */
-	@FXML
-	private ComboBox<String> formatoCarta;
-
-	/**
-	 * ComboBox para seleccionar el número de gradeo del cómic.
-	 */
-	@FXML
-	private ComboBox<String> gradeoCarta;
-
-	/**
-	 * ComboBox para seleccionar el número del cómic.
-	 */
-	@FXML
-	private ComboBox<String> numeroCarta;
-
-	/**
-	 * ComboBox para seleccionar la procedencia del cómic.
-	 */
-	@FXML
-	private ComboBox<String> procedenciaCarta;
-
-	/**
-	 * ComboBox para seleccionar la puntuación en el menú.
-	 */
-	@FXML
-	private ComboBox<String> puntuacionMenu;
-
-	/**
-	 * TableView para mostrar la lista de cómics.
-	 */
 	@FXML
 	private TableView<Carta> tablaBBDD;
 
-	/**
-	 * ImageView para mostrar la imagen del cómic.
-	 */
 	@FXML
-	private ImageView imagencomic;
-
-	/**
-	 * ImageView para mostrar la carga de imagen del comic.
-	 */
+	private TableColumn<Carta, String> columnaColeccion;
 	@FXML
-	private ImageView cargaImagen;
+	private TableColumn<Carta, String> columnaEditorial;
+	@FXML
+	private TableColumn<Carta, String> columnaNombre;
+	@FXML
+	private TableColumn<Carta, String> columnaPrecio;
+	@FXML
+	private TableColumn<Carta, String> columnaRareza;
+	@FXML
+	private TableColumn<Carta, String> fecha;
+	@FXML
+	private TableColumn<Carta, String> firma;
+	@FXML
+	private TableColumn<Carta, String> formato;
+	@FXML
+	private TableColumn<Carta, String> gradeo;
+	@FXML
+	private TableColumn<Carta, String> id;
+	@FXML
+	private TableColumn<Carta, String> numero;
+	@FXML
+	private TableColumn<Carta, String> procedencia;
+	@FXML
+	private TableColumn<Carta, String> referencia;
 
-	/**
-	 * TextArea para mostrar información de texto.
-	 */
 	@FXML
 	private TextArea prontInfo;
 
-	/**
-	 * VBox para el diseño de la interfaz.
-	 */
 	@FXML
-	private VBox rootVBox;
+	private ProgressIndicator progresoCarga;
+
+	@FXML
+	private MenuItem menuCodigoBarras;
+	@FXML
+	private MenuItem menuImportarFichero;
+	@FXML
+	private MenuItem navegacionMostrarEstadistica;
 
 	@FXML
 	private MenuBar menuNavegacion;
 
 	@FXML
 	private Menu navegacionEstadistica;
-
 	@FXML
 	private Menu navegacionOpciones;
-
-	@FXML
-	private MenuItem menuImportarFichero;
-
-	@FXML
-	private MenuItem navegacionMostrarEstadistica;
 
 	/**
 	 * Referencia a la ventana (stage).
@@ -641,7 +339,7 @@ public class VentanaAccionController implements Initializable {
 
 			AccionControlUI.controlarEventosInterfazAccion();
 
-			AccionControlUI.listas_autocompletado();
+			AccionControlUI.autocompletarListas();
 
 			rellenarCombosEstaticos();
 
@@ -679,7 +377,7 @@ public class VentanaAccionController implements Initializable {
 	 * ComboBoxes con opciones estáticas predefinidas.
 	 */
 	public void rellenarCombosEstaticos() {
-		FuncionesComboBox.rellenarComboBoxEstaticos(referenciaVentana.getComboboxes());
+		FuncionesComboBox.rellenarComboBoxEstaticos(referenciaVentana.getListaComboboxes());
 	}
 
 	public void formatearTextField() {
@@ -724,7 +422,7 @@ public class VentanaAccionController implements Initializable {
 
 		List<String> controls = new ArrayList<>();
 
-		for (Control control : referenciaVentana.getListaTextFields()) {
+		for (Control control : AccionReferencias.getListaTextFields()) {
 			if (control instanceof TextField) {
 				controls.add(((TextField) control).getText()); // Add the Control object itself
 			} else if (control instanceof ComboBox<?>) {
@@ -902,12 +600,12 @@ public class VentanaAccionController implements Initializable {
 
 	private void limpiarUIBeforeSearch() {
 		AccionControlUI.limpiarAutorellenos(false);
-		imagencomic.setImage(null);
-		imagencomic.setVisible(true);
+		imagencarta.setImage(null);
+		imagencarta.setVisible(true);
 		botonCancelarSubida.setVisible(true);
 		botonBusquedaCodigo.setDisable(true);
 		botonSubidaPortada.setDisable(true);
-		referenciaVentana.getMenu_Importar_Fichero_CodigoBarras().setDisable(true);
+		referenciaVentana.getMenuImportarFicheroCodigoBarras().setDisable(true);
 		AlarmaList.iniciarAnimacionCargaImagen(cargaImagen);
 		menuImportarFichero.setDisable(true);
 		FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
@@ -918,7 +616,7 @@ public class VentanaAccionController implements Initializable {
 		return new Task<>() {
 			@Override
 			protected Void call() throws Exception {
-				if (isCancelled() || !referenciaVentana.getStage().isShowing()) {
+				if (isCancelled() || !referenciaVentana.getStageVentana().isShowing()) {
 					return null;
 				}
 
@@ -998,21 +696,6 @@ public class VentanaAccionController implements Initializable {
 	void nuevaPortada(ActionEvent event) {
 		nav.cerrarMenuOpciones();
 		AccionFuncionesComunes.subirPortada();
-	}
-
-	/**
-	 * Método asociado al evento de acción que se dispara al seleccionar la opción
-	 * "Ver Menú Código de Barras". Invoca el método correspondiente en el objeto
-	 * 'nav' para mostrar el menú de códigos de barras.
-	 *
-	 * @param event Objeto que representa el evento de acción.
-	 */
-	@FXML
-	void verMenuCodigoBarras(ActionEvent event) {
-		enviarReferencias();
-		if ("aniadir".equals(AccionFuncionesComunes.TIPO_ACCION)) {
-			nav.verMenuCodigosBarra();
-		}
 	}
 
 	/**

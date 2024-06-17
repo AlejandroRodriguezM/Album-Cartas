@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -27,424 +26,186 @@ import javafx.stage.Stage;
 
 public class AccionReferencias {
 
-	/**
-	 * Columna de la tabla para la procedencia.
-	 */
-	private TableColumn<Carta, String> procedencia;
+	private TableColumn<Carta, String> iDColumna;
+	private TableColumn<Carta, String> nombreColumna;
+	private TableColumn<Carta, String> numeroColumna;
+	private TableColumn<Carta, String> gradeoColumna;
+	private TableColumn<Carta, String> editorialColumna;
+	private TableColumn<Carta, String> coleccionColumna;
+	private TableColumn<Carta, String> rarezaColumna;
+	private TableColumn<Carta, String> esFoilColumna;
+	private TableColumn<Carta, String> estadoColumna;
+	private TableColumn<Carta, String> precioColumna;
+	private TableColumn<Carta, String> referenciaColumna;
 
-	/**
-	 * Columna de la tabla para la referencia.
-	 */
-	private TableColumn<Carta, String> referencia;
-
-	/**
-	 * Tabla que muestra información sobre cómics.
-	 */
 	public TableView<Carta> tablaBBDD;
 
-	/**
-	 * Contenedor de la interfaz gráfica.
-	 */
 	private VBox rootVBox;
-
-	/**
-	 * Contenedor del contenido.
-	 */
 	private VBox vboxContenido;
-
-	/**
-	 * Imagen de fondo.
-	 */
-	private ImageView backgroundImage;
-
-	/**
-	 * Panel de anclaje principal.
-	 */
-	private AnchorPane rootAnchorPane;
-
-	/**
-	 * Contenedor de imágenes.
-	 */
 	private VBox vboxImage;
 
-	/**
-	 * Panel de anclaje para información.
-	 */
+	private AnchorPane rootAnchorPane;
 	private AnchorPane anchoPaneInfo;
 
-	/**
-	 * Botón para modificar información.
-	 */
+	private ImageView backgroundImage;
+	private ImageView imagenCarta;
+	private ImageView cargaImagen;
+
 	private Button botonModificar;
-
-	/**
-	 * Botón para introducir información.
-	 */
 	private Button botonIntroducir;
-
-	/**
-	 * Botón para eliminar información.
-	 */
 	private Button botonEliminar;
-
 	private Button botonComprimirPortadas;
-
 	private Button botonReCopiarPortadas;
+	private Button botonCancelarSubida;
+	private Button botonBusquedaCodigo;
+	private Button botonBusquedaAvanzada;
+	private Button botonLimpiar;
+	private Button botonModificarCarta;
+	private Button botonParametroCarta;
+	private Button botonVender;
+	private Button botonbbdd;
+	private Button botonGuardarCarta;
+	private Button botonGuardarCambioCarta;
+	private Button botonEliminarImportadoCarta;
+	private Button botonSubidaPortada;
+	private Button botonMostrarParametro;
+	private Button botonImprimir;
+	private Button botonGuardarResultado;
+	private Button botonMostrarGuardados;
+	private Button botonActualizarDatos;
+	private Button botonActualizarPortadas;
+	private Button botonActualizarSoftware;
+	private Button botonActualizarTodo;
+	private Button botonDescargarPdf;
+	private Button botonDescargarSQL;
+	private Button botonNormalizarDB;
 
 	private Rectangle barraCambioAltura;
 
 	private Label alarmaConexionInternet;
-
-	/**
-	 * Campo de texto para la dirección de la imagen.
-	 */
-	private TextField direccionImagen;
-
-	/**
-	 * Columna de la tabla para el ID.
-	 */
-	private TableColumn<Carta, String> ID;
-
-	/**
-	 * Columna de la tabla para la gradeo.
-	 */
-	private TableColumn<Carta, String> gradeo;
-
-	/**
-	 * Columna de la tabla para el formato.
-	 */
-	private TableColumn<Carta, String> formato;
-
-	/**
-	 * Columna de la tabla para mostrar el nombre del cómic.
-	 */
-	private TableColumn<Carta, String> nombre;
-
-	/**
-	 * Columna de la tabla para mostrar el número del cómic.
-	 */
-	private TableColumn<Carta, String> numero;
-
-	/**
-	 * Columna de la tabla para mostrar la editorial del cómic.
-	 */
-	private TableColumn<Carta, String> editorial;
-
-	/**
-	 * Botón para cancelar la subida de imagenes.
-	 */
-	private Button botonCancelarSubida;
-
-	/**
-	 * Botón para borrar una opinión.
-	 */
-	private Button botonBorrarOpinion;
-
-	/**
-	 * Botón para realizar una búsqueda por código.
-	 */
-	private Button botonBusquedaCodigo;
-
-	/**
-	 * Botón para realizar una búsqueda avanzada.
-	 */
-	private Button botonBusquedaAvanzada;
-
-	/**
-	 * Botón para limpiar campos.
-	 */
-	private Button botonLimpiar;
-
-	/**
-	 * Botón para modificar un cómic.
-	 */
-	private Button botonModificarCarta;
-
-	/**
-	 * Botón para buscar mediante parametro un cómic.
-	 */
-	private Button botonParametroCarta;
-
-	/**
-	 * Botón para vender un cómic.
-	 */
-	private Button botonVender;
-
-	/**
-	 * Botón para acceder a la base de datos.
-	 */
-	private Button botonbbdd;
-
-	/**
-	 * Botón para guardar un comic correctamente para el importado de comics
-	 * mediante fichero.
-	 */
-	private Button botonGuardarCarta;
-
-	/**
-	 * Boton que guarda un cambio en un comic especifico de los importados
-	 */
-	private Button botonGuardarCambioCarta;
-
-	/**
-	 * Boton que elimina un comic seleccionado de los comics importados mediante
-	 * fichero
-	 */
-	private Button botonEliminarImportadoCarta;
-
-	/**
-	 * Boton que sirve para subir una imagen a un comic que escojamos
-	 */
-	private Button botonSubidaPortada;
-
-	// Campos de texto (TextField)
-	/**
-	 * Campo de texto para la búsqueda por código.
-	 */
-	private TextField busquedaCodigo;
-
-	/**
-	 * Campo de texto para la editorial del cómic.
-	 */
-	private TextField editorialCarta;
-
-	/**
-	 * Campo de texto para el ID del cómic a tratar en modificacion.
-	 */
-	private TextField idCartaTratar;
-
-	/**
-	 * Campo de texto para el codigo del cómic a tratar en modificacion o para
-	 * añadir.
-	 */
-	private TextField codigoCartaTratar;
-
-	/**
-	 * Campo de texto para el nombre del cómic.
-	 */
-	private TextField nombreCarta;
-
-	/**
-	 * Campo de texto para el precio del cómic.
-	 */
-	private TextField precioCarta;
-
-	/**
-	 * Campo de texto para la URL de referencia del cómic.
-	 */
-	private TextField urlReferencia;
-
-	/**
-	 * Etiqueta para mostrar la gradeo.
-	 */
-	private Label label_gradeo;
-
-	/**
-	 * Etiqueta para mostrar la editorial.
-	 */
-	private Label label_editorial;
-
-	/**
-	 * Etiqueta para mostrar el estado.
-	 */
-	private Label label_estado;
-
-	/**
-	 * Etiqueta para mostrar la fecha.
-	 */
-	private Label label_fecha;
-
-	/**
-	 * Etiqueta para mostrar el formato.
-	 */
-	private Label label_formato;
-
-	/**
-	 * Etiqueta para mostrar el ID en modificacion.
-	 */
-	private Label label_id_mod;
-
-	/**
-	 * Etiqueta para mostrar la portada.
-	 */
-	private Label label_portada;
-
-	/**
-	 * Etiqueta para mostrar el precio.
-	 */
-	private Label label_precio;
-
-	/**
-	 * Etiqueta para mostrar la referencia.
-	 */
-	private Label label_referencia;
-
-	// Otros controles (ComboBox, DatePicker, TableView, etc.)
-	/**
-	 * ComboBox para seleccionar el estado del cómic.
-	 */
-	private ComboBox<String> estadoCarta;
-
-	/**
-	 * ComboBox para seleccionar el formato del cómic.
-	 */
-	private ComboBox<String> tituloCarta;
-
-	/**
-	 * ComboBox para seleccionar el formato del cómic.
-	 */
-	private ComboBox<String> formatoCarta;
-
-	/**
-	 * ComboBox para seleccionar el número de gradeo del cómic.
-	 */
-	private ComboBox<String> gradeoCarta;
-
-	/**
-	 * ComboBox para seleccionar el número del cómic.
-	 */
-	private ComboBox<String> numeroCarta;
-
-	/**
-	 * ImageView para mostrar la imagen del cómic.
-	 */
-	private ImageView imagencomic;
-
-	/**
-	 * ImageView para mostrar la carga de imagen del comic.
-	 */
-	private ImageView cargaImagen;
-
-	/**
-	 * TextArea para mostrar información de texto.
-	 */
-	private TextArea prontInfo;
-
+	private Label labelGradeo;
+	private Label labelEditorial;
+	private Label labelEstado;
+	private Label labelColeccion;
+	private Label labelRareza;
+	private Label labelNormas;
+	private Label labelIdMod;
+	private Label labelEsFoil;
+	private Label labelPortada;
+	private Label labelPrecio;
+	private Label labelReferencia;
 	private Label prontInfoLabel;
-
-	private MenuItem menu_Importar_Fichero_CodigoBarras;
-
-	private MenuItem menuComprobarApis;
-
-	private MenuItem menu_comic_aniadir;
-
-	private MenuItem menu_comic_eliminar;
-
-	private MenuItem menu_comic_modificar;
-
-	private MenuItem menu_estadistica_estadistica;
-
-	private MenuBar menu_navegacion;
-
-	private Menu navegacion_cerrar;
-
-	private Menu navegacion_comic;
-
-	private Menu navegacion_estadistica;
-
 	private Label alarmaConexionSql;
+	private Label labelComprobar;
+	private Label labelVersion;
+	private Label prontInfoEspecial;
+	private Label prontInfoPreviews;
+	private Label prontInfoPortadas;
 
-	/**
-	 * Botón para mostrar un parámetro.
-	 */
+	private TextField busquedaCodigoTextField;
+	private TextField nombreCartaTextField;
+	private TextField editorialCartaTextField;
+	private TextField coleccionCartaTextField;
+	private TextField rarezaCartaTextField;
+	private TextField normasCartaTextField;
+	private TextField precioCartaTextField;
+	private TextField idCartaTratarTextField;
+	private TextField direccionImagenTextField;
+	private TextField urlReferenciaTextField;
 
-	private Button botonMostrarParametro;
+	private TextField codigoCartaTratarTextField;
+	private TextField busquedaGeneralTextField;
 
-	/**
-	 * Botón que permite imprimir el resultado de una busqueda por parametro
-	 */
+	private ComboBox<String> nombreCartaCombobox;
+	private ComboBox<String> numeroCartaCombobox;
+	private ComboBox<String> nombreEditorialCombobox;
+	private ComboBox<String> nombreColeccionCombobox;
+	private ComboBox<String> nombreRarezaCombobox;
+	private ComboBox<String> nombreEsFoilCombobox;
+	private ComboBox<String> gradeoCartaCombobox;
+	private ComboBox<String> estadoCartaCombobox;
+	private ComboBox<String> precioCartaCombobox;
+	private ComboBox<String> comboPreviewsCombobox;
 
-	private Button botonImprimir;
+	private TextArea prontInfoTextArea;
 
-	/**
-	 * Botón que permite guardar el resultado de una busqueda por parametro
-	 */
+	private MenuItem menuImportarFicheroCodigoBarras;
+	private MenuItem menuCartaAniadir;
+	private MenuItem menuCartaEliminar;
+	private MenuItem menuCartaModificar;
+	private MenuItem menuEstadisticaEstadistica;
+	private MenuItem menuArchivoCerrar;
+	private MenuItem menuArchivoDelete;
+	private MenuItem menuArchivoDesconectar;
+	private MenuItem menuArchivoExcel;
+	private MenuItem menuArchivoImportar;
+	private MenuItem menuArchivoSobreMi;
+	private MenuItem menuEstadisticaComprados;
+	private MenuItem menuEstadisticaFirmados;
+	private MenuItem menuEstadisticaPosesion;
+	private MenuItem menuEstadisticaVendidos;
+	private MenuItem menuArchivoAvanzado;
 
-	private Button botonGuardarResultado;
+	private Menu navegacionCerrar;
+	private Menu navegacionCarta;
+	private Menu navegacionEstadistica;
 
-	private Button botonMostrarGuardados;
+	private MenuBar menuNavegacion;
 
-	/**
-	 * Campo de texto para realizar una búsqueda general.
-	 */
+	private ProgressIndicator progresoCarga;
 
-	private TextField busquedaGeneral;
+	private CheckBox checkFirmas;
 
-	/**
-	 * Menú de archivo con opciones relacionadas con la base de datos.
-	 */
-
-	private MenuItem menu_archivo_cerrar, menu_archivo_delete, menu_archivo_desconectar, menu_archivo_excel,
-			menu_archivo_importar, menu_archivo_sobreMi;
-
-	/**
-	 * Menú relacionado con estadísticas de cómics.
-	 */
-
-	private MenuItem menu_estadistica_comprados, menu_estadistica_firmados, menu_estadistica_key_issue,
-			menu_estadistica_posesion, menu_estadistica_puntuados, menu_estadistica_vendidos;
-
-	private MenuItem menu_archivo_avanzado;
-
-	/**
-	 * Selector para el nombre de la editorial.
-	 */
-	private ComboBox<String> nombreEditorial;
-
-	/**
-	 * Selector para el nombre del formato.
-	 */
-	private ComboBox<String> nombreFormato;
-
-	/**
-	 * Declaramos una lista de ComboBox de tipo String
-	 */
-	private static List<ComboBox<String>> comboboxes;
-
+	private static List<ComboBox<String>> listaComboboxes;
+	private static List<TableColumn<Carta, String>> listaColumnasTabla;
 	private static ObservableList<Control> listaTextFields;
 	private static ObservableList<Button> listaBotones;
 	private static ObservableList<Node> listaElementosFondo;
 
-	private static List<TableColumn<Carta, String>> columnasTabla;
+	private Stage stageVentana;
 
-	private ProgressIndicator progresoCarga;
-
-	private Button botonActualizarDatos;
-
-	private Button botonActualizarPortadas;
-
-	private Button botonActualizarSoftware;
-
-	private Button botonActualizarTodo;
-
-	private Button botonDescargarPdf;
-
-	private Button botonDescargarSQL;
-
-	private Button botonNormalizarDB;
-
-	private CheckBox checkFirmas;
-
-	private ComboBox<String> comboPreviews;
-
-	private Label labelComprobar;
-
-	private Label labelVersion;
-
-	private Label prontInfoEspecial;
-
-	private Label prontInfoPreviews;
-
-	private Label prontInfoPortadas;
-
-	private Stage stage;
-
-	public TableColumn<Carta, String> getProcedencia() {
-		return procedencia;
+	public TableColumn<Carta, String> getiDColumna() {
+		return iDColumna;
 	}
 
-	public TableColumn<Carta, String> getReferencia() {
-		return referencia;
+	public TableColumn<Carta, String> getNombreColumna() {
+		return nombreColumna;
+	}
+
+	public TableColumn<Carta, String> getNumeroColumna() {
+		return numeroColumna;
+	}
+
+	public TableColumn<Carta, String> getGradeoColumna() {
+		return gradeoColumna;
+	}
+
+	public TableColumn<Carta, String> getEditorialColumna() {
+		return editorialColumna;
+	}
+
+	public TableColumn<Carta, String> getColeccionColumna() {
+		return coleccionColumna;
+	}
+
+	public TableColumn<Carta, String> getRarezaColumna() {
+		return rarezaColumna;
+	}
+
+	public TableColumn<Carta, String> getEsFoilColumna() {
+		return esFoilColumna;
+	}
+
+	public TableColumn<Carta, String> getEstadoColumna() {
+		return estadoColumna;
+	}
+
+	public TableColumn<Carta, String> getPrecioColumna() {
+		return precioColumna;
+	}
+
+	public TableColumn<Carta, String> getReferenciaColumna() {
+		return referenciaColumna;
 	}
 
 	public TableView<Carta> getTablaBBDD() {
@@ -459,20 +220,28 @@ public class AccionReferencias {
 		return vboxContenido;
 	}
 
-	public ImageView getBackgroundImage() {
-		return backgroundImage;
+	public VBox getVboxImage() {
+		return vboxImage;
 	}
 
 	public AnchorPane getRootAnchorPane() {
 		return rootAnchorPane;
 	}
 
-	public VBox getVboxImage() {
-		return vboxImage;
-	}
-
 	public AnchorPane getAnchoPaneInfo() {
 		return anchoPaneInfo;
+	}
+
+	public ImageView getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	public ImageView getImagenCarta() {
+		return imagenCarta;
+	}
+
+	public ImageView getCargaImagen() {
+		return cargaImagen;
 	}
 
 	public Button getBotonModificar() {
@@ -487,48 +256,16 @@ public class AccionReferencias {
 		return botonEliminar;
 	}
 
-	public Rectangle getBarraCambioAltura() {
-		return barraCambioAltura;
+	public Button getBotonComprimirPortadas() {
+		return botonComprimirPortadas;
 	}
 
-	public Label getAlarmaConexionInternet() {
-		return alarmaConexionInternet;
-	}
-
-	public TextField getDireccionImagen() {
-		return direccionImagen;
-	}
-
-	public TableColumn<Carta, String> getID() {
-		return ID;
-	}
-
-	public TableColumn<Carta, String> getGradeo() {
-		return gradeo;
-	}
-
-	public TableColumn<Carta, String> getFormato() {
-		return formato;
-	}
-
-	public TableColumn<Carta, String> getNombre() {
-		return nombre;
-	}
-
-	public TableColumn<Carta, String> getNumero() {
-		return numero;
-	}
-
-	public TableColumn<Carta, String> getEditorial() {
-		return editorial;
+	public Button getBotonReCopiarPortadas() {
+		return botonReCopiarPortadas;
 	}
 
 	public Button getBotonCancelarSubida() {
 		return botonCancelarSubida;
-	}
-
-	public Button getBotonBorrarOpinion() {
-		return botonBorrarOpinion;
 	}
 
 	public Button getBotonBusquedaCodigo() {
@@ -575,94 +312,6 @@ public class AccionReferencias {
 		return botonSubidaPortada;
 	}
 
-	public Label getLabel_gradeo() {
-		return label_gradeo;
-	}
-
-	public Label getLabel_editorial() {
-		return label_editorial;
-	}
-
-	public Label getLabel_estado() {
-		return label_estado;
-	}
-
-	public Label getLabel_fecha() {
-		return label_fecha;
-	}
-
-	public Label getLabel_formato() {
-		return label_formato;
-	}
-
-	public Label getLabel_id_mod() {
-		return label_id_mod;
-	}
-
-	public Label getLabel_portada() {
-		return label_portada;
-	}
-
-	public Label getLabel_precio() {
-		return label_precio;
-	}
-
-	public Label getLabel_referencia() {
-		return label_referencia;
-	}
-
-	public ImageView getImagencomic() {
-		return imagencomic;
-	}
-
-	public ImageView getCargaImagen() {
-		return cargaImagen;
-	}
-
-	public TextArea getProntInfo() {
-		return prontInfo;
-	}
-
-	public MenuItem getMenu_Importar_Fichero_CodigoBarras() {
-		return menu_Importar_Fichero_CodigoBarras;
-	}
-
-	public MenuItem getMenu_comic_aniadir() {
-		return menu_comic_aniadir;
-	}
-
-	public MenuItem getMenu_comic_eliminar() {
-		return menu_comic_eliminar;
-	}
-
-	public MenuItem getMenu_comic_modificar() {
-		return menu_comic_modificar;
-	}
-
-	public MenuItem getMenu_estadistica_estadistica() {
-		return menu_estadistica_estadistica;
-	}
-
-	public MenuBar getMenu_navegacion() {
-		return menu_navegacion;
-	}
-
-	public Menu getNavegacion_cerrar() {
-		return navegacion_cerrar;
-	}
-
-	public Menu getNavegacion_comic() {
-		return navegacion_comic;
-	}
-
-	public Menu getNavegacion_estadistica() {
-		return navegacion_estadistica;
-	}
-
-	public Label getAlarmaConexionSql() {
-		return alarmaConexionSql;
-	}
-
 	public Button getBotonMostrarParametro() {
 		return botonMostrarParametro;
 	}
@@ -677,86 +326,6 @@ public class AccionReferencias {
 
 	public Button getBotonMostrarGuardados() {
 		return botonMostrarGuardados;
-	}
-
-	public TextField getBusquedaGeneral() {
-		return busquedaGeneral;
-	}
-
-	public MenuItem getMenu_archivo_cerrar() {
-		return menu_archivo_cerrar;
-	}
-
-	public MenuItem getMenu_archivo_delete() {
-		return menu_archivo_delete;
-	}
-
-	public MenuItem getMenu_archivo_desconectar() {
-		return menu_archivo_desconectar;
-	}
-
-	public MenuItem getMenu_archivo_excel() {
-		return menu_archivo_excel;
-	}
-
-	public MenuItem getMenu_archivo_importar() {
-		return menu_archivo_importar;
-	}
-
-	public MenuItem getMenu_archivo_sobreMi() {
-		return menu_archivo_sobreMi;
-	}
-
-	public MenuItem getMenu_estadistica_comprados() {
-		return menu_estadistica_comprados;
-	}
-
-	public MenuItem getMenu_estadistica_firmados() {
-		return menu_estadistica_firmados;
-	}
-
-	public MenuItem getMenu_estadistica_key_issue() {
-		return menu_estadistica_key_issue;
-	}
-
-	public MenuItem getMenu_estadistica_posesion() {
-		return menu_estadistica_posesion;
-	}
-
-	public MenuItem getMenu_estadistica_puntuados() {
-		return menu_estadistica_puntuados;
-	}
-
-	public MenuItem getMenu_estadistica_vendidos() {
-		return menu_estadistica_vendidos;
-	}
-
-	public MenuItem getMenu_archivo_avanzado() {
-		return menu_archivo_avanzado;
-	}
-
-	public ProgressIndicator getProgresoCarga() {
-		return progresoCarga;
-	}
-
-	public List<ComboBox<String>> getComboboxes() {
-		return comboboxes;
-	}
-
-	public static ObservableList<Button> getListaBotones() {
-		return listaBotones;
-	}
-
-	public ObservableList<Node> getListaElementosFondo() {
-		return listaElementosFondo;
-	}
-
-	public List<TableColumn<Carta, String>> getColumnasTabla() {
-		return columnasTabla;
-	}
-
-	public ObservableList<Control> getListaTextFields() {
-		return listaTextFields;
 	}
 
 	public Button getBotonActualizarDatos() {
@@ -787,12 +356,64 @@ public class AccionReferencias {
 		return botonNormalizarDB;
 	}
 
-	public CheckBox getCheckFirmas() {
-		return checkFirmas;
+	public Rectangle getBarraCambioAltura() {
+		return barraCambioAltura;
 	}
 
-	public ComboBox<String> getComboPreviews() {
-		return comboPreviews;
+	public Label getAlarmaConexionInternet() {
+		return alarmaConexionInternet;
+	}
+
+	public Label getLabelGradeo() {
+		return labelGradeo;
+	}
+
+	public Label getLabelEditorial() {
+		return labelEditorial;
+	}
+
+	public Label getLabelEstado() {
+		return labelEstado;
+	}
+
+	public Label getLabelColeccion() {
+		return labelColeccion;
+	}
+
+	public Label getLabelRareza() {
+		return labelRareza;
+	}
+
+	public Label getLabelNormas() {
+		return labelNormas;
+	}
+
+	public Label getLabelIdMod() {
+		return labelIdMod;
+	}
+	
+	public Label getLabelEsFoil() {
+		return labelEsFoil;
+	}
+
+	public Label getLabelPortada() {
+		return labelPortada;
+	}
+
+	public Label getLabelPrecio() {
+		return labelPrecio;
+	}
+
+	public Label getLabelReferencia() {
+		return labelReferencia;
+	}
+
+	public Label getProntInfoLabel() {
+		return prontInfoLabel;
+	}
+
+	public Label getAlarmaConexionSql() {
+		return alarmaConexionSql;
 	}
 
 	public Label getLabelComprobar() {
@@ -815,120 +436,252 @@ public class AccionReferencias {
 		return prontInfoPortadas;
 	}
 
-	public Label getProntInfoLabel() {
-		return prontInfoLabel;
+	public TextField getBusquedaCodigoTextField() {
+		return busquedaCodigoTextField;
 	}
 
-	public Stage getStage() {
-		return stage;
+	public TextField getNombreCartaTextField() {
+		return nombreCartaTextField;
 	}
 
-	public Button getBotonComprimirPortadas() {
-		return botonComprimirPortadas;
+	public TextField getEditorialCartaTextField() {
+		return editorialCartaTextField;
 	}
 
-	public Button getBotonReCopiarPortadas() {
-		return botonReCopiarPortadas;
+	public TextField getColeccionCartaTextField() {
+		return coleccionCartaTextField;
 	}
 
-	public void setBotonComprimirPortadas(Button botonComprimirPortadas) {
-		this.botonComprimirPortadas = botonComprimirPortadas;
+	public TextField getRarezaCartaTextField() {
+		return rarezaCartaTextField;
 	}
 
-	public void setBotonReCopiarPortadas(Button botonReCopiarPortadas) {
-		this.botonReCopiarPortadas = botonReCopiarPortadas;
+	public TextField getNormasCartaTextField() {
+		return normasCartaTextField;
 	}
 
-	public void setStage(Stage stage) {
-		this.stage = stage;
+	public TextField getPrecioCartaTextField() {
+		return precioCartaTextField;
 	}
 
-	public void setBotonActualizarDatos(Button botonActualizarDatos) {
-		this.botonActualizarDatos = botonActualizarDatos;
+	public TextField getIdCartaTratarTextField() {
+		return idCartaTratarTextField;
 	}
 
-	public void setBotonActualizarPortadas(Button botonActualizarPortadas) {
-		this.botonActualizarPortadas = botonActualizarPortadas;
+	public TextField getDireccionImagenTextField() {
+		return direccionImagenTextField;
 	}
 
-	public void setBotonActualizarSoftware(Button botonActualizarSoftware) {
-		this.botonActualizarSoftware = botonActualizarSoftware;
+	public TextField getUrlReferenciaTextField() {
+		return urlReferenciaTextField;
 	}
 
-	public void setBotonActualizarTodo(Button botonActualizarTodo) {
-		this.botonActualizarTodo = botonActualizarTodo;
+	public TextField getCodigoCartaTratarTextField() {
+		return codigoCartaTratarTextField;
 	}
 
-	public void setBotonDescargarPdf(Button botonDescargarPdf) {
-		this.botonDescargarPdf = botonDescargarPdf;
+	public TextField getBusquedaGeneralTextField() {
+		return busquedaGeneralTextField;
 	}
 
-	public void setBotonDescargarSQL(Button botonDescargarSQL) {
-		this.botonDescargarSQL = botonDescargarSQL;
+	public ComboBox<String> getNombreCartaCombobox() {
+		return nombreCartaCombobox;
 	}
 
-	public void setBotonNormalizarDB(Button botonNormalizarDB) {
-		this.botonNormalizarDB = botonNormalizarDB;
+	public ComboBox<String> getNumeroCartaCombobox() {
+		return numeroCartaCombobox;
 	}
 
-	public void setCheckFirmas(CheckBox checkFirmas) {
-		this.checkFirmas = checkFirmas;
+	public ComboBox<String> getNombreEditorialCombobox() {
+		return nombreEditorialCombobox;
 	}
 
-	public void setComboPreviews(ComboBox<String> comboPreviews) {
-		this.comboPreviews = comboPreviews;
+	public ComboBox<String> getNombreColeccionCombobox() {
+		return nombreColeccionCombobox;
 	}
 
-	public void setLabelComprobar(Label labelComprobar) {
-		this.labelComprobar = labelComprobar;
+	public ComboBox<String> getNombreRarezaCombobox() {
+		return nombreRarezaCombobox;
 	}
 
-	public void setLabelVersion(Label labelVersion) {
-		this.labelVersion = labelVersion;
+	public ComboBox<String> getNombreEsFoilCombobox() {
+		return nombreEsFoilCombobox;
 	}
 
-	public void setProntInfoEspecial(Label prontInfoEspecial) {
-		this.prontInfoEspecial = prontInfoEspecial;
+	public ComboBox<String> getGradeoCartaCombobox() {
+		return gradeoCartaCombobox;
 	}
 
-	public void setProntInfoPreviews(Label prontInfoPreviews) {
-		this.prontInfoPreviews = prontInfoPreviews;
+	public ComboBox<String> getEstadoCartaCombobox() {
+		return estadoCartaCombobox;
 	}
 
-	public void setProntInfoPortadas(Label prontInfoPortadas) {
-		this.prontInfoPortadas = prontInfoPortadas;
+	public ComboBox<String> getPrecioCartaCombobox() {
+		return precioCartaCombobox;
 	}
 
-	public void setListaTextFields(ObservableList<Control> listaTextFields) {
-		AccionReferencias.listaTextFields = listaTextFields;
+	public ComboBox<String> getComboPreviewsCombobox() {
+		return comboPreviewsCombobox;
 	}
 
-	public static void setColumnasTabla(List<TableColumn<Carta, String>> columnasTabla) {
-		AccionReferencias.columnasTabla = columnasTabla;
+	public TextArea getProntInfoTextArea() {
+		return prontInfoTextArea;
 	}
 
-	public static void setComboboxes(List<ComboBox<String>> comboboxes) {
-		AccionReferencias.comboboxes = comboboxes;
+	public MenuItem getMenuImportarFicheroCodigoBarras() {
+		return menuImportarFicheroCodigoBarras;
 	}
 
-	public static void setListaBotones(ObservableList<Button> listaBotones) {
-		AccionReferencias.listaBotones = listaBotones;
+	public MenuItem getMenuCartaAniadir() {
+		return menuCartaAniadir;
 	}
 
-	public static void setListaElementosFondo(ObservableList<Node> listaElementosFondo) {
-		AccionReferencias.listaElementosFondo = listaElementosFondo;
+	public MenuItem getMenuCartaEliminar() {
+		return menuCartaEliminar;
 	}
 
-	public void setComboBoxes(List<ComboBox<String>> comboBoxes) {
-		comboboxes = comboBoxes;
+	public MenuItem getMenuCartaModificar() {
+		return menuCartaModificar;
 	}
 
-	public void setProcedencia(TableColumn<Carta, String> procedencia) {
-		this.procedencia = procedencia;
+	public MenuItem getMenuEstadisticaEstadistica() {
+		return menuEstadisticaEstadistica;
 	}
 
-	public void setReferencia(TableColumn<Carta, String> referencia) {
-		this.referencia = referencia;
+	public MenuItem getMenuArchivoCerrar() {
+		return menuArchivoCerrar;
+	}
+
+	public MenuItem getMenuArchivoDelete() {
+		return menuArchivoDelete;
+	}
+
+	public MenuItem getMenuArchivoDesconectar() {
+		return menuArchivoDesconectar;
+	}
+
+	public MenuItem getMenuArchivoExcel() {
+		return menuArchivoExcel;
+	}
+
+	public MenuItem getMenuArchivoImportar() {
+		return menuArchivoImportar;
+	}
+
+	public MenuItem getMenuArchivoSobreMi() {
+		return menuArchivoSobreMi;
+	}
+
+	public MenuItem getMenuEstadisticaComprados() {
+		return menuEstadisticaComprados;
+	}
+
+	public MenuItem getMenuEstadisticaFirmados() {
+		return menuEstadisticaFirmados;
+	}
+
+	public MenuItem getMenuEstadisticaPosesion() {
+		return menuEstadisticaPosesion;
+	}
+
+	public MenuItem getMenuEstadisticaVendidos() {
+		return menuEstadisticaVendidos;
+	}
+
+	public MenuItem getMenuArchivoAvanzado() {
+		return menuArchivoAvanzado;
+	}
+
+	public Menu getNavegacionCerrar() {
+		return navegacionCerrar;
+	}
+
+	public Menu getNavegacionCarta() {
+		return navegacionCarta;
+	}
+
+	public Menu getNavegacionEstadistica() {
+		return navegacionEstadistica;
+	}
+
+	public MenuBar getMenuNavegacion() {
+		return menuNavegacion;
+	}
+
+	public ProgressIndicator getProgresoCarga() {
+		return progresoCarga;
+	}
+
+	public CheckBox getCheckFirmas() {
+		return checkFirmas;
+	}
+
+	public List<ComboBox<String>> getListaComboboxes() {
+		return listaComboboxes;
+	}
+
+	public List<TableColumn<Carta, String>> getListaColumnasTabla() {
+		return listaColumnasTabla;
+	}
+
+	public static ObservableList<Control> getListaTextFields() {
+		return listaTextFields;
+	}
+
+	public static ObservableList<Button> getListaBotones() {
+		return listaBotones;
+	}
+
+	public static ObservableList<Node> getListaElementosFondo() {
+		return listaElementosFondo;
+	}
+
+	public Stage getStageVentana() {
+		return stageVentana;
+	}
+
+	public void setiDColumna(TableColumn<Carta, String> iDColumna) {
+		this.iDColumna = iDColumna;
+	}
+
+	public void setNombreColumna(TableColumn<Carta, String> nombreColumna) {
+		this.nombreColumna = nombreColumna;
+	}
+
+	public void setNumeroColumna(TableColumn<Carta, String> numeroColumna) {
+		this.numeroColumna = numeroColumna;
+	}
+
+	public void setGradeoColumna(TableColumn<Carta, String> gradeoColumna) {
+		this.gradeoColumna = gradeoColumna;
+	}
+
+	public void setEditorialColumna(TableColumn<Carta, String> editorialColumna) {
+		this.editorialColumna = editorialColumna;
+	}
+
+	public void setColeccionColumna(TableColumn<Carta, String> coleccionColumna) {
+		this.coleccionColumna = coleccionColumna;
+	}
+
+	public void setRarezaColumna(TableColumn<Carta, String> rarezaColumna) {
+		this.rarezaColumna = rarezaColumna;
+	}
+
+	public void setEsFoilColumna(TableColumn<Carta, String> esFoilColumna) {
+		this.esFoilColumna = esFoilColumna;
+	}
+
+	public void setEstadoColumna(TableColumn<Carta, String> estadoColumna) {
+		this.estadoColumna = estadoColumna;
+	}
+
+	public void setPrecioColumna(TableColumn<Carta, String> precioColumna) {
+		this.precioColumna = precioColumna;
+	}
+
+	public void setReferenciaColumna(TableColumn<Carta, String> referenciaColumna) {
+		this.referenciaColumna = referenciaColumna;
 	}
 
 	public void setTablaBBDD(TableView<Carta> tablaBBDD) {
@@ -943,20 +696,28 @@ public class AccionReferencias {
 		this.vboxContenido = vboxContenido;
 	}
 
-	public void setBackgroundImage(ImageView backgroundImage) {
-		this.backgroundImage = backgroundImage;
+	public void setVboxImage(VBox vboxImage) {
+		this.vboxImage = vboxImage;
 	}
 
 	public void setRootAnchorPane(AnchorPane rootAnchorPane) {
 		this.rootAnchorPane = rootAnchorPane;
 	}
 
-	public void setVboxImage(VBox vboxImage) {
-		this.vboxImage = vboxImage;
-	}
-
 	public void setAnchoPaneInfo(AnchorPane anchoPaneInfo) {
 		this.anchoPaneInfo = anchoPaneInfo;
+	}
+
+	public void setBackgroundImage(ImageView backgroundImage) {
+		this.backgroundImage = backgroundImage;
+	}
+
+	public void setImagenCarta(ImageView imagenCarta) {
+		this.imagenCarta = imagenCarta;
+	}
+
+	public void setCargaImagen(ImageView cargaImagen) {
+		this.cargaImagen = cargaImagen;
 	}
 
 	public void setBotonModificar(Button botonModificar) {
@@ -971,48 +732,16 @@ public class AccionReferencias {
 		this.botonEliminar = botonEliminar;
 	}
 
-	public void setBarraCambioAltura(Rectangle barraCambioAltura) {
-		this.barraCambioAltura = barraCambioAltura;
+	public void setBotonComprimirPortadas(Button botonComprimirPortadas) {
+		this.botonComprimirPortadas = botonComprimirPortadas;
 	}
 
-	public void setAlarmaConexionInternet(Label alarmaConexionInternet) {
-		this.alarmaConexionInternet = alarmaConexionInternet;
-	}
-
-	public void setDireccionImagen(TextField direccionImagen) {
-		this.direccionImagen = direccionImagen;
-	}
-
-	public void setID(TableColumn<Carta, String> iD) {
-		ID = iD;
-	}
-
-	public void setGradeo(TableColumn<Carta, String> gradeo) {
-		this.gradeo = gradeo;
-	}
-
-	public void setFormato(TableColumn<Carta, String> formato) {
-		this.formato = formato;
-	}
-
-	public void setNombre(TableColumn<Carta, String> nombre) {
-		this.nombre = nombre;
-	}
-
-	public void setNumero(TableColumn<Carta, String> numero) {
-		this.numero = numero;
-	}
-
-	public void setEditorial(TableColumn<Carta, String> editorial) {
-		this.editorial = editorial;
+	public void setBotonReCopiarPortadas(Button botonReCopiarPortadas) {
+		this.botonReCopiarPortadas = botonReCopiarPortadas;
 	}
 
 	public void setBotonCancelarSubida(Button botonCancelarSubida) {
 		this.botonCancelarSubida = botonCancelarSubida;
-	}
-
-	public void setBotonBorrarOpinion(Button botonBorrarOpinion) {
-		this.botonBorrarOpinion = botonBorrarOpinion;
 	}
 
 	public void setBotonBusquedaCodigo(Button botonBusquedaCodigo) {
@@ -1059,106 +788,6 @@ public class AccionReferencias {
 		this.botonSubidaPortada = botonSubidaPortada;
 	}
 
-	public void setLabel_gradeo(Label label_gradeo) {
-		this.label_gradeo = label_gradeo;
-	}
-
-	public void setLabel_editorial(Label label_editorial) {
-		this.label_editorial = label_editorial;
-	}
-
-	public void setLabel_estado(Label label_estado) {
-		this.label_estado = label_estado;
-	}
-
-	public void setLabel_fecha(Label label_fecha) {
-		this.label_fecha = label_fecha;
-	}
-
-	public void setLabel_formato(Label label_formato) {
-		this.label_formato = label_formato;
-	}
-
-	public void setLabel_id_mod(Label label_id_mod) {
-		this.label_id_mod = label_id_mod;
-	}
-
-	public void setLabel_portada(Label label_portada) {
-		this.label_portada = label_portada;
-	}
-
-	public void setLabel_precio(Label label_precio) {
-		this.label_precio = label_precio;
-	}
-
-	public void setLabel_referencia(Label label_referencia) {
-		this.label_referencia = label_referencia;
-	}
-
-	public void setImagencomic(ImageView imagencomic) {
-		this.imagencomic = imagencomic;
-	}
-
-	public void setCargaImagen(ImageView cargaImagen) {
-		this.cargaImagen = cargaImagen;
-	}
-
-	public void setProntInfo(TextArea prontInfo) {
-		this.prontInfo = prontInfo;
-	}
-
-	public void setProntInfoLabel(Label prontInfoLabel) {
-		this.prontInfoLabel = prontInfoLabel;
-	}
-
-	public void setMenu_Importar_Fichero_CodigoBarras(MenuItem menu_Importar_Fichero_CodigoBarras) {
-		this.menu_Importar_Fichero_CodigoBarras = menu_Importar_Fichero_CodigoBarras;
-	}
-
-	public void setMenu_comprobar_apis(MenuItem menuComprobarApis) {
-		this.menuComprobarApis = menuComprobarApis;
-	}
-
-	public MenuItem getMenu_comprobar_apis() {
-		return menuComprobarApis;
-	}
-
-	public void setMenu_comic_aniadir(MenuItem menu_comic_aniadir) {
-		this.menu_comic_aniadir = menu_comic_aniadir;
-	}
-
-	public void setMenu_comic_eliminar(MenuItem menu_comic_eliminar) {
-		this.menu_comic_eliminar = menu_comic_eliminar;
-	}
-
-	public void setMenu_comic_modificar(MenuItem menu_comic_modificar) {
-		this.menu_comic_modificar = menu_comic_modificar;
-	}
-
-	public void setMenu_estadistica_estadistica(MenuItem menu_estadistica_estadistica) {
-		this.menu_estadistica_estadistica = menu_estadistica_estadistica;
-	}
-
-	public void setMenu_navegacion(MenuBar menu_navegacion) {
-		this.menu_navegacion = menu_navegacion;
-	}
-
-	public void setNavegacion_Opciones(Menu navegacion_cerrar) {
-		this.navegacion_cerrar = navegacion_cerrar;
-	}
-
-	public void setNavegacion_comic(Menu navegacion_comic) {
-		this.navegacion_comic = navegacion_comic;
-	}
-
-	public void setNavegacion_estadistica(Menu navegacion_estadistica) {
-		this.navegacion_estadistica = navegacion_estadistica;
-	}
-
-	public void setAlarmaConexionSql(Label alarmaConexionSql) {
-		this.alarmaConexionSql = alarmaConexionSql;
-	}
-
 	public void setBotonMostrarParametro(Button botonMostrarParametro) {
 		this.botonMostrarParametro = botonMostrarParametro;
 	}
@@ -1175,176 +804,315 @@ public class AccionReferencias {
 		this.botonMostrarGuardados = botonMostrarGuardados;
 	}
 
-	public void setMenu_archivo_cerrar(MenuItem menu_archivo_cerrar) {
-		this.menu_archivo_cerrar = menu_archivo_cerrar;
+	public void setBotonActualizarDatos(Button botonActualizarDatos) {
+		this.botonActualizarDatos = botonActualizarDatos;
 	}
 
-	public void setMenu_archivo_delete(MenuItem menu_archivo_delete) {
-		this.menu_archivo_delete = menu_archivo_delete;
+	public void setBotonActualizarPortadas(Button botonActualizarPortadas) {
+		this.botonActualizarPortadas = botonActualizarPortadas;
 	}
 
-	public void setMenu_archivo_desconectar(MenuItem menu_archivo_desconectar) {
-		this.menu_archivo_desconectar = menu_archivo_desconectar;
+	public void setBotonActualizarSoftware(Button botonActualizarSoftware) {
+		this.botonActualizarSoftware = botonActualizarSoftware;
 	}
 
-	public void setMenu_archivo_excel(MenuItem menu_archivo_excel) {
-		this.menu_archivo_excel = menu_archivo_excel;
+	public void setBotonActualizarTodo(Button botonActualizarTodo) {
+		this.botonActualizarTodo = botonActualizarTodo;
 	}
 
-	public void setMenu_archivo_importar(MenuItem menu_archivo_importar) {
-		this.menu_archivo_importar = menu_archivo_importar;
+	public void setBotonDescargarPdf(Button botonDescargarPdf) {
+		this.botonDescargarPdf = botonDescargarPdf;
 	}
 
-	public void setMenu_archivo_sobreMi(MenuItem menu_archivo_sobreMi) {
-		this.menu_archivo_sobreMi = menu_archivo_sobreMi;
+	public void setBotonDescargarSQL(Button botonDescargarSQL) {
+		this.botonDescargarSQL = botonDescargarSQL;
 	}
 
-	public void setMenu_estadistica_comprados(MenuItem menu_estadistica_comprados) {
-		this.menu_estadistica_comprados = menu_estadistica_comprados;
+	public void setBotonNormalizarDB(Button botonNormalizarDB) {
+		this.botonNormalizarDB = botonNormalizarDB;
 	}
 
-	public void setMenu_estadistica_firmados(MenuItem menu_estadistica_firmados) {
-		this.menu_estadistica_firmados = menu_estadistica_firmados;
+	public void setBarraCambioAltura(Rectangle barraCambioAltura) {
+		this.barraCambioAltura = barraCambioAltura;
 	}
 
-	public void setMenu_estadistica_key_issue(MenuItem menu_estadistica_key_issue) {
-		this.menu_estadistica_key_issue = menu_estadistica_key_issue;
+	public void setAlarmaConexionInternet(Label alarmaConexionInternet) {
+		this.alarmaConexionInternet = alarmaConexionInternet;
 	}
 
-	public void setMenu_estadistica_posesion(MenuItem menu_estadistica_posesion) {
-		this.menu_estadistica_posesion = menu_estadistica_posesion;
+	public void setLabelGradeo(Label labelGradeo) {
+		this.labelGradeo = labelGradeo;
 	}
 
-	public void setMenu_estadistica_puntuados(MenuItem menu_estadistica_puntuados) {
-		this.menu_estadistica_puntuados = menu_estadistica_puntuados;
+	public void setLabelEditorial(Label labelEditorial) {
+		this.labelEditorial = labelEditorial;
 	}
 
-	public void setMenu_estadistica_vendidos(MenuItem menu_estadistica_vendidos) {
-		this.menu_estadistica_vendidos = menu_estadistica_vendidos;
+	public void setLabelEstado(Label labelEstado) {
+		this.labelEstado = labelEstado;
 	}
 
-	public void setMenu_archivo_avanzado(MenuItem menu_archivo_avanzado) {
-		this.menu_archivo_avanzado = menu_archivo_avanzado;
+	public void setLabelFecha(Label labelColeccion) {
+		this.labelColeccion = labelColeccion;
+	}
+
+	public void setLabelFormato(Label labelRareza) {
+		this.labelRareza = labelRareza;
+	}
+
+	public void setLabelNormas(Label labelNormas) {
+		this.labelNormas = labelNormas;
+	}
+
+	public void setLabelIdMod(Label labelIdMod) {
+		this.labelIdMod = labelIdMod;
+	}
+	
+	public void setLabelEsFoil(Label labelEsFoil) {
+		this.labelEsFoil = labelEsFoil;
+	}
+
+	public void setLabelPortada(Label labelPortada) {
+		this.labelPortada = labelPortada;
+	}
+
+	public void setLabelPrecio(Label labelPrecio) {
+		this.labelPrecio = labelPrecio;
+	}
+
+	public void setLabelReferencia(Label labelReferencia) {
+		this.labelReferencia = labelReferencia;
+	}
+
+	public void setProntInfoLabel(Label prontInfoLabel) {
+		this.prontInfoLabel = prontInfoLabel;
+	}
+
+	public void setAlarmaConexionSql(Label alarmaConexionSql) {
+		this.alarmaConexionSql = alarmaConexionSql;
+	}
+
+	public void setLabelComprobar(Label labelComprobar) {
+		this.labelComprobar = labelComprobar;
+	}
+
+	public void setLabelVersion(Label labelVersion) {
+		this.labelVersion = labelVersion;
+	}
+
+	public void setProntInfoEspecial(Label prontInfoEspecial) {
+		this.prontInfoEspecial = prontInfoEspecial;
+	}
+
+	public void setProntInfoPreviews(Label prontInfoPreviews) {
+		this.prontInfoPreviews = prontInfoPreviews;
+	}
+
+	public void setProntInfoPortadas(Label prontInfoPortadas) {
+		this.prontInfoPortadas = prontInfoPortadas;
+	}
+
+	public void setBusquedaCodigoTextField(TextField busquedaCodigoTextField) {
+		this.busquedaCodigoTextField = busquedaCodigoTextField;
+	}
+
+	public void setNombreCartaTextField(TextField nombreCartaTextField) {
+		this.nombreCartaTextField = nombreCartaTextField;
+	}
+
+	public void setEditorialCartaTextField(TextField editorialCartaTextField) {
+		this.editorialCartaTextField = editorialCartaTextField;
+	}
+
+	public void setColeccionCartaTextField(TextField coleccionCartaTextField) {
+		this.coleccionCartaTextField = coleccionCartaTextField;
+	}
+
+	public void setRarezaCartaTextField(TextField rarezaCartaTextField) {
+		this.rarezaCartaTextField = rarezaCartaTextField;
+	}
+
+	public void setNormasCartaTextField(TextField normasCartaTextField) {
+		this.normasCartaTextField = normasCartaTextField;
+	}
+
+	public void setPrecioCartaTextField(TextField precioCartaTextField) {
+		this.precioCartaTextField = precioCartaTextField;
+	}
+
+	public void setIdCartaTratarTextField(TextField idCartaTratarTextField) {
+		this.idCartaTratarTextField = idCartaTratarTextField;
+	}
+
+	public void setDireccionImagenTextField(TextField direccionImagenTextField) {
+		this.direccionImagenTextField = direccionImagenTextField;
+	}
+
+	public void setUrlReferenciaTextField(TextField urlReferenciaTextField) {
+		this.urlReferenciaTextField = urlReferenciaTextField;
+	}
+
+	public void setCodigoCartaTratarTextField(TextField codigoCartaTratarTextField) {
+		this.codigoCartaTratarTextField = codigoCartaTratarTextField;
+	}
+
+	public void setBusquedaGeneralTextField(TextField busquedaGeneralTextField) {
+		this.busquedaGeneralTextField = busquedaGeneralTextField;
+	}
+
+	public void setNombreCartaCombobox(ComboBox<String> nombreCartaCombobox) {
+		this.nombreCartaCombobox = nombreCartaCombobox;
+	}
+
+	public void setNumeroCartaCombobox(ComboBox<String> numeroCartaCombobox) {
+		this.numeroCartaCombobox = numeroCartaCombobox;
+	}
+
+	public void setNombreEditorialCombobox(ComboBox<String> nombreEditorialCombobox) {
+		this.nombreEditorialCombobox = nombreEditorialCombobox;
+	}
+
+	public void setNombreColeccionCombobox(ComboBox<String> nombreColeccionCombobox) {
+		this.nombreColeccionCombobox = nombreColeccionCombobox;
+	}
+
+	public void setNombreRarezaCombobox(ComboBox<String> nombreRarezaCombobox) {
+		this.nombreRarezaCombobox = nombreRarezaCombobox;
+	}
+
+	public void setNombreEsFoilCombobox(ComboBox<String> nombreEsFoilCombobox) {
+		this.nombreEsFoilCombobox = nombreEsFoilCombobox;
+	}
+
+	public void setGradeoCartaCombobox(ComboBox<String> gradeoCartaCombobox) {
+		this.gradeoCartaCombobox = gradeoCartaCombobox;
+	}
+
+	public void setEstadoCartaCombobox(ComboBox<String> estadoCartaCombobox) {
+		this.estadoCartaCombobox = estadoCartaCombobox;
+	}
+
+	public void setPrecioCartaCombobox(ComboBox<String> precioCartaCombobox) {
+		this.precioCartaCombobox = precioCartaCombobox;
+	}
+
+	public void setComboPreviewsCombobox(ComboBox<String> comboPreviewsCombobox) {
+		this.comboPreviewsCombobox = comboPreviewsCombobox;
+	}
+
+	public void setProntInfoTextArea(TextArea prontInfoTextArea) {
+		this.prontInfoTextArea = prontInfoTextArea;
+	}
+
+	public void setMenuImportarFicheroCodigoBarras(MenuItem menuImportarFicheroCodigoBarras) {
+		this.menuImportarFicheroCodigoBarras = menuImportarFicheroCodigoBarras;
+	}
+
+	public void setMenuCartaAniadir(MenuItem menuCartaAniadir) {
+		this.menuCartaAniadir = menuCartaAniadir;
+	}
+
+	public void setMenuCartaEliminar(MenuItem menuCartaEliminar) {
+		this.menuCartaEliminar = menuCartaEliminar;
+	}
+
+	public void setMenuCartaModificar(MenuItem menuCartaModificar) {
+		this.menuCartaModificar = menuCartaModificar;
+	}
+
+	public void setMenuEstadisticaEstadistica(MenuItem menuEstadisticaEstadistica) {
+		this.menuEstadisticaEstadistica = menuEstadisticaEstadistica;
+	}
+
+	public void setMenuArchivoCerrar(MenuItem menuArchivoCerrar) {
+		this.menuArchivoCerrar = menuArchivoCerrar;
+	}
+
+	public void setMenuArchivoDelete(MenuItem menuArchivoDelete) {
+		this.menuArchivoDelete = menuArchivoDelete;
+	}
+
+	public void setMenuArchivoDesconectar(MenuItem menuArchivoDesconectar) {
+		this.menuArchivoDesconectar = menuArchivoDesconectar;
+	}
+
+	public void setMenuArchivoExcel(MenuItem menuArchivoExcel) {
+		this.menuArchivoExcel = menuArchivoExcel;
+	}
+
+	public void setMenuArchivoImportar(MenuItem menuArchivoImportar) {
+		this.menuArchivoImportar = menuArchivoImportar;
+	}
+
+	public void setMenuArchivoSobreMi(MenuItem menuArchivoSobreMi) {
+		this.menuArchivoSobreMi = menuArchivoSobreMi;
+	}
+
+	public void setMenuEstadisticaComprados(MenuItem menuEstadisticaComprados) {
+		this.menuEstadisticaComprados = menuEstadisticaComprados;
+	}
+
+	public void setMenuEstadisticaFirmados(MenuItem menuEstadisticaFirmados) {
+		this.menuEstadisticaFirmados = menuEstadisticaFirmados;
+	}
+
+	public void setMenuEstadisticaPosesion(MenuItem menuEstadisticaPosesion) {
+		this.menuEstadisticaPosesion = menuEstadisticaPosesion;
+	}
+
+	public void setMenuEstadisticaVendidos(MenuItem menuEstadisticaVendidos) {
+		this.menuEstadisticaVendidos = menuEstadisticaVendidos;
+	}
+
+	public void setMenuArchivoAvanzado(MenuItem menuArchivoAvanzado) {
+		this.menuArchivoAvanzado = menuArchivoAvanzado;
+	}
+
+	public void setNavegacionCerrar(Menu navegacionCerrar) {
+		this.navegacionCerrar = navegacionCerrar;
+	}
+
+	public void setNavegacionCarta(Menu navegacionCarta) {
+		this.navegacionCarta = navegacionCarta;
+	}
+
+	public void setNavegacionEstadistica(Menu navegacionEstadistica) {
+		this.navegacionEstadistica = navegacionEstadistica;
+	}
+
+	public void setMenuNavegacion(MenuBar menuNavegacion) {
+		this.menuNavegacion = menuNavegacion;
 	}
 
 	public void setProgresoCarga(ProgressIndicator progresoCarga) {
 		this.progresoCarga = progresoCarga;
 	}
 
-	// ComboBox
-
-	public ComboBox<String> getEstadoCarta() {
-		return estadoCarta;
+	public void setCheckFirmas(CheckBox checkFirmas) {
+		this.checkFirmas = checkFirmas;
 	}
 
-	public ComboBox<String> getFormatoCarta() {
-		return formatoCarta;
+	public void setListaComboboxes(List<ComboBox<String>> listaComboboxes) {
+		AccionReferencias.listaComboboxes = listaComboboxes;
 	}
 
-	public ComboBox<String> getGradeoCarta() {
-		return gradeoCarta;
+	public static void setListaColumnasTabla(List<TableColumn<Carta, String>> listaColumnasTabla) {
+		AccionReferencias.listaColumnasTabla = listaColumnasTabla;
 	}
 
-	public ComboBox<String> getNumeroCarta() {
-		return numeroCarta;
+	public static void setListaTextFields(ObservableList<Control> listaTextFields) {
+		AccionReferencias.listaTextFields = listaTextFields;
 	}
 
-	public ComboBox<String> getNombreEditorial() {
-		return nombreEditorial;
+	public static void setListaBotones(ObservableList<Button> listaBotones) {
+		AccionReferencias.listaBotones = listaBotones;
 	}
 
-	public ComboBox<String> getNombreFormato() {
-		return nombreFormato;
+	public static void setListaElementosFondo(ObservableList<Node> listaElementosFondo) {
+		AccionReferencias.listaElementosFondo = listaElementosFondo;
 	}
 
-	public ComboBox<String> getTituloCarta() {
-		return tituloCarta;
+	public void setStageVentana(Stage stageVentana) {
+		this.stageVentana = stageVentana;
 	}
-
-	public void setEstadoCarta(ComboBox<String> estadoCarta) {
-		this.estadoCarta = estadoCarta;
-	}
-
-	public void setTituloCarta(ComboBox<String> tituloCarta) {
-		this.tituloCarta = tituloCarta;
-	}
-
-	public void setNombreEditorial(ComboBox<String> nombreEditorial) {
-		this.nombreEditorial = nombreEditorial;
-	}
-
-	public void setNombreFormato(ComboBox<String> nombreFormato) {
-		this.nombreFormato = nombreFormato;
-	}
-
-	public void setFormatoCarta(ComboBox<String> formatoCarta) {
-		this.formatoCarta = formatoCarta;
-	}
-
-	public void setGradeoCarta(ComboBox<String> gradeoCarta) {
-		this.gradeoCarta = gradeoCarta;
-	}
-
-	public void setNumeroCarta(ComboBox<String> numeroCarta) {
-		this.numeroCarta = numeroCarta;
-	}
-
-	// TextField
-
-	public void setBusquedaCodigo(TextField busquedaCodigo) {
-		this.busquedaCodigo = busquedaCodigo;
-	}
-
-	public void setEditorialCarta(TextField editorialCarta) {
-		this.editorialCarta = editorialCarta;
-	}
-
-	public void setIdCartaTratar(TextField idCartaTratar) {
-		this.idCartaTratar = idCartaTratar;
-	}
-
-	public void setNombreCarta(TextField nombreCarta) {
-		this.nombreCarta = nombreCarta;
-	}
-
-	public void setPrecioCarta(TextField precioCarta) {
-		this.precioCarta = precioCarta;
-	}
-
-	public void setUrlReferencia(TextField urlReferencia) {
-		this.urlReferencia = urlReferencia;
-	}
-
-	public void setBusquedaGeneral(TextField busquedaGeneral) {
-		this.busquedaGeneral = busquedaGeneral;
-	}
-
-	public TextField getBusquedaCodigo() {
-		return busquedaCodigo;
-	}
-
-	public TextField getEditorialCarta() {
-		return editorialCarta;
-	}
-
-	public TextField getIdCartaTratar() {
-		return idCartaTratar;
-	}
-
-	public TextField getCodigoCartaTratar() {
-		return codigoCartaTratar;
-	}
-
-	public TextField getNombreCarta() {
-		return nombreCarta;
-	}
-
-	public TextField getPrecioCarta() {
-		return precioCarta;
-	}
-
-	public TextField getUrlReferencia() {
-		return urlReferencia;
-	}
-
 }

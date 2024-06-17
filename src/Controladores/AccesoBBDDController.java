@@ -181,7 +181,7 @@ public class AccesoBBDDController implements Initializable {
 
 	public AccionReferencias guardarReferencia() {
 		referenciaVentana.setBotonIntroducir(botonEnviar);
-		referenciaVentana.setStage(myStage());
+		referenciaVentana.setStageVentana(myStage());
 		referenciaVentana.setLabelComprobar(prontEstadoConexion);
 		referenciaVentana.setProntInfoLabel(prontEstadoConexionBase);
 		referenciaVentana.setLabelVersion(alarmaConexion);

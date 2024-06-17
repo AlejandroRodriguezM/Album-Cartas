@@ -302,7 +302,7 @@ public class Utilidades {
 
 		String userDir = System.getProperty("user.home");
 		String documentsPath = userDir + File.separator + "Documents";
-		String defaultImagePath = documentsPath + File.separator + "libreria_comics" + File.separator
+		String defaultImagePath = documentsPath + File.separator + "album_cartas" + File.separator
 				+ Utilidades.nombreDB() + File.separator + "portadas";
 
 		// Esto se modificara para hacerlo dinamico
@@ -380,7 +380,7 @@ public class Utilidades {
 	public String obtenerNombreCompleto(Carta datos) {
 		String userDir = System.getProperty("user.home");
 		String documentsPath = userDir + File.separator + "Documents";
-		String defaultImagePath = documentsPath + File.separator + "libreria_comics" + File.separator
+		String defaultImagePath = documentsPath + File.separator + "album_cartas" + File.separator
 				+ ConectManager.DB_NAME + File.separator + "portadas" + File.separator;
 		return defaultImagePath + crearNuevoNombre(datos);
 	}
@@ -425,7 +425,7 @@ public class Utilidades {
 
 			String userDir = System.getProperty("user.home");
 			String documentsPath = userDir + File.separator + "Documents";
-			String sourcePath = documentsPath + File.separator + "libreria_comics" + File.separator
+			String sourcePath = documentsPath + File.separator + "album_cartas" + File.separator
 					+ ConectManager.DB_NAME + File.separator + "portadas";
 			File sourceFolder = new File(sourcePath);
 
@@ -454,7 +454,7 @@ public class Utilidades {
 				backupsFolder.mkdirs();
 			}
 			final String DB_NAME = ConectManager.DB_NAME;
-			final String directorioComun = DOCUMENTS_PATH + File.separator + "libreria_comics" + File.separator
+			final String directorioComun = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator
 					+ DB_NAME + File.separator;
 			final String directorioOriginal = directorioComun + "portadas" + File.separator;
 			String backupFileName = "portadas_" + dateFormat.format(new Date());
@@ -468,7 +468,7 @@ public class Utilidades {
 	public static void eliminarArchivosEnCarpeta() {
 		String userDir = System.getProperty("user.home");
 		String documentsPath = userDir + File.separator + "Documents";
-		String sourcePath = documentsPath + File.separator + "libreria_comics" + File.separator + ConectManager.DB_NAME
+		String sourcePath = documentsPath + File.separator + "album_cartas" + File.separator + ConectManager.DB_NAME
 				+ File.separator + "portadas";
 
 		try {
@@ -1192,7 +1192,7 @@ public class Utilidades {
 	 * @param inputPaths Lista de URLs que representan los archivos a conservar.
 	 */
 	public static void borrarArchivosNoEnLista(List<String> inputPaths) {
-		String directorioComun = DOCUMENTS_PATH + File.separator + "libreria_comics" + File.separator
+		String directorioComun = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator
 				+ Utilidades.nombreDB() + File.separator + "portadas" + File.separator;
 
 		List<String> nombresArchivosEnDirectorio = obtenerNombresArchivosEnDirectorio(directorioComun);
@@ -1772,7 +1772,7 @@ public class Utilidades {
 		String nombreCarpeta = archivoOriginal.getParent();
 		String extension = ".jpg"; // La extensión siempre será .jpg
 
-		String carpetaPortada = DOCUMENTS_PATH + File.separator + "libreria_comics" + File.separator
+		String carpetaPortada = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator
 				+ ConectManager.DB_NAME + File.separator + "portadas";
 
 		String nombreAleatorio = Utilidades.generarCodigoUnico(carpetaPortada);
@@ -1821,7 +1821,7 @@ public class Utilidades {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				String urlDescarga = "https://github.com/AlejandroRodriguezM/Libreria-Cartas/releases/latest/download/Libreria.exe";
+				String urlDescarga = "https://github.com/AlejandroRodriguezM/Libreria-Cartas/releases/latest/download/Album.exe";
 				URI uri = new URI(urlDescarga);
 
 				HttpURLConnection httpConn = (HttpURLConnection) uri.toURL().openConnection();
@@ -2184,7 +2184,7 @@ public class Utilidades {
 		List<Stage> stageVentanas = FuncionesManejoFront.getStageVentanas();
 		for (Stage stage : stageVentanas) {
 
-			if (stage.getTitle().equalsIgnoreCase("Carga de comics")) {
+			if (stage.getTitle().equalsIgnoreCase("Carga de cartas")) {
 				stage.close(); // Close the stage if it's not the current state
 			}
 		}
@@ -2240,7 +2240,7 @@ public class Utilidades {
 
 //	public static String directorioPortada() {
 //
-//		String carpeta = System.getProperty("user.home") + "/Documents/libreria_comics/";
+//		String carpeta = System.getProperty("user.home") + "/Documents/album_cartas/";
 //		String nombreCompletoDB = FuncionesFicheros.datosEnvioFichero();
 //		String nombreCortado[] = nombreCompletoDB.split("\\.");
 //		String nombredb = nombreCortado[0];

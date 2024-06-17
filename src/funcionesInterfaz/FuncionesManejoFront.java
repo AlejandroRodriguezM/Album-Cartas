@@ -50,7 +50,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoColumnas(double numColumns) {
-		for (TableColumn<Carta, String> columna : referenciaVentana.getColumnasTabla()) {
+		for (TableColumn<Carta, String> columna : referenciaVentana.getListaColumnasTabla()) {
 			columna.prefWidthProperty().bind(referenciaVentana.getTablaBBDD().widthProperty().divide(numColumns));
 		}
 	}
@@ -62,7 +62,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoMaximoCamposTexto(double maxTextComboWidth) {
-		for (Control campo : referenciaVentana.getComboboxes()) {
+		for (Control campo : referenciaVentana.getListaComboboxes()) {
 			if (campo instanceof TextField campoTexto) {
 				Platform.runLater(() -> campoTexto.maxWidthProperty()
 						.bind(Bindings.max(maxTextComboWidth, campoTexto.widthProperty())));
@@ -71,18 +71,18 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoMaximoComboBoxes(double maxTextComboWidth) {
-		for (ComboBox<String> comboBox : referenciaVentana.getComboboxes()) {
+		for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
 
 			comboBox.maxWidthProperty().bind(Bindings.max(maxTextComboWidth, comboBox.widthProperty()));
 		}
 	}
 
 	public static void establecerTamanioMaximoImagen(double maxWidth, double maxHeight) {
-		referenciaVentana.getImagencomic().fitWidthProperty()
+		referenciaVentana.getImagenCarta().fitWidthProperty()
 				.bind(Bindings.min(maxWidth, referenciaVentana.getRootAnchorPane().widthProperty()));
-		referenciaVentana.getImagencomic().fitHeightProperty()
+		referenciaVentana.getImagenCarta().fitHeightProperty()
 				.bind(Bindings.min(maxHeight, referenciaVentana.getRootAnchorPane().heightProperty()));
-		referenciaVentana.getImagencomic().setPreserveRatio(true);
+		referenciaVentana.getImagenCarta().setPreserveRatio(true);
 	}
 
 	////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void manejarMensajeTextArea(String mensaje) {
-		AlarmaList.iniciarAnimacionTextArea(referenciaVentana.getProntInfo(), mensaje);
+		AlarmaList.iniciarAnimacionTextArea(referenciaVentana.getProntInfoTextArea(), mensaje);
 	}
 
 	public static void cambiarEstadoMenuBar(boolean estadoAccion, AccionReferencias referenciaVentana) {
@@ -271,15 +271,13 @@ public class FuncionesManejoFront {
 			return;
 		}
 
-		disableMenuItems(estadoAccion, referenciaVentana.getMenu_archivo_excel(),
-				referenciaVentana.getMenu_archivo_importar(), referenciaVentana.getMenu_archivo_delete(),
-				referenciaVentana.getMenu_comic_aniadir(), referenciaVentana.getMenu_comic_eliminar(),
-				referenciaVentana.getMenu_comic_modificar(), referenciaVentana.getMenu_archivo_avanzado(),
-				referenciaVentana.getMenu_Importar_Fichero_CodigoBarras(),
-				referenciaVentana.getNavegacion_estadistica(),
-				referenciaVentana.getMenu_Importar_Fichero_CodigoBarras(), referenciaVentana.getMenu_archivo_sobreMi(),
-				referenciaVentana.getMenu_comprobar_apis(), referenciaVentana.getMenu_archivo_desconectar(),
-				referenciaVentana.getMenu_archivo_cerrar());
+		disableMenuItems(estadoAccion, referenciaVentana.getMenuArchivoExcel(),
+				referenciaVentana.getMenuArchivoImportar(), referenciaVentana.getMenuArchivoDelete(),
+				referenciaVentana.getMenuCartaAniadir(), referenciaVentana.getMenuCartaEliminar(),
+				referenciaVentana.getMenuCartaModificar(), referenciaVentana.getMenuArchivoAvanzado(),
+				referenciaVentana.getMenuImportarFicheroCodigoBarras(), referenciaVentana.getNavegacionEstadistica(),
+				referenciaVentana.getMenuImportarFicheroCodigoBarras(), referenciaVentana.getMenuArchivoSobreMi(),
+				referenciaVentana.getMenuArchivoDesconectar(), referenciaVentana.getMenuArchivoCerrar());
 
 		disableButtons(estadoAccion, referenciaVentana.getBotonIntroducir(), referenciaVentana.getBotonModificar(),
 				referenciaVentana.getBotonEliminar(), referenciaVentana.getBotonLimpiar(),
@@ -292,29 +290,33 @@ public class FuncionesManejoFront {
 				referenciaVentana.getBotonbbdd(), referenciaVentana.getBotonBusquedaCodigo(),
 				referenciaVentana.getBotonGuardarResultado());
 
-		disableControls(estadoAccion, referenciaVentana.getTituloCarta(), referenciaVentana.getNombreEditorial(),
-				referenciaVentana.getNombreFormato(), referenciaVentana.getGradeoCarta(),
-				referenciaVentana.getNumeroCarta(), referenciaVentana.getBusquedaGeneral(),
-				referenciaVentana.getEstadoCarta(), referenciaVentana.getNumeroCarta(),
-				referenciaVentana.getFormatoCarta(), referenciaVentana.getBusquedaCodigo());
+		disableControls(estadoAccion, referenciaVentana.getNombreCartaCombobox(),
+				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEditorialCombobox(),
+				referenciaVentana.getNombreColeccionCombobox(), referenciaVentana.getNombreRarezaCombobox(),
+				referenciaVentana.getNombreEsFoilCombobox(), referenciaVentana.getGradeoCartaCombobox(),
+				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(),
+				referenciaVentana.getPrecioCartaCombobox());
 
-		disableTextFields(estadoAccion, referenciaVentana.getNombreCarta(), referenciaVentana.getEditorialCarta(),
-				referenciaVentana.getPrecioCarta(), referenciaVentana.getCodigoCartaTratar(),
-				referenciaVentana.getDireccionImagen(), referenciaVentana.getIdCartaTratar(),
-				referenciaVentana.getUrlReferencia());
+		disableTextFields(estadoAccion, referenciaVentana.getNombreCartaTextField(),
+				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
+				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getBusquedaGeneralTextField(),
+				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getBusquedaCodigoTextField(),
+				referenciaVentana.getPrecioCartaTextField(), referenciaVentana.getCodigoCartaTratarTextField(),
+				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getIdCartaTratarTextField(),
+				referenciaVentana.getUrlReferenciaTextField());
 
 		if (referenciaVentana.getBotonModificar() != null) {
 			// Limpiar elementos adicionales de la interfaz
 			referenciaVentana.getBarraCambioAltura().setDisable(estadoAccion);
 			referenciaVentana.getTablaBBDD().getItems().clear();
-			referenciaVentana.getImagencomic().setImage(null);
+			referenciaVentana.getImagenCarta().setImage(null);
 			referenciaVentana.getTablaBBDD().refresh();
 			referenciaVentana.getTablaBBDD().setDisable(estadoAccion);
 		}
 
-		if (referenciaVentana.getNombreCarta() != null) {
+		if (referenciaVentana.getNombreCartaTextField() != null) {
 			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonBusquedaCodigo(),
-					getReferenciaVentana().getBusquedaCodigo());
+					getReferenciaVentana().getBusquedaCodigoTextField());
 			Utilidades.cambiarVisibilidad(elementos, true);
 		}
 

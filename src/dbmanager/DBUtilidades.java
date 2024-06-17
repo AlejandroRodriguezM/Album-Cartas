@@ -211,18 +211,18 @@ public class DBUtilidades {
 				Utilidades.manejarExcepcion(ex);
 			}
 		} else {
-			getReferenciaVentana().getProntInfo().setOpacity(1);
+			getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
 			// Show error message in red when no search fields are specified
-			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: red;");
-			getReferenciaVentana().getProntInfo()
+			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: red;");
+			getReferenciaVentana().getProntInfoTextArea()
 					.setText("Error No existe carta con los datos: " + busquedaGeneral + datos.toString());
 		}
 
 		if (sql.isEmpty() && busquedaGeneral.isEmpty()) {
-			getReferenciaVentana().getProntInfo().setOpacity(1);
+			getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
 			// Show error message in red when no search fields are specified
-			getReferenciaVentana().getProntInfo().setStyle("-fx-text-fill: red;");
-			getReferenciaVentana().getProntInfo().setText("Todos los campos estan vacios");
+			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: red;");
+			getReferenciaVentana().getProntInfoTextArea().setText("Todos los campos estan vacios");
 		}
 
 		return ListasCartasDAO.listaCartas;

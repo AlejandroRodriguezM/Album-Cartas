@@ -308,7 +308,7 @@ public class Carta {
 				return ListasCartasDAO.devolverCartaLista(idCarta);
 			}
 		} else {
-			return CartaManagerDAO.comicDatos(idCarta);
+			return CartaManagerDAO.cartaDatos(idCarta);
 		}
 		return null;
 	}
@@ -400,7 +400,7 @@ public class Carta {
 		StringBuilder contenidoCarta = new StringBuilder();
 
 		if (!normasCarta.equalsIgnoreCase("Vacio")) {
-			Utilidades.appendIfNotEmpty(contenidoCarta, "Key issue", normasCarta);
+			Utilidades.appendIfNotEmpty(contenidoCarta, "Normas", normasCarta);
 			return contenidoCarta.toString();
 		}
 		return "";

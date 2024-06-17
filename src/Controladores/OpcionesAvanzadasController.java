@@ -163,14 +163,14 @@ public class OpcionesAvanzadasController implements Initializable {
 		referenciaVentana.setBotonDescargarSQL(botonDescargarSQL);
 		referenciaVentana.setBotonNormalizarDB(botonNormalizarDB);
 		referenciaVentana.setCheckFirmas(checkFirmas);
-		referenciaVentana.setComboPreviews(comboPreviews);
+		referenciaVentana.setComboPreviewsCombobox(comboPreviews);
 		referenciaVentana.setLabelComprobar(labelComprobar);
 		referenciaVentana.setLabelVersion(labelVersion);
 		referenciaVentana.setProntInfoLabel(prontInfo);
 		referenciaVentana.setProntInfoEspecial(prontInfoEspecial);
 		referenciaVentana.setProntInfoPreviews(prontInfoPreviews);
 		referenciaVentana.setProntInfoPortadas(prontInfoPortadas);
-		referenciaVentana.setStage(estadoStage());
+		referenciaVentana.setStageVentana(estadoStage());
 
 		referenciaVentana.setBotonComprimirPortadas(botonComprimirPortadas);
 		referenciaVentana.setBotonReCopiarPortadas(botonReCopiarPortadas);
@@ -299,7 +299,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 				Utilidades.borrarArchivosNoEnLista(inputPaths);
 
-				List<ComboBox<String>> comboboxes = referenciaVentana.getComboboxes();
+				List<ComboBox<String>> comboboxes = referenciaVentana.getListaComboboxes();
 				if (comboboxes != null) {
 					Platform.runLater(() -> funcionesCombo.rellenarComboBox(comboboxes));
 				}
@@ -654,7 +654,7 @@ public class OpcionesAvanzadasController implements Initializable {
 					}
 
 					for (String idCarta : listaID) {
-						Carta comicNuevo = CartaManagerDAO.comicDatos(idCarta);
+						Carta comicNuevo = CartaManagerDAO.cartaDatos(idCarta);
 
 						String nombre_portada = Utilidades.obtenerNombrePortada(false, comicNuevo.getDireccionImagenCarta());
 						String nombre_modificado = Utilidades.convertirNombreArchivo(nombre_portada);
