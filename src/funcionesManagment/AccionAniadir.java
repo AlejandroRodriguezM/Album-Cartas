@@ -77,8 +77,9 @@ public class AccionAniadir {
 			Collections.sort(ListasCartasDAO.cartasImportados, Comparator.comparing(Carta::getNomCarta));
 
 			for (Carta c : ListasCartasDAO.cartasImportados) {
-				AccionControlUI.comprobarListaValidacion(c);
-				CartaManagerDAO.insertarDatos(c, true);
+				if (AccionControlUI.comprobarListaValidacion(c)) {
+					CartaManagerDAO.insertarDatos(c, true);
+				}
 			}
 
 			ListasCartasDAO.listasAutoCompletado();

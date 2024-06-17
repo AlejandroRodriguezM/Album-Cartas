@@ -11,7 +11,7 @@ import funcionesAuxiliares.Utilidades;
 
 public class DeleteManager {
 
-	private static final String DELETE_SENTENCIA = "DELETE FROM albumbbdd WHERE ID = ?";
+	private static final String DELETE_SENTENCIA = "DELETE FROM albumbbdd WHERE idCarta = ?";
 	private static final String DELETE_SENTENCIA_COMPLETA = "DELETE FROM albumbbdd";
 	private static final String SENTENCIA_REBOOT_ID = "DELETE FROM sqlite_sequence WHERE name = 'albumbbdd'";
 

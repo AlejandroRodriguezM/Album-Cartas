@@ -213,14 +213,18 @@ public class SelectManager {
 	 * @throws SQLException
 	 */
 	public static List<Carta> libreriaSeleccionado(String datoSeleccionado) {
-		String sentenciaSQL = "SELECT * FROM albumbbdd " + "WHERE nomCarta LIKE '%" + datoSeleccionado + "%' OR "
-				+ "numCarta = " + datoSeleccionado + " OR " + "coleccionCarta LIKE '%" + datoSeleccionado + "%' OR "
-				+ "rarezaCarta LIKE '%" + datoSeleccionado + "%' OR " + "esFoilCarta = "
-				+ (datoSeleccionado.equalsIgnoreCase("true") ? 1 : 0) + " OR " + "gradeoCarta LIKE '%"
-				+ datoSeleccionado + "%' OR " + "estadoCarta LIKE '%" + datoSeleccionado + "%' OR " + "precioCarta = "
-				+ datoSeleccionado + " OR " + "urlReferenciaCarta LIKE '%" + datoSeleccionado + "%' OR "
-				+ "direccionImagenCarta LIKE '%" + datoSeleccionado + "%' "
-				+ "ORDER BY nomCarta, numCarta ASC, esFoilCarta";
+		String sentenciaSQL = "SELECT * FROM albumbbdd WHERE "
+		        + "numCarta = '" + datoSeleccionado + "' OR "
+		        + "coleccionCarta LIKE '%" + datoSeleccionado + "%' OR "
+		        + "rarezaCarta LIKE '%" + datoSeleccionado + "%' OR "
+		        + "esFoilCarta = '" + datoSeleccionado + "' OR "
+		        + "editorialCarta = '" + datoSeleccionado + "' OR "
+		        + "gradeoCarta LIKE '%" + datoSeleccionado + "%' OR "
+		        + "estadoCarta LIKE '%" + datoSeleccionado + "%' OR "
+		        + "precioCarta = '" + datoSeleccionado + "' OR "
+		        + "urlReferenciaCarta LIKE '%" + datoSeleccionado + "%' OR "
+		        + "direccionImagenCarta LIKE '%" + datoSeleccionado + "%' "
+		        + "ORDER BY nomCarta ASC, numCarta ASC, esFoilCarta ASC";
 
 		return verLibreria(sentenciaSQL, false);
 	}

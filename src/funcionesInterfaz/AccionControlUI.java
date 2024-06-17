@@ -110,7 +110,6 @@ public class AccionControlUI {
 			referenciaVentana.getNavegacionCerrar().setDisable(true);
 			referenciaVentana.getNavegacionCerrar().setVisible(false);
 
-
 		} else {
 			referenciaVentana.getIdCartaTratarTextField().setEditable(false);
 			referenciaVentana.getIdCartaTratarTextField().setOpacity(0.7);
@@ -304,7 +303,7 @@ public class AccionControlUI {
 		return true; // Devolver true si todos los campos son válidos
 	}
 
-	public static void comprobarListaValidacion(Carta c) {
+	public static boolean comprobarListaValidacion(Carta c) {
 
 		int numCarta = Integer.parseInt(c.getNumCarta());
 		double precioCarta = Double.parseDouble(c.getPrecioCarta());
@@ -322,9 +321,9 @@ public class AccionControlUI {
 
 			String mensajePront = "Revisa la lista, algunos cartaTemps estan mal rellenados.";
 			AlarmaList.mostrarMensajePront(mensajePront, false, referenciaVentana.getProntInfoTextArea());
-
-			return;
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -522,16 +521,20 @@ public class AccionControlUI {
 	public static Carta camposCarta(List<String> camposCarta, boolean esAccion) {
 		Carta cartaTemp = new Carta();
 
-		System.out.println(camposCarta.size());
-		
+		for (int i = 0; i < camposCarta.size(); i++) {
+			System.out.println(camposCarta.get(i));
+		}
+
 		// Asignar los valores a las variables correspondientes
 		String nomCarta = camposCarta.get(0);
-		String numCarta = camposCarta.get(1);
-		String editorialCarta = camposCarta.get(2);
-		String coleccionCarta = camposCarta.get(3);
-		String rarezaCarta = camposCarta.get(4);
-		String esFoilCarta = camposCarta.get(5);
-		String gradeoCarta = camposCarta.get(6);
+		String editorialCarta = camposCarta.get(1);
+		String coleccionCarta = camposCarta.get(2);
+		String rarezaCarta = camposCarta.get(3);
+
+		String esFoilCarta = camposCarta.get(9);
+		String gradeoCarta = camposCarta.get(11);
+		String numCarta = camposCarta.get(12);
+
 		String precioCarta = "0";
 		String estadoCarta = "";
 		String urlReferenciaCarta = "";
@@ -540,12 +543,13 @@ public class AccionControlUI {
 		String idCartaTratar = "";
 
 		if (esAccion) {
-			estadoCarta = camposCarta.get(7);
-			precioCarta = camposCarta.get(8);
-			urlReferenciaCarta = camposCarta.get(9);
-			direccionImagenCarta = camposCarta.get(10);
-			normasCarta = camposCarta.get(11);
-			idCartaTratar = camposCarta.get(12);
+			normasCarta = camposCarta.get(4);
+			precioCarta = camposCarta.get(5);
+
+			direccionImagenCarta = camposCarta.get(7);
+			urlReferenciaCarta = camposCarta.get(8);
+			estadoCarta = camposCarta.get(10);
+			idCartaTratar = camposCarta.get(6);
 		}
 
 		cartaTemp.setNomCarta(Utilidades.defaultIfNullOrEmpty(nomCarta, ""));
@@ -561,7 +565,11 @@ public class AccionControlUI {
 		cartaTemp.setDireccionImagenCarta(Utilidades.defaultIfNullOrEmpty(direccionImagenCarta, ""));
 		cartaTemp.setNormasCarta(Utilidades.defaultIfNullOrEmpty(normasCarta, ""));
 		cartaTemp.setIdCarta(Utilidades.defaultIfNullOrEmpty(idCartaTratar, ""));
-	
+
+		System.out.println();
+
+		System.out.println(cartaTemp.infoCarta());
+
 		return cartaTemp;
 	}
 
@@ -603,16 +611,13 @@ public class AccionControlUI {
 		List<String> controls = new ArrayList<>();
 
 		for (Control control : referenciaVentana.getListaTextFields()) {
-			if (control instanceof TextField) {
-				controls.add(((TextField) control).getText()); // Add the Control object itself
-			} else if (control instanceof ComboBox<?>) {
-				Object selectedItem = ((ComboBox<?>) control).getSelectionModel().getSelectedItem();
-				if (selectedItem != null) {
-					controls.add(selectedItem.toString());
-				} else {
-					controls.add(""); // Add the Control object itself
-				}
-			}
+			controls.add(((TextField) control).getText()); // Add the Control object itself
+		}
+
+		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
+		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
+			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
+			controls.add(selectedItem != null ? selectedItem.toString() : "");
 		}
 
 		Carta datos = camposCarta(controls, true);

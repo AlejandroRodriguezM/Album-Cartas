@@ -328,8 +328,8 @@ public class MenuPrincipalController implements Initializable {
 				botonbbdd, botonImprimir, botonGuardarResultado, botonCancelarSubida));
 
 		AccionReferencias.setListaColumnasTabla(
-				Arrays.asList(columnaNombre, columnaNumero, columnaEditorial, columnaReferencia, columnaColeccion,
-						columnaEsFoil, columnaEstado, columnaGradeo, columnaId, columnaPrecio, columnaRareza));
+				Arrays.asList(columnaNombre, columnaNumero,columnaGradeo, columnaEditorial,columnaColeccion, columnaRareza,
+						columnaEsFoil, columnaEstado, columnaId, columnaPrecio, columnaReferencia));
 
 		return referenciaVentana;
 	}
@@ -464,36 +464,36 @@ public class MenuPrincipalController implements Initializable {
 				if (newWidth <= 1130) {
 
 					botonIntroducir.setLayoutX(231);
-					botonIntroducir.setLayoutY(199);
-
-					botonEliminar.setLayoutX(231);
-					botonEliminar.setLayoutY(240);
+					botonIntroducir.setLayoutY(159);
 
 					botonModificar.setLayoutX(231);
-					botonModificar.setLayoutY(280);
+					botonModificar.setLayoutY(197);
 
-					botonGuardarResultado.setLayoutX(327);
-					botonGuardarResultado.setLayoutY(32);
+					botonEliminar.setLayoutX(231);
+					botonEliminar.setLayoutY(237);
 
-					botonImprimir.setLayoutX(327);
-					botonImprimir.setLayoutY(74);
+					botonGuardarResultado.setLayoutX(231);
+					botonGuardarResultado.setLayoutY(281);
+
+					botonImprimir.setLayoutX(290);
+					botonImprimir.setLayoutY(281);
 
 				} else if (newWidth >= 1131) {
 
 					botonIntroducir.setLayoutX(340);
 					botonIntroducir.setLayoutY(31);
 
-					botonEliminar.setLayoutX(340);
-					botonEliminar.setLayoutY(72);
+					botonModificar.setLayoutX(340);
+					botonModificar.setLayoutY(72);
 
-					botonModificar.setLayoutX(439);
-					botonModificar.setLayoutY(31);
+					botonEliminar.setLayoutX(340);
+					botonEliminar.setLayoutY(116);
 
 					botonGuardarResultado.setLayoutX(231);
-					botonGuardarResultado.setLayoutY(337);
+					botonGuardarResultado.setLayoutY(281);
 
 					botonImprimir.setLayoutX(290);
-					botonImprimir.setLayoutY(337);
+					botonImprimir.setLayoutY(281);
 
 				}
 			});

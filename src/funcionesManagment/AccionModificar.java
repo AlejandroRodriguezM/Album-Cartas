@@ -110,12 +110,9 @@ public class AccionModificar {
 				FuncionesTableView.nombreColumnas();
 				FuncionesTableView.tablaBBDD(listaCartas);
 			}
-
 			else {
-
 				listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
-
-				CartaManagerDAO.borrarCarta(idCarta);
+//				CartaManagerDAO.borrarCarta(idCarta);
 				ListasCartasDAO.reiniciarListaCartas();
 				ListasCartasDAO.listasAutoCompletado();
 				FuncionesTableView.nombreColumnas(); // Llamada a funcion
@@ -147,6 +144,12 @@ public class AccionModificar {
 				}
 			}
 		}
+		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
+		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
+			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
+			controls.add(selectedItem != null ? selectedItem.toString() : "");
+		}
+
 		Carta datos = AccionControlUI.camposCarta(controls, true);
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
@@ -197,7 +200,7 @@ public class AccionModificar {
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
 				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
-				referenciaVentana.getUrlReferenciaTextField(),referenciaVentana.getGradeoCartaCombobox()));
+				referenciaVentana.getUrlReferenciaTextField(), referenciaVentana.getGradeoCartaCombobox()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada()));
 

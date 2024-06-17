@@ -146,10 +146,10 @@
       <Label fx:id="alarmaConexionInternet" layoutX="1187.0" prefHeight="25.0" prefWidth="23.0" stylesheets="@../style/alarma_conexion_style.css" AnchorPane.rightAnchor="2.0" />
       <AnchorPane fx:id="anchoPaneInfo" layoutX="610.0" layoutY="31.0" prefHeight="276.0" prefWidth="593.0" AnchorPane.rightAnchor="9.0">
          <children>
-              <VBox fx:id="vboxContenido" layoutX="35.0" layoutY="1.0" prefHeight="263.0" prefWidth="244.0">
+              <VBox fx:id="vboxContenido" layoutX="35.0" layoutY="1.0" prefHeight="285.0" prefWidth="244.0">
                <children>
             		
-                                            <ImageView fx:id="imagenCarta" fitHeight="273.0" fitWidth="244.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
+                                            <ImageView fx:id="imagenCarta" fitHeight="285.0" fitWidth="244.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
                </children>
               </VBox>
       		        <VBox fx:id="vboxImage" layoutX="300.0" layoutY="1.0" prefHeight="283.0" prefWidth="290.0">
@@ -165,7 +165,7 @@
             <Font size="10.0" />
          </font></Button>
       <Button fx:id="botonEliminar" layoutX="340.0" layoutY="116.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" />
-      <Button fx:id="botonImprimir" layoutX="290.0" layoutY="337.0" mnemonicParsing="false" onAction="#imprimirResultado" prefHeight="21.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Imprimir" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="botonImprimir" layoutX="290.0" layoutY="281.0" mnemonicParsing="false" onAction="#imprimirResultado" prefHeight="21.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Imprimir" textAlignment="CENTER" visible="false" wrapText="true" />
       <Button fx:id="botonGuardarResultado" layoutX="231.0" layoutY="281.0" mnemonicParsing="false" onAction="#guardarResultado" prefHeight="13.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Guardar" textAlignment="CENTER" visible="false" wrapText="true" />
       <Button fx:id="botonMostrarGuardados" alignment="CENTER" contentDisplay="BOTTOM" layoutX="231.0" layoutY="158.0" mnemonicParsing="false" onAction="#comicsGuardados" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Ver Guardados" visible="false">
          <font>

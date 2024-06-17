@@ -271,7 +271,9 @@ public class AccionFuncionesComunes {
 		// Verificar si se obtuvo un objeto FileChooser válido
 		if (fichero != null) {
 			String nuevoNombreArchivo = Utilidades.generarCodigoUnico(carpetaRaizPortadas(Utilidades.nombreDB()));
-
+			
+			System.out.println("Carta: " + nuevoNombreArchivo);
+			
 			try {
 				Utilidades.redimensionarYGuardarImagen(fichero.getAbsolutePath(), nuevoNombreArchivo);
 			} catch (IOException e) {
@@ -857,11 +859,11 @@ public class AccionFuncionesComunes {
 	}
 
 	public static String carpetaRaizPortadas(String nombreDatabase) {
-		return DOCUMENTS_PATH + File.separator + "libreria_cartas" + File.separator + nombreDatabase + File.separator;
+		return DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator + nombreDatabase + File.separator;
 	}
 
 	public static String carpetaPortadas(String nombreDatabase) {
-		return DOCUMENTS_PATH + File.separator + "libreria_cartas" + File.separator + nombreDatabase + File.separator
+		return DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator + nombreDatabase + File.separator
 				+ "portadas";
 	}
 

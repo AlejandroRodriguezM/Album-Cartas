@@ -22,15 +22,16 @@ public class DBUtilidades {
 	public static void setParameters(PreparedStatement ps, Carta datos, boolean includeID) throws SQLException {
 		ps.setString(1, datos.getNomCarta());
 		ps.setString(2, datos.getNumCarta());
-		ps.setString(3, datos.getColeccionCarta());
-		ps.setString(4, datos.getRarezaCarta());
-		ps.setString(5, datos.getEsFoilCarta()); // Assuming esFoilCarta is a boolean
-		ps.setString(6, datos.getGradeoCarta());
-		ps.setString(7, datos.getEstadoCarta());
-		ps.setString(8, datos.getPrecioCarta());
-		ps.setString(9, datos.getUrlReferenciaCarta());
-		ps.setString(10, datos.getDireccionImagenCarta());
-		ps.setString(11, datos.getNormasCarta());
+		ps.setString(3, datos.getEditorialCarta());
+		ps.setString(4, datos.getColeccionCarta());
+		ps.setString(5, datos.getRarezaCarta());
+		ps.setString(6, datos.getEsFoilCarta()); // Assuming esFoilCarta is a boolean
+		ps.setString(7, datos.getGradeoCarta());
+		ps.setString(8, datos.getEstadoCarta());
+		ps.setString(9, datos.getPrecioCarta());
+		ps.setString(10, datos.getUrlReferenciaCarta());
+		ps.setString(11, datos.getDireccionImagenCarta());
+		ps.setString(12, datos.getNormasCarta());
 
 		if (includeID) {
 			ps.setString(12, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
