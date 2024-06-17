@@ -275,7 +275,7 @@ public class Utilidades {
 		InputStream input = null;
 
 		if (!file.exists()) {
-			input = Utilidades.class.getResourceAsStream("sinPortada.jpg");
+			input = Utilidades.class.getResourceAsStream("/imagenes/sinPortada.jpg");
 			if (input == null) {
 				throw new FileNotFoundException("La imagen predeterminada no se encontró en el paquete");
 			}

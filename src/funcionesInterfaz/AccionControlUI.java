@@ -521,10 +521,6 @@ public class AccionControlUI {
 	public static Carta camposCarta(List<String> camposCarta, boolean esAccion) {
 		Carta cartaTemp = new Carta();
 
-		for (int i = 0; i < camposCarta.size(); i++) {
-			System.out.println(camposCarta.get(i));
-		}
-
 		// Asignar los valores a las variables correspondientes
 		String nomCarta = camposCarta.get(0);
 		String editorialCarta = camposCarta.get(1);

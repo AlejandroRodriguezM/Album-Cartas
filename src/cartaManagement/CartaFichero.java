@@ -37,7 +37,7 @@ public class CartaFichero extends Carta {
 			String imagen = FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH + File.separator + nombrePortada;
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCarta = (Integer.parseInt(precioCarta) <= 0) ? "0.0" : precioCarta;
+			precioCarta = (Double.parseDouble(precioCarta) <= 0) ? "0.0" : precioCarta;
 			gradeoCarta = comprobarGradeo(gradeoCarta);
 			urlReferenciaCarta = (urlReferenciaCarta.isEmpty()) ? "Sin referencia" : urlReferenciaCarta;
 

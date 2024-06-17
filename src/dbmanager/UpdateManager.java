@@ -10,15 +10,13 @@ import funcionesAuxiliares.Utilidades;
 public class UpdateManager {
 
 	private static final String UPDATE_CARTA = "UPDATE albumbbdd SET "
-	        + "nomCarta = ?, numCarta = ?, editorialCarta = ?, coleccionCarta = ?, rarezaCarta = ?, "
-	        + "esFoilCarta = ?, gradeoCarta = ?, estadoCarta = ?, precioCarta = ?, urlReferenciaCarta = ?, "
-	        + "direccionImagenCarta = ?, normasCarta = ? "
-	        + "WHERE idCarta = ?";
+			+ "nomCarta = ?, numCarta = ?, editorialCarta = ?, coleccionCarta = ?, rarezaCarta = ?, "
+			+ "esFoilCarta = ?, gradeoCarta = ?, estadoCarta = ?, precioCarta = ?, urlReferenciaCarta = ?, "
+			+ "direccionImagenCarta = ?, normasCarta = ? " + "WHERE idCarta = ?";
 
+	private static final String UPDATE_ESTADO_VENDIDO = "UPDATE albumbbdd SET estado = 'Vendido' WHERE idCarta = ?";
 
-	private static final String UPDATE_ESTADO_VENDIDO = "UPDATE albumbbdd SET estado = 'Vendido' WHERE ID = ?";
-
-	private static final String UPDATE_ESTADO_VENTA = "UPDATE albumbbdd SET estado = 'En venta' WHERE ID = ?";
+	private static final String UPDATE_ESTADO_VENTA = "UPDATE albumbbdd SET estado = 'En venta' WHERE idCarta = ?";
 
 	/**
 	 * Realiza acciones específicas en la base de datos para un comic según la

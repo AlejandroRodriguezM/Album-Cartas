@@ -111,6 +111,7 @@ public class AccionFuncionesComunes {
 			comic.setDireccionImagenCarta(
 					carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg");
 			if (esModificacion) {
+				
 				CartaManagerDAO.actualizarCartaBBDD(comic, "modificar");
 				mensaje = "Has modificado correctamente el cómic";
 			} else {

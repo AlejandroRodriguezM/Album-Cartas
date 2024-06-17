@@ -71,11 +71,11 @@ public class FuncionesExcel {
 	private static final String DOCUMENTS_PATH = USER_HOME_DIRECTORY + File.separator + "Documents";
 
 	// Para portadas
-	public static final String DEFAULT_PORTADA_IMAGE_PATH = DOCUMENTS_PATH + File.separator + "libreria_comics"
+	public static final String DEFAULT_PORTADA_IMAGE_PATH = DOCUMENTS_PATH + File.separator + "album_cartas"
 			+ File.separator + Utilidades.nombreDB() + File.separator + "portadas";
 
 	// Para la base de la ruta de imágenes predeterminada
-	private static final String DEFAULT_IMAGE_PATH_BASE = DOCUMENTS_PATH + File.separator + "libreria_comics"
+	private static final String DEFAULT_IMAGE_PATH_BASE = DOCUMENTS_PATH + File.separator + "album_cartas"
 			+ File.separator + Utilidades.nombreDB();
 
 	private static final String LOG_FILE_NAME = "log_"

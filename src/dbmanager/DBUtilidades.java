@@ -34,7 +34,7 @@ public class DBUtilidades {
 		ps.setString(12, datos.getNormasCarta());
 
 		if (includeID) {
-			ps.setString(12, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
+			ps.setString(13, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
 		}
 	}
 
