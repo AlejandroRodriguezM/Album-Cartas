@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import cartaManagement.Carta;
 import cartaManagement.Comic;
 import funcionesAuxiliares.Utilidades;
 
@@ -65,7 +66,7 @@ public class WebScrapGoogleLeagueOfComics {
 
 		try {
 			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
-			String urlString = "https://www.google.com/search?q=" + encodedSearchTerm + "+league+of+comics";
+			String urlString = "https://www.google.com/search?q=" + encodedSearchTerm + "+card+market+all+versions";
 
 			URI uri = new URI(urlString);
 			URL url = uri.toURL();
@@ -84,7 +85,7 @@ public class WebScrapGoogleLeagueOfComics {
 			con.disconnect();
 
 			String html = content.toString();
-			int startIndex = html.indexOf("https://leagueofcomicgeeks.com/");
+			int startIndex = html.indexOf("https://www.cardmarket.com/");
 			if (startIndex != -1) {
 				int endIndex = html.indexOf("\"", startIndex);
 				String[] urls = html.substring(startIndex, endIndex).split("\"");
@@ -136,7 +137,7 @@ public class WebScrapGoogleLeagueOfComics {
 		return false; // Si hay una excepción o la URI no tiene un esquema válido, la URL no es válida
 	}
 
-	public static Comic obtenerDatosDiv(String url) throws URISyntaxException {
+	public static Carta obtenerDatosDiv(String url) throws URISyntaxException {
 
 		url = buscarURL(url);
 		if (url == null) {
