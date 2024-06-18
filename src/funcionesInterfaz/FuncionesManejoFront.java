@@ -82,7 +82,8 @@ public class FuncionesManejoFront {
 				.bind(Bindings.min(maxWidth, referenciaVentana.getRootAnchorPane().widthProperty()));
 		referenciaVentana.getImagenCarta().fitHeightProperty()
 				.bind(Bindings.min(maxHeight, referenciaVentana.getRootAnchorPane().heightProperty()));
-		referenciaVentana.getImagenCarta().setPreserveRatio(true);
+		referenciaVentana.getImagenCarta().setPreserveRatio(false);
+		
 	}
 
 	////////////////////////////////////////////////////

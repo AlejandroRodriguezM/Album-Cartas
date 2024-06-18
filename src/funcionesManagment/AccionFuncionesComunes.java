@@ -198,12 +198,10 @@ public class AccionFuncionesComunes {
 			String nombreCorregido = Utilidades.eliminarParentesis(comicOriginal.getNomCarta());
 			String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
 			nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
-			String formatoLimpio = Utilidades.devolverPalabrasClave(comicOriginal.getNomCarta());
 			String editorial = DatabaseManagerDAO.getComercializadora((comicOriginal.getEditorialCarta()));
 
 			comicOriginal.setNomCarta(nombreLimpio);
 			comicOriginal.setNumCarta(numCarta);
-//			comicOriginal.setFormatoCarta(formatoLimpio);
 			comicOriginal.setEditorialCarta(editorial);
 
 			completarInformacionFaltante(comicOriginal, comicOriginal);
@@ -389,8 +387,6 @@ public class AccionFuncionesComunes {
 					"Vacio");
 
 			String numero = Utilidades.defaultIfNullOrEmpty(numCartaStr, "0");
-			String editorial = Utilidades
-					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getEditorialCarta()), "Vacio");
 			String coleccion = Utilidades
 					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getColeccionCarta()), "Vacio");
 			String rareza = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getRarezaCarta()),
@@ -434,9 +430,9 @@ public class AccionFuncionesComunes {
 					codigoImagen + ".jpg");
 
 			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).coleccionCarta(coleccion)
-					.rarezaCarta(rareza).esFoilCarta(estado).gradeoCarta(gradeo).estadoCarta(estado)
+					.rarezaCarta(rareza).esFoilCarta(esFoil).gradeoCarta(gradeo).estadoCarta(estado)
 					.precioCarta(precio).urlReferenciaCarta(urlReferencia)
-					.direccionImagenCarta(urlImagen).normasCarta(normas).build();
+					.direccionImagenCarta(imagen).normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
 //

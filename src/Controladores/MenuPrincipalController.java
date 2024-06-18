@@ -328,8 +328,8 @@ public class MenuPrincipalController implements Initializable {
 				botonbbdd, botonImprimir, botonGuardarResultado, botonCancelarSubida));
 
 		AccionReferencias.setListaColumnasTabla(
-				Arrays.asList(columnaNombre, columnaNumero,columnaGradeo, columnaEditorial,columnaColeccion, columnaRareza,
-						columnaEsFoil, columnaEstado, columnaId, columnaPrecio, columnaReferencia));
+				Arrays.asList(columnaNombre, columnaNumero, columnaGradeo, columnaEditorial, columnaColeccion,
+						columnaRareza, columnaEsFoil, columnaEstado, columnaId, columnaPrecio, columnaReferencia));
 
 		return referenciaVentana;
 	}
@@ -473,27 +473,21 @@ public class MenuPrincipalController implements Initializable {
 					botonEliminar.setLayoutY(237);
 
 					botonGuardarResultado.setLayoutX(231);
-					botonGuardarResultado.setLayoutY(281);
+					botonGuardarResultado.setLayoutY(324);
 
 					botonImprimir.setLayoutX(290);
-					botonImprimir.setLayoutY(281);
+					botonImprimir.setLayoutY(324);
 
 				} else if (newWidth >= 1131) {
 
-					botonIntroducir.setLayoutX(340);
+					botonIntroducir.setLayoutX(329);
 					botonIntroducir.setLayoutY(31);
 
-					botonModificar.setLayoutX(340);
+					botonModificar.setLayoutX(329);
 					botonModificar.setLayoutY(72);
 
-					botonEliminar.setLayoutX(340);
+					botonEliminar.setLayoutX(329);
 					botonEliminar.setLayoutY(116);
-
-					botonGuardarResultado.setLayoutX(231);
-					botonGuardarResultado.setLayoutY(281);
-
-					botonImprimir.setLayoutX(290);
-					botonImprimir.setLayoutY(281);
 
 				}
 			});
@@ -509,7 +503,7 @@ public class MenuPrincipalController implements Initializable {
 
 		// Ajustar el máximo altura permitido según la posición del AnchorPane
 		// numeroCaja
-		return windowHeight - comboboxGradeoCarta.getLayoutY() - 125;
+		return windowHeight - comboboxGradeoCarta.getLayoutY() - 150;
 	}
 
 	/**
@@ -581,8 +575,7 @@ public class MenuPrincipalController implements Initializable {
 
 		FuncionesManejoFront.establecerAnchoMaximoComboBoxes(162.0);
 
-		FuncionesManejoFront.establecerTamanioMaximoImagen(252.0, 337.0);
-
+		FuncionesManejoFront.establecerTamanioMaximoImagen(252.0, 325.0);
 	}
 
 	/**
@@ -617,7 +610,7 @@ public class MenuPrincipalController implements Initializable {
 	void mostrarPorParametro(ActionEvent event) {
 		enviarReferencias();
 		mostrarCartas(false);
-
+		modificarEstadoTabla(384, 1);
 	}
 
 	/**
@@ -631,6 +624,13 @@ public class MenuPrincipalController implements Initializable {
 	void verTodabbdd(ActionEvent event) {
 		enviarReferencias();
 		mostrarCartas(true);
+		modificarEstadoTabla(384, 1);
+	}
+
+	public void modificarEstadoTabla(double altura, double opacidad) {
+		rootVBox.setPrefHeight(altura);
+		tablaBBDD.setPrefHeight(altura);
+		tablaBBDD.setOpacity(opacidad);
 	}
 
 	private void mostrarCartas(boolean esCompleto) {
@@ -734,7 +734,6 @@ public class MenuPrincipalController implements Initializable {
 	}
 
 	private void imprimirCartasEstado(TipoBusqueda tipoBusqueda, boolean esGuardado) {
-
 		limpiezaDeDatos();
 		limpiarComboBox();
 		ListasCartasDAO.reiniciarListaCartas();
@@ -1250,6 +1249,8 @@ public class MenuPrincipalController implements Initializable {
 		tablaBBDD.getItems().clear();
 		imagenCarta.setImage(null);
 		tablaBBDD.refresh();
+
+		modificarEstadoTabla(259, 0.6);
 	}
 
 	private void limpiarComboBox() {
@@ -1294,7 +1295,7 @@ public class MenuPrincipalController implements Initializable {
 				AccionFuncionesComunes.setTipoAccion("eliminar");
 			}
 		}
-
+		modificarEstadoTabla(259, 0.6);
 		imagenCarta.setVisible(false);
 		imagenCarta.setImage(null);
 		prontInfo.setOpacity(0);

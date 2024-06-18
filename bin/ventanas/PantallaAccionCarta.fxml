@@ -22,7 +22,7 @@
    <children>
       <ImageView fitHeight="569.0" fitWidth="838.0" layoutY="19.0" pickOnBounds="true">
          <image>
-            <Image url="@../imagenes/accionComic1.jpg" />
+            <Image url="@../imagenes/menuAccion.jpg" />
          </image>
       </ImageView>
       <TextField fx:id="textFieldNombreCarta" layoutX="56.0" layoutY="29.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce nombre carta">

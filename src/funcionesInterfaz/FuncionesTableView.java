@@ -235,7 +235,7 @@ public class FuncionesTableView {
 
 	private static Hyperlink createHyperlinkForText(Text text, String nombre, TableColumn<Carta, String> columna) {
 		Hyperlink hyperlink = new Hyperlink();
-		text.setWrappingWidth(columna.getWidth() - (columna.getWidth() * 0.3));
+		text.setWrappingWidth(columna.getWidth() - (columna.getWidth()));
 		hyperlink.setGraphic(text);
 
 		hyperlink.setOnAction(event -> columnaSeleccionada(getReferenciaVentana().getTablaBBDD(), nombre));

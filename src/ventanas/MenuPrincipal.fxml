@@ -23,7 +23,7 @@
     <children>
     <ImageView fx:id="backgroundImage" fitHeight="750.0" fitWidth="1212.0">
         <image>
-            <Image url="@../imagenes/Fondo%20Menu%202.jpg" />
+            <Image url="@../imagenes/menuPrincipal.jpg" />
         </image>
     </ImageView>
         <MenuBar fx:id="menuNavegacion" maxWidth="1.7976931348623157E308" prefHeight="21.0" prefWidth="1212.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -60,62 +60,62 @@
                 <VBox fx:id="comboboxVbox" layoutX="4.0" layoutY="30.0" prefHeight="295.0" prefWidth="271.0" spacing="7" AnchorPane.bottomAnchor="425.0" AnchorPane.topAnchor="30.0">
             <children>
 
-		<Label layoutX="16.0" layoutY="33.0" prefHeight="25.0" prefWidth="49.0" style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="General" wrapText="true">
+		<Label layoutX="16.0" layoutY="33.0" prefHeight="26.0" prefWidth="59.0" style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="General" wrapText="true">
 			<font>
-				<Font size="11.0" />
+				<Font size="8.0" />
 			</font>
 		</Label>
-        <Label layoutX="16.0" layoutY="63.0" style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Nombre">
-			<font>
-				<Font size="14.0" />
-			</font>
-		</Label>
-		<Label layoutX="16.0" layoutY="92.0" style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Numero">
+        <Label layoutX="16.0" layoutY="63.0" style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Nombre">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</Label>
-		<Label layoutX="16.0" layoutY="261.0" style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Editorial">
+		<Label layoutX="16.0" layoutY="92.0" style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Numero">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Coleccion">
+		<Label layoutX="16.0" layoutY="261.0" style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Editorial">
+			<font>
+				<Font size="14.0" />
+			</font>
+		</Label>
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Coleccion">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Rareza">
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Rareza">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Foil">
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Foil">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Gradeo">
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Gradeo">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Estado">
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Estado">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Precio">
+            <Label style="-fx-font-size: 14; -fx-background-color: grey;" stylesheets="@../style/genericos_style.css" text="Precio">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
 		            </children>
         </VBox>
-        <VBox fx:id="rootVBox" layoutY="377.0" onMouseClicked="#cambiarTamanioTable" prefHeight="429.0" prefWidth="1212.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox fx:id="rootVBox" layoutY="259.0" onMouseClicked="#cambiarTamanioTable" prefHeight="259.0" prefWidth="1212.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 			<children>
             <Rectangle fx:id="barraCambioAltura" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="5.0" stroke="BLACK" strokeType="INSIDE" width="1214.0" />
-                <TableView fx:id="tablaBBDD" onKeyPressed="#teclasDireccion" onMouseClicked="#clickRaton" prefHeight="359.0" prefWidth="1212.0" stylesheets="@../style/tablas_style.css" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tablaBBDD" onKeyPressed="#teclasDireccion" onMouseClicked="#clickRaton" opacity="0.6" prefHeight="359.0" prefWidth="1212.0" stylesheets="@../style/tablas_style.css" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
 					<columns>
 						<TableColumn fx:id="columnaId" prefWidth="47.0" text="ID" visible="false" />
 						<TableColumn fx:id="columnaNombre" editable="false" maxWidth="5500.0" prefWidth="150.0" text="Nombre" />
@@ -138,8 +138,6 @@
 		</VBox>
 		
 		<TextField fx:id="busquedaGeneral" layoutX="73.0" layoutY="30.0" prefHeight="25.0" prefWidth="151.0" promptText="Busqueda general" />
-		<ComboBox fx:id="comboboxNombreCarta" layoutX="73.0" layoutY="61.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar nombre" stylesheets="@../style/combobox_style.css" />
-		<ComboBox fx:id="comboboxNumeroCarta" layoutX="73.0" layoutY="89.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar numero" stylesheets="@../style/combobox_style.css" />
 		<Button fx:id="botonLimpiar" layoutX="231.0" layoutY="31.0" mnemonicParsing="false" onAction="#limpiarDatos" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Limpiar" />
 		<Button fx:id="botonbbdd" layoutX="231.0" layoutY="72.0" mnemonicParsing="false" onAction="#verTodabbdd" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Ver todo" />
 		<Button fx:id="botonMostrarParametro" alignment="CENTER" contentDisplay="BOTTOM" layoutX="231.0" layoutY="116.0" mnemonicParsing="false" onAction="#mostrarPorParametro" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Busqueda" />
@@ -159,15 +157,15 @@
               </VBox>
          </children>
       </AnchorPane>
-      <Button fx:id="botonIntroducir" layoutX="340.0" layoutY="31.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Añadir Carta" />
-      <Button fx:id="botonModificar" layoutX="340.0" layoutY="72.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Modificar Carta">
+      <Button fx:id="botonIntroducir" layoutX="329.0" layoutY="31.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Añadir Carta" />
+      <Button fx:id="botonModificar" layoutX="329.0" layoutY="72.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Modificar Carta">
          <font>
             <Font size="10.0" />
          </font></Button>
-      <Button fx:id="botonEliminar" layoutX="340.0" layoutY="116.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" />
-      <Button fx:id="botonImprimir" layoutX="290.0" layoutY="281.0" mnemonicParsing="false" onAction="#imprimirResultado" prefHeight="21.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Imprimir" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="botonGuardarResultado" layoutX="231.0" layoutY="281.0" mnemonicParsing="false" onAction="#guardarResultado" prefHeight="13.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Guardar" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="botonMostrarGuardados" alignment="CENTER" contentDisplay="BOTTOM" layoutX="231.0" layoutY="158.0" mnemonicParsing="false" onAction="#comicsGuardados" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Ver Guardados" visible="false">
+      <Button fx:id="botonEliminar" layoutX="329.0" layoutY="116.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" />
+      <Button fx:id="botonImprimir" layoutX="290.0" layoutY="324.0" mnemonicParsing="false" onAction="#imprimirResultado" prefHeight="21.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Imprimir" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="botonGuardarResultado" layoutX="231.0" layoutY="324.0" mnemonicParsing="false" onAction="#guardarResultado" prefHeight="13.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Guardar" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="botonMostrarGuardados" alignment="CENTER" contentDisplay="BOTTOM" layoutX="231.0" layoutY="284.0" mnemonicParsing="false" onAction="#comicsGuardados" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Ver Guardados" visible="false">
          <font>
             <Font size="11.0" />
          </font></Button>
@@ -178,13 +176,15 @@
             <URL value="@../style/boton_reestart_style.css" />
          </stylesheets>
       </Button>
-      <ComboBox fx:id="comboboxEditorialCarta" layoutX="73.0" layoutY="117.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar editorial" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxColeccionCarta" layoutX="73.0" layoutY="146.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar coleccion" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxRarezaCarta" layoutX="73.0" layoutY="173.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar rareza" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxEsFoilCarta" layoutX="73.0" layoutY="201.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar foil" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxGradeoCarta" layoutX="73.0" layoutY="229.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar gradeo" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxEstadoCarta" layoutX="73.0" layoutY="257.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar estado" stylesheets="@../style/combobox_style.css" />
-      <ComboBox fx:id="comboboxPrecioCarta" layoutX="73.0" layoutY="285.0" prefHeight="25.0" prefWidth="151.0" promptText="Seleccionar precio" stylesheets="@../style/combobox_style.css" />
+		<ComboBox fx:id="comboboxNombreCarta" layoutX="73.0" layoutY="61.0" prefHeight="25.0" prefWidth="151.0" promptText="Filtro nombre" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+		<ComboBox fx:id="comboboxNumeroCarta" layoutX="73.0" layoutY="94.0" prefHeight="25.0" prefWidth="151.0" promptText="Filtro numero" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxEditorialCarta" layoutX="73.0" layoutY="126.0" prefHeight="25.0" prefWidth="151.0" promptText="Filtro editorial" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxColeccionCarta" layoutX="73.0" layoutY="160.0" prefHeight="25.0" prefWidth="151.0" promptText="Filtro coleccion" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxRarezaCarta" layoutX="73.0" layoutY="193.0" prefHeight="25.0" prefWidth="151.0" promptText="Filtro rareza" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxEsFoilCarta" layoutX="73.0" layoutY="226.0" prefHeight="27.0" prefWidth="151.0" promptText="Filtro foil" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxGradeoCarta" layoutX="73.0" layoutY="256.0" prefHeight="30.0" prefWidth="151.0" promptText="Filtro gradeo" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxEstadoCarta" layoutX="73.0" layoutY="290.0" prefHeight="30.0" prefWidth="151.0" promptText="Filtro estado" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
+      <ComboBox fx:id="comboboxPrecioCarta" layoutX="73.0" layoutY="325.0" prefHeight="30.0" prefWidth="151.0" promptText="Filtro precio" style="-fx-font-size: 13;" stylesheets="@../style/combobox_style.css" />
 
     </children>
 </AnchorPane>

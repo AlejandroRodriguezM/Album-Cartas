@@ -115,9 +115,9 @@ public class OpcionesDatosController implements Initializable {
 
 	@FXML
 	private TextField nombreNuevaBBDD;
-
-	@FXML
-	private ImageView imagenAzul;
+	
+    @FXML
+    private ImageView fondoOpcionesImagen;
 
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 
@@ -367,8 +367,8 @@ public class OpcionesDatosController implements Initializable {
 
 	// Función para cambiar la altura del Pane
 	private void setPaneHeight(double height) {
-		imagenAzul.setFitHeight(height + 3);
-		imagenAzul.setFitWidth(269);
+		fondoOpcionesImagen.setFitHeight(height);
+		fondoOpcionesImagen.setFitWidth(269);
 
 		miSceneVentana().getWindow().setHeight(height);
 
