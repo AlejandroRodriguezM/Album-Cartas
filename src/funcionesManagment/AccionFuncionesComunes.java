@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,12 +21,9 @@ import Controladores.CargaCartasController;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
-import dbmanager.ConectManager;
-import dbmanager.DBUtilidades;
 import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
 import dbmanager.UpdateManager;
-import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
@@ -40,7 +36,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import webScrap.WebScraperPreviewsWorld;
+import webScrap.WebScrapGoogleLeagueOfCartas;
 
 public class AccionFuncionesComunes {
 
@@ -111,7 +107,7 @@ public class AccionFuncionesComunes {
 			comic.setDireccionImagenCarta(
 					carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg");
 			if (esModificacion) {
-				
+
 				CartaManagerDAO.actualizarCartaBBDD(comic, "modificar");
 				mensaje = "Has modificado correctamente el cómic";
 			} else {
@@ -270,9 +266,9 @@ public class AccionFuncionesComunes {
 		// Verificar si se obtuvo un objeto FileChooser válido
 		if (fichero != null) {
 			String nuevoNombreArchivo = Utilidades.generarCodigoUnico(carpetaRaizPortadas(Utilidades.nombreDB()));
-			
+
 			System.out.println("Carta: " + nuevoNombreArchivo);
-			
+
 			try {
 				Utilidades.redimensionarYGuardarImagen(fichero.getAbsolutePath(), nuevoNombreArchivo);
 			} catch (IOException e) {
@@ -430,9 +426,8 @@ public class AccionFuncionesComunes {
 					codigoImagen + ".jpg");
 
 			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).coleccionCarta(coleccion)
-					.rarezaCarta(rareza).esFoilCarta(esFoil).gradeoCarta(gradeo).estadoCarta(estado)
-					.precioCarta(precio).urlReferenciaCarta(urlReferencia)
-					.direccionImagenCarta(imagen).normasCarta(normas).build();
+					.rarezaCarta(rareza).esFoilCarta(esFoil).gradeoCarta(gradeo).estadoCarta(estado).precioCarta(precio)
+					.urlReferenciaCarta(urlReferencia).direccionImagenCarta(imagen).normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
 //
@@ -444,31 +439,19 @@ public class AccionFuncionesComunes {
 	private static Carta obtenerCartaInfo(String finalValorCodigo) {
 		try {
 
-			// Obtener información del cómic según la longitud del código
-			if (finalValorCodigo.matches("[A-Z]{3}\\d{6}")) {
+			Carta cartaInfo;
 
-				return WebScraperPreviewsWorld.displayCartaInfo(finalValorCodigo.trim(),
-						getReferenciaVentana().getProntInfoTextArea());
-			} else {
-				// Si no, intentar obtener la información del cómic de diferentes fuentes
-				Carta comicInfo = ApiMarvel.infoCartaCode(finalValorCodigo.trim(),
-						getReferenciaVentana().getProntInfo());
-				if (comicInfo == null) {
-					comicInfo = WebScrapGoogleLeagueOfCartas.obtenerDatosDiv(finalValorCodigo.trim());
-				}
-				if (comicInfo == null) {
-					ApiISBNGeneral isbnGeneral = new ApiISBNGeneral();
-					comicInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(),
-							getReferenciaVentana().getProntInfoTextArea());
-				}
+			List<String> enlaces = WebScrapGoogleLeagueOfCartas.buscarEnGoogle(finalValorCodigo);
+			
+			cartaInfo = WebScrapGoogleLeagueOfCartas.obtenerDatosDiv(finalValorCodigo.trim());
 
-				if (comicInfo == null) {
-					return null;
-				}
-
-				Carta.limpiarCamposCarta(comicInfo);
-				return comicInfo;
+			if (cartaInfo == null) {
+				return null;
 			}
+
+			Carta.limpiarCamposCarta(cartaInfo);
+			return cartaInfo;
+
 		} catch (URISyntaxException e) {
 			// Manejar excepciones
 			System.err.println("Error al obtener información del cómic: " + e.getMessage());
@@ -561,13 +544,13 @@ public class AccionFuncionesComunes {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
-					listaCartasDatabase.forEach(codigo -> {
-						String finalValorCodigo = Utilidades.eliminarEspacios(codigo.getcodigoCartaTextField())
-								.replace("-", "");
-						codigo.setcodigoCarta(finalValorCodigo);
-						processCarta(codigo, tipoUpdate, actualizarFirma);
-
-					});
+//					listaCartasDatabase.forEach(codigo -> {
+//						String finalValorCodigo = Utilidades.eliminarEspacios(codigo.getcodigoCartaTextField())
+//								.replace("-", "");
+//						codigo.setcodigoCarta(finalValorCodigo);
+//						processCarta(codigo, tipoUpdate, actualizarFirma);
+//
+//					});
 				}
 				return null;
 			}
@@ -846,7 +829,6 @@ public class AccionFuncionesComunes {
 			elementos.add(getReferenciaVentana().getBotonSubidaPortada());
 		}
 
-		
 		getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
 		getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
 		getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);

@@ -432,7 +432,7 @@ public class VentanaAccionController implements Initializable {
 		}
 
 		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
-		for (ComboBox<?> comboBox :  referenciaVentana.getListaComboboxes()) {
+		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
 			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
 			controls.add(selectedItem != null ? selectedItem.toString() : "");
 		}
@@ -578,13 +578,15 @@ public class VentanaAccionController implements Initializable {
 					return;
 				}
 
-				String valorCodigo = Utilidades.eliminarEspacios(busquedaCodigo.getText());
+				String valorCodigo = busquedaCodigo.getText();
 
-				if (valorCodigo.isEmpty()) {
-					return;
-				}
+//				if (valorCodigo.isEmpty()) {
+//					return;
+//				}
 
-				limpiarUIBeforeSearch();
+				System.out.println(valorCodigo);
+
+//				limpiarUIBeforeSearch();
 
 				Task<Void> tarea = createSearchTask(valorCodigo);
 

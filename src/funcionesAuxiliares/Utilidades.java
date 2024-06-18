@@ -81,7 +81,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import webScrap.WebScraperPreviewsWorld;
 
 /**
  * Esta clase sirve para realizar diferentes funciones realizanas con la
