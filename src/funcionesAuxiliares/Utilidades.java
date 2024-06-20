@@ -119,7 +119,7 @@ public class Utilidades {
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 	private static AccionReferencias referenciaVentanaPrincipal = getReferenciaVentanaPrincipal();
 
-	private static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData"
+	public static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData"
 			+ File.separator + "Roaming" + File.separator + "album" + File.separator;
 
 	/**

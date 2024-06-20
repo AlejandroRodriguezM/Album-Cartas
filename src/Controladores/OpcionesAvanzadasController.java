@@ -53,74 +53,59 @@ import net.coobird.thumbnailator.Thumbnails;
 
 public class OpcionesAvanzadasController implements Initializable {
 
-	@FXML
-	private Button botonActualizarDatos;
+	 @FXML
+	    private Button botonActualizarDatos;
 
-	@FXML
-	private Button botonActualizarPortadas;
+	    @FXML
+	    private Button botonActualizarPortadas;
 
-	@FXML
-	private Button botonActualizarSoftware;
+	    @FXML
+	    private Button botonActualizarSoftware;
 
-	@FXML
-	private Button botonActualizarTodo;
+	    @FXML
+	    private Button botonActualizarTodo;
 
-	@FXML
-	private Button botonCancelarSubida;
+	    @FXML
+	    private Button botonCancelarSubida;
 
-	@FXML
-	private Button botonCancelarSubidaPortadas;
+	    @FXML
+	    private Button botonCancelarSubidaPortadas;
 
-	@FXML
-	private Button botonComprimirPortadas;
+	    @FXML
+	    private Button botonComprimirPortadas;
 
-	@FXML
-	private Button botonDescargarPdf;
+	    @FXML
+	    private Button botonDescargarSQL;
 
-	@FXML
-	private Button botonDescargarSQL;
+	    @FXML
+	    private Button botonNormalizarDB;
 
-	@FXML
-	private Button botonNormalizarDB;
+	    @FXML
+	    private Button botonReCopiarPortadas;
 
-	@FXML
-	private Button botonReCopiarPortadas;
+	    @FXML
+	    private Button botonRecomponerPortadas;
 
-	@FXML
-	private Button botonRecomponerPortadas;
+	    @FXML
+	    private Label labelComprobar;
 
-	@FXML
-	private CheckBox checkFirmas;
+	    @FXML
+	    private Label labelVersion;
 
-	@FXML
-	private ComboBox<String> comboPreviews;
+	    @FXML
+	    private Label labelVersionEspecial;
 
-	@FXML
-	private Label labelComprobar;
+	    @FXML
+	    private Label labelVersionPortadas;
 
-	@FXML
-	private Label labelVersion;
+	    @FXML
+	    private Label prontInfo;
 
-	@FXML
-	private Label labelVersionEspecial;
+	    @FXML
+	    private Label prontInfoEspecial;
 
-	@FXML
-	private Label labelVersionPortadas;
-
-	@FXML
-	private Label labelVersionPreviews;
-
-	@FXML
-	private Label prontInfo;
-
-	@FXML
-	private Label prontInfoEspecial;
-
-	@FXML
-	private Label prontInfoPortadas;
-
-	@FXML
-	private Label prontInfoPreviews;
+	    @FXML
+	    private Label prontInfoPortadas;
 
 	public static final ObservableList<String> urlActualizados = FXCollections.observableArrayList();
 
@@ -159,16 +144,12 @@ public class OpcionesAvanzadasController implements Initializable {
 		referenciaVentana.setBotonActualizarPortadas(botonActualizarPortadas);
 		referenciaVentana.setBotonActualizarSoftware(botonActualizarSoftware);
 		referenciaVentana.setBotonActualizarTodo(botonActualizarTodo);
-		referenciaVentana.setBotonDescargarPdf(botonDescargarPdf);
 		referenciaVentana.setBotonDescargarSQL(botonDescargarSQL);
 		referenciaVentana.setBotonNormalizarDB(botonNormalizarDB);
-		referenciaVentana.setCheckFirmas(checkFirmas);
-		referenciaVentana.setComboPreviewsCombobox(comboPreviews);
 		referenciaVentana.setLabelComprobar(labelComprobar);
 		referenciaVentana.setLabelVersion(labelVersion);
 		referenciaVentana.setProntInfoLabel(prontInfo);
 		referenciaVentana.setProntInfoEspecial(prontInfoEspecial);
-		referenciaVentana.setProntInfoPreviews(prontInfoPreviews);
 		referenciaVentana.setProntInfoPortadas(prontInfoPortadas);
 		referenciaVentana.setStageVentana(estadoStage());
 
@@ -197,7 +178,6 @@ public class OpcionesAvanzadasController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		Platform.runLater(() -> {
-			rellenarComboboxPreviews();
 			enviarReferencias();
 
 			obtenerVersionDesdeOtraClase();
@@ -209,22 +189,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 		AlarmaList.iniciarAnimacionEspera(prontInfo);
 		AlarmaList.iniciarAnimacionEspera(prontInfoEspecial);
-		AlarmaList.iniciarAnimacionEspera(prontInfoPreviews);
 		AlarmaList.iniciarAnimacionEspera(prontInfoPortadas);
-
-		checkFirmas.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			if (Boolean.TRUE.equals(newValue)) {
-				if (nav.alertaFirmaActivada()) {
-					actualizarFima.set(true);
-				} else {
-					// Si la alerta no está activada, desmarcar el CheckBox
-					checkFirmas.setSelected(false);
-				}
-			} else {
-				// Cuando el CheckBox se desmarca, actualiza actualizarFima a false
-				actualizarFima.set(false);
-			}
-		});
 	}
 
 	@FXML
@@ -251,7 +216,6 @@ public class OpcionesAvanzadasController implements Initializable {
 		if (Utilidades.compareVersions(versionSW, versionLocal) > 0) {
 
 			labelComprobar.setStyle("-fx-text-fill: red;");
-			labelVersionPreviews.setStyle("-fx-text-fill: red;");
 			labelVersionPortadas.setStyle("-fx-text-fill: red;");
 			labelVersionEspecial.setStyle("-fx-text-fill: red;");
 			cadena = "Versión desactualizada";
@@ -323,79 +287,11 @@ public class OpcionesAvanzadasController implements Initializable {
 		versionService.setOnSucceeded(event -> {
 			String version = VersionService.leerVersionDelArchivo();
 			labelVersion.setText(version);
-			labelVersionPreviews.setText(version);
 			labelVersionPortadas.setText(version);
 			labelVersionEspecial.setText(version);
 		});
 
 		versionService.start();
-	}
-
-	@FXML
-	void descargarPreview(ActionEvent evento) {
-		if (Utilidades.isInternetAvailable()) {
-			Platform.runLater(() -> {
-
-				int indiceSeleccionado = comboPreviews.getSelectionModel().getSelectedIndex();
-				String urlSeleccionada = OpcionesAvanzadasController.urlActualizados.get(indiceSeleccionado);
-				if (urlSeleccionada.equals("No hay previews")) {
-					String cadenaError = "No existe PDF que descargar";
-					AlarmaList.iniciarAnimacionAvanzado(prontInfoPreviews, cadenaError);
-					return;
-				}
-
-				String formato = "*.pdf";
-				String frase = "Archivos PDF";
-
-				// Mostrar el cuadro de diálogo de guardado y obtener la ubicación seleccionada
-				File file = Utilidades.abrirFileChooser(frase, formato, true);
-
-				if (file != null) {
-					Utilidades.descargarPDFAsync(file, comboPreviews);
-					String cadenaAfirmativo = "PDF descargado exitosamente.";
-					AlarmaList.iniciarAnimacionAvanzado(prontInfoPreviews, cadenaAfirmativo);
-					FuncionesManejoFront.manejarMensajeTextArea(cadenaAfirmativo);
-				} else {
-					String cadenaCancelado = "Has cancelado la descarga del PDF.";
-					AlarmaList.iniciarAnimacionAvanzado(prontInfoPreviews, cadenaCancelado);
-					FuncionesManejoFront.manejarMensajeTextArea(cadenaCancelado);
-				}
-			});
-		} else {
-			String cadenaCancelado = "No se puede descargar, no hay internet";
-			AlarmaList.iniciarAnimacionAvanzado(prontInfoPreviews, cadenaCancelado);
-			FuncionesManejoFront.manejarMensajeTextArea(cadenaCancelado);
-		}
-	}
-
-	private void rellenarComboboxPreviews() {
-		ObservableList<String> meses = FXCollections.observableArrayList();
-
-		if (Utilidades.isInternetAvailable()) {
-			Task<Void> task = new Task<Void>() {
-				@Override
-				protected Void call() throws Exception {
-					List<Map.Entry<String, String>> previews = MenuPrincipalController.urlPreviews.get();
-					ObservableList<String> mesesActualizados = FXCollections.observableArrayList();
-					for (Map.Entry<String, String> entry : previews) {
-						urlActualizados.add(entry.getValue()); // Agregar la URL a la lista global
-						mesesActualizados.add(entry.getKey());
-					}
-
-					Platform.runLater(() -> {
-						comboPreviews.setItems(mesesActualizados);
-						comboPreviews.getSelectionModel().selectFirst();
-					});
-
-					return null;
-				}
-			};
-
-			new Thread(task).start();
-		} else {
-			meses.add("No hay previews");
-			comboPreviews.setItems(meses);
-		}
 	}
 
 	@FXML

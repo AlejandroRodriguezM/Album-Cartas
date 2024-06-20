@@ -523,16 +523,15 @@ public class AccionControlUI {
 
 		// Asignar los valores a las variables correspondientes
 		String nomCarta = camposCarta.get(0);
-		String editorialCarta = camposCarta.get(1);
-		String coleccionCarta = camposCarta.get(2);
-		String rarezaCarta = camposCarta.get(3);
-
-		String esFoilCarta = camposCarta.get(9);
-		String gradeoCarta = camposCarta.get(11);
-		String numCarta = camposCarta.get(12);
-
-		String precioCarta = "0";
-		String estadoCarta = "";
+		String numCarta = camposCarta.get(1);
+		String editorialCarta = camposCarta.get(2);
+		String coleccionCarta = camposCarta.get(3);
+		String rarezaCarta = camposCarta.get(4);
+		String esFoilCarta = camposCarta.get(5);
+		String gradeoCarta = camposCarta.get(6);
+		String estadoCarta = camposCarta.get(7);
+		String precioCarta = camposCarta.get(8);
+		
 		String urlReferenciaCarta = "";
 		String direccionImagenCarta = "";
 		String normasCarta = "";
@@ -544,9 +543,9 @@ public class AccionControlUI {
 
 			direccionImagenCarta = camposCarta.get(7);
 			urlReferenciaCarta = camposCarta.get(8);
-			estadoCarta = camposCarta.get(10);
 			idCartaTratar = camposCarta.get(6);
 		}
+		
 
 		cartaTemp.setNomCarta(Utilidades.defaultIfNullOrEmpty(nomCarta, ""));
 		cartaTemp.setNumCarta(Utilidades.defaultIfNullOrEmpty(numCarta, ""));
@@ -561,10 +560,6 @@ public class AccionControlUI {
 		cartaTemp.setDireccionImagenCarta(Utilidades.defaultIfNullOrEmpty(direccionImagenCarta, ""));
 		cartaTemp.setNormasCarta(Utilidades.defaultIfNullOrEmpty(normasCarta, ""));
 		cartaTemp.setIdCarta(Utilidades.defaultIfNullOrEmpty(idCartaTratar, ""));
-
-		System.out.println();
-
-		System.out.println(cartaTemp.infoCarta());
 
 		return cartaTemp;
 	}

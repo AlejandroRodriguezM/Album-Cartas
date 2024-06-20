@@ -639,15 +639,20 @@ public class MenuPrincipalController implements Initializable {
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, null);
 		} else {
 			List<String> controls = new ArrayList<>();
-			for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
+			List<ComboBox<String>> listaComboboxes = referenciaVentana.getListaComboboxes();
+
+			// Iterar sobre los ComboBox en orden
+			for (ComboBox<String> comboBox : listaComboboxes) {
+				
+				System.out.println(comboBox.getPromptText());
+				
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
-
+			
 			Carta comic = AccionControlUI.camposCarta(controls, false);
 
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, comic);
 		}
-
 	}
 
 	/**

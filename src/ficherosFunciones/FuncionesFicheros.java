@@ -1,11 +1,17 @@
 package ficherosFunciones;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +21,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import alarmas.AlarmaList;
 import funcionesAuxiliares.Utilidades;
@@ -25,6 +33,7 @@ public class FuncionesFicheros {
 	static String userHome = System.getProperty("user.home");
 	static String ubicacion = userHome + File.separator + "AppData" + File.separator + "Roaming";
 	static String carpetaLibreria = ubicacion + File.separator + "album";
+	public static String rutaDestinoRecursos = carpetaLibreria + File.separator + "recursos";
 
 	public static Map<String, String> devolverDatosConfig() {
 		Map<String, String> datosConfiguracion = new HashMap<>();
@@ -141,6 +150,7 @@ public class FuncionesFicheros {
 					carpetaLibreriaFile.mkdir();
 					carpetaLibreriaFile.setWritable(true);
 				}
+				descargarRecursos();
 
 				// Verificar y crear los archivos de configuración si no existen
 				String archivoConfiguracionLocal = carpetaLibreria + File.separator + "configuracion_local.conf";
@@ -175,27 +185,79 @@ public class FuncionesFicheros {
 		Thread estructuraThread = new Thread(estructuraRunnable);
 		estructuraThread.start();
 	}
-	
-    public static void copiarCarpetaScripts(Path sourceDir, Path destDir) throws IOException {
-        // Si el directorio de destino no existe, se crea
-        if (!Files.exists(destDir)) {
-            Files.createDirectories(destDir);
-        }
-        
-        // Recorremos los archivos y carpetas en el directorio fuente
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(sourceDir)) {
-            for (Path path : directoryStream) {
-                Path destino = destDir.resolve(sourceDir.relativize(path));
-                if (Files.isDirectory(path)) {
-                    // Llamada recursiva para copiar subdirectorios
-                    copiarCarpetaScripts(path, destino);
-                } else {
-                    // Copia de archivos
-                    Files.copy(path, destino, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        }
-    }
+
+	public static boolean verificarExistencia(String carpetaDestino, String archivoDestino) {
+		// Verifica la existencia de la carpeta
+		File carpeta = new File(carpetaDestino);
+		if (!carpeta.exists()) {
+			return false; // La carpeta no existe
+		}
+
+		// Verifica la existencia del archivo dentro de la carpeta
+		File archivo = new File(archivoDestino);
+		return archivo.exists(); // Devuelve true si el archivo existe, false si no existe
+	}
+
+	public static void descargarRecursos() {
+		String urlArchivoZip = "https://github.com/AlejandroRodriguezM/Album-Cartas/raw/main/src/recursos/recursos.zip";
+		
+		String archivoDestino = rutaDestinoRecursos + File.separator + "recursos.zip";
+
+		// Crea la carpeta destino si no existe
+		File rutaDestinoCarpeta = new File(rutaDestinoRecursos);
+		if (!rutaDestinoCarpeta.exists()) {
+			rutaDestinoCarpeta.mkdirs();
+		}
+
+		if (!verificarExistencia(rutaDestinoRecursos, archivoDestino)) {
+			try {
+				URL url = new URL(urlArchivoZip);
+				URLConnection conexion = url.openConnection();
+
+				try (BufferedInputStream in = new BufferedInputStream(conexion.getInputStream());
+						FileOutputStream out = new FileOutputStream(archivoDestino)) {
+
+					byte[] datos = new byte[1024];
+					int leidos;
+					while ((leidos = in.read(datos)) != -1) {
+						out.write(datos, 0, leidos);
+					}
+				}
+
+				descomprimirArchivo(archivoDestino, rutaDestinoRecursos);
+				System.out.println("Descarga y descompresión completadas.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public static void descomprimirArchivo(String archivoZip, String carpetaDestino) throws IOException {
+		byte[] buffer = new byte[1024];
+
+		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(archivoZip))) {
+			ZipEntry entrada;
+			while ((entrada = zis.getNextEntry()) != null) {
+				String nombreArchivo = entrada.getName();
+				File archivo = new File(carpetaDestino + File.separator + nombreArchivo);
+
+				// Crea directorios si es necesario
+				if (entrada.isDirectory()) {
+					archivo.mkdirs();
+				} else {
+					// Crea el archivo
+					try (FileOutputStream fos = new FileOutputStream(archivo)) {
+						int longitud;
+						while ((longitud = zis.read(buffer)) > 0) {
+							fos.write(buffer, 0, longitud);
+						}
+					}
+				}
+				zis.closeEntry();
+			}
+		}
+	}
 
 	public static void verificarEstructura(String rutaArchivo) {
 		// Mapa para almacenar las claves y sus valores existentes
