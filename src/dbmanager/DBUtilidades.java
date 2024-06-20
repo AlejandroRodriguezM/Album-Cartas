@@ -256,7 +256,7 @@ public class DBUtilidades {
 			String id = rs.getString("idCarta");
 			String nombre = rs.getString("nomCarta");
 			String numCarta = rs.getString("numCarta");
-			String editorialCarta = rs.getString("EditorialCarta");
+			String editorialCarta = rs.getString("editorialCarta");
 			String coleccionCarta = rs.getString("coleccionCarta");
 			String rarezaCarta = rs.getString("rarezaCarta");
 			String esFoilCarta = rs.getString("esFoilCarta");

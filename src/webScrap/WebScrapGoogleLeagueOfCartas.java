@@ -1,7 +1,10 @@
 package webScrap;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -9,21 +12,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import cartaManagement.Carta;
 
 public class WebScrapGoogleLeagueOfCartas {
 
 	private static final int MAX_RETRY_ATTEMPTS = 3; // Máximo número de intentos de retry
-	
+
 	public static String agregarMasAMayusculas(String cadena) {
 		return cadena.toUpperCase();
 	}
@@ -57,68 +59,6 @@ public class WebScrapGoogleLeagueOfCartas {
 		}
 	}
 
-	public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
-
-		searchTerm = "Sliver Overlord";
-
-		searchTerm = agregarMasAMayusculas(searchTerm);
-		searchTerm = searchTerm.replace("(", "%28").replace(")", "%29").replace("#", "%23");
-
-		try {
-			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
-			String urlString = "https://www.google.com/search?q=" + encodedSearchTerm + "+card+market+all+versions";
-
-			URI uri = new URI(urlString);
-			URL url = uri.toURL();
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36");
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuilder content = new StringBuilder();
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
-			}
-			in.close();
-			con.disconnect();
-
-			String html = content.toString();
-			int startIndex = html.indexOf("https://www.cardmarket.com/");
-			String[] urls = new String[html.length()]; // Inicialización con capacidad suficiente
-			int urlCount = 0;
-
-			while (startIndex != -1) {
-				int endIndex = html.indexOf("\"", startIndex);
-				if (endIndex != -1) {
-					String urlFound = html.substring(startIndex, endIndex);
-
-					if (urlFound.contains("/Versions")) {
-						System.out.println(urlFound);
-						return extraerEnlacesDePagina(urlFound);
-					} else {
-						urls[urlCount++] = urlFound; // Añadir la URL a la lista
-					}
-					startIndex = html.indexOf("https://www.cardmarket.com/", endIndex);
-				} else {
-					break;
-				}
-			}
-
-//			if (urlCount > 0) {
-//				String[] urlsTrimmed = new String[urlCount];
-//				System.arraycopy(urls, 0, urlsTrimmed, 0, urlCount); // Ajustar el tamaño del array
-//				return encontrarURLRelevante(urlsTrimmed, searchTerm); // Buscar la URL más relevante
-//			}
-
-			return null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static String encontrarURLRelevante(String[] urls, String searchTerm) {
 		for (String url : urls) {
 			if (url.contains("/Versions")) {
@@ -138,125 +78,312 @@ public class WebScrapGoogleLeagueOfCartas {
 		return coincidencia;
 	}
 
-    public static List<String> extraerEnlacesDePagina(String urlString) {
-        List<String> enlaces = new ArrayList<>();
+	public static List<String> extraerEnlacesDePagina(String urlString) {
+		List<String> enlaces = new ArrayList<>();
 
-        try {
-            // Conectar y extraer enlaces con manejo de errores 403
-            enlaces = connectAndExtractLinks(urlString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		try {
+			// Conectar y extraer enlaces con manejo de errores 403
+			enlaces = connectAndExtractLinks(urlString);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        return enlaces;
-    }
+		return enlaces;
+	}
 
-    private static List<String> connectAndExtractLinks(String urlString) throws IOException {
-        List<String> enlaces = new ArrayList<>();
-        Connection.Response response = connectWithRetry(urlString);
+	public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
 
-        int attempt = 1;
+		searchTerm = agregarMasAMayusculas(searchTerm);
+		searchTerm = searchTerm.replace("(", "%28").replace(")", "%29").replace("#", "%23");
 
-        while (attempt <= MAX_RETRY_ATTEMPTS && response.statusCode() == 403) {
-            System.out.println("Error 403: Acceso prohibido. Intentando sortear la restricción, intento " + attempt);
-            Map<String, String> cookies = response.cookies();
-            enlaces = sortearRestriccion403ConCookies(urlString, cookies);
-            attempt++;
-            response = connectWithRetry(urlString); // Intentar la conexión nuevamente
-        }
+		try {
+			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
+			String urlString = "https://www.google.com/search?q=cardtrader+" + encodedSearchTerm + "+all+versions";
 
-        if (response.statusCode() == 200) {
-            // Éxito en sortear la restricción
-            Document doc = response.parse();
-            // Seleccionar todos los elementos div con la clase especificada
-            Elements divs = doc.select("div.card-column.col-6.col-md-4.col-lg-3.px-2.pb-4");
+			URI uri = new URI(urlString);
+			URL url = uri.toURL();
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36");
 
-            for (Element div : divs) {
-                // Dentro de cada div, seleccionar todos los enlaces (a[href])
-                Elements links = div.select("a[href]");
-                for (Element link : links) {
-                    String enlace = link.attr("abs:href"); // Obtener el atributo href como enlace absoluto
-                    enlaces.add(enlace);
-                }
-            }
-        } else {
-            System.out.println("Error al obtener la página. Código de estado: " + response.statusCode());
-        }
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuilder content = new StringBuilder();
+			while ((inputLine = in.readLine()) != null) {
+				content.append(inputLine);
+			}
+			in.close();
+			con.disconnect();
 
-        return enlaces;
-    }
+			String html = content.toString();
+			int startIndex = html.indexOf("https://www.cardtrader.com/");
+			List<String> urls = new ArrayList<>(); // Use ArrayList to dynamically store URLs
 
-    private static Connection.Response connectWithRetry(String urlString) throws IOException {
-        // Lista de user agents alternativos que podrías usar
-        String[] userAgents = {
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.67 Safari/537.36",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0 Safari/537.36",
-                // Puedes agregar más user agents aquí según sea necesario
-        };
+			while (startIndex != -1) {
+				int endIndex = html.indexOf("\"", startIndex);
+				if (endIndex != -1) {
+					String urlFound = html.substring(startIndex, endIndex);
 
-        int maxRetries = 3;
-        int retry = 0;
-        IOException lastException = null;
+					if (urlFound.contains("/versions")) {
 
-        while (retry < maxRetries) {
-            try {
-                String userAgent = userAgents[retry % userAgents.length];
-                return Jsoup.connect(urlString)
-                        .userAgent(userAgent)
-                        .referrer("https://www.google.com/")
-                        .timeout(30000)
-                        .followRedirects(true)
-                        .ignoreHttpErrors(true)
-                        .execute();
-            } catch (IOException e) {
-                lastException = e;
-                retry++;
-                // Aquí podrías agregar un breve delay entre intentos si lo deseas
-            }
-        }
+						return extraerEnlacesDePagina(urlFound);
 
-        // Si todos los intentos fallan, lanza la última excepción capturada
-        if (lastException != null) {
-            throw lastException;
-        }
+					} else {
+						urls.add(urlFound); // Add the URL to the list
+					}
+					startIndex = html.indexOf("https://www.cardtrader.com/", endIndex);
+				} else {
+					break;
+				}
+			}
 
-        // Este retorno nunca debería ocurrir si todo va bien
-        return null;
-    }
+			return urls; // Return the list of URLs found
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Collections.emptyList(); // Return an empty list in case of exception
+		}
+	}
 
-    private static List<String> sortearRestriccion403ConCookies(String urlString, Map<String, String> cookies) {
-        List<String> enlaces = new ArrayList<>();
+	public static Carta extraerDatosMTG(String url) throws IOException {
 
-        try {
-            // Intentar la conexión con las cookies recibidas
-            Connection connection = Jsoup.connect(urlString)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36")
-                    .referrer("https://www.google.com/")
-                    .timeout(30000)
-                    .followRedirects(true)
-                    .cookies(cookies)
-                    .ignoreHttpErrors(true);
+		String precioCarta = getPriceFromPuppeteer(url);
+		String normasCarta = getNormasFromPuppeteer(url);
+		Document doc = Jsoup.connect(url).get();
 
-            // Ejecutar la conexión y obtener el documento
-            Document doc = connection.get();
-            // Seleccionar todos los elementos div con la clase especificada
-            Elements divs = doc.select("div.card-column.col-6.col-md-4.col-lg-3.px-2.pb-4");
+		String nombre = "";
+		String numCarta = "";
+		String editorialCarta = "";
+		String coleccionCarta = "";
+		String rarezaCarta = "";
+		String estadoFoil = "No";
+		String gradeoCarta = "Near Mint (NM)";
+		String estadoCarta = "Nueva";
+		String urlReferenciaCarta = url;
+		String imagen = "";
 
-            for (Element div : divs) {
-                // Dentro de cada div, seleccionar todos los enlaces (a[href])
-                Elements links = div.select("a[href]");
-                for (Element link : links) {
-                    String enlace = link.attr("abs:href"); // Obtener el atributo href como enlace absoluto
-                    enlaces.add(enlace);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		// Extraer Nombre
+		Element nombreElemento = doc.selectFirst("h2.d-inline.text-condensed");
+		if (nombreElemento != null) {
+			nombre = nombreElemento.text();
+		}
 
-        return enlaces;
-    }
+		// Extraer Numero
+		Element numeroElemento = doc.selectFirst(
+				"span.position-relative.d-flex.align-items-center.justify-content-between.mb-1:contains(#)");
+		if (numeroElemento != null) {
+			numCarta = numeroElemento.text().split("#")[1].trim();
+		}
+
+		// Extraer Rareza
+		Element rarezaElemento = doc.selectFirst("span.ss-1-35x > i[class*=ss-]");
+		if (rarezaElemento != null) {
+			String clases = rarezaElemento.className();
+			String[] clasesSplit = clases.split(" ");
+			for (String clase : clasesSplit) {
+				if (clase.startsWith("ss-")) {
+					rarezaCarta = clase.substring(3); // Recorta los primeros 3 caracteres (ss-)
+					break;
+				}
+			}
+		}
+//	     Extraer Imagen
+		Element imagenElemento = doc.selectFirst(
+				"div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.jpg'], div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.png']");
+		if (imagenElemento != null) {
+			imagen = "https://www.cardtrader.com/" + imagenElemento.attr("src");
+		}
+		// Extraer Coleccion
+		Element coleccionElemento = doc.selectFirst("div.py-3.text-center.text-sm-left > a");
+		if (coleccionElemento != null) {
+			coleccionCarta = coleccionElemento.text();
+		}
+
+		// Extraer Edicion
+		Element edicionElemento = doc.selectFirst("div.mt-2.breadcrumbs.d-none.d-sm-inline-flex > a.breadcrumbs__link");
+		if (edicionElemento != null) {
+			editorialCarta = edicionElemento.text();
+		}
+
+		// Extraer si es Foil
+		Element esFoilElemento = doc.selectFirst("div.foil-overlay.animated.fadeIn");
+		if (esFoilElemento != null) {
+			estadoFoil = "Si";
+		}
+
+		return new Carta.CartaBuilder("", nombre).numCarta(numCarta).editorialCarta(editorialCarta)
+				.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).esFoilCarta(estadoFoil)
+				.gradeoCarta(gradeoCarta).estadoCarta(estadoCarta).precioCarta(precioCarta)
+				.urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen).normasCarta(normasCarta).build();
+
+	}
+
+	public static String getPriceFromPuppeteer(String url) {
+		try {
+			String scriptPath = "src/webScrap/scrap.js"; // Ruta relativa al directorio de trabajo
+
+			String command = "node " + scriptPath + " " + url;
+			int attempt = 0;
+			int backoff = 2000; // Tiempo de espera inicial en milisegundos
+
+			while (true) {
+				attempt++;
+				Process process = Runtime.getRuntime().exec(command);
+
+				// Leer la salida del proceso
+				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String outputLine;
+				StringBuilder output = new StringBuilder();
+				while ((outputLine = processReader.readLine()) != null) {
+					output.append(outputLine).append("\n");
+				}
+				processReader.close();
+
+				// Leer la salida de error del proceso
+				BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+				String errorLine;
+				StringBuilder errorOutput = new StringBuilder();
+				while ((errorLine = errorReader.readLine()) != null) {
+					errorOutput.append(errorLine).append("\n");
+				}
+				errorReader.close();
+
+				// Esperar a que termine el proceso
+				int exitCode = process.waitFor();
+				if (exitCode == 0) {
+					// Proceso terminado exitosamente, obtener el resultado (precio de la carta)
+					String precio = output.toString().trim();
+					if (!precio.equals("—")) {
+						System.out.println("Precio encontrado");
+						return precio;
+					} else {
+						System.err.println("Intento " + attempt + ": El precio obtenido es -. Volviendo a intentar...");
+						Thread.sleep(backoff); // Esperar antes de intentar nuevamente
+						backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
+					}
+
+					if (attempt >= 5) {
+						return "0";
+					}
+				} else {
+					// Error al ejecutar el script
+					System.err.println("Error al ejecutar el script de Puppeteer:\n" + errorOutput.toString());
+					break; // Salir del bucle si hay un error
+				}
+			}
+		} catch (InterruptedException | IOException e) {
+			e.printStackTrace();
+		}
+		return "-1";
+	}
+
+	public static String getNormasFromPuppeteer(String url) {
+
+		try {
+			// Ruta del script de Puppeteer dentro del proyecto
+			String scriptPath = "src/webScrap/scrap2.js";
+
+			// Construir el comando para ejecutar Node.js con el script y pasar la URL como
+			// argumento
+			String command = "node " + scriptPath + " " + url;
+
+			while (true) { // Bucle infinito para manejar caso de respuesta "---"
+				// Crear un proceso para ejecutar el comando
+				Process process = Runtime.getRuntime().exec(command);
+
+				// Leer la salida del proceso
+				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String outputLine;
+				StringBuilder output = new StringBuilder();
+				while ((outputLine = processReader.readLine()) != null) {
+					output.append(outputLine).append("\n");
+				}
+				processReader.close();
+
+				// Leer la salida de error del proceso
+				BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+				String errorLine;
+				StringBuilder errorOutput = new StringBuilder();
+				while ((errorLine = errorReader.readLine()) != null) {
+					errorOutput.append(errorLine).append("\n");
+				}
+				errorReader.close();
+
+				// Esperar a que termine el proceso
+				int exitCode = process.waitFor();
+				if (exitCode == 0) {
+					// Proceso terminado exitosamente, obtener el resultado (precio de la carta)
+					return output.toString().trim();
+				} else {
+					// Error al ejecutar el script
+					System.err.println("Error al ejecutar el script de Puppeteer:\n" + errorOutput.toString());
+					break; // Salir del bucle si hay un error
+				}
+			}
+		} catch (InterruptedException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return "Sin normas";
+	}
+
+	private static List<String> connectAndExtractLinks(String urlString) throws IOException {
+		List<String> enlaces = new ArrayList<>();
+		Connection.Response response = connectWithRetry(urlString);
+
+		// Éxito en sortear la restricción
+		Document doc = response.parse();
+
+		// Seleccionar todos los elementos div con la clase container position-relative
+		Elements divs = doc.select("div.container.position-relative");
+
+		for (Element div : divs) {
+			// Dentro de cada div, seleccionar todos los enlaces a[href] con la clase
+			// grid-element
+			Elements links = div.select("a.grid-element[href]");
+			for (Element link : links) {
+				String enlace = link.attr("abs:href"); // Obtener el atributo href como enlace absoluto
+				System.out.println(enlace);
+				enlaces.add(enlace);
+			}
+		}
+
+		return enlaces;
+	}
+
+	private static Connection.Response connectWithRetry(String urlString) throws IOException {
+		// Lista de user agents alternativos que podrías usar
+		String[] userAgents = {
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.67 Safari/537.36",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0 Safari/537.36",
+				// Puedes agregar más user agents aquí según sea necesario
+		};
+
+		int maxRetries = 3;
+		int retry = 0;
+		IOException lastException = null;
+
+		while (retry < maxRetries) {
+			try {
+				String userAgent = userAgents[retry % userAgents.length];
+				return Jsoup.connect(urlString).userAgent(userAgent).referrer("https://www.google.com/").timeout(30000)
+						.followRedirects(true).ignoreHttpErrors(true).execute();
+			} catch (IOException e) {
+				lastException = e;
+				retry++;
+				// Aquí podrías agregar un breve delay entre intentos si lo deseas
+			}
+		}
+
+		// Si todos los intentos fallan, lanza la última excepción capturada
+		if (lastException != null) {
+			throw lastException;
+		}
+
+		// Este retorno nunca debería ocurrir si todo va bien
+		return null;
+	}
 
 	public static boolean esURL(String urlString) {
 		try {

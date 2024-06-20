@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -171,6 +175,27 @@ public class FuncionesFicheros {
 		Thread estructuraThread = new Thread(estructuraRunnable);
 		estructuraThread.start();
 	}
+	
+    public static void copiarCarpetaScripts(Path sourceDir, Path destDir) throws IOException {
+        // Si el directorio de destino no existe, se crea
+        if (!Files.exists(destDir)) {
+            Files.createDirectories(destDir);
+        }
+        
+        // Recorremos los archivos y carpetas en el directorio fuente
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(sourceDir)) {
+            for (Path path : directoryStream) {
+                Path destino = destDir.resolve(sourceDir.relativize(path));
+                if (Files.isDirectory(path)) {
+                    // Llamada recursiva para copiar subdirectorios
+                    copiarCarpetaScripts(path, destino);
+                } else {
+                    // Copia de archivos
+                    Files.copy(path, destino, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
+    }
 
 	public static void verificarEstructura(String rutaArchivo) {
 		// Mapa para almacenar las claves y sus valores existentes

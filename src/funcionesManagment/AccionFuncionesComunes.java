@@ -159,15 +159,18 @@ public class AccionFuncionesComunes {
 	}
 
 	public static boolean procesarCartaPorCodigo(String finalValorCodigo) {
+	    List<Carta> cartaInfo = obtenerCartaInfo(finalValorCodigo);
 
-		Carta comicInfo = obtenerCartaInfo(finalValorCodigo);
+	    boolean alMenosUnoProcesado = false;
 
-		if (comprobarCodigo(comicInfo)) {
-			rellenarTablaImport(comicInfo);
-			return true;
-		} else {
-			return false;
-		}
+	    for (Carta carta : cartaInfo) {
+	        if (comprobarCodigo(carta)) {
+	            rellenarTablaImport(carta);
+	            alMenosUnoProcesado = true;
+	        }
+	    }
+
+	    return alMenosUnoProcesado;
 	}
 
 	public static void actualizarCartasDatabase(Carta comicOriginal, String tipoUpdate, boolean confirmarFirma) {
@@ -177,58 +180,62 @@ public class AccionFuncionesComunes {
 		}
 
 		String codigoCarta = comicOriginal.getUrlReferenciaCarta();
-		Carta comicInfo = obtenerCartaInfo(codigoCarta);
+		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta);
 
-		if (comicInfo == null) {
-			return;
-		}
+		for (Carta cartaInfo : cartaColeccion) {
+//			if (cartaInfo == null) {
+//				return;
+//			}
 
-		String codigo_imagen = Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
-		String urlImagen = comicInfo.getDireccionImagenCarta();
-		String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigo_imagen + ".jpg";
-		String correctedUrl = urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
-		comicOriginal.setIdCarta(comicOriginal.getIdCarta());
-		if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
+			String codigo_imagen = Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+			String urlImagen = cartaInfo.getDireccionImagenCarta();
+			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigo_imagen + ".jpg";
+			String correctedUrl = urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
+			comicOriginal.setIdCarta(comicOriginal.getIdCarta());
+			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
 
-			String numCarta = comicOriginal.getNumCarta();
-			String nombreCorregido = Utilidades.eliminarParentesis(comicOriginal.getNomCarta());
-			String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
-			nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
-			String editorial = DatabaseManagerDAO.getComercializadora((comicOriginal.getEditorialCarta()));
+				String numCarta = comicOriginal.getNumCarta();
+				String nombreCorregido = Utilidades.eliminarParentesis(comicOriginal.getNomCarta());
+				String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
+				nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
+				String editorial = DatabaseManagerDAO.getComercializadora((comicOriginal.getEditorialCarta()));
 
-			comicOriginal.setNomCarta(nombreLimpio);
-			comicOriginal.setNumCarta(numCarta);
-			comicOriginal.setEditorialCarta(editorial);
+				comicOriginal.setNomCarta(nombreLimpio);
+				comicOriginal.setNumCarta(numCarta);
+				comicOriginal.setEditorialCarta(editorial);
 
-			completarInformacionFaltante(comicOriginal, comicOriginal);
-			if (tipoUpdate.equalsIgnoreCase("modificar")) {
-				Utilidades.deleteFile(comicOriginal.getDireccionImagenCarta());
-				comicOriginal.setDireccionImagenCarta(urlFinal);
-			} else {
-				comicOriginal.setDireccionImagenCarta(comicOriginal.getDireccionImagenCarta());
+				completarInformacionFaltante(comicOriginal, comicOriginal);
+				if (tipoUpdate.equalsIgnoreCase("modificar")) {
+					Utilidades.deleteFile(comicOriginal.getDireccionImagenCarta());
+					comicOriginal.setDireccionImagenCarta(urlFinal);
+				} else {
+					comicOriginal.setDireccionImagenCarta(comicOriginal.getDireccionImagenCarta());
+				}
+
 			}
 
-		}
+			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
+				comicOriginal.setDireccionImagenCarta(urlFinal);
+				// Asynchronously download and convert image
+				Platform.runLater(() -> {
+					URI uri = null;
+					try {
+						uri = new URI(correctedUrl);
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+					Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
+							codigo_imagen + ".jpg");
+				});
+			}
 
-		if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-			comicOriginal.setDireccionImagenCarta(urlFinal);
-			// Asynchronously download and convert image
-			Platform.runLater(() -> {
-				URI uri = null;
-				try {
-					uri = new URI(correctedUrl);
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
-				Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
-						codigo_imagen + ".jpg");
-			});
+			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")
+					|| tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
+				UpdateManager.actualizarCartaBBDD(comicOriginal, "modificar");
+			}
 		}
-
-		if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")
-				|| tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-			UpdateManager.actualizarCartaBBDD(comicOriginal, "modificar");
-		}
+		
+		
 	}
 
 	private static void completarInformacionFaltante(Carta comicInfo, Carta comicOriginal) {
@@ -382,6 +389,7 @@ public class AccionFuncionesComunes {
 			String titulo = Utilidades.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirPatrones(nombreCorregido),
 					"Vacio");
 
+			String editorial = Utilidades.defaultIfNullOrEmpty(comic.getEditorialCarta(), "0");
 			String numero = Utilidades.defaultIfNullOrEmpty(numCartaStr, "0");
 			String coleccion = Utilidades
 					.defaultIfNullOrEmpty(DatabaseManagerDAO.corregirNombre(comic.getColeccionCarta()), "Vacio");
@@ -425,9 +433,10 @@ public class AccionFuncionesComunes {
 			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
 					codigoImagen + ".jpg");
 
-			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).coleccionCarta(coleccion)
-					.rarezaCarta(rareza).esFoilCarta(esFoil).gradeoCarta(gradeo).estadoCarta(estado).precioCarta(precio)
-					.urlReferenciaCarta(urlReferencia).direccionImagenCarta(imagen).normasCarta(normas).build();
+			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).editorialCarta(editorial)
+					.coleccionCarta(coleccion).rarezaCarta(rareza).esFoilCarta(esFoil).gradeoCarta(gradeo)
+					.estadoCarta(estado).precioCarta(precio).urlReferenciaCarta(urlReferencia)
+					.direccionImagenCarta(imagen).normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
 //
@@ -436,23 +445,20 @@ public class AccionFuncionesComunes {
 		});
 	}
 
-	private static Carta obtenerCartaInfo(String finalValorCodigo) {
+	private static List<Carta> obtenerCartaInfo(String finalValorCodigo) {
 		try {
 
-			Carta cartaInfo;
+			List<Carta> cartaInfo = new ArrayList<>();
 
 			List<String> enlaces = WebScrapGoogleLeagueOfCartas.buscarEnGoogle(finalValorCodigo);
-			
-			cartaInfo = WebScrapGoogleLeagueOfCartas.obtenerDatosDiv(finalValorCodigo.trim());
 
-			if (cartaInfo == null) {
-				return null;
+			for (String string : enlaces) {
+				cartaInfo.add(WebScrapGoogleLeagueOfCartas.extraerDatosMTG(string));
 			}
 
-			Carta.limpiarCamposCarta(cartaInfo);
 			return cartaInfo;
 
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException | IOException e) {
 			// Manejar excepciones
 			System.err.println("Error al obtener información del cómic: " + e.getMessage());
 			return null;
@@ -537,8 +543,12 @@ public class AccionFuncionesComunes {
 								return;
 							}
 							String finalValorCodigo = Utilidades.eliminarEspacios(linea).replace("-", "");
-							Carta comicInfo = obtenerCartaInfo(finalValorCodigo);
-							processCarta(comicInfo, "", false);
+							List<Carta> comicInfo = obtenerCartaInfo(finalValorCodigo);
+
+							for (Carta carta : comicInfo) {
+								processCarta(carta, "", false);
+							}
+
 						});
 					} catch (IOException e) {
 						Utilidades.manejarExcepcion(e);

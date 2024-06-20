@@ -27,21 +27,22 @@ public class VersionService extends Service<String> {
 	}
 
 	public static String obtenerVersion() {
-
 		if (Utilidades.isInternetAvailable()) {
 			try {
-
 				URI uri = new URI(GITHUB_URL);
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(uri.toURL().openStream(), StandardCharsets.UTF_8));
-				return reader.lines().collect(Collectors.joining());
-			} catch (IOException | URISyntaxException e) {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openStream()))) {
+					return reader.lines().collect(Collectors.joining());
+				} catch (IOException e) {
+					e.printStackTrace();
+					return "Error al obtener la versión: " + e.getMessage();
+				}
+			} catch (URISyntaxException e) {
 				e.printStackTrace();
-				return "Error al obtener la versión";
+				return "Error al construir la URI: " + e.getMessage();
 			}
+		} else {
+			return "No hay conexión a Internet";
 		}
-		return null;
-
 	}
 
 	public static String leerVersionDelArchivo() {

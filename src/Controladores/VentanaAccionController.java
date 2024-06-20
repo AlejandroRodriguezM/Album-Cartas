@@ -584,9 +584,7 @@ public class VentanaAccionController implements Initializable {
 //					return;
 //				}
 
-				System.out.println(valorCodigo);
-
-//				limpiarUIBeforeSearch();
+				limpiarUIBeforeSearch();
 
 				Task<Void> tarea = createSearchTask(valorCodigo);
 
