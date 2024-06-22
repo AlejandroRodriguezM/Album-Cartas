@@ -219,6 +219,8 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	private Menu navegacionEstadistica;
 
+	public Carta cartaCache;
+
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
 	 */
@@ -383,8 +385,6 @@ public class MenuPrincipalController implements Initializable {
 			alarmaList.setAlarmaConexionInternet(alarmaConexionInternet);
 			alarmaList.iniciarThreadChecker();
 
-			urlPreviews = WebScraperCatalogPreviews.urlPreviews();
-
 			enviarReferencias();
 
 			establecerDinamismoAnchor();
@@ -410,11 +410,9 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void ampliarImagen(MouseEvent event) {
 
-		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		if (getCartaCache() != null) {
 
-		if (idRow != null) {
-
-			ImagenAmpliadaController.cartaInfo = SelectManager.cartaDatos(idRow.getIdCarta());
+			ImagenAmpliadaController.cartaInfo = getCartaCache();
 			nav.verVentanaImagen();
 		}
 	}
@@ -643,12 +641,12 @@ public class MenuPrincipalController implements Initializable {
 
 			// Iterar sobre los ComboBox en orden
 			for (ComboBox<String> comboBox : listaComboboxes) {
-				
+
 				System.out.println(comboBox.getPromptText());
-				
+
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
-			
+
 			Carta comic = AccionControlUI.camposCarta(controls, false);
 
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, comic);
@@ -881,6 +879,8 @@ public class MenuPrincipalController implements Initializable {
 
 		if (!tablaBBDD.isDisabled()) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
+
 			AccionSeleccionar.seleccionarCartas(true);
 		}
 	}
@@ -897,6 +897,7 @@ public class MenuPrincipalController implements Initializable {
 	void teclasDireccion(KeyEvent event) {
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 			AccionSeleccionar.seleccionarCartas(true);
 		}
 
@@ -1384,6 +1385,20 @@ public class MenuPrincipalController implements Initializable {
 	public Stage estadoStage() {
 
 		return (Stage) botonLimpiar.getScene().getWindow();
+	}
+
+	/**
+	 * @return the cartaCache
+	 */
+	public Carta getCartaCache() {
+		return cartaCache;
+	}
+
+	/**
+	 * @param cartaCache the cartaCache to set
+	 */
+	public void setCartaCache(Carta cartaCache) {
+		this.cartaCache = cartaCache;
 	}
 
 	/**

@@ -173,7 +173,7 @@ public class AccionControlUI {
 		referenciaVentana.getRarezaCartaTextField().setText(cartaTemp.getRarezaCarta());
 
 		String resultadoFoil = cartaTemp.getEsFoilCarta();
-		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(resultadoFoil);
+		referenciaVentana.getNombreEsFoilCombobox().getSelectionModel().select(resultadoFoil);
 
 		String gradeoCarta = cartaTemp.getGradeoCarta();
 		referenciaVentana.getGradeoCartaCombobox().getSelectionModel().select(gradeoCarta);
@@ -531,7 +531,7 @@ public class AccionControlUI {
 		String gradeoCarta = camposCarta.get(6);
 		String estadoCarta = camposCarta.get(7);
 		String precioCarta = camposCarta.get(8);
-		
+
 		String urlReferenciaCarta = "";
 		String direccionImagenCarta = "";
 		String normasCarta = "";
@@ -545,7 +545,6 @@ public class AccionControlUI {
 			urlReferenciaCarta = camposCarta.get(8);
 			idCartaTratar = camposCarta.get(6);
 		}
-		
 
 		cartaTemp.setNomCarta(Utilidades.defaultIfNullOrEmpty(nomCarta, ""));
 		cartaTemp.setNumCarta(Utilidades.defaultIfNullOrEmpty(numCarta, ""));

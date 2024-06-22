@@ -94,13 +94,13 @@
     -fx-background-color: #4cae4c;
 }
 
-.button#botonLimpiarComic {
+.button#botonLimpiarCarta {
     -fx-background-color: #ffd700; /* Amarillo */
     -fx-border-color: #e5b800; /* Borde */
     -fx-text-fill: black;
 }
 
-.button#botonLimpiarComic:hover {
+.button#botonLimpiarCarta:hover {
     -fx-background-color: #e5b800;
 }
 
@@ -181,22 +181,22 @@
     -fx-background-color: #c9302c;
 }
 
-.button#botonModificarComic {
+.button#botonModificarCarta {
     -fx-background-color: #d9534f;
     -fx-border-color: #d43f3a;
 }
 
-.button#botonModificarComic:hover {
+.button#botonModificarCarta:hover {
     -fx-background-color: #c9302c;
 }
 
-.button#botonParametroComic {
+.button#botonParametroCarta {
     -fx-font-size: 10.0px;
     -fx-background-color: #92C5FC;
     -fx-border-color: #92C5FC;
 }
 
-.button#botonParametroComic:hover {
+.button#botonParametroCarta:hover {
     -fx-font-size: 10.0px;
     -fx-background-color: #00A9FF;
 }
@@ -270,12 +270,12 @@
     -fx-font-size: 9.0px;
 }
 
-.button#botonGuardarComic {
+.button#botonGuardarCarta {
     -fx-background-color: #4169E1;
     -fx-border-color: #4169E1;
 }
 
-.button#botonGuardarComic:hover {
+.button#botonGuardarCarta:hover {
     -fx-background-color: #483D8B;
     -fx-border-color: #483D8B;
 }
@@ -289,13 +289,13 @@
     -fx-background-color: #6495ED;
 }
 
-.button#botonGuardarCambioComic { 
+.button#botonGuardarCambioCarta { 
     -fx-border-width: 5px;
 -fx-font-size: 10.0px;
     -fx-background-color: #93C572;
 }
 
-.button#botonGuardarCambioComic:hover {
+.button#botonGuardarCambioCarta:hover {
     -fx-background-color: #62854c;
 }
 
@@ -317,12 +317,12 @@
     -fx-background-color: c49235;
 }
 
-.button#botonEliminarImportadoComic { 
+.button#botonEliminarImportadoCarta { 
     -fx-border-width: 5px;
     -fx-background-color: #ec5353;
 }
 
-.button#botonEliminarImportadoComic:hover {
+.button#botonEliminarImportadoCarta:hover {
     -fx-background-color: #702626;
 }
 

@@ -555,20 +555,19 @@ public class FuncionesComboBox {
 
 	}
 
-	/**
-	 * Crea un TextFormatter para validar y permitir solo números decimales
-	 * (double).
-	 *
-	 * @return El TextFormatter para números decimales.
-	 */
 	public static TextFormatter<Double> validador_Ndecimales() {
 		// Crear un validador para permitir solo números decimales (double)
 		return new TextFormatter<>(new DoubleStringConverter(), 0.0, change -> {
 			String newText = change.getControlNewText();
-			if (newText.matches("\\d*\\.?\\d*")) {
+			if (newText.isEmpty()) {
 				return change;
 			}
-			return null;
+			try {
+				Double.parseDouble(newText);
+				return change;
+			} catch (NumberFormatException e) {
+				return null;
+			}
 		});
 	}
 
@@ -578,17 +577,11 @@ public class FuncionesComboBox {
 	 * @param comboboxes La lista de ComboBoxes a rellenar.
 	 */
 	public static void rellenarComboBoxEstaticos(List<ComboBox<String>> comboboxes) {
-		String[][] valores = { { "Si", "No" }, { "NM (Noir Medium)", "SM (Standard Medium)", "LM (Light Medium)",
-				"FL (Fine Light)", "VF (Very Fine)", "M (Medium)", "F (Fine)" },
-				{ "En posesion", "Comprado", "En venta" },
-				{ "Estados Unidos (United States)", "Japón (Japan)", "Francia (France)", "Italia (Italy)",
-						"España (Spain)", "Reino Unido (United Kingdom)", "Alemania (Germany)", "Brasil (Brazil)",
-						"Corea del Sur (South Korea)", "México (Mexico)", "Canadá (Canada)", "China (China)",
-						"Australia (Australia)", "Argentina (Argentina)", "India (India)", "Bélgica (Belgium)",
-						"Países Bajos (Netherlands)", "Portugal (Portugal)", "Suecia (Sweden)", "Suiza (Switzerland)",
-						"Finlandia (Finland)", "Noruega (Norway)", "Dinamarca (Denmark)" }
-//				{ "0/0", "0.5/5", "1/5", "1.5/5", "2/5", "2.5/5", "3/5", "3.5/5", "4/5", "4.5/5", "5/5" } 
-		};
+		String[][] valores = { { "Si", "No" },
+				{ "NM (Noir Medium)", "SM (Standard Medium)", "LM (Light Medium)", "FL (Fine Light)", "VF (Very Fine)",
+						"M (Medium)", "F (Fine)" },
+
+				{ "En posesion", "Comprado", "En venta" } };
 
 		String[] ids = { "comboboxEsFoilCarta", "comboboxGradeoCarta", "comboboxEstadoCarta", };
 

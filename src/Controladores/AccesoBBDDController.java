@@ -35,6 +35,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import webScrap.WebScrapGoogleCardTrader;
 
 /**
  * Esta clase sirve para acceder a la base de datos y poder realizar diferentes
@@ -201,9 +202,6 @@ public class AccesoBBDDController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		System.out.println(Utilidades.verificarVersionJava());
-
 		if (!Utilidades.verificarVersionJava()) {
 			Platform.exit();
 		}
@@ -244,7 +242,7 @@ public class AccesoBBDDController implements Initializable {
 			FuncionesFicheros.crearEstructura();
 			Utilidades.crearDBPRedeterminada();
 			Utilidades.crearCarpeta();
-			
+
 			ConectManager.closeConnection();
 		});
 	}

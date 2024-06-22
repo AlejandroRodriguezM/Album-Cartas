@@ -304,8 +304,13 @@ public class AccionFuncionesComunes {
 
 			ListasCartasDAO.cartasImportados.clear();
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
-		}
 
+		}
+		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+		limpiarDatosCarta();
+	}
+
+	public static void limpiarDatosCarta() {
 		getReferenciaVentana().getNombreCartaTextField().setText("");
 		getReferenciaVentana().getEditorialCartaTextField().setText("");
 		getReferenciaVentana().getColeccionCartaTextField().setText("");
@@ -314,13 +319,14 @@ public class AccionFuncionesComunes {
 		getReferenciaVentana().getPrecioCartaTextField().setText("");
 		getReferenciaVentana().getIdCartaTratarTextField().setText("");
 		getReferenciaVentana().getDireccionImagenTextField().setText("");
-		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+
 		getReferenciaVentana().getUrlReferenciaTextField().setText("");
 		getReferenciaVentana().getNumeroCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getNombreEsFoilCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getGradeoCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getEstadoCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getImagenCarta().setImage(null);
+
 		if ("modificar".equals(TIPO_ACCION)) {
 			AccionControlUI.mostrarOpcion(TIPO_ACCION);
 		}
@@ -418,6 +424,7 @@ public class AccionFuncionesComunes {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
+			
 			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
 			// Descarga y conversión asíncrona de la imagen
 			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
@@ -452,7 +459,7 @@ public class AccionFuncionesComunes {
 
 			return cartaInfo;
 
-		} catch (URISyntaxException | IOException e) {
+		} catch (URISyntaxException e) {
 			// Manejar excepciones
 			System.err.println("Error al obtener información del cómic: " + e.getMessage());
 			return null;

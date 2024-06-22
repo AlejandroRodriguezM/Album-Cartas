@@ -9,24 +9,37 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import alarmas.AlarmaList;
 import funcionesAuxiliares.Utilidades;
 import javafx.scene.control.Label;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FuncionesFicheros {
 
@@ -200,7 +213,7 @@ public class FuncionesFicheros {
 
 	public static void descargarRecursos() {
 		String urlArchivoZip = "https://github.com/AlejandroRodriguezM/Album-Cartas/raw/main/src/recursos/recursos.zip";
-		
+
 		String archivoDestino = rutaDestinoRecursos + File.separator + "recursos.zip";
 
 		// Crea la carpeta destino si no existe
@@ -338,5 +351,62 @@ public class FuncionesFicheros {
 	private static String construirURL(String direccionDataBase) {
 		return "jdbc:sqlite:" + carpetaLibreria + File.separator + direccionDataBase;
 	}
+
+	public static void downloadJsonFile() {
+		String fileURL = "https://www.cardtrader.com/docs/api/full/postman_collection";
+        String saveDir = rutaDestinoRecursos + "/";
+        String fileName = "apiCardTrader.json";
+        Path savePath = Paths.get(saveDir, fileName);
+        int maxAttempts = 5; // Máximo número de intentos
+        int attemptCount = 0; // Contador de intentos
+
+        try {
+            // Verifica si el archivo ya existe
+            if (Files.exists(savePath)) {
+                System.out.println("El archivo " + savePath.toString() + " ya existe.");
+                return;
+            }
+
+            boolean fileDownloaded = false;
+            while (!fileDownloaded && attemptCount < maxAttempts) {
+                attemptCount++;
+                try {
+                    // Realiza la solicitud HTTP
+                    HttpURLConnection connection = (HttpURLConnection) new URL(fileURL).openConnection();
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Crea los directorios si no existen
+                        Files.createDirectories(savePath.getParent());
+
+                        // Abre el flujo de entrada desde la conexión HTTP
+                        try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+                            // Guarda el contenido directamente en el archivo
+                            Files.copy(inputStream, savePath, StandardCopyOption.REPLACE_EXISTING);
+                        }
+
+                        System.out.println("Archivo descargado en " + savePath.toString());
+                        fileDownloaded = true; // Marca la descarga como exitosa
+                    } else if (responseCode == HttpURLConnection.HTTP_ACCEPTED) {
+                        System.out.println("El servidor está procesando la solicitud. Intento #" + attemptCount + ". Esperando 5 segundos...");
+                        TimeUnit.SECONDS.sleep(5); // Espera 5 segundos antes de reintentar
+                    } else {
+                        System.out.println("No se pudo descargar el archivo. El servidor respondió con el código HTTP: " + responseCode);
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+
+            if (!fileDownloaded) {
+                System.out.println("No se pudo descargar el archivo después de " + maxAttempts + " intentos.");
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

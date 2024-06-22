@@ -222,6 +222,8 @@ public class VentanaAccionController implements Initializable {
 	 */
 	private Stage stage;
 
+	public Carta cartaCache;
+
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
 	 */
@@ -369,12 +371,9 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	void ampliarImagen(MouseEvent event) {
 
-		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		if (getCartaCache() != null) {
 
-		if (idRow != null) {
-
-			ImagenAmpliadaController.cartaInfo = idRow;
-
+			ImagenAmpliadaController.cartaInfo = getCartaCache();
 			nav.verVentanaImagen();
 		}
 	}
@@ -501,6 +500,7 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	void clickRaton(MouseEvent event) {
 		enviarReferencias();
+		setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 		AccionSeleccionar.seleccionarCartas(false);
 	}
 
@@ -516,6 +516,7 @@ public class VentanaAccionController implements Initializable {
 	void teclasDireccion(KeyEvent event) {
 		if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 			AccionSeleccionar.seleccionarCartas(false);
 		}
 	}
@@ -578,42 +579,53 @@ public class VentanaAccionController implements Initializable {
 	 * @throws URISyntaxException Si ocurre un error de sintaxis de URI.
 	 */
 	@FXML
-	void busquedaPorCodigo(ActionEvent event) throws IOException, URISyntaxException {
-		enviarReferencias();
-		if (Utilidades.isInternetAvailable()) {
-			String valorCodigo = busquedaCodigo.getText();
+	public void busquedaPorCodigo(ActionEvent event) throws IOException, URISyntaxException {
+	    enviarReferencias();
+	    if (Utilidades.isInternetAvailable()) {
+	        String valorCodigo = busquedaCodigo.getText();
 
-			if (valorCodigo.isEmpty()) {
-				return;
-			}
+	        if (valorCodigo.isEmpty()) {
+	            return;
+	        }
 
-			nav.cerrarMenuOpciones();
-			AccionControlUI.limpiarAutorellenos(false);
-			AccionControlUI.borrarDatosGraficos();
+	        nav.cerrarMenuOpciones();
+	        AccionControlUI.limpiarAutorellenos(false);
+	        AccionControlUI.borrarDatosGraficos();
 
-			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
-			AccionFuncionesComunes.cargarRuning();
-			future.thenAccept(enlaces -> {
-				File fichero;
-				try {
-					fichero = createTempFile(enlaces);
+	        CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
+	        
+	        future.thenAccept(enlaces -> {
+	        	
+	            if (enlaces == null || enlaces.isEmpty()) {
+	                // No se encontraron enlaces, no continuar
+	                return;
+	            }
+	            AccionFuncionesComunes.cargarRuning();
+	            File fichero;
+	            try {
+	                if (enlaces == null || enlaces.isEmpty()) {
+	                    // No se encontraron enlaces, manejar según sea necesario
+	                    return;
+	                }
+	                
+	                fichero = createTempFile(enlaces);
 
-					if (fichero != null) {
-						enviarReferencias();
-						rellenarCombosEstaticos();
-						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
-					}
+	                if (fichero != null) {
+	                    enviarReferencias();
+	                    rellenarCombosEstaticos();
+	                    AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+	                }
 
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        });
 
-			future.exceptionally(ex -> {
-				ex.printStackTrace();
-				return null; // Manejar errores aquí según sea necesario
-			});
-		}
+	        future.exceptionally(ex -> {
+	            ex.printStackTrace();
+	            return null; // Manejar errores aquí según sea necesario
+	        });
+	    }
 	}
 
 	public File createTempFile(List<String> data) throws IOException {
@@ -751,6 +763,20 @@ public class VentanaAccionController implements Initializable {
 	public Stage estadoStage() {
 
 		return (Stage) botonLimpiar.getScene().getWindow();
+	}
+
+	/**
+	 * @return the cartaCache
+	 */
+	public Carta getCartaCache() {
+		return cartaCache;
+	}
+
+	/**
+	 * @param cartaCache the cartaCache to set
+	 */
+	public void setCartaCache(Carta cartaCache) {
+		this.cartaCache = cartaCache;
 	}
 
 	/**

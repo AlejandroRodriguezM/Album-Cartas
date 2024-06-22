@@ -14,6 +14,8 @@ import dbmanager.SelectManager;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 
 public class AccionSeleccionar {
 
@@ -31,10 +33,26 @@ public class AccionSeleccionar {
 	 */
 	public static void seleccionarCartas(boolean esPrincipal) {
 
-		FuncionesTableView.nombreColumnas(); // funcion
+		FuncionesTableView.nombreColumnas();
 		Utilidades.comprobacionListaCartas();
 
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
+		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
+
+		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
+
+		if (scene != null) {
+			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
+
+					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
+					if (!esPrincipal) {
+
+						AccionFuncionesComunes.limpiarDatosCarta();
+					}
+				}
+			});
+		}
 
 		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
 		if (newSelection != null) {
@@ -61,7 +79,7 @@ public class AccionSeleccionar {
 			return;
 		}
 
-		Carta.limpiarCamposCarta(comicTemp);
+//		Carta.limpiarCamposCarta(comicTemp);
 
 		if (!esPrincipal) {
 			accionRellenoDatos.setAtributosDesdeTabla(comicTemp);
@@ -152,7 +170,8 @@ public class AccionSeleccionar {
 
 		if (!listCarta.isEmpty()) {
 			getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
-			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: black;"); // Reset the text color to black
+			getReferenciaVentana().getProntInfoTextArea().setStyle("-fx-text-fill: black;"); // Reset the text color to
+																								// black
 			getReferenciaVentana().getProntInfoTextArea()
 					.setText("El número de cómics donde aparece la búsqueda es: " + listCarta.size() + "\n \n \n");
 		} else if (listCarta.isEmpty() && esAccion) {
