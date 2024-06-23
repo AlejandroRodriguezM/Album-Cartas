@@ -10,33 +10,23 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
+import Apis.ApiGoogle;
 import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 
 public class WebScrapGoogleCardTrader {
 
@@ -45,11 +35,7 @@ public class WebScrapGoogleCardTrader {
 	}
 
 	public static List<String> buscarURL(String searchTerm) throws URISyntaxException {
-//		if (esURL(searchTerm)) {
-//			return buscarURLValida(searchTerm);
-//		} else {
 		return buscarEnGoogle(searchTerm);
-//		}
 	}
 
 	public static String buscarURLValida(String urlString) throws URISyntaxException {
@@ -93,8 +79,32 @@ public class WebScrapGoogleCardTrader {
 	}
 
 	public static List<String> extraerEnlacesDePagina(String urlString) {
-		// Conectar y extraer enlaces con manejo de errores 403
-		return getEnlacesFromPuppeteer(urlString);
+		// Conectar y extraer enlaces originales
+		List<String> enlaceOriginales = getEnlacesFromPuppeteer(urlString);
+
+		// Crear un mapa para agrupar enlaces por su versión sin "?isFoil=Y"
+		Map<String, List<String>> enlacesMap = new HashMap<>();
+
+		// Agregar enlaces originales al mapa
+		for (String enlace : enlaceOriginales) {
+			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlace);
+		}
+
+		// Agregar enlaces modificados al mapa
+		for (String enlace : enlaceOriginales) {
+			String enlaceModificado = enlace + "?isFoil=Y";
+			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlaceModificado);
+		}
+
+		// Crear una nueva lista para contener todos los enlaces en el orden deseado
+		List<String> enlacesFinales = new ArrayList<>();
+
+		// Agregar los enlaces al resultado final en el orden correcto
+		for (List<String> enlaces : enlacesMap.values()) {
+			enlacesFinales.addAll(enlaces);
+		}
+
+		return enlacesFinales;
 	}
 
 	public static CompletableFuture<List<String>> iniciarBusquedaGoogle(String valorCodigo) {
@@ -130,6 +140,8 @@ public class WebScrapGoogleCardTrader {
 
 	public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
 		searchTerm = agregarMasAMayusculas(searchTerm).replace("(", "%28").replace(")", "%29").replace("#", "%23");
+
+		searchTerm = ApiGoogle.translateText(searchTerm, "en");
 
 		try {
 			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
@@ -187,9 +199,9 @@ public class WebScrapGoogleCardTrader {
 		}
 	}
 
-	public static Carta extraerDatosMTG(String url) throws URISyntaxException {
+	public static Carta extraerDatosMTG(String url) {
 
-		List<String> data = getCartaFromPuppeteer(url);
+		List<String> data = getCartaFromPuppeteer(url); // Método para obtener datos de la carta
 
 		String referencia = "";
 		String nombre = "";
@@ -208,9 +220,11 @@ public class WebScrapGoogleCardTrader {
 			if (line.startsWith("Referencia: ")) {
 				referencia = line.substring("Referencia: ".length()).trim();
 			} else if (line.startsWith("Nombre: ")) {
-				nombre = line.substring("Nombre: ".length()).trim();
+				String nombreLimpio = line.substring("Nombre: ".length()).trim().replaceAll("\\(.*\\)", "").trim();
+				nombre = nombreLimpio;
 			} else if (line.startsWith("Coleccion: ")) {
-				coleccion = line.substring("Coleccion: ".length()).trim();
+				String[] coleccionLimpio = line.substring("Coleccion: ".length()).trim().split(":");
+				coleccion = coleccionLimpio[0];
 			} else if (line.startsWith("Editorial: ")) {
 				editorial = line.substring("Editorial: ".length()).trim();
 			} else if (line.startsWith("Rareza: ")) {
@@ -219,7 +233,12 @@ public class WebScrapGoogleCardTrader {
 				numero = line.substring("Numero: ".length()).trim();
 			} else if (line.startsWith("Valor: ")) {
 				String[] precioCarta = line.substring("Valor: ".length()).trim().split("€");
-				valor = precioCarta[0].replace(',', '.');
+
+				String numeroFormateado = precioCarta[0].replace(".", "").replace(",", ".");
+				// Convertir a double
+				double numFormateado = Double.parseDouble(numeroFormateado);
+				valor = String.valueOf(numFormateado);
+
 			} else if (line.startsWith("Foil: ")) {
 				foil = line.substring("Foil: ".length()).trim();
 			} else if (line.startsWith("Normas: ")) {
@@ -227,9 +246,13 @@ public class WebScrapGoogleCardTrader {
 			} else if (line.startsWith("Imagen: ")) {
 				String argument = "cardtrader+" + nombre.replace(" ", "+") + "+" + numero + "+"
 						+ coleccion.replace(" ", "+");
-				String urlCarta = searchCardTraderUrl(argument);
-				imagen = extraerDatosImagen(urlCarta);
-				System.out.println(imagen);
+				String urlCarta = searchWebImagen(argument);
+
+				if (urlCarta.contains("/cards/")) {
+
+					imagen = extraerDatosImagen(urlCarta);
+				}
+
 			}
 		}
 
@@ -330,8 +353,10 @@ public class WebScrapGoogleCardTrader {
 					// Proceso terminado exitosamente, obtener el resultado
 					String dataString = output.toString().trim();
 					if (!dataString.isEmpty()) {
-						System.out.println(dataString);
-						dataArrayList.add(dataString);
+						// Dividir el resultado en líneas individuales
+						String[] enlaces = dataString.split("\n");
+						// Agregar cada enlace a la lista
+						dataArrayList.addAll(Arrays.asList(enlaces));
 						return dataArrayList;
 					} else {
 						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
@@ -370,48 +395,51 @@ public class WebScrapGoogleCardTrader {
 		return false; // Si hay una excepción o la URI no tiene un esquema válido, la URL no es válida
 	}
 
-	public static String searchCardTraderUrl(String searchTerm) throws URISyntaxException {
+	public static String searchWebImagen(String query) {
+		String googleSearchUrl = "https://www.google.com/search?q=";
+		String charset = "UTF-8";
+		String userAgent = "Mozilla/5.0";
+
+		String url;
 		try {
-			// Encode the search term for URL compatibility
-			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
-			String urlString = "https://www.google.com/search?q=" + encodedSearchTerm;
+			url = googleSearchUrl + URLEncoder.encode(query, charset);
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestProperty("User-Agent", userAgent);
 
-			// Setup the connection
-			URI uri = new URI(urlString);
-			URL url = uri.toURL();
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-					+ "(KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36");
+			try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(connection.getInputStream(), charset))) {
+				String line;
+				StringBuilder response = new StringBuilder();
+				while ((line = reader.readLine()) != null) {
+					response.append(line);
+				}
 
-			// Read the response from Google
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuilder content = new StringBuilder();
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
+				// Buscar enlaces que comiencen con "/url?q="
+				Pattern pattern = Pattern.compile("<a href=\"/url\\?q=(https://www.cardtrader.com/[^\"]+)\"");
+				Matcher matcher = pattern.matcher(response.toString());
+
+				while (matcher.find()) {
+					String urlFound = matcher.group(1);
+					urlFound = cleanGoogleUrl(urlFound);
+					if (!urlFound.contains("/versions")) {
+						return urlFound;
+					}
+				}
 			}
-			in.close();
-			con.disconnect();
-
-			// Convert response to string
-			String html = content.toString();
-
-			// Use regex to find the first URL from cardtrader.com in the search results
-			Pattern pattern = Pattern.compile("href=\"(https://www.cardtrader.com/(?!versions)[^\"]+)\"");
-			Matcher matcher = pattern.matcher(html);
-			if (matcher.find()) {
-				// Extract the URL
-				String urlFound = matcher.group(1);
-				return urlFound;
-			} else {
-				System.out.println("No se encontraron enlaces de cardtrader.com en los resultados.");
-			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "";
+
+		return ""; // No se encontró un enlace adecuado
+	}
+
+	private static String cleanGoogleUrl(String url) {
+		// Eliminar fragmentos adicionales de la URL de Google
+		int index = url.indexOf("&");
+		if (index != -1) {
+			return url.substring(0, index);
+		}
+		return url;
 	}
 
 	public static String extraerDatosImagen(String url) {

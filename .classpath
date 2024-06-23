@@ -90,5 +90,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/rhino-1.7.15.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/httpclient5-5.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/okhttp-5.0.0-alpha.14.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -182,6 +183,7 @@ public class AccionFuncionesComunes {
 			String urlImagen = cartaInfo.getDireccionImagenCarta();
 			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigo_imagen + ".jpg";
 			String correctedUrl = urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
+
 			cartaOriginal.setIdCarta(cartaOriginal.getIdCarta());
 			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
 
@@ -195,7 +197,6 @@ public class AccionFuncionesComunes {
 				cartaOriginal.setNumCarta(numCarta);
 				cartaOriginal.setEditorialCarta(editorial);
 
-//				completarInformacionFaltante(comicOriginal, comicOriginal);
 				if (tipoUpdate.equalsIgnoreCase("modificar")) {
 					Utilidades.deleteFile(cartaOriginal.getDireccionImagenCarta());
 					cartaOriginal.setDireccionImagenCarta(urlFinal);
@@ -225,26 +226,6 @@ public class AccionFuncionesComunes {
 				UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
 			}
 		}
-
-	}
-
-	private static void completarInformacionFaltante(Carta comicInfo, Carta comicOriginal) {
-		// Completar información faltante con la información original si está vacía
-		if (comicInfo.getEditorialCarta() == null || comicInfo.getEditorialCarta().isEmpty()) {
-			comicInfo.setEditorialCarta(comicOriginal.getEditorialCarta());
-		}
-		if (comicInfo.getColeccionCarta() == null || comicInfo.getColeccionCarta().isEmpty()) {
-			comicInfo.setColeccionCarta(comicOriginal.getColeccionCarta());
-		}
-		if (comicInfo.getRarezaCarta() == null || comicInfo.getRarezaCarta().isEmpty()) {
-			comicInfo.setRarezaCarta(comicOriginal.getRarezaCarta());
-		}
-		if (comicInfo.getPrecioCarta().equals("0")) {
-			comicInfo.setPrecioCarta(comicOriginal.getPrecioCarta());
-		}
-		comicInfo.setEstadoCarta(comicOriginal.getEstadoCarta());
-
-		comicInfo.setDireccionImagenCarta(comicOriginal.getDireccionImagenCarta());
 
 	}
 
@@ -315,7 +296,7 @@ public class AccionFuncionesComunes {
 		getReferenciaVentana().getEditorialCartaTextField().setText("");
 		getReferenciaVentana().getColeccionCartaTextField().setText("");
 		getReferenciaVentana().getRarezaCartaTextField().setText("");
-		getReferenciaVentana().getNormasCartaTextField().setText("");
+		getReferenciaVentana().getNormasCartaTextArea().setText("");
 		getReferenciaVentana().getPrecioCartaTextField().setText("");
 		getReferenciaVentana().getIdCartaTratarTextField().setText("");
 		getReferenciaVentana().getDireccionImagenTextField().setText("");
@@ -424,7 +405,7 @@ public class AccionFuncionesComunes {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			
+
 			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
 			// Descarga y conversión asíncrona de la imagen
 			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
@@ -444,7 +425,6 @@ public class AccionFuncionesComunes {
 
 	public static List<Carta> obtenerCartaInfo(String finalValorCodigo, boolean esImport) {
 		try {
-
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
 				cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(finalValorCodigo));
@@ -453,9 +433,15 @@ public class AccionFuncionesComunes {
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
+
 					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(string));
 				}
 			}
+
+			// Convertir la lista a un Set para eliminar duplicados
+			Set<Carta> cartaSet = new HashSet<>(cartaInfo);
+			cartaInfo.clear(); // Limpiar la lista original
+			cartaInfo.addAll(cartaSet); // Agregar los elementos únicos de vuelta a la lista
 
 			return cartaInfo;
 
@@ -537,27 +523,29 @@ public class AccionFuncionesComunes {
 
 				if (tipoUpdate.isEmpty()) {
 					try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
+						Set<Carta> setSinDuplicados = new HashSet<>();
+
 						reader.lines().forEach(linea -> {
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 								return;
 							}
 
-							System.err.println(linea);
+							List<Carta> listaOriginal = obtenerCartaInfo(linea, true);
 
-							List<Carta> comicInfo = obtenerCartaInfo(linea, true);
-
-							for (Carta carta : comicInfo) {
-								processCarta(carta, "", false);
+							// Filtrar duplicados antes de procesar
+							for (Carta carta : listaOriginal) {
+								if (setSinDuplicados.add(carta)) {
+									processCarta(carta, "", false);
+								}
 							}
-
 						});
+
 					} catch (IOException e) {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
 					listaCartasDatabase.forEach(codigo -> {
 						processCarta(codigo, tipoUpdate, actualizarFirma);
-
 					});
 				}
 				return null;
@@ -591,7 +579,6 @@ public class AccionFuncionesComunes {
 			}
 		}
 		updateGUI(textoBuilder);
-
 	}
 
 	private static void updateGUI(StringBuilder textoBuilder) {
@@ -646,6 +633,18 @@ public class AccionFuncionesComunes {
 		AlarmaList.iniciarAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 	}
 
+	public static void cargarCompletado() {
+		AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+		cambiarEstadoBotones(false);
+
+		actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
+
+		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
+
+		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
+		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+	}
+
 	public static void handleTaskEvents(Task<Void> tarea, String tipoUpdate) {
 
 		tarea.setOnRunning(ev -> {
@@ -690,15 +689,7 @@ public class AccionFuncionesComunes {
 
 		tarea.setOnSucceeded(ev -> {
 			if (tipoUpdate.isEmpty()) {
-				AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
-				cambiarEstadoBotones(false);
-
-				actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
-
-				getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
-
-				Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
-				AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+				cargarCompletado();
 			} else {
 
 				AlarmaList.mostrarMensajePront("Datos cargados correctamente", true,

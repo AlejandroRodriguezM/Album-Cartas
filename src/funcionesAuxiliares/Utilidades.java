@@ -4,7 +4,9 @@
 */
 package funcionesAuxiliares;
 
+import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -119,8 +121,8 @@ public class Utilidades {
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 	private static AccionReferencias referenciaVentanaPrincipal = getReferenciaVentanaPrincipal();
 
-	public static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData"
-			+ File.separator + "Roaming" + File.separator + "album" + File.separator;
+	public static final String DB_FOLDER = System.getProperty("user.home") + File.separator + "AppData" + File.separator
+			+ "Roaming" + File.separator + "album" + File.separator;
 
 	/**
 	 * Verifica si el sistema operativo es Windows.
@@ -424,8 +426,8 @@ public class Utilidades {
 
 			String userDir = System.getProperty("user.home");
 			String documentsPath = userDir + File.separator + "Documents";
-			String sourcePath = documentsPath + File.separator + "album_cartas" + File.separator
-					+ ConectManager.DB_NAME + File.separator + "portadas";
+			String sourcePath = documentsPath + File.separator + "album_cartas" + File.separator + ConectManager.DB_NAME
+					+ File.separator + "portadas";
 			File sourceFolder = new File(sourcePath);
 
 			String ubicacion = userDir + File.separator + "AppData" + File.separator + "Roaming";
@@ -453,8 +455,8 @@ public class Utilidades {
 				backupsFolder.mkdirs();
 			}
 			final String DB_NAME = ConectManager.DB_NAME;
-			final String directorioComun = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator
-					+ DB_NAME + File.separator;
+			final String directorioComun = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator + DB_NAME
+					+ File.separator;
 			final String directorioOriginal = directorioComun + "portadas" + File.separator;
 			String backupFileName = "portadas_" + dateFormat.format(new Date());
 			String backupPath = carpetaLibreria + File.separator + backupFileName;
@@ -957,55 +959,52 @@ public class Utilidades {
 	 * @return true si la descarga y conversión son exitosas, false en caso
 	 *         contrario.
 	 */
-	public static CompletableFuture<Boolean> descargarYConvertirImagenAsync(URI urlImagen, String carpetaDestino,
-			String nuevoNombre) {
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				URL url = urlImagen.toURL();
-				URLConnection connection = url.openConnection();
+    public static CompletableFuture<Boolean> descargarYConvertirImagenAsync(URI urlImagen, String carpetaDestino, String nuevoNombre) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL url = urlImagen.toURL();
+                URLConnection connection = url.openConnection();
 
-				if (connection instanceof HttpURLConnection) {
-					((HttpURLConnection) connection).setRequestMethod("HEAD");
-					int responseCode = ((HttpURLConnection) connection).getResponseCode();
+                if (connection instanceof HttpURLConnection) {
+                    ((HttpURLConnection) connection).setRequestMethod("HEAD");
+                    int responseCode = ((HttpURLConnection) connection).getResponseCode();
 
-					if (responseCode != HttpURLConnection.HTTP_OK) {
-						if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
-							System.err.println("Error interno del servidor al acceder a la URL: " + url);
-						} else {
-							System.err.println("La URL no apunta a una imagen válida o no se pudo acceder: " + url);
-						}
-						return false;
-					}
-				}
+                    if (responseCode != HttpURLConnection.HTTP_OK) {
+                        if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                            System.err.println("Error interno del servidor al acceder a la URL: " + url);
+                        } else {
+                            System.err.println("La URL no apunta a una imagen válida o no se pudo acceder: " + url);
+                        }
+                        return false;
+                    }
+                }
 
-				String extension = obtenerExtension(nuevoNombre);
-				Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
+                String extension = obtenerExtension(nuevoNombre);
+                Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
 
-				if (!extension.equals("jpg")) {
-					try (InputStream in = url.openStream()) {
-						BufferedImage image = ImageIO.read(in);
-						if (image == null) {
-							System.err.println("No se pudo cargar la imagen desde " + urlImagen);
-							return false;
-						}
-						ImageIO.write(image, "jpg", rutaDestino.toFile());
-					}
-				} else {
-					try (InputStream in = url.openStream()) {
-						Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
-					}
-				}
+                try (InputStream in = url.openStream()) {
+                    if (extension.equalsIgnoreCase("jpg")) {
+                        Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+                    } else {
+                        BufferedImage image = ImageIO.read(in);
+                        if (image == null) {
+                            System.err.println("No se pudo cargar la imagen desde " + urlImagen);
+                            return false;
+                        }
+                        ImageIO.write(image, "jpg", rutaDestino.toFile());
+                    }
+                }
 
-				return true;
-			} catch (MalformedURLException e) {
-				System.err.println("La URL no es válida: " + urlImagen);
-				return false;
-			} catch (IOException e) {
-				manejarExcepcion(e);
-				return false;
-			}
-		});
-	}
+                return true;
+            } catch (MalformedURLException e) {
+                System.err.println("La URL no es válida: " + urlImagen);
+                return false;
+            } catch (IOException e) {
+                manejarExcepcion(e);
+                return false;
+            }
+        });
+    }
 
 	/**
 	 * Reemplaza entidades HTML en una cadena con sus caracteres correspondientes.
@@ -1056,7 +1055,7 @@ public class Utilidades {
 	 */
 	public static String obtenerDatoDespuesDeDosPuntos(String linea) {
 		String archivoConfiguracion = obtenerCarpetaConfiguracion() + File.separator + "configuracion_local.conf";
-		
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(archivoConfiguracion))) {
 			String line;
 			while ((line = reader.readLine()) != null) {

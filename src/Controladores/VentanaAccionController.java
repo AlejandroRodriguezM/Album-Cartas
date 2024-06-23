@@ -12,8 +12,10 @@ import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -144,7 +146,7 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private TextField textFieldNombreCarta;
 	@FXML
-	private TextField textFieldNormasCarta;
+	private TextArea textAreaNormasCarta;
 	@FXML
 	private TextField textFieldPrecioCarta;
 	@FXML
@@ -246,7 +248,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setRarezaCartaTextField(textFieldRarezaCarta);
 		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
 		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
-		referenciaVentana.setNormasCartaTextField(textFieldNormasCarta);
+		referenciaVentana.setNormasCartaTextArea(textAreaNormasCarta);
 		referenciaVentana.setPrecioCartaTextField(textFieldPrecioCarta);
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
 		referenciaVentana.setDireccionImagenTextField(textFieldDireccionPortada);
@@ -300,7 +302,7 @@ public class VentanaAccionController implements Initializable {
 				Arrays.asList(comboboxEsFoilCarta, comboboxEstadoCarta, comboboxGradeoCarta, comboboxNumeroCarta));
 
 		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta,
-				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textFieldNormasCarta,
+				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta,
 				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
 
 		AccionReferencias.setListaColumnasTabla(
@@ -392,12 +394,12 @@ public class VentanaAccionController implements Initializable {
 		FuncionesManejoFront.restringirSimbolos(textFieldEditorialCarta);
 		FuncionesManejoFront.restringirSimbolos(textFieldColeccion);
 		FuncionesManejoFront.restringirSimbolos(textFieldRarezaCarta);
-		FuncionesManejoFront.restringirSimbolos(textFieldNormasCarta);
+//		FuncionesManejoFront.restringirSimbolos(textFieldNormasCarta);
 
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNombreCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldEditorialCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldColeccion);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNormasCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textAreaNormasCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldRarezaCarta);
 
 		FuncionesManejoFront.permitirUnSimbolo(textFieldNombreCarta);
@@ -580,58 +582,53 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	public void busquedaPorCodigo(ActionEvent event) throws IOException, URISyntaxException {
-	    enviarReferencias();
-	    if (Utilidades.isInternetAvailable()) {
-	        String valorCodigo = busquedaCodigo.getText();
+		enviarReferencias();
+		if (Utilidades.isInternetAvailable()) {
+			String valorCodigo = busquedaCodigo.getText();
 
-	        if (valorCodigo.isEmpty()) {
-	            return;
-	        }
+			if (valorCodigo.isEmpty()) {
+				return;
+			}
 
-	        nav.cerrarMenuOpciones();
-	        AccionControlUI.limpiarAutorellenos(false);
-	        AccionControlUI.borrarDatosGraficos();
+			nav.cerrarMenuOpciones();
+			AccionControlUI.limpiarAutorellenos(false);
+			AccionControlUI.borrarDatosGraficos();
 
-	        CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
-	        
-	        future.thenAccept(enlaces -> {
-	        	
-	            if (enlaces == null || enlaces.isEmpty()) {
-	                // No se encontraron enlaces, no continuar
-	                return;
-	            }
-	            AccionFuncionesComunes.cargarRuning();
-	            File fichero;
-	            try {
-	                if (enlaces == null || enlaces.isEmpty()) {
-	                    // No se encontraron enlaces, manejar según sea necesario
-	                    return;
-	                }
-	                
-	                fichero = createTempFile(enlaces);
+			AccionFuncionesComunes.cargarRuning();
+			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
 
-	                if (fichero != null) {
-	                    enviarReferencias();
-	                    rellenarCombosEstaticos();
-	                    AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
-	                }
+			future.thenAccept(enlaces -> {
 
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
-	        });
+				if (enlaces == null || enlaces.isEmpty()) {
+					// No se encontraron enlaces, no continuar
+					AccionFuncionesComunes.cargarCompletado();
+					return;
+				}
 
-	        future.exceptionally(ex -> {
-	            ex.printStackTrace();
-	            return null; // Manejar errores aquí según sea necesario
-	        });
-	    }
+				File fichero;
+				try {
+					fichero = createTempFile(enlaces);
+
+					if (fichero != null) {
+						enviarReferencias();
+						rellenarCombosEstaticos();
+						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			future.exceptionally(ex -> {
+				ex.printStackTrace();
+				return null; // Manejar errores aquí según sea necesario
+			});
+		}
 	}
 
 	public File createTempFile(List<String> data) throws IOException {
 
-//		String directory = Utilidades.DB_FOLDER;
-		// Ensure the directory exists
 		String tempDirectory = System.getProperty("java.io.tmpdir");
 
 		// Create a temporary file in the system temporary directory

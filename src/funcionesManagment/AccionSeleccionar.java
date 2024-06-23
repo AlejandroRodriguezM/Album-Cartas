@@ -79,8 +79,6 @@ public class AccionSeleccionar {
 			return;
 		}
 
-//		Carta.limpiarCamposCarta(comicTemp);
-
 		if (!esPrincipal) {
 			accionRellenoDatos.setAtributosDesdeTabla(comicTemp);
 			AccionControlUI.validarCamposClave(false);

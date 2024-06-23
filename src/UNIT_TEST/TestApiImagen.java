@@ -1,90 +1,121 @@
 package UNIT_TEST;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import javax.imageio.ImageIO;
+
+import funcionesAuxiliares.Utilidades;
 
 public class TestApiImagen {
 
-	public static void main(String[] args) throws URISyntaxException, IOException {
+	/**
+	 * Obtenemos el directorio de inicio del usuario
+	 */
+	private static final String USER_DIR = System.getProperty("user.home");
 
-		String argumentos = "cardtrader+The+First+Sliver+1371+Secret+Lair+Drop+Series";
-
-		String direccion = searchCardTraderUrl(argumentos);
-		System.out.println(direccion);
-		
-		System.out.println(extraerDatosImagen(direccion));
+	/**
+	 * Construimos la ruta al directorio "Documents"
+	 */
+	private static final String DOCUMENTS_PATH = USER_DIR + File.separator + "Documents";
+	
+	public static String carpetaPortadas(String nombreDatabase) {
+		return DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator + nombreDatabase + File.separator
+				+ "portadas";
 	}
+	
+	public static void main(String[] args) {
 
-    public static String searchCardTraderUrl(String searchTerm) throws URISyntaxException {
-        try {
-            // Encode the search term for URL compatibility
-            String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
-            String urlString = "https://www.google.com/search?q=" + encodedSearchTerm;
-
-            // Setup the connection
-            URI uri = new URI(urlString);
-            URL url = uri.toURL();
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-                    "(KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36");
-
-            // Read the response from Google
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
-
-            // Convert response to string
-            String html = content.toString();
-
-            // Use regex to find the first URL from cardtrader.com in the search results
-            Pattern pattern = Pattern.compile("href=\"(https://www.cardtrader.com/(?!versions)[^\"]+)\"");
-            Matcher matcher = pattern.matcher(html);
-            if (matcher.find()) {
-                // Extract the URL
-                String urlFound = matcher.group(1);
-                return urlFound;
-            } else {
-                System.out.println("No se encontraron enlaces de cardtrader.com en los resultados.");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-	public static String extraerDatosImagen(String url) throws IOException {
-
-		Document doc = Jsoup.connect(url).get();
-
-		String imagen = "";
-
-		Element imagenElemento = doc.selectFirst(
-				"div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.jpg'], div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.png']");
-		if (imagenElemento != null) {
-			imagen = "https://www.cardtrader.com/" + imagenElemento.attr("src");
+		// Corrección y generación de la URL final de la imagen
+		String correctedUrl = "https://www.cardtrader.com/uploads/blueprints/image/22426/show_sliver-legion-future-sight.jpg";
+		String codigoImagen = Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+		URI uri = null;
+		try {
+			uri = new URI(correctedUrl);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 
-		return imagen;
+		descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()), codigoImagen + ".jpg");
+
+	}
+
+	public static CompletableFuture<Boolean> descargarYConvertirImagenAsync(URI urlImagen, String carpetaDestino,
+			String nuevoNombre) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				URL url = urlImagen.toURL();
+				URLConnection connection = url.openConnection();
+
+				if (connection instanceof HttpURLConnection) {
+					((HttpURLConnection) connection).setRequestMethod("HEAD");
+					int responseCode = ((HttpURLConnection) connection).getResponseCode();
+
+					if (responseCode != HttpURLConnection.HTTP_OK) {
+						if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+							System.err.println("Error interno del servidor al acceder a la URL: " + url);
+						} else {
+							System.err.println("La URL no apunta a una imagen válida o no se pudo acceder: " + url);
+						}
+						return false;
+					}
+				}
+
+				String extension = obtenerExtension(nuevoNombre);
+				Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
+
+				BufferedImage image;
+				try (InputStream in = url.openStream()) {
+					image = ImageIO.read(in);
+					if (image == null) {
+						System.err.println("No se pudo cargar la imagen desde " + urlImagen);
+						return false;
+					}
+				}
+
+				ImageIO.write(image, extension, rutaDestino.toFile());
+
+				return true;
+			} catch (MalformedURLException e) {
+				System.err.println("La URL no es válida: " + urlImagen);
+				return false;
+			} catch (IOException e) {
+				return false;
+			}
+		});
+	}
+
+	public static String obtenerExtension(String entrada) {
+		int ultimoPunto;
+		if (entrada.contains("/")) {
+			// Si la entrada contiene "/", se asume que es una URL
+			int ultimoSlash = entrada.lastIndexOf("/");
+			String nombreArchivo = entrada.substring(ultimoSlash + 1);
+			ultimoPunto = nombreArchivo.lastIndexOf(".");
+		} else {
+			// Si no contiene "/", se asume que es solo el nombre del archivo
+			ultimoPunto = entrada.lastIndexOf(".");
+		}
+
+		if (ultimoPunto == -1) {
+			return "";
+		}
+
+		return entrada.substring(ultimoPunto + 1).toLowerCase();
 	}
 }
