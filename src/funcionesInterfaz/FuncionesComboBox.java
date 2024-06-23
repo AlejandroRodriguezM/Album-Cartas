@@ -170,8 +170,11 @@ public class FuncionesComboBox {
 				comboboxes.get(i).hide();
 
 				List<String> itemsActuales = ListasCartasDAO.listaOrdenada.get(i);
+				
 				if (itemsActuales != null && !itemsActuales.isEmpty()) {
+
 					ObservableList<String> itemsObservable = FXCollections.observableArrayList(itemsActuales);
+					
 					comboboxes.get(i).setItems(itemsObservable);
 				}
 			}

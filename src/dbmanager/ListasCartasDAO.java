@@ -306,10 +306,11 @@ public class ListasCartasDAO {
 
 				listaOrdenada.add(nombreCartaSet);
 				listaOrdenada.add(numeroCartaSet.stream().map(String::valueOf).toList());
+				listaOrdenada.add(nombreEditorialSet);
 				listaOrdenada.add(nombreColeccionSet);
 				listaOrdenada.add(rarezaCartaSet);
 				listaOrdenada.add(isFoilSet);
-				listaOrdenada.add(nombreEditorialSet);
+
 				listaOrdenada.add(nombreGradeoSet);
 				listaOrdenada.add(nombreEstadoSet);
 				listaOrdenada.add(precioCartaSet);

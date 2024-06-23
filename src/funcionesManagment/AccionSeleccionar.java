@@ -35,7 +35,7 @@ public class AccionSeleccionar {
 
 		FuncionesTableView.nombreColumnas();
 		Utilidades.comprobacionListaCartas();
-
+		getReferenciaVentana().getImagenCarta().setOpacity(1);
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
 
@@ -44,11 +44,18 @@ public class AccionSeleccionar {
 		if (scene != null) {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
-
 					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
 					if (!esPrincipal) {
-
-						AccionFuncionesComunes.limpiarDatosCarta();
+						
+						if ("modificar".equals(AccionFuncionesComunes.TIPO_ACCION)) {
+							AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
+						}
+						// Borrar cualquier mensaje de error presente
+						AccionFuncionesComunes.borrarErrores();
+						AccionControlUI.validarCamposClave(true);
+						AccionControlUI.borrarDatosGraficos();
+						getReferenciaVentana().getImagenCarta().setImage(null);
+						getReferenciaVentana().getImagenCarta().setOpacity(0);
 					}
 				}
 			});

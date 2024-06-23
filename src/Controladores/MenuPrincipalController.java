@@ -410,9 +410,11 @@ public class MenuPrincipalController implements Initializable {
 	void ampliarImagen(MouseEvent event) {
 
 		if (getCartaCache() != null) {
-
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
-			nav.verVentanaImagen();
+
+			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
+				nav.verVentanaImagen();
+			}
 		}
 	}
 
@@ -640,9 +642,6 @@ public class MenuPrincipalController implements Initializable {
 
 			// Iterar sobre los ComboBox en orden
 			for (ComboBox<String> comboBox : listaComboboxes) {
-
-				System.out.println(comboBox.getPromptText());
-
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
 
@@ -1253,6 +1252,7 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.setOpacity(0);
 		tablaBBDD.getItems().clear();
 		imagenCarta.setImage(null);
+		imagenCarta.setOpacity(0);
 		tablaBBDD.refresh();
 
 		modificarEstadoTabla(259, 0.6);

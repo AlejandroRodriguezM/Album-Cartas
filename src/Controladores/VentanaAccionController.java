@@ -374,9 +374,11 @@ public class VentanaAccionController implements Initializable {
 	void ampliarImagen(MouseEvent event) {
 
 		if (getCartaCache() != null) {
-
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
-			nav.verVentanaImagen();
+
+			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
+				nav.verVentanaImagen();
+			}
 		}
 	}
 
