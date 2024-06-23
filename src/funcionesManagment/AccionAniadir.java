@@ -111,7 +111,7 @@ public class AccionAniadir {
 						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
-				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
 				referenciaVentana.getUrlReferenciaTextField()));
 

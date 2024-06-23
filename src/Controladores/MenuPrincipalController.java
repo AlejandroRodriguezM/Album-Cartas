@@ -69,7 +69,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import webScrap.WebScraperCatalogPreviews;
 
 /**
  * Esta clase sirve viajar a las diferentes ventanas del programa, asi como
@@ -218,6 +217,8 @@ public class MenuPrincipalController implements Initializable {
 	private Menu navegacionCarta;
 	@FXML
 	private Menu navegacionEstadistica;
+
+	public Carta cartaCache;
 
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
@@ -383,8 +384,6 @@ public class MenuPrincipalController implements Initializable {
 			alarmaList.setAlarmaConexionInternet(alarmaConexionInternet);
 			alarmaList.iniciarThreadChecker();
 
-			urlPreviews = WebScraperCatalogPreviews.urlPreviews();
-
 			enviarReferencias();
 
 			establecerDinamismoAnchor();
@@ -410,12 +409,12 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void ampliarImagen(MouseEvent event) {
 
-		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		if (getCartaCache() != null) {
+			ImagenAmpliadaController.cartaInfo = getCartaCache();
 
-		if (idRow != null) {
-
-			ImagenAmpliadaController.cartaInfo = SelectManager.cartaDatos(idRow.getIdCarta());
-			nav.verVentanaImagen();
+			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
+				nav.verVentanaImagen();
+			}
 		}
 	}
 
@@ -639,7 +638,10 @@ public class MenuPrincipalController implements Initializable {
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, null);
 		} else {
 			List<String> controls = new ArrayList<>();
-			for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
+			List<ComboBox<String>> listaComboboxes = referenciaVentana.getListaComboboxes();
+
+			// Iterar sobre los ComboBox en orden
+			for (ComboBox<String> comboBox : listaComboboxes) {
 				controls.add(comboBox.getSelectionModel().getSelectedItem());
 			}
 
@@ -647,7 +649,6 @@ public class MenuPrincipalController implements Initializable {
 
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, comic);
 		}
-
 	}
 
 	/**
@@ -876,6 +877,8 @@ public class MenuPrincipalController implements Initializable {
 
 		if (!tablaBBDD.isDisabled()) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
+
 			AccionSeleccionar.seleccionarCartas(true);
 		}
 	}
@@ -892,6 +895,7 @@ public class MenuPrincipalController implements Initializable {
 	void teclasDireccion(KeyEvent event) {
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 			AccionSeleccionar.seleccionarCartas(true);
 		}
 
@@ -1248,6 +1252,7 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.setOpacity(0);
 		tablaBBDD.getItems().clear();
 		imagenCarta.setImage(null);
+		imagenCarta.setOpacity(0);
 		tablaBBDD.refresh();
 
 		modificarEstadoTabla(259, 0.6);
@@ -1379,6 +1384,20 @@ public class MenuPrincipalController implements Initializable {
 	public Stage estadoStage() {
 
 		return (Stage) botonLimpiar.getScene().getWindow();
+	}
+
+	/**
+	 * @return the cartaCache
+	 */
+	public Carta getCartaCache() {
+		return cartaCache;
+	}
+
+	/**
+	 * @param cartaCache the cartaCache to set
+	 */
+	public void setCartaCache(Carta cartaCache) {
+		this.cartaCache = cartaCache;
 	}
 
 	/**

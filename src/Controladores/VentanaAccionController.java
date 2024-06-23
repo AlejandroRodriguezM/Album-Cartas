@@ -5,12 +5,21 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONException;
 
@@ -33,7 +42,6 @@ import funcionesManagment.AccionReferencias;
 import funcionesManagment.AccionSeleccionar;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,7 +51,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -59,6 +66,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import webScrap.WebScrapGoogleCardTrader;
 
 /**
  * Clase controladora para la ventana de acciones, que gestiona la interfaz de
@@ -138,7 +146,7 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private TextField textFieldNombreCarta;
 	@FXML
-	private TextField textFieldNormasCarta;
+	private TextArea textAreaNormasCarta;
 	@FXML
 	private TextField textFieldPrecioCarta;
 	@FXML
@@ -216,6 +224,8 @@ public class VentanaAccionController implements Initializable {
 	 */
 	private Stage stage;
 
+	public Carta cartaCache;
+
 	/**
 	 * Instancia de la clase Ventanas para la navegación.
 	 */
@@ -227,6 +237,8 @@ public class VentanaAccionController implements Initializable {
 
 	public static AccionReferencias referenciaVentanaPrincipal = new AccionReferencias();
 
+	private static final Logger logger = Logger.getLogger(Utilidades.class.getName());
+
 	public AccionReferencias guardarReferencia() {
 
 		referenciaVentana.setNombreCartaTextField(textFieldNombreCarta);
@@ -236,7 +248,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setRarezaCartaTextField(textFieldRarezaCarta);
 		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
 		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
-		referenciaVentana.setNormasCartaTextField(textFieldNormasCarta);
+		referenciaVentana.setNormasCartaTextArea(textAreaNormasCarta);
 		referenciaVentana.setPrecioCartaTextField(textFieldPrecioCarta);
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
 		referenciaVentana.setDireccionImagenTextField(textFieldDireccionPortada);
@@ -290,7 +302,7 @@ public class VentanaAccionController implements Initializable {
 				Arrays.asList(comboboxEsFoilCarta, comboboxEstadoCarta, comboboxGradeoCarta, comboboxNumeroCarta));
 
 		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta,
-				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textFieldNormasCarta,
+				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta,
 				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
 
 		AccionReferencias.setListaColumnasTabla(
@@ -361,13 +373,12 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	void ampliarImagen(MouseEvent event) {
 
-		Carta idRow = tablaBBDD.getSelectionModel().getSelectedItem();
+		if (getCartaCache() != null) {
+			ImagenAmpliadaController.cartaInfo = getCartaCache();
 
-		if (idRow != null) {
-
-			ImagenAmpliadaController.cartaInfo = idRow;
-
-			nav.verVentanaImagen();
+			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
+				nav.verVentanaImagen();
+			}
 		}
 	}
 
@@ -385,12 +396,12 @@ public class VentanaAccionController implements Initializable {
 		FuncionesManejoFront.restringirSimbolos(textFieldEditorialCarta);
 		FuncionesManejoFront.restringirSimbolos(textFieldColeccion);
 		FuncionesManejoFront.restringirSimbolos(textFieldRarezaCarta);
-		FuncionesManejoFront.restringirSimbolos(textFieldNormasCarta);
+//		FuncionesManejoFront.restringirSimbolos(textFieldNormasCarta);
 
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNombreCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldEditorialCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldColeccion);
-		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldNormasCarta);
+		FuncionesManejoFront.reemplazarEspaciosMultiples(textAreaNormasCarta);
 		FuncionesManejoFront.reemplazarEspaciosMultiples(textFieldRarezaCarta);
 
 		FuncionesManejoFront.permitirUnSimbolo(textFieldNombreCarta);
@@ -493,6 +504,7 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	void clickRaton(MouseEvent event) {
 		enviarReferencias();
+		setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 		AccionSeleccionar.seleccionarCartas(false);
 	}
 
@@ -508,6 +520,7 @@ public class VentanaAccionController implements Initializable {
 	void teclasDireccion(KeyEvent event) {
 		if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
 			enviarReferencias();
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 			AccionSeleccionar.seleccionarCartas(false);
 		}
 	}
@@ -553,6 +566,7 @@ public class VentanaAccionController implements Initializable {
 			if (fichero != null) {
 				enviarReferencias();
 				rellenarCombosEstaticos();
+
 				AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
 			}
 		}
@@ -569,113 +583,69 @@ public class VentanaAccionController implements Initializable {
 	 * @throws URISyntaxException Si ocurre un error de sintaxis de URI.
 	 */
 	@FXML
-	void busquedaPorCodigo(ActionEvent event) {
+	public void busquedaPorCodigo(ActionEvent event) throws IOException, URISyntaxException {
 		enviarReferencias();
-		nav.cerrarMenuOpciones();
-		Platform.runLater(() -> {
-			try {
-				if (!Utilidades.isInternetAvailable()) {
+		if (Utilidades.isInternetAvailable()) {
+			String valorCodigo = busquedaCodigo.getText();
+
+			if (valorCodigo.isEmpty()) {
+				return;
+			}
+
+			nav.cerrarMenuOpciones();
+			AccionControlUI.limpiarAutorellenos(false);
+			AccionControlUI.borrarDatosGraficos();
+
+			AccionFuncionesComunes.cargarRuning();
+			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
+
+			future.thenAccept(enlaces -> {
+
+				if (enlaces == null || enlaces.isEmpty()) {
+					// No se encontraron enlaces, no continuar
+					AccionFuncionesComunes.cargarCompletado();
 					return;
 				}
 
-				String valorCodigo = busquedaCodigo.getText();
+				File fichero;
+				try {
+					fichero = createTempFile(enlaces);
 
-//				if (valorCodigo.isEmpty()) {
-//					return;
-//				}
+					if (fichero != null) {
+						enviarReferencias();
+						rellenarCombosEstaticos();
+						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+					}
 
-				limpiarUIBeforeSearch();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 
-				Task<Void> tarea = createSearchTask(valorCodigo);
-
-				configureTaskListeners(tarea);
-
-				Thread thread = new Thread(tarea);
-				thread.setDaemon(true);
-				thread.start();
-			} catch (Exception ex) {
+			future.exceptionally(ex -> {
 				ex.printStackTrace();
-			}
-		});
-	}
-
-	private void limpiarUIBeforeSearch() {
-		AccionControlUI.limpiarAutorellenos(false);
-		imagencarta.setImage(null);
-		imagencarta.setVisible(true);
-		botonCancelarSubida.setVisible(true);
-		botonBusquedaCodigo.setDisable(true);
-		botonSubidaPortada.setDisable(true);
-		referenciaVentana.getMenuImportarFicheroCodigoBarras().setDisable(true);
-		AlarmaList.iniciarAnimacionCargaImagen(cargaImagen);
-		menuImportarFichero.setDisable(true);
-		FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
-		rellenarCombosEstaticos();
-	}
-
-	private Task<Void> createSearchTask(String valorCodigo) {
-		return new Task<>() {
-			@Override
-			protected Void call() throws Exception {
-				if (isCancelled() || !referenciaVentana.getStageVentana().isShowing()) {
-					return null;
-				}
-
-				if (AccionFuncionesComunes.procesarCartaPorCodigo(valorCodigo)) {
-					String mensaje = "Carta encontrado correctamente";
-					AlarmaList.mostrarMensajePront(mensaje, true, prontInfo);
-				} else {
-					String mensaje = "La búsqueda del cómic ha salido mal. Revisa el código";
-					AlarmaList.mostrarMensajePront(mensaje, false, prontInfo);
-					AlarmaList.detenerAnimacionCargaImagen(cargaImagen);
-				}
-				return null;
-			}
-		};
-	}
-
-	private void configureTaskListeners(Task<Void> tarea) {
-		tarea.setOnRunning(ev -> {
-			limpiarUIBeforeSearch();
-			AccionControlUI.limpiarAutorellenos(false);
-			AccionFuncionesComunes.cambiarEstadoBotones(true);
-			FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
-			FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
-			AlarmaList.iniciarAnimacionCarga(progresoCarga);
-		});
-
-		tarea.setOnSucceeded(ev -> {
-			AlarmaList.detenerAnimacionCargaImagen(cargaImagen);
-			AccionFuncionesComunes.cambiarEstadoBotones(false);
-			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
-			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
-			menuImportarFichero.setDisable(false);
-			updateButtonsVisibility();
-			AlarmaList.detenerAnimacionCarga(progresoCarga);
-		});
-
-		tarea.setOnCancelled(ev -> {
-			String mensaje = "Ha cancelado la búsqueda del cómic";
-			AlarmaList.mostrarMensajePront(mensaje, false, prontInfo);
-			AlarmaList.detenerAnimacionCargaImagen(cargaImagen);
-			AccionFuncionesComunes.cambiarEstadoBotones(false);
-			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
-			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
-
-			AlarmaList.detenerAnimacionCarga(progresoCarga);
-		});
-	}
-
-	private void updateButtonsVisibility() {
-		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
-			botonEliminarImportadoCarta.setVisible(true);
-			botonGuardarCambioCarta.setVisible(true);
-			botonGuardarCarta.setVisible(true);
-		} else {
-			botonEliminarImportadoCarta.setVisible(false);
-			botonGuardarCambioCarta.setVisible(false);
-			botonGuardarCarta.setVisible(false);
+				return null; // Manejar errores aquí según sea necesario
+			});
 		}
+	}
+
+	public File createTempFile(List<String> data) throws IOException {
+
+		String tempDirectory = System.getProperty("java.io.tmpdir");
+
+		// Create a temporary file in the system temporary directory
+		Path tempFilePath = Files.createTempFile(Paths.get(tempDirectory), "tempFile", ".txt");
+		logger.log(Level.INFO, "Temporary file created at: " + tempFilePath.toString());
+
+		// Write data to the temporary file
+		Files.write(tempFilePath, data, StandardOpenOption.WRITE);
+
+		// Convert the Path to a File and return it
+		return tempFilePath.toFile();
+	}
+
+	public void deleteFile(Path filePath) throws IOException {
+		Files.delete(filePath);
 	}
 
 	/**
@@ -792,6 +762,20 @@ public class VentanaAccionController implements Initializable {
 	public Stage estadoStage() {
 
 		return (Stage) botonLimpiar.getScene().getWindow();
+	}
+
+	/**
+	 * @return the cartaCache
+	 */
+	public Carta getCartaCache() {
+		return cartaCache;
+	}
+
+	/**
+	 * @param cartaCache the cartaCache to set
+	 */
+	public void setCartaCache(Carta cartaCache) {
+		this.cartaCache = cartaCache;
 	}
 
 	/**

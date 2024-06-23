@@ -4,6 +4,8 @@
 */
 package cartaManagement;
 
+import java.util.Objects;
+
 import dbmanager.CartaManagerDAO;
 import dbmanager.ListasCartasDAO;
 import funcionesAuxiliares.Utilidades;
@@ -458,6 +460,22 @@ public class Carta {
 		return contenidoCarta.toString();
 	}
 
-	// Otros métodos de la clase Carta
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Carta carta = (Carta) o;
+		return Objects.equals(getPrecioCarta(), carta.getPrecioCarta())
+				&& Objects.equals(getNomCarta(), carta.getNomCarta())
+				&& Objects.equals(getNumCarta(), carta.getNumCarta())
+				&& Objects.equals(getColeccionCarta(), carta.getColeccionCarta());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getPrecioCarta(), getNomCarta(), getNumCarta(), getColeccionCarta());
+	}
 
 }

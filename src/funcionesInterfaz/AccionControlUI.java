@@ -130,7 +130,7 @@ public class AccionControlUI {
 	public static void ocultarCampos() {
 
 		List<Node> elementosTextfield = Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
-				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
 				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getUrlReferenciaTextField());
 
 		List<Node> elementosLabel = Arrays.asList(referenciaVentana.getLabelRareza(),
@@ -173,12 +173,12 @@ public class AccionControlUI {
 		referenciaVentana.getRarezaCartaTextField().setText(cartaTemp.getRarezaCarta());
 
 		String resultadoFoil = cartaTemp.getEsFoilCarta();
-		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(resultadoFoil);
+		referenciaVentana.getNombreEsFoilCombobox().getSelectionModel().select(resultadoFoil);
 
 		String gradeoCarta = cartaTemp.getGradeoCarta();
 		referenciaVentana.getGradeoCartaCombobox().getSelectionModel().select(gradeoCarta);
 
-		referenciaVentana.getNormasCartaTextField().setText(cartaTemp.getNormasCarta());
+		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		referenciaVentana.getPrecioCartaTextField().setText(cartaTemp.getPrecioCarta());
 
@@ -187,6 +187,8 @@ public class AccionControlUI {
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
 
 		referenciaVentana.getUrlReferenciaTextField().setText(cartaTemp.getUrlReferenciaCarta());
+		
+		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		Utilidades.cargarImagenAsync(cartaTemp.getDireccionImagenCarta(), referenciaVentana.getImagenCarta());
 	}
@@ -206,7 +208,7 @@ public class AccionControlUI {
 		referenciaVentana.getRarezaCartaTextField().setText(cartaTemp.getRarezaCarta());
 		referenciaVentana.getGradeoCartaCombobox().getSelectionModel().select(cartaTemp.getGradeoCarta());
 		referenciaVentana.getNombreEsFoilCombobox().getSelectionModel().select(esFoil);
-		referenciaVentana.getNormasCartaTextField().setText(cartaTemp.getNormasCarta());
+		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 		referenciaVentana.getPrecioCartaTextField().setText(cartaTemp.getPrecioCarta());
 		referenciaVentana.getDireccionImagenTextField().setText(cartaTemp.getDireccionImagenCarta());
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
@@ -228,7 +230,7 @@ public class AccionControlUI {
 	public void actualizarCamposUnicos(Carta cartaTemp) {
 
 		// Get and process the text for NormasCarta
-		String normasTexto = referenciaVentana.getNormasCartaTextField().getText().trim();
+		String normasTexto = referenciaVentana.getNormasCartaTextArea().getText().trim();
 		if (!normasTexto.isEmpty()) {
 			normasTexto = Utilidades.eliminarEspacios(normasTexto);
 		} else if (!Pattern.compile(".*\\w+.*").matcher(normasTexto).matches()) {
@@ -283,7 +285,7 @@ public class AccionControlUI {
 	public boolean camposCartaSonValidos() {
 		List<Control> camposUi = Arrays.asList(referenciaVentana.getNombreCartaTextField(),
 				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
-				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getNormasCartaTextField(),
+				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getNormasCartaTextArea(),
 				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getPrecioCartaCombobox());
 
 		for (Control campoUi : camposUi) {
@@ -344,7 +346,7 @@ public class AccionControlUI {
 
 		referenciaVentana.getEstadoCartaCombobox().getEditor().setText("");
 		referenciaVentana.getGradeoCartaCombobox().getEditor().setText("");
-		referenciaVentana.getNormasCartaTextField().setText("");
+		referenciaVentana.getNormasCartaTextArea().setText("");
 		referenciaVentana.getIdCartaTratarTextField().setText("");
 
 		referenciaVentana.getDireccionImagenTextField().setText("");
@@ -523,16 +525,15 @@ public class AccionControlUI {
 
 		// Asignar los valores a las variables correspondientes
 		String nomCarta = camposCarta.get(0);
-		String editorialCarta = camposCarta.get(1);
-		String coleccionCarta = camposCarta.get(2);
-		String rarezaCarta = camposCarta.get(3);
+		String numCarta = camposCarta.get(1);
+		String editorialCarta = camposCarta.get(2);
+		String coleccionCarta = camposCarta.get(3);
+		String rarezaCarta = camposCarta.get(4);
+		String esFoilCarta = camposCarta.get(5);
+		String gradeoCarta = camposCarta.get(6);
+		String estadoCarta = camposCarta.get(7);
+		String precioCarta = camposCarta.get(8);
 
-		String esFoilCarta = camposCarta.get(9);
-		String gradeoCarta = camposCarta.get(11);
-		String numCarta = camposCarta.get(12);
-
-		String precioCarta = "0";
-		String estadoCarta = "";
 		String urlReferenciaCarta = "";
 		String direccionImagenCarta = "";
 		String normasCarta = "";
@@ -544,7 +545,6 @@ public class AccionControlUI {
 
 			direccionImagenCarta = camposCarta.get(7);
 			urlReferenciaCarta = camposCarta.get(8);
-			estadoCarta = camposCarta.get(10);
 			idCartaTratar = camposCarta.get(6);
 		}
 
@@ -561,10 +561,6 @@ public class AccionControlUI {
 		cartaTemp.setDireccionImagenCarta(Utilidades.defaultIfNullOrEmpty(direccionImagenCarta, ""));
 		cartaTemp.setNormasCarta(Utilidades.defaultIfNullOrEmpty(normasCarta, ""));
 		cartaTemp.setIdCarta(Utilidades.defaultIfNullOrEmpty(idCartaTratar, ""));
-
-		System.out.println();
-
-		System.out.println(cartaTemp.infoCarta());
 
 		return cartaTemp;
 	}

@@ -23,17 +23,17 @@
          </image>
       </ImageView>
       <ToggleButton fx:id="toggleEye" layoutX="189.0" layoutY="253.0" mnemonicParsing="false" visible="false" />
-      <Button fx:id="botonAccesobbdd" layoutX="18.0" layoutY="351.0" mnemonicParsing="false" onAction="#entrarMenu" prefHeight="80.0" prefWidth="235.0" style="-fx-font-size: 20;" stylesheets="@../style/acces_style.css" text="Entrar al menu">
+      <Button fx:id="botonAccesobbdd" layoutX="18.0" layoutY="347.0" mnemonicParsing="false" onAction="#entrarMenu" prefHeight="80.0" prefWidth="235.0" style="-fx-font-size: 20;" stylesheets="@../style/acces_style.css" text="Entrar al menu">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Button fx:id="botonEnviar" layoutX="17.0" layoutY="263.0" mnemonicParsing="false" onAction="#enviarDatos" prefHeight="80.0" prefWidth="235.0" style="-fx-font-size: 20;" stylesheets="@../style/acces_style.css" text="Conectar bbdd">
+      <Button fx:id="botonEnviar" layoutX="17.0" layoutY="259.0" mnemonicParsing="false" onAction="#enviarDatos" prefHeight="80.0" prefWidth="235.0" style="-fx-font-size: 20;" stylesheets="@../style/acces_style.css" text="Conectar bbdd">
          <font>
             <Font size="17.0" />
          </font></Button>
       <Label fx:id="alarmaConexion" layoutX="4.0" layoutY="27.0" prefHeight="30.0" prefWidth="32.0" stylesheets="@../style/alarma_conexion_style.css" />
       <Label fx:id="alarmaConexionInternet" layoutX="235.0" layoutY="27.0" prefHeight="30.0" prefWidth="29.0" style="-fx-background-radius: 50;" stylesheets="@../style/alarma_conexion_style.css" />
-      <Label fx:id="prontEstadoConexion" alignment="CENTER" contentDisplay="TOP" layoutX="4.0" layoutY="60.0" mouseTransparent="true" prefHeight="155.0" prefWidth="262.0" style="-fx-background-color: #29B6CC;" stylesheets="@../style/acces_style.css" wrapText="true">
+      <Label fx:id="prontEstadoConexion" alignment="CENTER" contentDisplay="TOP" layoutX="7.0" layoutY="60.0" mouseTransparent="true" prefHeight="115.0" prefWidth="254.0" style="-fx-background-color: #29B6CC;" stylesheets="@../style/acces_style.css" wrapText="true">
          <font>
             <Font name="Comic Sans MS" size="18.0" />
          </font>
@@ -58,7 +58,7 @@
       <ImageView fx:id="toggleEyeImageView" disable="true" fitHeight="38.0" fitWidth="29.0" layoutX="184.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true" visible="false" />
       <Label fx:id="alarmaConexionSql" disable="true" layoutX="191.0" layoutY="27.0" opacity="0.0" prefHeight="30.0" prefWidth="29.0" stylesheets="@../style/alarma_conexion_style.css" visible="false" />
       <ProgressIndicator fx:id="progresoCarga" layoutX="159.0" layoutY="425.0" prefHeight="38.0" prefWidth="44.0" progress="0.0" />
-      <Label fx:id="prontEstadoConexionBase" alignment="CENTER" contentDisplay="TOP" layoutX="3.0" layoutY="221.0" mouseTransparent="true" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: #29B6CC;" stylesheets="@../style/acces_style.css" wrapText="true">
+      <Label fx:id="prontEstadoConexionBase" alignment="CENTER" contentDisplay="TOP" layoutX="7.0" layoutY="181.0" mouseTransparent="true" prefHeight="69.0" prefWidth="254.0" style="-fx-background-color: #29B6CC;" stylesheets="@../style/acces_style.css" wrapText="true">
          <font>
             <Font name="Comic Sans MS" size="18.0" />
          </font>

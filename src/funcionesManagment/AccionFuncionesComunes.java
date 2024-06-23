@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -36,7 +37,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleLeagueOfCartas;
+import webScrap.WebScrapGoogleCardTrader;
 
 public class AccionFuncionesComunes {
 
@@ -158,64 +159,55 @@ public class AccionFuncionesComunes {
 		FuncionesTableView.actualizarBusquedaRaw();
 	}
 
-	public static boolean procesarCartaPorCodigo(String finalValorCodigo) {
-	    List<Carta> cartaInfo = obtenerCartaInfo(finalValorCodigo);
+	public static boolean procesarCartaPorCodigo(Carta cartaInfo) {
 
-	    boolean alMenosUnoProcesado = false;
+		boolean alMenosUnoProcesado = false;
 
-	    for (Carta carta : cartaInfo) {
-	        if (comprobarCodigo(carta)) {
-	            rellenarTablaImport(carta);
-	            alMenosUnoProcesado = true;
-	        }
-	    }
-
-	    return alMenosUnoProcesado;
-	}
-
-	public static void actualizarCartasDatabase(Carta comicOriginal, String tipoUpdate, boolean confirmarFirma) {
-
-		if (!comprobarCodigo(comicOriginal)) {
-			return;
+		if (comprobarCodigo(cartaInfo)) {
+			rellenarTablaImport(cartaInfo);
+			alMenosUnoProcesado = true;
 		}
 
-		String codigoCarta = comicOriginal.getUrlReferenciaCarta();
-		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta);
+		return alMenosUnoProcesado;
+	}
+
+	public static void actualizarCartasDatabase(Carta cartaOriginal, String tipoUpdate, boolean confirmarFirma) {
+
+		String codigoCarta = cartaOriginal.getUrlReferenciaCarta();
+		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta, true);
 
 		for (Carta cartaInfo : cartaColeccion) {
-//			if (cartaInfo == null) {
-//				return;
-//			}
 
-			String codigo_imagen = Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+			String codigo_imagen = Utilidades
+					.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
 			String urlImagen = cartaInfo.getDireccionImagenCarta();
 			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigo_imagen + ".jpg";
 			String correctedUrl = urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
-			comicOriginal.setIdCarta(comicOriginal.getIdCarta());
+
+			cartaOriginal.setIdCarta(cartaOriginal.getIdCarta());
 			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
 
-				String numCarta = comicOriginal.getNumCarta();
-				String nombreCorregido = Utilidades.eliminarParentesis(comicOriginal.getNomCarta());
+				String numCarta = cartaOriginal.getNumCarta();
+				String nombreCorregido = Utilidades.eliminarParentesis(cartaOriginal.getNomCarta());
 				String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
 				nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
-				String editorial = DatabaseManagerDAO.getComercializadora((comicOriginal.getEditorialCarta()));
+				String editorial = DatabaseManagerDAO.getComercializadora((cartaOriginal.getEditorialCarta()));
 
-				comicOriginal.setNomCarta(nombreLimpio);
-				comicOriginal.setNumCarta(numCarta);
-				comicOriginal.setEditorialCarta(editorial);
+				cartaOriginal.setNomCarta(nombreLimpio);
+				cartaOriginal.setNumCarta(numCarta);
+				cartaOriginal.setEditorialCarta(editorial);
 
-				completarInformacionFaltante(comicOriginal, comicOriginal);
 				if (tipoUpdate.equalsIgnoreCase("modificar")) {
-					Utilidades.deleteFile(comicOriginal.getDireccionImagenCarta());
-					comicOriginal.setDireccionImagenCarta(urlFinal);
+					Utilidades.deleteFile(cartaOriginal.getDireccionImagenCarta());
+					cartaOriginal.setDireccionImagenCarta(urlFinal);
 				} else {
-					comicOriginal.setDireccionImagenCarta(comicOriginal.getDireccionImagenCarta());
+					cartaOriginal.setDireccionImagenCarta(cartaOriginal.getDireccionImagenCarta());
 				}
 
 			}
 
 			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-				comicOriginal.setDireccionImagenCarta(urlFinal);
+				cartaOriginal.setDireccionImagenCarta(urlFinal);
 				// Asynchronously download and convert image
 				Platform.runLater(() -> {
 					URI uri = null;
@@ -231,30 +223,9 @@ public class AccionFuncionesComunes {
 
 			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")
 					|| tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-				UpdateManager.actualizarCartaBBDD(comicOriginal, "modificar");
+				UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
 			}
 		}
-		
-		
-	}
-
-	private static void completarInformacionFaltante(Carta comicInfo, Carta comicOriginal) {
-		// Completar información faltante con la información original si está vacía
-		if (comicInfo.getEditorialCarta() == null || comicInfo.getEditorialCarta().isEmpty()) {
-			comicInfo.setEditorialCarta(comicOriginal.getEditorialCarta());
-		}
-		if (comicInfo.getColeccionCarta() == null || comicInfo.getColeccionCarta().isEmpty()) {
-			comicInfo.setColeccionCarta(comicOriginal.getColeccionCarta());
-		}
-		if (comicInfo.getRarezaCarta() == null || comicInfo.getRarezaCarta().isEmpty()) {
-			comicInfo.setRarezaCarta(comicOriginal.getRarezaCarta());
-		}
-		if (comicInfo.getPrecioCarta().equals("0")) {
-			comicInfo.setPrecioCarta(comicOriginal.getPrecioCarta());
-		}
-		comicInfo.setEstadoCarta(comicOriginal.getEstadoCarta());
-
-		comicInfo.setDireccionImagenCarta(comicOriginal.getDireccionImagenCarta());
 
 	}
 
@@ -314,23 +285,29 @@ public class AccionFuncionesComunes {
 
 			ListasCartasDAO.cartasImportados.clear();
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
-		}
 
+		}
+		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+		limpiarDatosCarta();
+	}
+
+	public static void limpiarDatosCarta() {
 		getReferenciaVentana().getNombreCartaTextField().setText("");
 		getReferenciaVentana().getEditorialCartaTextField().setText("");
 		getReferenciaVentana().getColeccionCartaTextField().setText("");
 		getReferenciaVentana().getRarezaCartaTextField().setText("");
-		getReferenciaVentana().getNormasCartaTextField().setText("");
+		getReferenciaVentana().getNormasCartaTextArea().setText("");
 		getReferenciaVentana().getPrecioCartaTextField().setText("");
 		getReferenciaVentana().getIdCartaTratarTextField().setText("");
 		getReferenciaVentana().getDireccionImagenTextField().setText("");
-		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+
 		getReferenciaVentana().getUrlReferenciaTextField().setText("");
 		getReferenciaVentana().getNumeroCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getNombreEsFoilCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getGradeoCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getEstadoCartaCombobox().getEditor().clear(); // Limpiar el texto en el ComboBox
 		getReferenciaVentana().getImagenCarta().setImage(null);
+
 		if ("modificar".equals(TIPO_ACCION)) {
 			AccionControlUI.mostrarOpcion(TIPO_ACCION);
 		}
@@ -428,6 +405,7 @@ public class AccionFuncionesComunes {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
+
 			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
 			// Descarga y conversión asíncrona de la imagen
 			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
@@ -445,20 +423,29 @@ public class AccionFuncionesComunes {
 		});
 	}
 
-	private static List<Carta> obtenerCartaInfo(String finalValorCodigo) {
+	public static List<Carta> obtenerCartaInfo(String finalValorCodigo, boolean esImport) {
 		try {
-
 			List<Carta> cartaInfo = new ArrayList<>();
+			if (esImport) {
+				cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(finalValorCodigo));
+			} else {
+				List<String> enlaces = WebScrapGoogleCardTrader.buscarEnGoogle(finalValorCodigo);
+				controlCargaCartas(enlaces.size());
+				nav.verCargaCartas(cargaCartasControllerRef);
+				for (String string : enlaces) {
 
-			List<String> enlaces = WebScrapGoogleLeagueOfCartas.buscarEnGoogle(finalValorCodigo);
-
-			for (String string : enlaces) {
-				cartaInfo.add(WebScrapGoogleLeagueOfCartas.extraerDatosMTG(string));
+					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(string));
+				}
 			}
+
+			// Convertir la lista a un Set para eliminar duplicados
+			Set<Carta> cartaSet = new HashSet<>(cartaInfo);
+			cartaInfo.clear(); // Limpiar la lista original
+			cartaInfo.addAll(cartaSet); // Agregar los elementos únicos de vuelta a la lista
 
 			return cartaInfo;
 
-		} catch (URISyntaxException | IOException e) {
+		} catch (URISyntaxException e) {
 			// Manejar excepciones
 			System.err.println("Error al obtener información del cómic: " + e.getMessage());
 			return null;
@@ -486,15 +473,7 @@ public class AccionFuncionesComunes {
 	public static void busquedaPorListaDatabase(List<Carta> listaCartasDatabase, String tipoUpdate,
 			boolean actualizarFirma) {
 
-		codigoFaltante = new StringBuilder();
-		codigoFaltante.setLength(0);
-		contadorErrores = new AtomicInteger(0);
-		cartasProcesados = new AtomicInteger(0);
-		mensajeIdCounter = new AtomicInteger(0); // Contador para generar IDs únicos
-		numLineas = new AtomicInteger(listaCartasDatabase.size()); // Obtener el tamaño de la lista
-		cargaCartasControllerRef = new AtomicReference<>();
-		mensajesUnicos = new HashSet<>();
-		mensajesUnicos.clear();
+		controlCargaCartas(listaCartasDatabase.size());
 
 		Task<Void> tarea = createSearchTask(tipoUpdate, actualizarFirma, listaCartasDatabase);
 
@@ -505,20 +484,26 @@ public class AccionFuncionesComunes {
 		thread.start();
 	}
 
-	// ES ACCION
-	public static void busquedaPorCodigoImportacion(File file) {
-
-		fichero = file;
+	public static void controlCargaCartas(int numCargas) {
+		codigoFaltante = new StringBuilder();
+		codigoFaltante.setLength(0);
 		contadorErrores = new AtomicInteger(0);
 		cartasProcesados = new AtomicInteger(0);
 		mensajeIdCounter = new AtomicInteger(0);
 		numLineas = new AtomicInteger(0);
-		numLineas.set(Utilidades.contarLineasFichero(fichero));
+		numLineas.set(numCargas);
 		cargaCartasControllerRef = new AtomicReference<>();
-		codigoFaltante = new StringBuilder();
-		codigoFaltante.setLength(0);
 		mensajesUnicos = new HashSet<>();
 		mensajesUnicos.clear();
+	}
+
+	// ES ACCION
+	public static void busquedaPorCodigoImportacion(File file) {
+
+		fichero = file;
+		int numCargas = Utilidades.contarLineasFichero(fichero);
+
+		controlCargaCartas(numCargas);
 
 		Task<Void> tarea = createSearchTask("", false, null);
 
@@ -538,46 +523,47 @@ public class AccionFuncionesComunes {
 
 				if (tipoUpdate.isEmpty()) {
 					try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
+						Set<Carta> setSinDuplicados = new HashSet<>();
+
 						reader.lines().forEach(linea -> {
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 								return;
 							}
-							String finalValorCodigo = Utilidades.eliminarEspacios(linea).replace("-", "");
-							List<Carta> comicInfo = obtenerCartaInfo(finalValorCodigo);
 
-							for (Carta carta : comicInfo) {
-								processCarta(carta, "", false);
+							List<Carta> listaOriginal = obtenerCartaInfo(linea, true);
+
+							// Filtrar duplicados antes de procesar
+							for (Carta carta : listaOriginal) {
+								if (setSinDuplicados.add(carta)) {
+									processCarta(carta, "", false);
+								}
 							}
-
 						});
+
 					} catch (IOException e) {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
-//					listaCartasDatabase.forEach(codigo -> {
-//						String finalValorCodigo = Utilidades.eliminarEspacios(codigo.getcodigoCartaTextField())
-//								.replace("-", "");
-//						codigo.setcodigoCarta(finalValorCodigo);
-//						processCarta(codigo, tipoUpdate, actualizarFirma);
-//
-//					});
+					listaCartasDatabase.forEach(codigo -> {
+						processCarta(codigo, tipoUpdate, actualizarFirma);
+					});
 				}
 				return null;
 			}
 		};
 	}
 
-	private static void processCarta(Carta comic, String tipoUpdate, boolean actualizarFirma) {
+	private static void processCarta(Carta carta, String tipoUpdate, boolean actualizarFirma) {
 		StringBuilder textoBuilder = new StringBuilder();
 
-		if (comic.getUrlReferenciaCarta().isEmpty() || comic.getUrlReferenciaCarta().equalsIgnoreCase("vacio")) {
+		if (carta.getUrlReferenciaCarta().isEmpty() || carta.getUrlReferenciaCarta().equalsIgnoreCase("vacio")) {
 
 			if (tipoUpdate.isEmpty()) {
-				codigoFaltante.append("Falta carta con código: ").append(comic.getNomCarta()).append("\n");
-				textoBuilder.append("Cómic no capturado: ").append(comic.getNomCarta()).append("\n");
+				codigoFaltante.append("Falta carta con código: ").append(carta.getNomCarta()).append("\n");
+				textoBuilder.append("Carta no capturado: ").append(carta.getNomCarta()).append("\n");
 			} else {
-				codigoFaltante.append("ID no procesado: ").append(comic.getIdCarta()).append("\n");
-				textoBuilder.append("ID no procesado: ").append(comic.getIdCarta()).append("\n");
+				codigoFaltante.append("ID no procesado: ").append(carta.getIdCarta()).append("\n");
+				textoBuilder.append("ID no procesado: ").append(carta.getIdCarta()).append("\n");
 			}
 
 			contadorErrores.getAndIncrement();
@@ -585,11 +571,11 @@ public class AccionFuncionesComunes {
 		} else {
 
 			if (tipoUpdate.isEmpty()) {
-				textoBuilder.append("Código: ").append(comic.getNomCarta()).append(" procesado.").append("\n");
-				AccionFuncionesComunes.procesarCartaPorCodigo(comic.getUrlReferenciaCarta());
+				textoBuilder.append("Código: ").append(carta.getNomCarta()).append(" procesado.").append("\n");
+				AccionFuncionesComunes.procesarCartaPorCodigo(carta);
 			} else {
-				textoBuilder.append("ID: ").append(comic.getIdCarta()).append(" actualizado.").append("\n");
-				AccionFuncionesComunes.actualizarCartasDatabase(comic, tipoUpdate, actualizarFirma);
+				textoBuilder.append("ID: ").append(carta.getIdCarta()).append(" actualizado.").append("\n");
+				AccionFuncionesComunes.actualizarCartasDatabase(carta, tipoUpdate, actualizarFirma);
 			}
 		}
 		updateGUI(textoBuilder);
@@ -628,26 +614,42 @@ public class AccionFuncionesComunes {
 
 	}
 
-	private static void handleTaskEvents(Task<Void> tarea, String tipoUpdate) {
+	public static void cargarRuning() {
+		AccionControlUI.limpiarAutorellenos(false);
+
+		cambiarEstadoBotones(true);
+		getReferenciaVentana().getImagenCarta().setImage(null);
+		getReferenciaVentana().getImagenCarta().setVisible(true);
+
+		AlarmaList.iniciarAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+		FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
+		FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
+
+		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(true);
+		getReferenciaVentana().getBotonSubidaPortada().setDisable(true);
+
+		AlarmaList.mostrarMensajePront("Se estan cargando los datos", true,
+				getReferenciaVentana().getProntInfoTextArea());
+		AlarmaList.iniciarAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+	}
+
+	public static void cargarCompletado() {
+		AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+		cambiarEstadoBotones(false);
+
+		actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
+
+		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
+
+		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
+		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+	}
+
+	public static void handleTaskEvents(Task<Void> tarea, String tipoUpdate) {
 
 		tarea.setOnRunning(ev -> {
 			if (tipoUpdate.isEmpty()) {
-				AccionControlUI.limpiarAutorellenos(false);
-
-				cambiarEstadoBotones(true);
-				getReferenciaVentana().getImagenCarta().setImage(null);
-				getReferenciaVentana().getImagenCarta().setVisible(true);
-
-				AlarmaList.iniciarAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
-				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
-				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
-
-				getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(true);
-				getReferenciaVentana().getBotonSubidaPortada().setDisable(true);
-
-				AlarmaList.mostrarMensajePront("Se estan cargando los datos", true,
-						getReferenciaVentana().getProntInfoTextArea());
-				AlarmaList.iniciarAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+				cargarRuning();
 			} else {
 				String cadenaAfirmativo = getAffirmativeMessage(tipoUpdate);
 				List<Stage> stageVentanas = FuncionesManejoFront.getStageVentanas();
@@ -687,15 +689,7 @@ public class AccionFuncionesComunes {
 
 		tarea.setOnSucceeded(ev -> {
 			if (tipoUpdate.isEmpty()) {
-				AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
-				cambiarEstadoBotones(false);
-
-				actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
-
-				getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
-
-				Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
-				AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+				cargarCompletado();
 			} else {
 
 				AlarmaList.mostrarMensajePront("Datos cargados correctamente", true,

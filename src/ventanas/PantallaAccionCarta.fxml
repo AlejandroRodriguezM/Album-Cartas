@@ -47,18 +47,13 @@
          </font>
       </TextField>
       <ComboBox fx:id="comboboxEsFoilCarta" layoutX="56.0" layoutY="150.0" prefHeight="25.0" prefWidth="125.0" promptText="Foil" />
-      <TextField fx:id="textFieldUrlCarta" layoutX="229.0" layoutY="99.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce URL carta">
+      <TextField fx:id="textFieldUrlCarta" layoutX="56.0" layoutY="206.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce URL carta">
          <font>
             <Font size="10.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboboxEstadoCarta" layoutX="229.0" layoutY="68.0" prefHeight="25.0" prefWidth="111.0" promptText="Estado" />
+      <ComboBox fx:id="comboboxEstadoCarta" layoutX="233.0" layoutY="68.0" prefHeight="25.0" prefWidth="147.0" promptText="Estado" />
       <ComboBox fx:id="comboboxGradeoCarta" layoutX="56.0" layoutY="178.0" prefHeight="25.0" prefWidth="125.0" promptText="Nivel de gradeo" />
-      <TextField fx:id="textFieldNormasCarta" layoutX="56.0" layoutY="206.0" prefHeight="21.0" prefWidth="125.0" promptText="Introduce normas carta">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </TextField>
       <TextField fx:id="textFieldDireccionPortada" editable="false" layoutX="56.0" layoutY="282.0" prefHeight="21.0" prefWidth="125.0" promptText="URL local de la portada">
          <font>
             <Font size="10.0" />
@@ -73,14 +68,14 @@
          </font></Label>
       <Label fx:id="labelRareza" layoutX="5.0" layoutY="128.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Rareza" />
       <Label fx:id="labelFoil" layoutX="5.0" layoutY="153.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Foil" />
-      <Label fx:id="labelNormas" layoutX="5.0" layoutY="206.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Normas" />
+      <Label fx:id="labelNormas" layoutX="187.0" layoutY="99.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Normas" />
       <Label fx:id="labelEstado" layoutX="188.0" layoutY="70.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Estado" />
       <Label fx:id="labelGradeo" layoutX="5.0" layoutY="181.0" prefHeight="21.0" prefWidth="43.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Gradeo" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="labelReferencia" layoutX="187.0" layoutY="99.0" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="URL" />
+      <Label fx:id="labelReferencia" layoutX="5.0" layoutY="206.0" prefHeight="21.0" prefWidth="29.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="URL" />
       <Label fx:id="labelPortada" focusTraversable="false" layoutX="5.0" layoutY="281.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Portada" />
       <Label fx:id="labelId" focusTraversable="false" layoutX="5.0" layoutY="257.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="idCarta" />
       <Button fx:id="botonLimpiar" layoutX="187.0" layoutY="29.0" mnemonicParsing="false" onAction="#limpiarDatos" prefHeight="21.0" prefWidth="57.0" stylesheets="@../style/genericos_style.css" text="Limpiar" />
@@ -151,8 +146,8 @@
       <Button fx:id="botonGuardarCarta" alignment="CENTER" layoutX="739.0" layoutY="290.0" mnemonicParsing="false" onAction="#guardarListaImportados" prefHeight="42.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Añadir Carta" textAlignment="CENTER" visible="false" wrapText="true" />
       <Button fx:id="botonGuardarCambioCarta" layoutX="248.0" layoutY="29.0" mnemonicParsing="false" onAction="#guardarDatos" prefHeight="35.0" prefWidth="81.0" stylesheets="@../style/genericos_style.css" text="Guardar Carta" visible="false" />
       <Button fx:id="botonEliminarImportadoCarta" layoutX="640.0" layoutY="290.0" mnemonicParsing="false" onAction="#eliminarCartaSeleccionado" prefHeight="42.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" visible="false" wrapText="true" />
-      <ImageView fx:id="cargaImagen" fitHeight="308.0" fitWidth="207.0" layoutX="368.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="imagencarta" fitHeight="308.0" fitWidth="199.0" layoutX="373.0" layoutY="31.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
+      <ImageView fx:id="cargaImagen" fitHeight="308.0" fitWidth="207.0" layoutX="391.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imagencarta" fitHeight="308.0" fitWidth="199.0" layoutX="391.0" layoutY="31.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
       <Button fx:id="botonSubidaPortada" layoutX="186.0" layoutY="280.0" mnemonicParsing="false" onAction="#nuevaPortada" prefHeight="25.0" prefWidth="25.0" stylesheets="@../style/boton_subida_style.css" />
       <Label fx:id="alarmaConexionSql" disable="true" layoutX="788.0" opacity="0.0" prefHeight="25.0" prefWidth="23.0" stylesheets="@../style/alarma_conexion_style.css" visible="false" />
       <Label fx:id="alarmaConexionInternet" layoutX="813.0" prefHeight="25.0" prefWidth="23.0" stylesheets="@../style/alarma_conexion_style.css" />
@@ -167,5 +162,10 @@
          </children>
       </VBox>
       <ProgressIndicator fx:id="progresoCarga" layoutX="713.0" layoutY="287.0" prefHeight="66.0" prefWidth="70.0" stylesheets="@../style/progreso_style.css" visible="false" />
+      <TextArea fx:id="textAreaNormasCarta" layoutX="233.0" layoutY="97.0" prefHeight="101.0" prefWidth="147.0" promptText="Normas de la carta" wrapText="true">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </TextArea>
    </children>
 </Pane>

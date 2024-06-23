@@ -198,7 +198,7 @@ public class AccionModificar {
 						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
-				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
 				referenciaVentana.getUrlReferenciaTextField(), referenciaVentana.getGradeoCartaCombobox()));
 

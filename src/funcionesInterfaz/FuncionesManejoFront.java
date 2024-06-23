@@ -12,6 +12,8 @@ import funcionesAuxiliares.Utilidades;
 import funcionesManagment.AccionReferencias;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
@@ -21,6 +23,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -83,7 +86,7 @@ public class FuncionesManejoFront {
 		referenciaVentana.getImagenCarta().fitHeightProperty()
 				.bind(Bindings.min(maxHeight, referenciaVentana.getRootAnchorPane().heightProperty()));
 		referenciaVentana.getImagenCarta().setPreserveRatio(false);
-		
+
 	}
 
 	////////////////////////////////////////////////////
@@ -162,55 +165,68 @@ public class FuncionesManejoFront {
 		}
 	}
 
-	/**
-	 * Restringe los símbolos no permitidos en el TextField y muestra un Tooltip
-	 * informativo.
-	 *
-	 * @param textField El TextField en el cual restringir los símbolos.
-	 */
 	public static void restringirSimbolos(TextField textField) {
-
 		if (textField != null) {
-
 			textField.textProperty().addListener((observable, oldValue, newValue) -> {
-				String allowedPattern = "[\\p{L}\\p{N}\\s,.!'`´\"-]*";
+				String allowedPattern = "[\\p{L}\\p{N}\\s!`´\"\\-]*"; // Permitimos solo letras, números, espacios,
+																		// signos específicos y acentos
 
 				if (newValue != null) {
-
 					// Elimina espacios al principio y al final de la cadena.
 					newValue = newValue.trim();
 
-					if (!newValue.matches(allowedPattern)) {
+					// Remueve caracteres no permitidos según allowedPattern
+					newValue = newValue.replaceAll("[^\\p{L}\\p{N}\\s!`´\"\\-,.'\"]", "");
+
+					// Reemplazar letras con acentos por sus equivalentes sin acento
+					String updatedValue = removeAccents(newValue);
+
+					if (!updatedValue.equals(newValue)) {
+						textField.setText(updatedValue);
+					}
+
+					if (!updatedValue.matches(allowedPattern)) {
 						// Si el valor no coincide con el patrón permitido, restaura el valor anterior.
 						textField.setText(oldValue);
-					} else {
-						String updatedValue = newValue.replaceAll("\\s*(?<![,'\"`´-])(?=[,'\"`´-])|(?<=[,'\"`´-])\\s*",
-								"");
-
-						if (!updatedValue.equals(newValue)) {
-							textField.setText(updatedValue);
-						}
 					}
 				}
 			});
 		}
 	}
 
+	private static String removeAccents(String input) {
+		return input.replaceAll("[áÁ]", "a").replaceAll("[éÉ]", "e").replaceAll("[íÍ]", "i").replaceAll("[óÓ]", "o")
+				.replaceAll("[úÚ]", "u").replaceAll("[üÜ]", "u"); // Añadir más reemplazos según sea necesario
+	}
+
 	public static void eliminarSimbolosEspeciales(TextField textField) {
-
 		if (textField != null) {
-
 			textField.textProperty().addListener((observable, oldValue, newValue) -> {
 				if (newValue != null) {
+					// Patrón permitido: letras, números, espacios, comas, puntos, y otros
+					// caracteres específicos
+					String allowedPattern = "[\\p{L}\\p{N}\\s!`´\"\\-,.'@]*";
 
 					// Elimina los símbolos especiales ' " ! ? # @
-					String cleanedValue = newValue.replaceAll("[\\'\"!\\?#@,]", "");
+					String cleanedValue = newValue.replaceAll("[\\'\"!\\?#@]", "");
 
 					// Reemplaza ' seguido de números con -
 					cleanedValue = cleanedValue.replaceAll("\\'(?=\\d)", "-");
 
-					// Actualiza el valor del campo de texto
-					textField.setText(cleanedValue);
+					// Aplica el patrón permitido para mantener solo los caracteres válidos
+					cleanedValue = cleanedValue.replaceAll("[^\\p{L}\\p{N}\\s!`´\"\\-,.'@]", "");
+
+					// Reemplazar letras con acentos por sus equivalentes sin acento
+					String updatedValue = removeAccents(cleanedValue);
+
+					if (!updatedValue.equals(newValue)) {
+						textField.setText(updatedValue);
+					}
+
+					if (!updatedValue.matches(allowedPattern)) {
+						// Si el valor no coincide con el patrón permitido, restaura el valor anterior.
+						textField.setText(oldValue);
+					}
 				}
 			});
 		}
@@ -222,19 +238,23 @@ public class FuncionesManejoFront {
 	 * @param textField El TextField al que se aplicará la eliminación de espacios
 	 *                  múltiples.
 	 */
-	public static void reemplazarEspaciosMultiples(TextField textField) {
+	public static void reemplazarEspaciosMultiples(Control control) {
+		if (control instanceof TextInputControl) {
+			TextInputControl textInputControl = (TextInputControl) control;
+			textInputControl.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (newValue != null) {
+						// Reemplaza múltiples espacios seguidos por un solo espacio.
+						String textoActualizado = newValue.replaceAll("\\s+", " ");
 
-		if (textField != null) {
-
-			textField.textProperty().addListener((observable, oldValue, newValue) -> {
-				if (newValue != null) {
-					// Reemplaza múltiples espacios seguidos por un solo espacio.
-					newValue = newValue.replaceAll("\\s+", " ");
-
-					textField.setText(newValue); // Actualiza el valor del TextField
+						// Actualiza el valor del Control
+						textInputControl.setText(textoActualizado); // Asigna el texto actualizado
+					}
 				}
 			});
-
+		} else {
+			throw new IllegalArgumentException("El control proporcionado no es un TextInputControl.");
 		}
 	}
 
@@ -299,7 +319,7 @@ public class FuncionesManejoFront {
 		disableTextFields(estadoAccion, referenciaVentana.getNombreCartaTextField(),
 				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
 				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getBusquedaGeneralTextField(),
-				referenciaVentana.getNormasCartaTextField(), referenciaVentana.getBusquedaCodigoTextField(),
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getNormasCartaTextArea(),
 				referenciaVentana.getPrecioCartaTextField(), referenciaVentana.getCodigoCartaTratarTextField(),
 				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getIdCartaTratarTextField(),
 				referenciaVentana.getUrlReferenciaTextField());
@@ -346,10 +366,10 @@ public class FuncionesManejoFront {
 		}
 	}
 
-	private static void disableTextFields(boolean estadoAccion, TextField... textFields) {
-		for (TextField textfield : textFields) {
-			if (textfield != null) {
-				textfield.setDisable(estadoAccion);
+	private static void disableTextFields(boolean estadoAccion, Control... controls) {
+		for (Control control : controls) {
+			if (control != null) {
+				control.setDisable(estadoAccion);
 			}
 		}
 	}
