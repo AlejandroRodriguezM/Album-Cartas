@@ -79,6 +79,8 @@ public class AccionReferencias {
 	private Button botonDescargarPdf;
 	private Button botonDescargarSQL;
 	private Button botonNormalizarDB;
+	private Button botonGuardarListaCartas;
+	private Button botonEliminarImportadoListaCarta;
 
 	private Rectangle barraCambioAltura;
 
@@ -107,7 +109,7 @@ public class AccionReferencias {
 	private TextField editorialCartaTextField;
 	private TextField coleccionCartaTextField;
 	private TextField rarezaCartaTextField;
-	private TextArea normasCartaTextField;
+	private TextArea normasCartaTextArea;
 	private TextField precioCartaTextField;
 	private TextField idCartaTratarTextField;
 	private TextField direccionImagenTextField;
@@ -391,7 +393,7 @@ public class AccionReferencias {
 	public Label getLabelIdMod() {
 		return labelIdMod;
 	}
-	
+
 	public Label getLabelEsFoil() {
 		return labelEsFoil;
 	}
@@ -457,7 +459,7 @@ public class AccionReferencias {
 	}
 
 	public TextArea getNormasCartaTextArea() {
-		return normasCartaTextField;
+		return normasCartaTextArea;
 	}
 
 	public TextField getPrecioCartaTextField() {
@@ -638,6 +640,34 @@ public class AccionReferencias {
 
 	public Stage getStageVentana() {
 		return stageVentana;
+	}
+
+	/**
+	 * @return the botonGuardarListaCartas
+	 */
+	public Button getBotonGuardarListaCartas() {
+		return botonGuardarListaCartas;
+	}
+
+	/**
+	 * @return the botonEliminarImportadoListaCarta
+	 */
+	public Button getBotonEliminarImportadoListaCarta() {
+		return botonEliminarImportadoListaCarta;
+	}
+
+	/**
+	 * @param botonGuardarListaCartas the botonGuardarListaCartas to set
+	 */
+	public void setBotonGuardarListaCartas(Button botonGuardarListaCartas) {
+		this.botonGuardarListaCartas = botonGuardarListaCartas;
+	}
+
+	/**
+	 * @param botonEliminarImportadoListaCarta the botonEliminarImportadoListaCarta to set
+	 */
+	public void setBotonEliminarImportadoListaCarta(Button botonEliminarImportadoListaCarta) {
+		this.botonEliminarImportadoListaCarta = botonEliminarImportadoListaCarta;
 	}
 
 	public void setiDColumna(TableColumn<Carta, String> iDColumna) {
@@ -867,7 +897,7 @@ public class AccionReferencias {
 	public void setLabelIdMod(Label labelIdMod) {
 		this.labelIdMod = labelIdMod;
 	}
-	
+
 	public void setLabelEsFoil(Label labelEsFoil) {
 		this.labelEsFoil = labelEsFoil;
 	}
@@ -932,8 +962,8 @@ public class AccionReferencias {
 		this.rarezaCartaTextField = rarezaCartaTextField;
 	}
 
-	public void setNormasCartaTextArea(TextArea normasCartaTextField) {
-		this.normasCartaTextField = normasCartaTextField;
+	public void setNormasCartaTextArea(TextArea normasCartaTextArea) {
+		this.normasCartaTextArea = normasCartaTextArea;
 	}
 
 	public void setPrecioCartaTextField(TextField precioCartaTextField) {

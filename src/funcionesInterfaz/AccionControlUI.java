@@ -23,6 +23,7 @@ import funcionesManagment.AccionModificar;
 import funcionesManagment.AccionReferencias;
 import funcionesManagment.AccionSeleccionar;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
@@ -95,6 +96,25 @@ public class AccionControlUI {
 		mostrarElementos(elementosAMostrarYHabilitar);
 	}
 
+	public static List<Node> modificarInterfazAccion(String opcion) {
+
+		List<Node> elementosAMostrarYHabilitar = new ArrayList<>();
+
+		switch (opcion.toLowerCase()) {
+		case "modificar":
+			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonModificarCarta());
+			break;
+		case "aniadir":
+			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonGuardarCarta());
+			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonEliminarImportadoCarta());
+			break;
+		default:
+			break;
+		}
+
+		return elementosAMostrarYHabilitar;
+	}
+
 	private static void mostrarElementos(List<Node> elementosAMostrarYHabilitar) {
 		for (Node elemento : elementosAMostrarYHabilitar) {
 			elemento.setVisible(true);
@@ -122,6 +142,21 @@ public class AccionControlUI {
 			referenciaVentana.getGradeoCartaCombobox().setVisible(false);
 			getReferenciaVentana().getLabelColeccion().setVisible(false);
 		}
+
+		if (AccionFuncionesComunes.TIPO_ACCION.equals("aniadir")) {
+			referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(false);
+			referenciaVentana.getBotonGuardarListaCartas().setVisible(false);
+
+			referenciaVentana.getBotonEliminarImportadoListaCarta().setDisable(true);
+			referenciaVentana.getBotonGuardarListaCartas().setDisable(true);
+		}
+//		
+		if (AccionFuncionesComunes.TIPO_ACCION.equals("modificar")) {
+
+			referenciaVentana.getBotonModificarCarta().setVisible(false);
+			referenciaVentana.getBotonModificarCarta().setDisable(true);
+		}
+
 	}
 
 	/**
@@ -187,7 +222,7 @@ public class AccionControlUI {
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
 
 		referenciaVentana.getUrlReferenciaTextField().setText(cartaTemp.getUrlReferenciaCarta());
-		
+
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		Utilidades.cargarImagenAsync(cartaTemp.getDireccionImagenCarta(), referenciaVentana.getImagenCarta());
@@ -352,6 +387,11 @@ public class AccionControlUI {
 		referenciaVentana.getDireccionImagenTextField().setText("");
 		referenciaVentana.getEstadoCartaCombobox().getEditor().setText("");
 		referenciaVentana.getUrlReferenciaTextField().setText("");
+		referenciaVentana.getPrecioCartaTextField().setText("");
+
+		referenciaVentana.getNombreEsFoilCombobox().getSelectionModel().selectFirst();
+		referenciaVentana.getGradeoCartaCombobox().getSelectionModel().selectFirst();
+		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().selectFirst();
 
 		if ("aniadir".equals(AccionFuncionesComunes.TIPO_ACCION)) {
 			referenciaVentana.getIdCartaTratarTextField().setDisable(false);
@@ -450,15 +490,22 @@ public class AccionControlUI {
 			if (newImage != null) {
 				// Cambiar la apariencia del cursor y la opacidad cuando la imagen se ha cargado
 				referenciaVentana.getImagenCarta().setOnMouseEntered(e -> {
-					referenciaVentana.getImagenCarta().setOpacity(0.7); // Cambiar la opacidad para indicar que es
-					// clickable
-					referenciaVentana.getImagenCarta().setCursor(Cursor.HAND);
+					if (referenciaVentana.getImagenCarta() != null) {
+						referenciaVentana.getImagenCarta().setOpacity(0.7); // Cambiar la opacidad para indicar que es
+						// clickable
+						referenciaVentana.getImagenCarta().setCursor(Cursor.HAND);
+					}
 				});
 
 				// Restaurar el cursor y la opacidad al salir del ImageView
 				referenciaVentana.getImagenCarta().setOnMouseExited(e -> {
-					referenciaVentana.getImagenCarta().setOpacity(1.0); // Restaurar la opacidad
-					referenciaVentana.getImagenCarta().setCursor(Cursor.DEFAULT);
+
+					if (referenciaVentana.getImagenCarta() != null) {
+
+						referenciaVentana.getImagenCarta().setOpacity(1.0); // Restaurar la opacidad
+						referenciaVentana.getImagenCarta().setCursor(Cursor.DEFAULT);
+					}
+
 				});
 			} else {
 				// Restaurar el cursor y la opacidad al salir del ImageView
@@ -475,7 +522,24 @@ public class AccionControlUI {
 
 		// Establecemos un evento para detectar cambios en el segundo TextField
 		referenciaVentana.getIdCartaTratarTextField().textProperty().addListener((observable, oldValue, newValue) -> {
-			AccionSeleccionar.mostrarCarta(referenciaVentana.getIdCartaTratarTextField().getText(), false);
+			// Verificar que newValue no sea null antes de usarlo
+			AccionSeleccionar.mostrarCarta(newValue, false);
+		});
+
+		List<Node> elementos = Arrays.asList(referenciaVentana.getBotonGuardarCarta(),
+				referenciaVentana.getBotonEliminarImportadoCarta(),
+				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
+				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
+				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta(),
+				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta());
+
+		ListasCartasDAO.cartasImportados.addListener((ListChangeListener<Carta>) change -> {
+			while (change.next()) {
+
+				if (!change.wasAdded() && ListasCartasDAO.cartasImportados.isEmpty()) {
+					Utilidades.cambiarVisibilidad(elementos, true);
+				}
+			}
 		});
 	}
 

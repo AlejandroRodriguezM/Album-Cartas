@@ -959,52 +959,53 @@ public class Utilidades {
 	 * @return true si la descarga y conversión son exitosas, false en caso
 	 *         contrario.
 	 */
-    public static CompletableFuture<Boolean> descargarYConvertirImagenAsync(URI urlImagen, String carpetaDestino, String nuevoNombre) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                URL url = urlImagen.toURL();
-                URLConnection connection = url.openConnection();
+	public static CompletableFuture<Boolean> descargarYConvertirImagenAsync(URI urlImagen, String carpetaDestino,
+			String nuevoNombre) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				URL url = urlImagen.toURL();
+				URLConnection connection = url.openConnection();
 
-                if (connection instanceof HttpURLConnection) {
-                    ((HttpURLConnection) connection).setRequestMethod("HEAD");
-                    int responseCode = ((HttpURLConnection) connection).getResponseCode();
+				if (connection instanceof HttpURLConnection) {
+					((HttpURLConnection) connection).setRequestMethod("HEAD");
+					int responseCode = ((HttpURLConnection) connection).getResponseCode();
 
-                    if (responseCode != HttpURLConnection.HTTP_OK) {
-                        if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
-                            System.err.println("Error interno del servidor al acceder a la URL: " + url);
-                        } else {
-                            System.err.println("La URL no apunta a una imagen válida o no se pudo acceder: " + url);
-                        }
-                        return false;
-                    }
-                }
+					if (responseCode != HttpURLConnection.HTTP_OK) {
+						if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+							System.err.println("Error interno del servidor al acceder a la URL: " + url);
+						} else {
+							System.err.println("La URL no apunta a una imagen válida o no se pudo acceder: " + url);
+						}
+						return false;
+					}
+				}
 
-                String extension = obtenerExtension(nuevoNombre);
-                Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
+				String extension = obtenerExtension(nuevoNombre);
+				Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
 
-                try (InputStream in = url.openStream()) {
-                    if (extension.equalsIgnoreCase("jpg")) {
-                        Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
-                    } else {
-                        BufferedImage image = ImageIO.read(in);
-                        if (image == null) {
-                            System.err.println("No se pudo cargar la imagen desde " + urlImagen);
-                            return false;
-                        }
-                        ImageIO.write(image, "jpg", rutaDestino.toFile());
-                    }
-                }
+				try (InputStream in = url.openStream()) {
+					if (extension.equalsIgnoreCase("jpg")) {
+						Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+					} else {
+						BufferedImage image = ImageIO.read(in);
+						if (image == null) {
+							System.err.println("No se pudo cargar la imagen desde " + urlImagen);
+							return false;
+						}
+						ImageIO.write(image, "jpg", rutaDestino.toFile());
+					}
+				}
 
-                return true;
-            } catch (MalformedURLException e) {
-                System.err.println("La URL no es válida: " + urlImagen);
-                return false;
-            } catch (IOException e) {
-                manejarExcepcion(e);
-                return false;
-            }
-        });
-    }
+				return true;
+			} catch (MalformedURLException e) {
+				System.err.println("La URL no es válida: " + urlImagen);
+				return false;
+			} catch (IOException e) {
+				manejarExcepcion(e);
+				return false;
+			}
+		});
+	}
 
 	/**
 	 * Reemplaza entidades HTML en una cadena con sus caracteres correspondientes.
@@ -1803,6 +1804,7 @@ public class Utilidades {
 		for (Node elemento : elementos) {
 
 			if (elemento != null) {
+
 				if (verElemento) {
 					elemento.setVisible(false);
 					elemento.setDisable(true);

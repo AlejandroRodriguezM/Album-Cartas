@@ -202,7 +202,7 @@ public class WebScrapGoogleCardTrader {
 	public static Carta extraerDatosMTG(String url) {
 
 		List<String> data = getCartaFromPuppeteer(url); // Método para obtener datos de la carta
-
+		
 		String referencia = "";
 		String nombre = "";
 		String coleccion = "";

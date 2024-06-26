@@ -270,12 +270,12 @@
     -fx-font-size: 9.0px;
 }
 
-.button#botonGuardarCarta {
+.button#botonGuardarCarta,.button#botonGuardarListaCartas {
     -fx-background-color: #4169E1;
     -fx-border-color: #4169E1;
 }
 
-.button#botonGuardarCarta:hover {
+.button#botonGuardarCarta:hover,.button#botonGuardarListaCartas:hover {
     -fx-background-color: #483D8B;
     -fx-border-color: #483D8B;
 }
@@ -317,12 +317,12 @@
     -fx-background-color: c49235;
 }
 
-.button#botonEliminarImportadoCarta { 
+.button#botonEliminarImportadoCarta,.button#botonEliminarImportadoListaCarta { 
     -fx-border-width: 5px;
     -fx-background-color: #ec5353;
 }
 
-.button#botonEliminarImportadoCarta:hover {
+.button#botonEliminarImportadoCarta:hover,.button#botonEliminarImportadoListaCarta:hover {
     -fx-background-color: #702626;
 }
 

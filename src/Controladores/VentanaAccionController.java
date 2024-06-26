@@ -132,7 +132,10 @@ public class VentanaAccionController implements Initializable {
 	private Button botonVender;
 	@FXML
 	private Button botonbbdd;
-
+	@FXML
+	private Button botonGuardarListaCartas;
+	@FXML
+	private Button botonEliminarImportadoListaCarta;
 	@FXML
 	private TextField busquedaCodigo;
 	@FXML
@@ -265,12 +268,16 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setBotonParametroCarta(botonParametroCarta);
 		referenciaVentana.setBotonVender(botonVender);
 		referenciaVentana.setBotonbbdd(botonbbdd);
-		referenciaVentana.setBotonGuardarCarta(botonGuardarCarta);
 		referenciaVentana.setBotonGuardarCambioCarta(botonGuardarCambioCarta);
+
+		referenciaVentana.setBotonGuardarCarta(botonGuardarCarta);
 		referenciaVentana.setBotonEliminarImportadoCarta(botonEliminarImportadoCarta);
+		
+		referenciaVentana.setBotonEliminarImportadoListaCarta(botonEliminarImportadoListaCarta);
+		referenciaVentana.setBotonGuardarListaCartas(botonGuardarListaCartas);
+
 		referenciaVentana.setBotonSubidaPortada(botonSubidaPortada);
 		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
-
 		referenciaVentana.setStageVentana(estadoStage());
 		referenciaVentana.setProgresoCarga(progresoCarga);
 
@@ -411,9 +418,9 @@ public class VentanaAccionController implements Initializable {
 		FuncionesManejoFront.permitirUnSimbolo(textFieldPrecioCarta);
 		FuncionesManejoFront.permitirUnSimbolo(busquedaCodigo);
 
-		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
-		textFieldIdCarta.setTextFormatter(FuncionesComboBox.validador_Nenteros());
-		textFieldPrecioCarta.setTextFormatter(FuncionesComboBox.validador_Ndecimales());
+		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validadorNenteros());
+		textFieldIdCarta.setTextFormatter(FuncionesComboBox.validadorNenteros());
+		textFieldPrecioCarta.setTextFormatter(FuncionesComboBox.validadorNdecimales());
 
 		if (AccionFuncionesComunes.TIPO_ACCION.equalsIgnoreCase("aniadir")) {
 			textFieldIdCarta.setTextFormatter(FuncionesComboBox.desactivarValidadorNenteros());
@@ -469,6 +476,54 @@ public class VentanaAccionController implements Initializable {
 	}
 
 	/**
+	 * Método que maneja el evento de guardar los datos de un cómic.
+	 * 
+	 * @param event El evento de acción que desencadena la llamada al método.
+	 */
+	@FXML
+	void guardarDatos(ActionEvent event) {
+		enviarReferencias();
+		rellenarCombosEstaticos();
+		nav.cerrarMenuOpciones();
+		AccionModificar.actualizarCartaLista();
+		imagencarta.setImage(null);
+	}
+
+	/**
+	 * Método que maneja el evento de guardar la lista de cómics importados.
+	 * 
+	 * @param event El evento de acción que desencadena la llamada al método.
+	 * @throws IOException        Si ocurre un error de entrada/salida.
+	 * @throws SQLException       Si ocurre un error de base de datos.
+	 * @throws URISyntaxException
+	 */
+	@FXML
+	void guardarCartaImportados(ActionEvent event) throws IOException, SQLException {
+		enviarReferencias();
+		nav.cerrarMenuOpciones();
+		AccionAniadir.guardarContenidoLista(false, getCartaCache());
+		rellenarCombosEstaticos();
+		imagencarta.setImage(null);
+	}
+
+	/**
+	 * Método que maneja el evento de guardar la lista de cómics importados.
+	 * 
+	 * @param event El evento de acción que desencadena la llamada al método.
+	 * @throws IOException        Si ocurre un error de entrada/salida.
+	 * @throws SQLException       Si ocurre un error de base de datos.
+	 * @throws URISyntaxException
+	 */
+	@FXML
+	void guardarListaImportados(ActionEvent event) throws IOException, SQLException {
+		enviarReferencias();
+		nav.cerrarMenuOpciones();
+		AccionAniadir.guardarContenidoLista(true, null);
+		rellenarCombosEstaticos();
+		imagencarta.setImage(null);
+	}
+
+	/**
 	 * Llamada a funcion que modifica los datos de 1 comic en la base de datos.
 	 *
 	 * @param event
@@ -485,6 +540,7 @@ public class VentanaAccionController implements Initializable {
 		nav.cerrarMenuOpciones();
 		AccionModificar.modificarCarta();
 		rellenarCombosEstaticos();
+		imagencarta.setImage(null);
 	}
 
 	@FXML
@@ -493,6 +549,25 @@ public class VentanaAccionController implements Initializable {
 		nav.cerrarMenuOpciones();
 		AccionEliminar.eliminarCartaLista();
 		rellenarCombosEstaticos();
+		imagencarta.setImage(null);
+	}
+
+	@FXML
+	void eliminarListaCartas(ActionEvent event) {
+		enviarReferencias();
+		nav.cerrarMenuOpciones();
+
+		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
+			guardarReferencia().getBotonGuardarCarta().setVisible(false);
+			guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
+
+			ListasCartasDAO.cartasImportados.clear();
+			guardarReferencia().getTablaBBDD().getItems().clear();
+			imagencarta.setImage(null);
+		}
+
+		rellenarCombosEstaticos();
+
 	}
 
 	/**
@@ -597,15 +672,10 @@ public class VentanaAccionController implements Initializable {
 			AccionControlUI.borrarDatosGraficos();
 
 			AccionFuncionesComunes.cargarRuning();
+
 			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
 
 			future.thenAccept(enlaces -> {
-
-				if (enlaces == null || enlaces.isEmpty()) {
-					// No se encontraron enlaces, no continuar
-					AccionFuncionesComunes.cargarCompletado();
-					return;
-				}
 
 				File fichero;
 				try {
@@ -667,36 +737,6 @@ public class VentanaAccionController implements Initializable {
 	void nuevaPortada(ActionEvent event) {
 		nav.cerrarMenuOpciones();
 		AccionFuncionesComunes.subirPortada();
-	}
-
-	/**
-	 * Método que maneja el evento de guardar los datos de un cómic.
-	 * 
-	 * @param event El evento de acción que desencadena la llamada al método.
-	 */
-	@FXML
-	void guardarDatos(ActionEvent event) {
-		enviarReferencias();
-		rellenarCombosEstaticos();
-		nav.cerrarMenuOpciones();
-		AccionModificar.actualizarCartaLista();
-
-	}
-
-	/**
-	 * Método que maneja el evento de guardar la lista de cómics importados.
-	 * 
-	 * @param event El evento de acción que desencadena la llamada al método.
-	 * @throws IOException        Si ocurre un error de entrada/salida.
-	 * @throws SQLException       Si ocurre un error de base de datos.
-	 * @throws URISyntaxException
-	 */
-	@FXML
-	void guardarListaImportados(ActionEvent event) throws IOException, SQLException {
-		enviarReferencias();
-		nav.cerrarMenuOpciones();
-		AccionAniadir.guardarContenidoLista();
-		rellenarCombosEstaticos();
 	}
 
 	/**
