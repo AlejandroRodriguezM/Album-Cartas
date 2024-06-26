@@ -72,7 +72,7 @@ public class FuncionesFicheros {
 				Utilidades.manejarExcepcion(e);
 			}
 		}
-		return null;
+		return new HashMap<>();
 
 	}
 
@@ -354,59 +354,61 @@ public class FuncionesFicheros {
 
 	public static void downloadJsonFile() {
 		String fileURL = "https://www.cardtrader.com/docs/api/full/postman_collection";
-        String saveDir = rutaDestinoRecursos + "/";
-        String fileName = "apiCardTrader.json";
-        Path savePath = Paths.get(saveDir, fileName);
-        int maxAttempts = 5; // Máximo número de intentos
-        int attemptCount = 0; // Contador de intentos
+		String saveDir = rutaDestinoRecursos + "/";
+		String fileName = "apiCardTrader.json";
+		Path savePath = Paths.get(saveDir, fileName);
+		int maxAttempts = 5; // Máximo número de intentos
+		int attemptCount = 0; // Contador de intentos
 
-        try {
-            // Verifica si el archivo ya existe
-            if (Files.exists(savePath)) {
-                System.out.println("El archivo " + savePath.toString() + " ya existe.");
-                return;
-            }
+		try {
+			// Verifica si el archivo ya existe
+			if (Files.exists(savePath)) {
+				System.out.println("El archivo " + savePath.toString() + " ya existe.");
+				return;
+			}
 
-            boolean fileDownloaded = false;
-            while (!fileDownloaded && attemptCount < maxAttempts) {
-                attemptCount++;
-                try {
-                    // Realiza la solicitud HTTP
-                    HttpURLConnection connection = (HttpURLConnection) new URL(fileURL).openConnection();
-                    int responseCode = connection.getResponseCode();
+			boolean fileDownloaded = false;
+			while (!fileDownloaded && attemptCount < maxAttempts) {
+				attemptCount++;
+				try {
+					// Realiza la solicitud HTTP
+					HttpURLConnection connection = (HttpURLConnection) new URL(fileURL).openConnection();
+					int responseCode = connection.getResponseCode();
 
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        // Crea los directorios si no existen
-                        Files.createDirectories(savePath.getParent());
+					if (responseCode == HttpURLConnection.HTTP_OK) {
+						// Crea los directorios si no existen
+						Files.createDirectories(savePath.getParent());
 
-                        // Abre el flujo de entrada desde la conexión HTTP
-                        try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
-                            // Guarda el contenido directamente en el archivo
-                            Files.copy(inputStream, savePath, StandardCopyOption.REPLACE_EXISTING);
-                        }
+						// Abre el flujo de entrada desde la conexión HTTP
+						try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+							// Guarda el contenido directamente en el archivo
+							Files.copy(inputStream, savePath, StandardCopyOption.REPLACE_EXISTING);
+						}
 
-                        System.out.println("Archivo descargado en " + savePath.toString());
-                        fileDownloaded = true; // Marca la descarga como exitosa
-                    } else if (responseCode == HttpURLConnection.HTTP_ACCEPTED) {
-                        System.out.println("El servidor está procesando la solicitud. Intento #" + attemptCount + ". Esperando 5 segundos...");
-                        TimeUnit.SECONDS.sleep(5); // Espera 5 segundos antes de reintentar
-                    } else {
-                        System.out.println("No se pudo descargar el archivo. El servidor respondió con el código HTTP: " + responseCode);
-                        break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
+						System.out.println("Archivo descargado en " + savePath.toString());
+						fileDownloaded = true; // Marca la descarga como exitosa
+					} else if (responseCode == HttpURLConnection.HTTP_ACCEPTED) {
+						System.out.println("El servidor está procesando la solicitud. Intento #" + attemptCount
+								+ ". Esperando 5 segundos...");
+						TimeUnit.SECONDS.sleep(5); // Espera 5 segundos antes de reintentar
+					} else {
+						System.out.println("No se pudo descargar el archivo. El servidor respondió con el código HTTP: "
+								+ responseCode);
+						break;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					break;
+				}
+			}
 
-            if (!fileDownloaded) {
-                System.out.println("No se pudo descargar el archivo después de " + maxAttempts + " intentos.");
-            }
+			if (!fileDownloaded) {
+				System.out.println("No se pudo descargar el archivo después de " + maxAttempts + " intentos.");
+			}
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
