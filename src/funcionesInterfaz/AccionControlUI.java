@@ -222,6 +222,8 @@ public class AccionControlUI {
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
 
 		referenciaVentana.getUrlReferenciaTextField().setText(cartaTemp.getUrlReferenciaCarta());
+		
+		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 

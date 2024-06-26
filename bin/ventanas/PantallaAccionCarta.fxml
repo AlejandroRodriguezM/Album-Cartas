@@ -145,6 +145,8 @@
       </MenuBar>
       <Button fx:id="botonGuardarCarta" alignment="CENTER" layoutX="739.0" layoutY="262.0" mnemonicParsing="false" onAction="#guardarCartaImportados" prefHeight="33.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Añadir Carta" textAlignment="CENTER" visible="false" wrapText="true" />
       <Button fx:id="botonGuardarCambioCarta" layoutX="248.0" layoutY="29.0" mnemonicParsing="false" onAction="#guardarDatos" prefHeight="35.0" prefWidth="81.0" stylesheets="@../style/genericos_style.css" text="Guardar Carta" visible="false" />
+      <Button fx:id="botonEliminarImportadoCarta" layoutX="640.0" layoutY="290.0" mnemonicParsing="false" onAction="#eliminarCartaSeleccionado" prefHeight="42.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" visible="false" wrapText="true" />
+      <ImageView fx:id="cargaImagen" fitHeight="308.0" fitWidth="207.0" layoutX="391.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="botonEliminarImportadoCarta" layoutX="640.0" layoutY="262.0" mnemonicParsing="false" onAction="#eliminarCartaSeleccionado" prefHeight="33.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" visible="false" wrapText="true" />
       <ImageView fx:id="cargaImagen" fitHeight="308.0" fitWidth="199.0" layoutX="391.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="imagencarta" fitHeight="308.0" fitWidth="199.0" layoutX="391.0" layoutY="31.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
