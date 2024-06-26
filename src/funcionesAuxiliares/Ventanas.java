@@ -574,6 +574,27 @@ public class Ventanas {
 	 *
 	 * @return
 	 */
+	public boolean alertaAccionNavegador() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
+		stage.setResizable(false);
+		alert.setTitle("Accion . . .");
+		alert.setHeaderText("Vas a realizar una accion.");
+		alert.setContentText(
+				"Se va a abrir el navegador para descargar nodeJS ¿Estas seguro? (Sin nodeJS la funcionalidad del programa deja de ser automatica)");
+		if (alert.showAndWait().get() == ButtonType.OK) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Llama a una ventana de alarma para eliminar datos
+	 *
+	 * @return
+	 */
 	public boolean alertaFirmaActivada() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 
