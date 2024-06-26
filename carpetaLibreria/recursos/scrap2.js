@@ -1,49 +1,80 @@
 const puppeteer = require('puppeteer');
 
-async function getData(url) {
-	const browser = await puppeteer.launch({ headless: true });
-	try {
-		const page = await browser.newPage();
-		await page.goto(url);
+async function main(url) {
+  try {
+    if (!url) {
+      throw new Error('Debe proporcionar una URL');
+    }
 
-		// Esperar a que aparezca el div con clase 'w-100 ml-3 mr-0 mr-md-3'
-		await page.waitForSelector('div.w-100.ml-3.mr-0.mr-md-3');
+    // Configura Puppeteer y abre una nueva instancia de navegador
+    const browser = await puppeteer.launch({
+      headless: false, // Cambiar a true en producción
+      args: ['--window-size=10,10'] // Ajusta el tamaño de la ventana según tus necesidades
+    });
+    const page = await browser.newPage();
 
-		// Obtener todos los elementos <br> dentro del div
-		const brElements = await page.$$('div.w-100.ml-3.mr-0.mr-md-3 br');
+    try {
+      // Navega a la URL proporcionada
+      await page.goto(url, { waitUntil: 'networkidle2' });
 
-		let resultText = ''; // Variable para almacenar el resultado final
+      // Espera manualmente a que el usuario resuelva el CAPTCHA en el navegador visible
+      await waitForManualCaptchaSolution();
 
-		// Iterar sobre los elementos <br> y procesar el texto
-		for (let i = 0; i < brElements.length; i++) {
-			const br = brElements[i];
-			const text = await page.evaluate(element => element.nextSibling.textContent.trim(), br);
+      // Obtener los enlaces dentro del div con clase 'card-column'
+      const links = await getLinks(page);
 
-			// Verificar si el texto contiene {3}
-			if (text.includes('{3}')) {
-				// Eliminar {3} y limpiar símbolos como : ( ) !
-				const cleanedText = text.replace(/\{3\}/g, '')
-					.replace(/[():!]/g, '')
-					.trim(); // Realizar trim para eliminar espacios en blanco adicionales
+      // Imprimir los enlaces encontrados
+      printData(links);
 
-				// Agregar el texto limpio al resultado final si no está vacío
-				if (cleanedText.length > 0) {
-					// Agregar salto de línea solo si ya hay texto en resultText
-					if (resultText.length > 0) {
-						resultText += '\n';
-					}
-					resultText += cleanedText;
-				}
-			}
-		}
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    } finally {
+      // Cierra el navegador
+      await browser.close();
+    }
 
-	} catch (error) {
-		console.error('Error al obtener datos:', error.message);
-	} finally {
-		await browser.close();
-	}
+  } catch (error) {
+    console.error('Error general:', error.message);
+  }
+}
+
+async function waitForManualCaptchaSolution() {
+  // En un escenario real, aquí esperarías a que el usuario resuelva el CAPTCHA manualmente
+  // En este ejemplo, simplemente esperamos un tiempo fijo antes de continuar (20 segundos)
+  await new Promise(resolve => setTimeout(resolve, 200)); // 20 segundos
+}
+
+async function getLinks(page) {
+  try {
+    // Esperar a que aparezcan todos los divs con clase 'card-column'
+    await page.waitForSelector('div.card-column');
+
+    // Obtener todos los enlaces <a> dentro de todos los divs con clase 'card-column'
+    const links = await page.evaluate(() => {
+      const linksArray = [];
+      const cardColumns = document.querySelectorAll('div.card-column');
+      cardColumns.forEach(column => {
+        const aElements = column.querySelectorAll('a[href]');
+        aElements.forEach(a => {
+          linksArray.push(a.href);
+        });
+      });
+      return linksArray;
+    });
+
+    return links;
+
+  } catch (error) {
+    throw new Error('Error al obtener enlaces:', error.message);
+  }
+}
+
+function printData(data) {
+  data.forEach((link, index) => {
+    console.log(`${link}`);
+  });
 }
 
 // Leer la URL desde los argumentos de la línea de comandos
 const url = process.argv[2];
-getData(url);
+main(url);
