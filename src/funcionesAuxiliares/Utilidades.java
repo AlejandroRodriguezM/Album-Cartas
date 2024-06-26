@@ -982,6 +982,7 @@ public class Utilidades {
                 String extension = obtenerExtension(nuevoNombre);
                 Path rutaDestino = Path.of(carpetaDestino, nuevoNombre);
 
+<<<<<<< HEAD
                 try (InputStream in = url.openStream()) {
                     if (extension.equalsIgnoreCase("jpg")) {
                         Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
@@ -994,6 +995,20 @@ public class Utilidades {
                         ImageIO.write(image, "jpg", rutaDestino.toFile());
                     }
                 }
+=======
+				try (InputStream in = url.openStream()) {
+					if (extension.equalsIgnoreCase("jpg")) {
+						Files.copy(in, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+					} else {
+						BufferedImage image = ImageIO.read(in);
+						if (image == null) {
+							System.err.println("No se pudo cargar la imagen desde " + urlImagen);
+							return false;
+						}
+						ImageIO.write(image, "jpg", rutaDestino.toFile());
+					}
+				}
+>>>>>>> refs/heads/V1.0
 
                 return true;
             } catch (MalformedURLException e) {
@@ -1803,6 +1818,7 @@ public class Utilidades {
 		for (Node elemento : elementos) {
 
 			if (elemento != null) {
+
 				if (verElemento) {
 					elemento.setVisible(false);
 					elemento.setDisable(true);

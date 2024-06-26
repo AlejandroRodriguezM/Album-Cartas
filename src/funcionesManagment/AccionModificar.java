@@ -192,8 +192,7 @@ public class AccionModificar {
 
 		elementosAMostrarYHabilitar.addAll(
 				Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEsFoilCombobox(),
-						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(),
-						getReferenciaVentana().getBotonModificarCarta(), getReferenciaVentana().getRootVBox(),
+						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(), getReferenciaVentana().getRootVBox(),
 						getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
 						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
 
@@ -202,7 +201,7 @@ public class AccionModificar {
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
 				referenciaVentana.getUrlReferenciaTextField(), referenciaVentana.getGradeoCartaCombobox()));
 
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada()));
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),getReferenciaVentana().getBotonModificarCarta()));
 
 		getReferenciaVentana().getRootVBox().toFront();
 	}

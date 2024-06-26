@@ -88,56 +88,60 @@ public class AccionFuncionesComunes {
 	 * @throws Exception
 	 */
 	public void procesarCarta(Carta comic, boolean esModificacion) {
-		final List<Carta> listaCartas;
-		final List<Carta> cartasFinal;
-
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(1);
-		if (!accionRellenoDatos.camposCartaSonValidos()) {
-			String mensaje = "Error. Debes de introducir los datos correctos";
-			AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
-			cartasFinal = ListasCartasDAO.cartasImportados;
-			Platform.runLater(() -> FuncionesTableView.tablaBBDD(cartasFinal));
 
+		if (!accionRellenoDatos.camposCartaSonValidos()) {
+			mostrarErrorDatosIncorrectos();
 			return;
 		}
 
 		String codigoImagen = Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
 		String mensaje = "";
+
 		try {
 			Utilidades.redimensionarYGuardarImagen(comic.getDireccionImagenCarta(), codigoImagen);
 			comic.setDireccionImagenCarta(
 					carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg");
-			if (esModificacion) {
 
+			if (esModificacion) {
 				CartaManagerDAO.actualizarCartaBBDD(comic, "modificar");
 				mensaje = "Has modificado correctamente el cómic";
 			} else {
-
-				CartaManagerDAO.insertarDatos(comic, true);
-				mensaje = " Has introducido correctamente el cómic";
-				Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
-
-				if (newSelection != null) {
-					listaCartas = ListasCartasDAO.cartasImportados;
-					String idCarta = newSelection.getIdCarta();
-					ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(idCarta));
-					getReferenciaVentana().getTablaBBDD().getItems().clear();
-				} else {
-					listaCartas = null; // Inicializar listaCartas en caso de que no haya ningún cómic seleccionado
-				}
-
-				cartasFinal = listaCartas; // Declarar otra variable final para listaCartas
-
-				Platform.runLater(() -> FuncionesTableView.tablaBBDD(cartasFinal));
-				getReferenciaVentana().getTablaBBDD().refresh();
+				procesarNuevaCarta(comic);
+				mensaje = "Has introducido correctamente el cómic";
 			}
 
 			AlarmaList.mostrarMensajePront(mensaje, esModificacion, getReferenciaVentana().getProntInfoTextArea());
 			procesarBloqueComun(comic);
+
 		} catch (IOException | SQLException e) {
 			Utilidades.manejarExcepcion(e);
 		}
+	}
 
+	private void mostrarErrorDatosIncorrectos() {
+		String mensaje = "Error. Debes de introducir los datos correctos";
+		AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
+		List<Carta> cartasFinal = ListasCartasDAO.cartasImportados;
+		Platform.runLater(() -> FuncionesTableView.tablaBBDD(cartasFinal));
+	}
+
+	private void procesarNuevaCarta(Carta comic) {
+		CartaManagerDAO.insertarDatos(comic, true);
+		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
+		List<Carta> cartasFinal;
+
+		if (newSelection != null) {
+			String idCarta = newSelection.getIdCarta();
+			ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(idCarta));
+			getReferenciaVentana().getTablaBBDD().getItems().clear();
+			cartasFinal = ListasCartasDAO.cartasImportados;
+		} else {
+			cartasFinal = null; // Inicializar cartasFinal en caso de que no haya ningún cómic seleccionado
+		}
+
+		Platform.runLater(() -> FuncionesTableView.tablaBBDD(cartasFinal));
+		getReferenciaVentana().getTablaBBDD().refresh();
 	}
 
 	/**
@@ -151,7 +155,6 @@ public class AccionFuncionesComunes {
 	private void procesarBloqueComun(Carta comic) {
 		File file = new File(comic.getDireccionImagenCarta());
 		Image imagen = new Image(file.toURI().toString(), 250, 0, true, true);
-		getReferenciaVentana().getImagenCarta().setImage(imagen);
 		getReferenciaVentana().getImagenCarta().setImage(imagen);
 
 		ListasCartasDAO.listasAutoCompletado();
@@ -288,6 +291,16 @@ public class AccionFuncionesComunes {
 
 		}
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
+<<<<<<< HEAD
+=======
+		getReferenciaVentana().getTablaBBDD().getItems().clear();
+		getReferenciaVentana().getTablaBBDD().refresh();
+		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
+		getReferenciaVentana().getBotonGuardarListaCartas().setVisible(false);
+
+		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setDisable(true);
+		getReferenciaVentana().getBotonGuardarListaCartas().setDisable(true);
+>>>>>>> refs/heads/V1.0
 		limpiarDatosCarta();
 	}
 
@@ -433,7 +446,10 @@ public class AccionFuncionesComunes {
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/heads/V1.0
 					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(string));
 				}
 			}
@@ -501,6 +517,10 @@ public class AccionFuncionesComunes {
 	public static void busquedaPorCodigoImportacion(File file) {
 
 		fichero = file;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/heads/V1.0
 		int numCargas = Utilidades.contarLineasFichero(fichero);
 
 		controlCargaCartas(numCargas);
@@ -637,12 +657,23 @@ public class AccionFuncionesComunes {
 		AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
 		cambiarEstadoBotones(false);
 
+<<<<<<< HEAD
 		actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
 
 		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
 
 		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+=======
+		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
+		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+
+		if (cargaCartasControllerRef != null) {
+			actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
+			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
+		}
+
+>>>>>>> refs/heads/V1.0
 	}
 
 	public static void handleTaskEvents(Task<Void> tarea, String tipoUpdate) {
@@ -684,49 +715,93 @@ public class AccionFuncionesComunes {
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
 				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(true, getReferenciaVentana());
+
 			}
+
 		});
 
 		tarea.setOnSucceeded(ev -> {
+<<<<<<< HEAD
 			if (tipoUpdate.isEmpty()) {
 				cargarCompletado();
+=======
+
+			if (ListasCartasDAO.cartasImportados.isEmpty()) {
+
+				List<Node> elementos = Arrays.asList(referenciaVentana.getBotonEliminarImportadoListaCarta(),
+						referenciaVentana.getBotonGuardarListaCartas(), referenciaVentana.getBotonGuardarCarta(),
+						referenciaVentana.getBotonEliminarImportadoCarta());
+
+				Utilidades.cambiarVisibilidad(elementos, true);
+
+				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
+				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
+				nav.cerrarCargaCartas();
+>>>>>>> refs/heads/V1.0
 			} else {
+				if (tipoUpdate.isEmpty()) {
+					cargarCompletado();
+				} else {
 
-				AlarmaList.mostrarMensajePront("Datos cargados correctamente", true,
-						getReferenciaVentanaPrincipal().getProntInfoTextArea());
+					AlarmaList.mostrarMensajePront("Datos cargados correctamente", true,
+							getReferenciaVentanaPrincipal().getProntInfoTextArea());
 
-				Platform.runLater(() -> getReferenciaVentana().getBotonCancelarSubida().setVisible(false));
-				String cadenaAfirmativo = getUpdateTypeString(tipoUpdate);
-				AlarmaList.iniciarAnimacionAvanzado(getReferenciaVentana().getProntInfoEspecial(), cadenaAfirmativo);
-				actualizarCombobox();
+					Platform.runLater(() -> getReferenciaVentana().getBotonCancelarSubida().setVisible(false));
+					String cadenaAfirmativo = getUpdateTypeString(tipoUpdate);
+					AlarmaList.iniciarAnimacionAvanzado(getReferenciaVentana().getProntInfoEspecial(),
+							cadenaAfirmativo);
 
-				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
+					actualizarCombobox();
+
+					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
+				}
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 			}
-
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
+			AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+			AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+			getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
+			cambiarEstadoBotones(false);
 		});
 
 		tarea.setOnCancelled(ev -> {
+			if (ListasCartasDAO.cartasImportados.isEmpty()) {
 
-			if (tipoUpdate.isEmpty()) {
-				Thread.currentThread().interrupt();
-				cambiarEstadoBotones(false);
+				List<Node> elementos = Arrays.asList(referenciaVentana.getBotonEliminarImportadoListaCarta(),
+						referenciaVentana.getBotonGuardarListaCartas(), referenciaVentana.getBotonGuardarCarta(),
+						referenciaVentana.getBotonEliminarImportadoCarta());
 
-				Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
+				Utilidades.cambiarVisibilidad(elementos, true);
 
-				AlarmaList.mostrarMensajePront("Se ha cancelado la importacion", false,
-						getReferenciaVentana().getProntInfoTextArea());
-
-				AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
-				AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
+				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
+				nav.cerrarCargaCartas();
 			} else {
-				String cadenaAfirmativo = "Cancelada la actualización de la base de datos.";
-				AlarmaList.iniciarAnimacionAvanzado(getReferenciaVentana().getProntInfoEspecial(), cadenaAfirmativo);
-				actualizarCombobox();
-				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
-				Platform.runLater(() -> getReferenciaVentana().getBotonCancelarSubida().setVisible(false));
+				if (tipoUpdate.isEmpty()) {
+					Thread.currentThread().interrupt();
+					cambiarEstadoBotones(false);
+
+					Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
+
+					AlarmaList.mostrarMensajePront("Se ha cancelado la importacion", false,
+							getReferenciaVentana().getProntInfoTextArea());
+
+					AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
+					AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+				} else {
+					String cadenaAfirmativo = "Cancelada la actualización de la base de datos.";
+					AlarmaList.iniciarAnimacionAvanzado(getReferenciaVentana().getProntInfoEspecial(),
+							cadenaAfirmativo);
+					actualizarCombobox();
+					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
+					Platform.runLater(() -> getReferenciaVentana().getBotonCancelarSubida().setVisible(false));
+				}
+
 			}
+			AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+			AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
 		});
@@ -822,8 +897,7 @@ public class AccionFuncionesComunes {
 
 	public static void cambiarEstadoBotones(boolean esCancelado) {
 
-		List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonEliminarImportadoCarta(),
-				getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonGuardarCarta());
+		List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonSubidaPortada());
 
 		if (!TIPO_ACCION.equals("aniadir")) {
 			elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
@@ -836,8 +910,6 @@ public class AccionFuncionesComunes {
 		getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
 		getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
 		getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
-		getReferenciaVentana().getBotonGuardarCambioCarta().setDisable(esCancelado);
-
 		Utilidades.cambiarVisibilidad(elementos, esCancelado);
 	}
 

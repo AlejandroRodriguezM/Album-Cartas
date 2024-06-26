@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-17">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -64,11 +64,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/opencsv-5.5.1.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/java-json.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/oer-java-1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/google-cloud-translate-2.20.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/poi/lib/log4j-api-2.17.2.jar"/>
@@ -89,5 +84,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/rhino-1.7.15.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/httpclient5-5.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/okhttp-5.0.0-alpha.14.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/slf4j-log4j12-1.7.32.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/json-20240303.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

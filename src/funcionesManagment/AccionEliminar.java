@@ -35,8 +35,9 @@ public class AccionEliminar {
 				referenciaVentana.getTablaBBDD(), referenciaVentana.getBotonbbdd(), referenciaVentana.getRootVBox(),
 				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratarTextField(),
 				referenciaVentana.getNumeroCartaCombobox()));
-		getReferenciaVentana().getLabelColeccion().setVisible(false);
-		getReferenciaVentana().getLabelIdMod().setLayoutX(5);
+		
+		referenciaVentana.getLabelColeccion().setVisible(false);
+		referenciaVentana.getLabelIdMod().setLayoutX(5);
 		referenciaVentana.getRootVBox().toFront();
 	}
 

@@ -1,6 +1,8 @@
 package funcionesManagment;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import alarmas.AlarmaList;
@@ -14,6 +16,10 @@ import dbmanager.SelectManager;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
+<<<<<<< HEAD
+=======
+import javafx.scene.Node;
+>>>>>>> refs/heads/V1.0
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 
@@ -39,6 +45,7 @@ public class AccionSeleccionar {
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
 
+<<<<<<< HEAD
 		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
 
 		if (scene != null) {
@@ -56,6 +63,23 @@ public class AccionSeleccionar {
 						AccionControlUI.borrarDatosGraficos();
 						getReferenciaVentana().getImagenCarta().setImage(null);
 						getReferenciaVentana().getImagenCarta().setOpacity(0);
+=======
+		List<Node> elementos = AccionControlUI.modificarInterfazAccion(AccionFuncionesComunes.getTipoAccion());
+
+		if (scene != null) {
+			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				
+				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
+					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
+					if (!esPrincipal) {
+						if ("modificar".equals(AccionFuncionesComunes.TIPO_ACCION)) {
+							AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
+						}
+						// Borrar cualquier mensaje de error presente
+						AccionFuncionesComunes.borrarErrores();
+						AccionControlUI.validarCamposClave(true);
+						Utilidades.cambiarVisibilidad(elementos, true);
+>>>>>>> refs/heads/V1.0
 					}
 				}
 			});
@@ -64,8 +88,10 @@ public class AccionSeleccionar {
 		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
 		if (newSelection != null) {
 			String idCarta = newSelection.getIdCarta();
-
 			mostrarCarta(idCarta, esPrincipal);
+
+			Utilidades.cambiarVisibilidad(elementos, false);
+
 		}
 	}
 
@@ -77,12 +103,13 @@ public class AccionSeleccionar {
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && !esPrincipal) {
 			comicTemp = ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, idCarta);
-		} else {
+		} else if (CartaManagerDAO.comprobarIdentificadorCarta(idCarta)) {
 			comicTemp = CartaManagerDAO.cartaDatos(idCarta);
 		}
 
 		if (idCarta == null || idCarta.isEmpty() || comicTemp == null) {
 			AccionControlUI.limpiarAutorellenos(esPrincipal);
+
 			return;
 		}
 

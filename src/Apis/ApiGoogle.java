@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import org.json.JSONArray;
-
 /**
  * Clase que proporciona métodos para traducir texto utilizando la API de Google Translate.
  */

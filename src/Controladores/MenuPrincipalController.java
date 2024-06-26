@@ -414,6 +414,10 @@ public class MenuPrincipalController implements Initializable {
 
 			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
 				nav.verVentanaImagen();
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/heads/V1.0
 			}
 		}
 	}
@@ -582,7 +586,7 @@ public class MenuPrincipalController implements Initializable {
 	 * numero entero en los comboBox numeroCarta y caja_comic
 	 */
 	public void formatearTextField() {
-		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validador_Nenteros());
+		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validadorNenteros());
 	}
 
 	/////////////////////////////////
@@ -1251,9 +1255,15 @@ public class MenuPrincipalController implements Initializable {
 		prontInfo.setText(null);
 		prontInfo.setOpacity(0);
 		tablaBBDD.getItems().clear();
+<<<<<<< HEAD
 		imagenCarta.setImage(null);
 		imagenCarta.setOpacity(0);
+=======
+>>>>>>> refs/heads/V1.0
 		tablaBBDD.refresh();
+		imagenCarta.setImage(null);
+		imagenCarta.setOpacity(0);
+
 
 		modificarEstadoTabla(259, 0.6);
 	}

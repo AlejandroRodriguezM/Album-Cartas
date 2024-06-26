@@ -270,12 +270,20 @@
     -fx-font-size: 9.0px;
 }
 
+<<<<<<< HEAD
 .button#botonGuardarCarta {
+=======
+.button#botonGuardarCarta,.button#botonGuardarListaCartas {
+>>>>>>> refs/heads/V1.0
     -fx-background-color: #4169E1;
     -fx-border-color: #4169E1;
 }
 
+<<<<<<< HEAD
 .button#botonGuardarCarta:hover {
+=======
+.button#botonGuardarCarta:hover,.button#botonGuardarListaCartas:hover {
+>>>>>>> refs/heads/V1.0
     -fx-background-color: #483D8B;
     -fx-border-color: #483D8B;
 }
@@ -317,12 +325,20 @@
     -fx-background-color: c49235;
 }
 
+<<<<<<< HEAD
 .button#botonEliminarImportadoCarta { 
+=======
+.button#botonEliminarImportadoCarta,.button#botonEliminarImportadoListaCarta { 
+>>>>>>> refs/heads/V1.0
     -fx-border-width: 5px;
     -fx-background-color: #ec5353;
 }
 
+<<<<<<< HEAD
 .button#botonEliminarImportadoCarta:hover {
+=======
+.button#botonEliminarImportadoCarta:hover,.button#botonEliminarImportadoListaCarta:hover {
+>>>>>>> refs/heads/V1.0
     -fx-background-color: #702626;
 }
 

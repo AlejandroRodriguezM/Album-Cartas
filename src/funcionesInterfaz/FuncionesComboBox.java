@@ -541,7 +541,7 @@ public class FuncionesComboBox {
 	 *
 	 * @return El TextFormatter para números enteros.
 	 */
-	public static TextFormatter<Integer> validador_Nenteros() {
+	public static TextFormatter<Integer> validadorNenteros() {
 		// Crear un validador para permitir solo números enteros
 		return new TextFormatter<>(new IntegerStringConverter(), null, change -> {
 			if (change.getControlNewText().matches("\\d*")) {
@@ -558,7 +558,11 @@ public class FuncionesComboBox {
 
 	}
 
+<<<<<<< HEAD
 	public static TextFormatter<Double> validador_Ndecimales() {
+=======
+	public static TextFormatter<Double> validadorNdecimales() {
+>>>>>>> refs/heads/V1.0
 		// Crear un validador para permitir solo números decimales (double)
 		return new TextFormatter<>(new DoubleStringConverter(), 0.0, change -> {
 			String newText = change.getControlNewText();

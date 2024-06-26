@@ -71,28 +71,36 @@ public class AccionAniadir {
 		accionFuncionesComunes.procesarCarta(comic, false);
 	}
 
-	public static void guardarContenidoLista() {
+	public static void guardarContenidoLista(boolean esLista, Carta carta) {
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaInsertar()) {
 			Collections.sort(ListasCartasDAO.cartasImportados, Comparator.comparing(Carta::getNomCarta));
-
-			for (Carta c : ListasCartasDAO.cartasImportados) {
-				if (AccionControlUI.comprobarListaValidacion(c)) {
-					CartaManagerDAO.insertarDatos(c, true);
+			String mensajePront = "";
+			if (esLista) {
+				for (Carta c : ListasCartasDAO.cartasImportados) {
+					if (AccionControlUI.comprobarListaValidacion(c)) {
+						CartaManagerDAO.insertarDatos(c, true);
+					}
 				}
+				ListasCartasDAO.cartasImportados.clear();
+				mensajePront = "Has introducido las cartas correctamente\n\n";
+			} else {
+				CartaManagerDAO.insertarDatos(carta, true);
+
+				ListasCartasDAO.cartasImportados.removeIf(c -> c.getIdCarta().equals(carta.getIdCarta()));
+
+				mensajePront = "Has introducido la carta correctamente\n\n";
 			}
 
 			ListasCartasDAO.listasAutoCompletado();
 			List<ComboBox<String>> comboboxes = referenciaVentana.getListaComboboxes();
 			funcionesCombo.rellenarComboBox(comboboxes);
 
-			ListasCartasDAO.cartasImportados.clear();
 			referenciaVentana.getTablaBBDD().getItems().clear();
 			AccionControlUI.validarCamposClave(true);
 			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 			AccionControlUI.limpiarAutorellenos(false);
 
-			String mensajePront = "Has introducido los cartas correctamente\n";
 			AlarmaList.mostrarMensajePront(mensajePront, true, referenciaVentana.getProntInfoTextArea());
 		}
 
@@ -116,7 +124,9 @@ public class AccionAniadir {
 				referenciaVentana.getUrlReferenciaTextField()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),
-				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getBotonGuardarCambioCarta()));
+				referenciaVentana.getBotonBusquedaAvanzada(), referenciaVentana.getBotonGuardarCambioCarta(),
+				referenciaVentana.getBotonEliminarImportadoListaCarta(),
+				referenciaVentana.getBotonGuardarListaCartas()));
 	}
 
 	public static AccionReferencias getReferenciaVentana() {

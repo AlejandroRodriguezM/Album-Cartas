@@ -154,8 +154,7 @@ public class ListasCartasDAO {
 	 */
 	public static List<String> listaLimpiaAutoCompletado = new ArrayList<>();
 
-	public static List<Carta> cartasImportados = new ArrayList<>();
-
+	public static ObservableList<Carta> cartasImportados = FXCollections.observableArrayList();
 	/**
 	 * Lista ordenada que contiene todas las listas anteriores.
 	 */
@@ -597,6 +596,22 @@ public class ListasCartasDAO {
 			}
 		}
 		return null; // Retorna null si no se encuentra ningún cómic con la ID especificada
+	}
+
+	/**
+	 * Busca un cómic por su ID en una lista de cómics.
+	 *
+	 * @param comics  La lista de cómics en la que se realizará la búsqueda.
+	 * @param idCarta La ID del cómic que se está buscando.
+	 * @return El cómic encontrado por la ID, o null si no se encuentra ninguno.
+	 */
+	public static boolean verificarCartaPorID(List<Carta> cartas, String idCarta) {
+		for (Carta c : cartas) {
+			if (c.getIdCarta().equals(idCarta)) {
+				return true; // Devuelve el cómic si encuentra la coincidencia por ID
+			}
+		}
+		return false; // Retorna null si no se encuentra ningún cómic con la ID especificada
 	}
 
 	public static boolean comprobarLista() {

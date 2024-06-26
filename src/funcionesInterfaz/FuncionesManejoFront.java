@@ -307,7 +307,8 @@ public class FuncionesManejoFront {
 				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonGuardarCambioCarta(),
 				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonParametroCarta(),
 				referenciaVentana.getBotonbbdd(), referenciaVentana.getBotonBusquedaCodigo(),
-				referenciaVentana.getBotonGuardarResultado());
+				referenciaVentana.getBotonGuardarResultado(), referenciaVentana.getBotonEliminarImportadoListaCarta(),
+				referenciaVentana.getBotonGuardarListaCartas());
 
 		disableControls(estadoAccion, referenciaVentana.getNombreCartaCombobox(),
 				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEditorialCombobox(),
@@ -393,6 +394,8 @@ public class FuncionesManejoFront {
 			deshabilitarSiNoNulo(referenciaVentana.getBotonDescargarSQL(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonNormalizarDB(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getCheckFirmas(), estadoAccion);
+			deshabilitarSiNoNulo(referenciaVentana.getBotonEliminarImportadoListaCarta(), estadoAccion);
+			deshabilitarSiNoNulo(referenciaVentana.getBotonGuardarListaCartas(), estadoAccion);
 		}
 	}
 

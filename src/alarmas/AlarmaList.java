@@ -1097,6 +1097,20 @@ public class AlarmaList {
 		// Iniciar la animación
 		timelineGif.play();
 	}
+	
+	public static void detenerAnimacionCargaImagen(ImageView cargaImagen) {
+		synchronized (timelineGifLock) {
+			if (timelineGif != null) {
+				timelineGif.stop();
+				timelineGif = null; // Destruir el objeto timeline
+
+				Platform.runLater(() -> {
+					cargaImagen.setImage(null);
+					cargaImagen.setVisible(false);
+				});
+			}
+		}
+	}
 
 	/**
 	 * Carga un GIF desde la ruta proporcionada.
@@ -1127,19 +1141,7 @@ public class AlarmaList {
 		}
 	}
 
-	public static void detenerAnimacionCargaImagen(ImageView cargaImagen) {
-		synchronized (timelineGifLock) {
-			if (timelineGif != null) {
-				timelineGif.stop();
-				timelineGif = null; // Destruir el objeto timeline
 
-				Platform.runLater(() -> {
-					cargaImagen.setImage(null);
-					cargaImagen.setVisible(false);
-				});
-			}
-		}
-	}
 
 	public static void configureEyeToggle(ImageView toggleEyeImageView, TextField passUsuarioText,
 			PasswordField passBBDD) {
