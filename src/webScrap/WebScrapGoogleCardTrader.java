@@ -167,6 +167,8 @@ public class WebScrapGoogleCardTrader {
 			int startIndex = html.indexOf("www.cardmarket.com/");
 			List<String> urls = new ArrayList<>(); // Use ArrayList to dynamically store URLs
 
+			
+			
 			while (startIndex != -1) {
 				int endIndex = html.indexOf("\"", startIndex);
 				if (endIndex != -1) {
@@ -174,6 +176,7 @@ public class WebScrapGoogleCardTrader {
 
 					if (urlFound.endsWith("/Versions")) { // Check if the URL ends with "/Versions"
 						List<String> versionLinks = extraerEnlacesDePagina("https://" + urlFound);
+						
 						if (versionLinks.isEmpty()) {
 							return null; // Return null if no versions links are found
 						} else {
@@ -202,7 +205,7 @@ public class WebScrapGoogleCardTrader {
 	public static Carta extraerDatosMTG(String url) {
 
 		List<String> data = getCartaFromPuppeteer(url); // Método para obtener datos de la carta
-
+		
 		String referencia = "";
 		String nombre = "";
 		String coleccion = "";

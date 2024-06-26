@@ -12,22 +12,12 @@ import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-<<<<<<< HEAD
-import java.util.Set;
-=======
->>>>>>> refs/heads/V1.0
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-<<<<<<< HEAD
-
-import org.json.JSONException;
-=======
->>>>>>> refs/heads/V1.0
 
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
@@ -668,51 +658,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if (Utilidades.isInternetAvailable()) {
 			String valorCodigo = busquedaCodigo.getText();
-<<<<<<< HEAD
 
-			if (valorCodigo.isEmpty()) {
-				return;
-			}
-
-			nav.cerrarMenuOpciones();
-			AccionControlUI.limpiarAutorellenos(false);
-			AccionControlUI.borrarDatosGraficos();
-
-			AccionFuncionesComunes.cargarRuning();
-			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
-
-			future.thenAccept(enlaces -> {
-
-				if (enlaces == null || enlaces.isEmpty()) {
-					// No se encontraron enlaces, no continuar
-					AccionFuncionesComunes.cargarCompletado();
-					return;
-				}
-=======
->>>>>>> refs/heads/V1.0
-
-<<<<<<< HEAD
-				File fichero;
-				try {
-					fichero = createTempFile(enlaces);
-
-					if (fichero != null) {
-						enviarReferencias();
-						rellenarCombosEstaticos();
-						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-
-			future.exceptionally(ex -> {
-				ex.printStackTrace();
-				return null; // Manejar errores aquí según sea necesario
-			});
-		}
-=======
 			if (valorCodigo.isEmpty()) {
 				return;
 			}
@@ -747,26 +693,6 @@ public class VentanaAccionController implements Initializable {
 				return null; // Manejar errores aquí según sea necesario
 			});
 		}
-	}
-
-	public File createTempFile(List<String> data) throws IOException {
-
-		String tempDirectory = System.getProperty("java.io.tmpdir");
-
-		// Create a temporary file in the system temporary directory
-		Path tempFilePath = Files.createTempFile(Paths.get(tempDirectory), "tempFile", ".txt");
-		logger.log(Level.INFO, "Temporary file created at: " + tempFilePath.toString());
-
-		// Write data to the temporary file
-		Files.write(tempFilePath, data, StandardOpenOption.WRITE);
-
-		// Convert the Path to a File and return it
-		return tempFilePath.toFile();
-	}
-
-	public void deleteFile(Path filePath) throws IOException {
-		Files.delete(filePath);
->>>>>>> refs/heads/V1.0
 	}
 
 	public File createTempFile(List<String> data) throws IOException {

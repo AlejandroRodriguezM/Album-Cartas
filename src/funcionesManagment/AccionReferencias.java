@@ -109,11 +109,7 @@ public class AccionReferencias {
 	private TextField editorialCartaTextField;
 	private TextField coleccionCartaTextField;
 	private TextField rarezaCartaTextField;
-<<<<<<< HEAD
-	private TextArea normasCartaTextField;
-=======
 	private TextArea normasCartaTextArea;
->>>>>>> refs/heads/V1.0
 	private TextField precioCartaTextField;
 	private TextField idCartaTratarTextField;
 	private TextField direccionImagenTextField;
@@ -463,11 +459,7 @@ public class AccionReferencias {
 	}
 
 	public TextArea getNormasCartaTextArea() {
-<<<<<<< HEAD
-		return normasCartaTextField;
-=======
 		return normasCartaTextArea;
->>>>>>> refs/heads/V1.0
 	}
 
 	public TextField getPrecioCartaTextField() {
@@ -970,13 +962,8 @@ public class AccionReferencias {
 		this.rarezaCartaTextField = rarezaCartaTextField;
 	}
 
-<<<<<<< HEAD
-	public void setNormasCartaTextArea(TextArea normasCartaTextField) {
-		this.normasCartaTextField = normasCartaTextField;
-=======
 	public void setNormasCartaTextArea(TextArea normasCartaTextArea) {
 		this.normasCartaTextArea = normasCartaTextArea;
->>>>>>> refs/heads/V1.0
 	}
 
 	public void setPrecioCartaTextField(TextField precioCartaTextField) {

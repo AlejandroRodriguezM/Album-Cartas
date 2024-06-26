@@ -16,10 +16,7 @@ import dbmanager.SelectManager;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
-<<<<<<< HEAD
-=======
 import javafx.scene.Node;
->>>>>>> refs/heads/V1.0
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 
@@ -45,25 +42,6 @@ public class AccionSeleccionar {
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
 
-<<<<<<< HEAD
-		// Verificar si idRow es nulo antes de intentar acceder a sus métodos
-
-		if (scene != null) {
-			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
-					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
-					if (!esPrincipal) {
-						
-						if ("modificar".equals(AccionFuncionesComunes.TIPO_ACCION)) {
-							AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
-						}
-						// Borrar cualquier mensaje de error presente
-						AccionFuncionesComunes.borrarErrores();
-						AccionControlUI.validarCamposClave(true);
-						AccionControlUI.borrarDatosGraficos();
-						getReferenciaVentana().getImagenCarta().setImage(null);
-						getReferenciaVentana().getImagenCarta().setOpacity(0);
-=======
 		List<Node> elementos = AccionControlUI.modificarInterfazAccion(AccionFuncionesComunes.getTipoAccion());
 
 		if (scene != null) {
@@ -79,7 +57,6 @@ public class AccionSeleccionar {
 						AccionFuncionesComunes.borrarErrores();
 						AccionControlUI.validarCamposClave(true);
 						Utilidades.cambiarVisibilidad(elementos, true);
->>>>>>> refs/heads/V1.0
 					}
 				}
 			});

@@ -291,8 +291,6 @@ public class AccionFuncionesComunes {
 
 		}
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
-<<<<<<< HEAD
-=======
 		getReferenciaVentana().getTablaBBDD().getItems().clear();
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
@@ -300,7 +298,6 @@ public class AccionFuncionesComunes {
 
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setDisable(true);
 		getReferenciaVentana().getBotonGuardarListaCartas().setDisable(true);
->>>>>>> refs/heads/V1.0
 		limpiarDatosCarta();
 	}
 
@@ -446,10 +443,6 @@ public class AccionFuncionesComunes {
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/heads/V1.0
 					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(string));
 				}
 			}
@@ -517,10 +510,7 @@ public class AccionFuncionesComunes {
 	public static void busquedaPorCodigoImportacion(File file) {
 
 		fichero = file;
-<<<<<<< HEAD
-=======
 
->>>>>>> refs/heads/V1.0
 		int numCargas = Utilidades.contarLineasFichero(fichero);
 
 		controlCargaCartas(numCargas);
@@ -657,14 +647,6 @@ public class AccionFuncionesComunes {
 		AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
 		cambiarEstadoBotones(false);
 
-<<<<<<< HEAD
-		actualizarInterfaz(contadorErrores, carpetaRaizPortadas(Utilidades.nombreDB()), numLineas);
-
-		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
-
-		Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
-		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
-=======
 		getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
 		AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 
@@ -673,7 +655,6 @@ public class AccionFuncionesComunes {
 			Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));
 		}
 
->>>>>>> refs/heads/V1.0
 	}
 
 	public static void handleTaskEvents(Task<Void> tarea, String tipoUpdate) {
@@ -721,10 +702,6 @@ public class AccionFuncionesComunes {
 		});
 
 		tarea.setOnSucceeded(ev -> {
-<<<<<<< HEAD
-			if (tipoUpdate.isEmpty()) {
-				cargarCompletado();
-=======
 
 			if (ListasCartasDAO.cartasImportados.isEmpty()) {
 
@@ -737,7 +714,6 @@ public class AccionFuncionesComunes {
 				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
 				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
 				nav.cerrarCargaCartas();
->>>>>>> refs/heads/V1.0
 			} else {
 				if (tipoUpdate.isEmpty()) {
 					cargarCompletado();

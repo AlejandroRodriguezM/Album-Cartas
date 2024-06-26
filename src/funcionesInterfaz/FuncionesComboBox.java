@@ -558,11 +558,7 @@ public class FuncionesComboBox {
 
 	}
 
-<<<<<<< HEAD
-	public static TextFormatter<Double> validador_Ndecimales() {
-=======
 	public static TextFormatter<Double> validadorNdecimales() {
->>>>>>> refs/heads/V1.0
 		// Crear un validador para permitir solo números decimales (double)
 		return new TextFormatter<>(new DoubleStringConverter(), 0.0, change -> {
 			String newText = change.getControlNewText();
