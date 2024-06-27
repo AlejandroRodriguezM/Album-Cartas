@@ -154,6 +154,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		referenciaVentana.setProntInfoLabel(prontInfo);
 		referenciaVentana.setProntInfoEspecial(prontInfoEspecial);
 		referenciaVentana.setProntInfoPortadas(prontInfoPortadas);
+		referenciaVentana.setBotonActualizarPrecios(botonActualizarPrecio);
 		referenciaVentana.setStageVentana(estadoStage());
 
 		referenciaVentana.setBotonComprimirPortadas(botonComprimirPortadas);

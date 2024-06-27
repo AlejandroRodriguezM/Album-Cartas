@@ -271,61 +271,67 @@ public class WebScrapGoogleCardTrader {
 	}
 
 	public static List<String> getCartaFromPuppeteer(String url) {
-		List<String> dataArrayList = new ArrayList<>();
+	    List<String> dataArrayList = new ArrayList<>();
 
-		try {
-			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap.js";
-			String command = "node " + scriptPath + " " + url;
+	    try {
+	        String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap.js";
+	        String command = "node " + scriptPath + " " + url;
 
-			int attempt = 0;
-			int backoff = 2000; // Tiempo de espera inicial en milisegundos
+	        int attempt = 0;
+	        int backoff = 2000; // Tiempo de espera inicial en milisegundos
 
-			while (true) {
-				attempt++;
-				Process process = Runtime.getRuntime().exec(command);
+	        while (true) {
+	            attempt++;
+	            Process process = Runtime.getRuntime().exec(command);
 
-				// Leer la salida del proceso
-				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-				String outputLine;
-				StringBuilder output = new StringBuilder();
-				while ((outputLine = processReader.readLine()) != null) {
-					output.append(outputLine).append("\n");
-				}
-				processReader.close();
+	            // Leer la salida del proceso
+	            BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	            String outputLine;
+	            StringBuilder output = new StringBuilder();
+	            while ((outputLine = processReader.readLine()) != null) {
+	                output.append(outputLine).append("\n");
+	            }
+	            processReader.close();
 
-				// Esperar a que termine el proceso
-				int exitCode = process.waitFor();
-				if (exitCode == 0) {
-					// Proceso terminado exitosamente, obtener el resultado
-					String dataString = output.toString().trim();
-					if (!dataString.isEmpty()) {
-						// Dividir los pares clave-valor y añadirlos al List<String>
-						String[] keyValuePairs = dataString.split("\n");
-						for (String pair : keyValuePairs) {
-							dataArrayList.add(pair.trim());
-						}
-						return dataArrayList;
-					} else {
-						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
-						Thread.sleep(backoff); // Esperar antes de intentar nuevamente
-						backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
-					}
+	            // Esperar a que termine el proceso
+	            int exitCode = process.waitFor();
+	            if (exitCode == 0) {
+	                // Proceso terminado exitosamente, obtener el resultado
+	                String dataString = output.toString().trim();
+	                if (!dataString.isEmpty()) {
+	                    // Dividir los pares clave-valor y añadirlos al List<String>
+	                    String[] keyValuePairs = dataString.split("\n");
+	                    for (String pair : keyValuePairs) {
+	                        dataArrayList.add(pair.trim());
+	                    }
+	                    return dataArrayList;
+	                } else {
+	                    System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
+	                    Thread.sleep(backoff); // Esperar antes de intentar nuevamente
+	                    backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
+	                }
 
-					if (attempt >= 5) {
-						// Si se superan los intentos, devolver un List<String> vacío
-						return new ArrayList<>();
-					}
-				} else {
-					// Error al ejecutar el script
-					System.err.println("Error al ejecutar el script de Puppeteer");
-					break; // Salir del bucle si hay un error
-				}
-			}
-		} catch (InterruptedException | IOException e) {
-			e.printStackTrace();
-		}
-		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
+	                if (attempt >= 5) {
+	                    // Si se superan los intentos, devolver un List<String> vacío
+	                    return new ArrayList<>();
+	                }
+	            } else {
+	                // Error al ejecutar el script
+	                System.err.println("Error al ejecutar el script de Puppeteer");
+	                break; // Salir del bucle si hay un error
+	            }
+	        }
+	    } catch (InterruptedException e) {
+	        // Restaurar el estado de interrupción
+	        Thread.currentThread().interrupt();
+	        System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+	        // Opcional: Manejar la interrupción de manera adecuada, por ejemplo, limpiando recursos
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
 	}
+
 
 	public static List<String> getEnlacesFromPuppeteer(String url) {
 		List<String> dataArrayList = new ArrayList<>();

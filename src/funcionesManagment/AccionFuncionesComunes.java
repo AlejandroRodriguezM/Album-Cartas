@@ -543,19 +543,6 @@ public class AccionFuncionesComunes {
 		thread.start();
 	}
 
-	public static void controlCargaCartas(int numCargas) {
-		codigoFaltante = new StringBuilder();
-		codigoFaltante.setLength(0);
-		contadorErrores = new AtomicInteger(0);
-		cartasProcesados = new AtomicInteger(0);
-		mensajeIdCounter = new AtomicInteger(0);
-		numLineas = new AtomicInteger(0);
-		numLineas.set(numCargas);
-		cargaCartasControllerRef = new AtomicReference<>();
-		mensajesUnicos = new HashSet<>();
-		mensajesUnicos.clear();
-	}
-
 	// ES ACCION
 	public static void busquedaPorCodigoImportacion(File file) {
 
@@ -572,6 +559,19 @@ public class AccionFuncionesComunes {
 		Thread thread = new Thread(tarea);
 		thread.setDaemon(true);
 		thread.start();
+	}
+
+	public static void controlCargaCartas(int numCargas) {
+		codigoFaltante = new StringBuilder();
+		codigoFaltante.setLength(0);
+		contadorErrores = new AtomicInteger(0);
+		cartasProcesados = new AtomicInteger(0);
+		mensajeIdCounter = new AtomicInteger(0);
+		numLineas = new AtomicInteger(0);
+		numLineas.set(numCargas);
+		cargaCartasControllerRef = new AtomicReference<>();
+		mensajesUnicos = new HashSet<>();
+		mensajesUnicos.clear();
 	}
 
 	private static Task<Void> createSearchTask(String tipoUpdate, List<Carta> listaCartasDatabase) {
@@ -603,7 +603,12 @@ public class AccionFuncionesComunes {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
-					listaCartasDatabase.forEach(carta -> processCarta(carta, tipoUpdate));
+					listaCartasDatabase.forEach(carta -> {
+						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+							return; // Salir del forEach si el Task está cancelado
+						}
+						processCarta(carta, tipoUpdate);
+					});
 				}
 				return null;
 			}
@@ -747,7 +752,6 @@ public class AccionFuncionesComunes {
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
 				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(true, getReferenciaVentana());
-
 			}
 
 		});

@@ -58,7 +58,7 @@
 								<Font name="Comic Sans MS" size="18.0" />
 							</font>
 						</Label>
-						<Button fx:id="botonCancelarSubida" layoutX="206.0" layoutY="226.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="57.0" style="-fx-border-color: none; -fx-background-color: none;" visible="false">
+						<Button fx:id="botonCancelarSubida" layoutX="108.0" layoutY="226.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="57.0" style="-fx-border-color: none; -fx-background-color: none;" visible="false">
 							<stylesheets>
 								<URL value="@../style/genericos_style.css" />
 								<URL value="@../style/boton_reestart_style.css" />
