@@ -47,12 +47,12 @@
 								<Image url="@../imagenes/accesoWeb.jpg" />
 							</image>
 						</ImageView>
-						<Label layoutX="6.0" layoutY="113.0" prefHeight="17.0" prefWidth="103.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Datos" />
+						<Label layoutX="6.0" layoutY="113.0" prefHeight="17.0" prefWidth="90.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Datos" />
 						<Button fx:id="botonActualizarDatos" layoutX="185.0" layoutY="104.0" mnemonicParsing="false" onAction="#actualizarDatosCarta" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Actualizar" />
 						<Label layoutX="6.0" layoutY="155.0" prefHeight="10.0" prefWidth="107.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Portadas" wrapText="true" />
 						<Button fx:id="botonActualizarPortadas" layoutX="185.0" layoutY="146.0" mnemonicParsing="false" onAction="#actualizarPortadaCarta" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Actualizar" />
-						<Label layoutX="6.0" layoutY="198.0" prefHeight="3.0" prefWidth="107.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Todo" wrapText="true" />
-						<Button fx:id="botonActualizarTodo" layoutX="186.0" layoutY="189.0" mnemonicParsing="false" onAction="#actualizarCompletoCarta" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Actualizar" />
+						<Label layoutX="6.0" layoutY="238.0" prefHeight="17.0" prefWidth="87.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Todo" wrapText="true" />
+						<Button fx:id="botonActualizarTodo" layoutX="186.0" layoutY="229.0" mnemonicParsing="false" onAction="#actualizarCompletoCarta" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Actualizar" />
 						<Label fx:id="prontInfoEspecial" alignment="CENTER" contentDisplay="TOP" layoutX="6.0" layoutY="6.0" mouseTransparent="true" prefHeight="88.0" prefWidth="252.0" style="-fx-background-color: #29B6CC;" wrapText="true">
 							<font>
 								<Font name="Comic Sans MS" size="18.0" />
@@ -66,6 +66,8 @@
 						</Button>
 						<Label layoutX="172.0" layoutY="281.0" prefHeight="17.0" prefWidth="83.0" style="-fx-text-fill: white;" text="Versión" />
 						<Label fx:id="labelVersionEspecial" layoutX="222.0" layoutY="281.0" prefHeight="17.0" prefWidth="52.0" style="-fx-text-fill: white;" text="0.0.0.0" />
+                  <Label layoutX="6.0" layoutY="197.0" prefHeight="17.0" prefWidth="97.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Actualizar Precios" wrapText="true" />
+                  <Button fx:id="botonActualizarPrecio" layoutX="186.0" layoutY="188.0" mnemonicParsing="false" onAction="#actualizarPreciosCarta" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Actualizar" />
 					</children>
 				</AnchorPane>
 			</content>

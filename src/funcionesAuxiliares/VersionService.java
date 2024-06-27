@@ -59,7 +59,6 @@ public class VersionService extends Service<String> {
 			e.printStackTrace();
 			return "Error al leer la versión";
 		}
-
 		return version.toString();
 	}
 }

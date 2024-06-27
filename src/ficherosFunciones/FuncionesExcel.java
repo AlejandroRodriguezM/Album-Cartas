@@ -420,7 +420,7 @@ public class FuncionesExcel {
 			File directorio = new File(DEFAULT_PORTADA_IMAGE_PATH + File.separator);
 
 			// Obtener confirmación para continuar la subida de portadas
-			CompletableFuture<Boolean> confirmacionFuture = nav.cancelar_subida_portadas();
+			CompletableFuture<Boolean> confirmacionFuture = nav.cancelarSubidaPortadas();
 			boolean continuarSubida = confirmacionFuture.join();
 
 			// Actualizar el directorio si se va a continuar la subida de portadas

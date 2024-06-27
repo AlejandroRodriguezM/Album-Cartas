@@ -914,8 +914,12 @@ public class AlarmaList {
 
 	public static void detenerAnimacionCarga(ProgressIndicator progresoCarga) {
 		Platform.runLater(() -> {
-			progresoCarga.setVisible(false);
-			progresoCarga.setProgress(0); // Establece el progreso en 0 para detener la animación
+
+			if (progresoCarga != null) {
+				progresoCarga.setVisible(false);
+				progresoCarga.setProgress(0); // Establece el progreso en 0 para detener la animación
+			}
+
 		});
 	}
 
@@ -1097,7 +1101,7 @@ public class AlarmaList {
 		// Iniciar la animación
 		timelineGif.play();
 	}
-	
+
 	public static void detenerAnimacionCargaImagen(ImageView cargaImagen) {
 		synchronized (timelineGifLock) {
 			if (timelineGif != null) {
@@ -1140,8 +1144,6 @@ public class AlarmaList {
 			}
 		}
 	}
-
-
 
 	public static void configureEyeToggle(ImageView toggleEyeImageView, TextField passUsuarioText,
 			PasswordField passBBDD) {
