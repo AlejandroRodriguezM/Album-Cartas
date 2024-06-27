@@ -206,13 +206,13 @@ public class AccionModificar {
 		getReferenciaVentana().getRootVBox().toFront();
 	}
 
-	public static void actualizarDatabase(String tipoUpdate, boolean actualizarFima, Stage ventanaOpciones) {
+	public static void actualizarDatabase(String tipoUpdate, Stage ventanaOpciones) {
 
 		if (!Utilidades.isInternetAvailable()) {
 			return;
 		}
 
-		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("portada");
+		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("direccionImagenCarta");
 		Utilidades.borrarArchivosNoEnLista(inputPortadas);
 
 		boolean estaBaseLlena = ListasCartasDAO.comprobarLista();
@@ -240,7 +240,7 @@ public class AccionModificar {
 			}
 		}
 
-		AccionFuncionesComunes.busquedaPorListaDatabase(listaCartasDatabase, tipoUpdate, actualizarFima);
+		AccionFuncionesComunes.busquedaPorListaDatabase(listaCartasDatabase, tipoUpdate);
 
 		if (getReferenciaVentana().getTablaBBDD() != null) {
 			getReferenciaVentana().getTablaBBDD().refresh();

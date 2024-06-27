@@ -41,12 +41,16 @@ public class AccionSeleccionar {
 		getReferenciaVentana().getImagenCarta().setOpacity(1);
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
+		final List<Node>[] elementos = new ArrayList[1];
+		elementos[0] = new ArrayList<>();
 
-		List<Node> elementos = AccionControlUI.modificarInterfazAccion(AccionFuncionesComunes.getTipoAccion());
+		if (!esPrincipal) {
+			elementos[0] = AccionControlUI.modificarInterfazAccion(AccionFuncionesComunes.getTipoAccion());
+		}
 
 		if (scene != null) {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				
+
 				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
 					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
 					if (!esPrincipal) {
@@ -56,7 +60,7 @@ public class AccionSeleccionar {
 						// Borrar cualquier mensaje de error presente
 						AccionFuncionesComunes.borrarErrores();
 						AccionControlUI.validarCamposClave(true);
-						Utilidades.cambiarVisibilidad(elementos, true);
+						Utilidades.cambiarVisibilidad(elementos[0], true);
 					}
 				}
 			});
@@ -66,8 +70,7 @@ public class AccionSeleccionar {
 		if (newSelection != null) {
 			String idCarta = newSelection.getIdCarta();
 			mostrarCarta(idCarta, esPrincipal);
-
-			Utilidades.cambiarVisibilidad(elementos, false);
+			Utilidades.cambiarVisibilidad(elementos[0], false);
 
 		}
 	}

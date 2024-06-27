@@ -310,7 +310,7 @@ public class DatabaseManagerDAO {
 
 		// Comprobar si la palabra contiene "marve" o "dc"
 		if (palabraLower.contains("magic")) {
-			return "Magic The Gathering";
+			return "Magic: The Gathering";
 		} else if (palabraLower.contains("pokemon")) {
 			return "Pokemon";
 		} else if (palabraLower.contains("yu")) {

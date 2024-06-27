@@ -81,6 +81,7 @@ public class AccionReferencias {
 	private Button botonNormalizarDB;
 	private Button botonGuardarListaCartas;
 	private Button botonEliminarImportadoListaCarta;
+	private Button botonActualizarPrecio;
 
 	private Rectangle barraCambioAltura;
 
@@ -356,6 +357,10 @@ public class AccionReferencias {
 
 	public Button getBotonNormalizarDB() {
 		return botonNormalizarDB;
+	}
+
+	public Button getBotonActualizarPrecios() {
+		return botonActualizarPrecio;
 	}
 
 	public Rectangle getBarraCambioAltura() {
@@ -664,7 +669,8 @@ public class AccionReferencias {
 	}
 
 	/**
-	 * @param botonEliminarImportadoListaCarta the botonEliminarImportadoListaCarta to set
+	 * @param botonEliminarImportadoListaCarta the botonEliminarImportadoListaCarta
+	 *                                         to set
 	 */
 	public void setBotonEliminarImportadoListaCarta(Button botonEliminarImportadoListaCarta) {
 		this.botonEliminarImportadoListaCarta = botonEliminarImportadoListaCarta;
@@ -860,6 +866,10 @@ public class AccionReferencias {
 
 	public void setBotonNormalizarDB(Button botonNormalizarDB) {
 		this.botonNormalizarDB = botonNormalizarDB;
+	}
+
+	public void setBotonActualizarPrecios(Button botonActualizarPrecio) {
+		this.botonActualizarPrecio = botonActualizarPrecio;
 	}
 
 	public void setBarraCambioAltura(Rectangle barraCambioAltura) {

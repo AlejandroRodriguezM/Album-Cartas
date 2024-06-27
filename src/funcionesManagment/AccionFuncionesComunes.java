@@ -22,8 +22,10 @@ import Controladores.CargaCartasController;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
+import dbmanager.DBUtilidades;
 import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
+import dbmanager.SelectManager;
 import dbmanager.UpdateManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
@@ -174,62 +176,113 @@ public class AccionFuncionesComunes {
 		return alMenosUnoProcesado;
 	}
 
-	public static void actualizarCartasDatabase(Carta cartaOriginal, String tipoUpdate, boolean confirmarFirma) {
+	public static void actualizarPortadaCartas(String codigoImagen, String correctedUrl) {
+
+		// Asynchronously download and convert image
+		Platform.runLater(() -> {
+			URI uri = null;
+			try {
+				uri = new URI(correctedUrl);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
+					codigoImagen + ".jpg");
+		});
+	}
+
+	public static void actualizarPrecioCartas(Carta cartaOriginal, String nuevoPrecio) {
+
+		cartaOriginal.setPrecioCarta(nuevoPrecio);
+	}
+
+	public static void actualizarInformacionCartas(Carta cartaOriginal) {
+
+		String numCarta = cartaOriginal.getNumCarta();
+		String nombreCorregido = Utilidades.eliminarParentesis(cartaOriginal.getNomCarta());
+		String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
+		nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
+		String editorial = DatabaseManagerDAO.getComercializadora((cartaOriginal.getEditorialCarta()));
+
+		cartaOriginal.setNomCarta(nombreLimpio);
+		cartaOriginal.setNumCarta(numCarta);
+		cartaOriginal.setEditorialCarta(editorial);
+		cartaOriginal.setDireccionImagenCarta(cartaOriginal.getDireccionImagenCarta());
+
+	}
+
+	public static void actualizarCompletoCartas(Carta cartaOriginal, String urlFinal) {
+
+		String numCarta = cartaOriginal.getNumCarta();
+		String nombreCorregido = Utilidades.eliminarParentesis(cartaOriginal.getNomCarta());
+		String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
+		nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
+		String editorial = DatabaseManagerDAO.getComercializadora((cartaOriginal.getEditorialCarta()));
+
+		cartaOriginal.setNomCarta(nombreLimpio);
+		cartaOriginal.setNumCarta(numCarta);
+		cartaOriginal.setEditorialCarta(editorial);
+		Utilidades.deleteFile(cartaOriginal.getDireccionImagenCarta());
+		cartaOriginal.setDireccionImagenCarta(urlFinal);
+
+	}
+
+	public static String codigoNuevaImagen() {
+		return Utilidades.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+	}
+
+	public static String urlFinalImagen(String direccionImagen) {
+
+		String urlImagen = direccionImagen;
+
+		return urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
+	}
+
+	public static void actualizarCartasDatabase(Carta cartaOriginal, String tipoUpdate) {
 
 		String codigoCarta = cartaOriginal.getUrlReferenciaCarta();
 		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta, true);
 
 		for (Carta cartaInfo : cartaColeccion) {
-
-			String codigo_imagen = Utilidades
-					.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
-			String urlImagen = cartaInfo.getDireccionImagenCarta();
-			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigo_imagen + ".jpg";
-			String correctedUrl = urlImagen.replace("\\", "/").replaceFirst("^http:", "https:");
-
 			cartaOriginal.setIdCarta(cartaOriginal.getIdCarta());
-			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")) {
+			String urlImagen = cartaInfo.getDireccionImagenCarta();
+			String codigoNuevoCarta = codigoNuevaImagen();
+			String direccionCarta = urlFinalImagen(urlImagen);
+			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoNuevoCarta + ".jpg";
+			String correctedUrl = direccionCarta.replace("\\", "/").replaceFirst("^http:", "https:");
 
-				String numCarta = cartaOriginal.getNumCarta();
-				String nombreCorregido = Utilidades.eliminarParentesis(cartaOriginal.getNomCarta());
-				String nombreLimpio = Utilidades.extraerNombreLimpio(nombreCorregido);
-				nombreLimpio = DatabaseManagerDAO.corregirPatrones(nombreLimpio);
-				String editorial = DatabaseManagerDAO.getComercializadora((cartaOriginal.getEditorialCarta()));
+			if (tipoUpdate.equalsIgnoreCase("modificar")) {
 
-				cartaOriginal.setNomCarta(nombreLimpio);
-				cartaOriginal.setNumCarta(numCarta);
-				cartaOriginal.setEditorialCarta(editorial);
-
-				if (tipoUpdate.equalsIgnoreCase("modificar")) {
-					Utilidades.deleteFile(cartaOriginal.getDireccionImagenCarta());
-					cartaOriginal.setDireccionImagenCarta(urlFinal);
-				} else {
-					cartaOriginal.setDireccionImagenCarta(cartaOriginal.getDireccionImagenCarta());
-				}
-
-			}
-
-			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
 				cartaOriginal.setDireccionImagenCarta(urlFinal);
-				// Asynchronously download and convert image
-				Platform.runLater(() -> {
-					URI uri = null;
-					try {
-						uri = new URI(correctedUrl);
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					}
-					Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
-							codigo_imagen + ".jpg");
-				});
+				actualizarPortadaCartas(codigoNuevoCarta, correctedUrl);
+
+			} else if (tipoUpdate.equalsIgnoreCase("actualizar precio")) {
+				String cartaPrecioNuevo = cartaInfo.getPrecioCarta();
+				actualizarPrecioCartas(cartaOriginal, cartaPrecioNuevo);
+			} else {
+				actualizarCompletoCartas(cartaOriginal, urlFinal);
 			}
 
-			if (tipoUpdate.equalsIgnoreCase("modificar") || tipoUpdate.equalsIgnoreCase("actualizar datos")
-					|| tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-				UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
-			}
+			UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
 		}
+	}
 
+	public static Carta actualizarCartasPortadas(Carta cartaOriginal) {
+
+		String codigoNuevoCarta = codigoNuevaImagen();
+		String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoNuevoCarta + ".jpg";
+
+		String argument = "cardtrader+" + cartaOriginal.getNomCarta().replace(" ", "+") + "+"
+				+ cartaOriginal.getNumCarta() + "+" + cartaOriginal.getColeccionCarta().replace(" ", "+");
+		String urlCarta = WebScrapGoogleCardTrader.searchWebImagen(argument);
+		String imagen = "";
+		if (urlCarta.contains("/cards/")) {
+			imagen = WebScrapGoogleCardTrader.extraerDatosImagen(urlCarta);
+		}
+		cartaOriginal.setDireccionImagenCarta(urlFinal);
+		actualizarPortadaCartas(codigoNuevoCarta, imagen);
+		UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
+		return cartaOriginal;
 	}
 
 	/**
@@ -247,8 +300,6 @@ public class AccionFuncionesComunes {
 		// Verificar si se obtuvo un objeto FileChooser válido
 		if (fichero != null) {
 			String nuevoNombreArchivo = Utilidades.generarCodigoUnico(carpetaRaizPortadas(Utilidades.nombreDB()));
-
-			System.out.println("Carta: " + nuevoNombreArchivo);
 
 			try {
 				Utilidades.redimensionarYGuardarImagen(fichero.getAbsolutePath(), nuevoNombreArchivo);
@@ -479,14 +530,31 @@ public class AccionFuncionesComunes {
 	}
 
 	// ES OPCIONES
-	public static void busquedaPorListaDatabase(List<Carta> listaCartasDatabase, String tipoUpdate,
-			boolean actualizarFirma) {
+	public static void busquedaPorListaDatabase(List<Carta> listaCartasDatabase, String tipoUpdate) {
 
 		controlCargaCartas(listaCartasDatabase.size());
 
-		Task<Void> tarea = createSearchTask(tipoUpdate, actualizarFirma, listaCartasDatabase);
+		Task<Void> tarea = createSearchTask(tipoUpdate, listaCartasDatabase);
 
 		handleTaskEvents(tarea, tipoUpdate);
+
+		Thread thread = new Thread(tarea);
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	// ES ACCION
+	public static void busquedaPorCodigoImportacion(File file) {
+
+		fichero = file;
+
+		int numCargas = Utilidades.contarLineasFichero(fichero);
+
+		controlCargaCartas(numCargas);
+
+		Task<Void> tarea = createSearchTask("", null);
+
+		handleTaskEvents(tarea, "");
 
 		Thread thread = new Thread(tarea);
 		thread.setDaemon(true);
@@ -506,26 +574,7 @@ public class AccionFuncionesComunes {
 		mensajesUnicos.clear();
 	}
 
-	// ES ACCION
-	public static void busquedaPorCodigoImportacion(File file) {
-
-		fichero = file;
-
-		int numCargas = Utilidades.contarLineasFichero(fichero);
-
-		controlCargaCartas(numCargas);
-
-		Task<Void> tarea = createSearchTask("", false, null);
-
-		handleTaskEvents(tarea, "");
-
-		Thread thread = new Thread(tarea);
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	private static Task<Void> createSearchTask(String tipoUpdate, boolean actualizarFirma,
-			List<Carta> listaCartasDatabase) {
+	private static Task<Void> createSearchTask(String tipoUpdate, List<Carta> listaCartasDatabase) {
 		return new Task<>() {
 			@Override
 			protected Void call() {
@@ -545,7 +594,7 @@ public class AccionFuncionesComunes {
 							// Filtrar duplicados antes de procesar
 							for (Carta carta : listaOriginal) {
 								if (setSinDuplicados.add(carta)) {
-									processCarta(carta, "", false);
+									processCarta(carta, "");
 								}
 							}
 						});
@@ -554,8 +603,11 @@ public class AccionFuncionesComunes {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
-					listaCartasDatabase.forEach(codigo -> {
-						processCarta(codigo, tipoUpdate, actualizarFirma);
+					listaCartasDatabase.forEach(carta -> {
+						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+							return; // Salir del forEach si el Task está cancelado
+						}
+						processCarta(carta, tipoUpdate);
 					});
 				}
 				return null;
@@ -563,7 +615,7 @@ public class AccionFuncionesComunes {
 		};
 	}
 
-	private static void processCarta(Carta carta, String tipoUpdate, boolean actualizarFirma) {
+	private static void processCarta(Carta carta, String tipoUpdate) {
 		StringBuilder textoBuilder = new StringBuilder();
 
 		if (carta.getUrlReferenciaCarta().isEmpty() || carta.getUrlReferenciaCarta().equalsIgnoreCase("vacio")) {
@@ -581,11 +633,15 @@ public class AccionFuncionesComunes {
 		} else {
 
 			if (tipoUpdate.isEmpty()) {
-				textoBuilder.append("Código: ").append(carta.getNomCarta()).append(" procesado.").append("\n");
+				textoBuilder.append("Codigo: ").append(carta.getNomCarta()).append(" procesado.").append("\n");
 				AccionFuncionesComunes.procesarCartaPorCodigo(carta);
+			} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
+				textoBuilder.append("Portada Carta ID: ").append(carta.getIdCarta()).append(" actualizado.")
+						.append("\n");
+				AccionFuncionesComunes.actualizarCartasPortadas(carta);
 			} else {
 				textoBuilder.append("ID: ").append(carta.getIdCarta()).append(" actualizado.").append("\n");
-				AccionFuncionesComunes.actualizarCartasDatabase(carta, tipoUpdate, actualizarFirma);
+				AccionFuncionesComunes.actualizarCartasDatabase(carta, tipoUpdate);
 			}
 		}
 		updateGUI(textoBuilder);
@@ -696,14 +752,13 @@ public class AccionFuncionesComunes {
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentana);
 				FuncionesManejoFront.cambiarEstadoMenuBar(true, referenciaVentanaPrincipal);
 				FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(true, getReferenciaVentana());
-
 			}
 
 		});
 
 		tarea.setOnSucceeded(ev -> {
 
-			if (ListasCartasDAO.cartasImportados.isEmpty()) {
+			if (ListasCartasDAO.cartasImportados.isEmpty() && tipoUpdate.isEmpty()) {
 
 				List<Node> elementos = Arrays.asList(referenciaVentana.getBotonEliminarImportadoListaCarta(),
 						referenciaVentana.getBotonGuardarListaCartas(), referenciaVentana.getBotonGuardarCarta(),
@@ -714,6 +769,9 @@ public class AccionFuncionesComunes {
 				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
 				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
 				nav.cerrarCargaCartas();
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
+				getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
 			} else {
 				if (tipoUpdate.isEmpty()) {
 					cargarCompletado();
@@ -731,19 +789,19 @@ public class AccionFuncionesComunes {
 
 					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
 				}
-				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
-				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
+
 			}
+
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentanaPrincipal);
 			AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
 			AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
-			getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
+
 			cambiarEstadoBotones(false);
 		});
 
 		tarea.setOnCancelled(ev -> {
-			if (ListasCartasDAO.cartasImportados.isEmpty()) {
+			if (ListasCartasDAO.cartasImportados.isEmpty() && tipoUpdate.isEmpty()) {
 
 				List<Node> elementos = Arrays.asList(referenciaVentana.getBotonEliminarImportadoListaCarta(),
 						referenciaVentana.getBotonGuardarListaCartas(), referenciaVentana.getBotonGuardarCarta(),
@@ -873,20 +931,23 @@ public class AccionFuncionesComunes {
 
 	public static void cambiarEstadoBotones(boolean esCancelado) {
 
-		List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonSubidaPortada());
+		if (TIPO_ACCION != null) {
+			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonSubidaPortada());
 
-		if (!TIPO_ACCION.equals("aniadir")) {
-			elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
-			elementos.add(getReferenciaVentana().getBusquedaCodigoTextField());
-			elementos.add(getReferenciaVentana().getBotonCancelarSubida());
-			elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
-			elementos.add(getReferenciaVentana().getBotonSubidaPortada());
+			if (!TIPO_ACCION.equals("aniadir")) {
+				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
+				elementos.add(getReferenciaVentana().getBusquedaCodigoTextField());
+				elementos.add(getReferenciaVentana().getBotonCancelarSubida());
+				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
+				elementos.add(getReferenciaVentana().getBotonSubidaPortada());
+			}
+
+			getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
+			getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
+			getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
+			Utilidades.cambiarVisibilidad(elementos, esCancelado);
 		}
 
-		getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
-		getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
-		getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
-		Utilidades.cambiarVisibilidad(elementos, esCancelado);
 	}
 
 	public static String carpetaRaizPortadas(String nombreDatabase) {

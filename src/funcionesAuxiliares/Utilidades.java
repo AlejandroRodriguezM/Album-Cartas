@@ -2308,8 +2308,89 @@ public class Utilidades {
 				Utilidades.crearCarpeta();
 			}
 		}
-
 	}
+
+	public static boolean checkNodeJSVersion() {
+		try {
+			// Ejecutar el comando para obtener la versión de Node.js
+			ProcessBuilder processBuilder = new ProcessBuilder("node", "--version");
+			Process process = processBuilder.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line = reader.readLine();
+
+			if (line != null && !line.isEmpty()) {
+				System.out.println("Node.js version: " + line);
+				checkAndInstallPuppeteer();
+				return true;
+			} else {
+				System.out.println("Node.js no está instalado.");
+
+				return false;
+			}
+
+		} catch (IOException e) {
+			System.out.println("Node.js no está instalado o ocurrió un error al verificar la versión.");
+		}
+		return false;
+	}
+
+	public static void openDownloadPage() {
+		try {
+			Desktop desktop = Desktop.getDesktop();
+			desktop.browse(new URI("https://nodejs.org/en/download/prebuilt-installer"));
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void checkAndInstallPuppeteer() {
+        try {
+            // Especificar la ruta completa del ejecutable npm
+            ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "list", "puppeteer");
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            boolean puppeteerInstalled = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("puppeteer")) {
+                    puppeteerInstalled = true;
+                    break;
+                }
+            }
+
+            if (puppeteerInstalled) {
+                System.out.println("Puppeteer ya está instalado.");
+            } else {
+                System.out.println("Puppeteer no está instalado. Instalando Puppeteer...");
+                installPuppeteer();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void installPuppeteer() {
+        try {
+            // Especificar la ruta completa del ejecutable npm
+            ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "install", "puppeteer");
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            System.out.println("Puppeteer se ha instalado correctamente.");
+
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error al instalar Puppeteer.");
+            e.printStackTrace();
+        }
+    }
 
 	public static AccionReferencias getReferenciaVentana() {
 		return referenciaVentana;

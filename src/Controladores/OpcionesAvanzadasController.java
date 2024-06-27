@@ -53,59 +53,62 @@ import net.coobird.thumbnailator.Thumbnails;
 
 public class OpcionesAvanzadasController implements Initializable {
 
-	 @FXML
-	    private Button botonActualizarDatos;
+	@FXML
+	private Button botonActualizarDatos;
 
-	    @FXML
-	    private Button botonActualizarPortadas;
+	@FXML
+	private Button botonActualizarPortadas;
 
-	    @FXML
-	    private Button botonActualizarSoftware;
+	@FXML
+	private Button botonActualizarSoftware;
 
-	    @FXML
-	    private Button botonActualizarTodo;
+	@FXML
+	private Button botonActualizarTodo;
 
-	    @FXML
-	    private Button botonCancelarSubida;
+	@FXML
+	private Button botonCancelarSubida;
 
-	    @FXML
-	    private Button botonCancelarSubidaPortadas;
+	@FXML
+	private Button botonCancelarSubidaPortadas;
 
-	    @FXML
-	    private Button botonComprimirPortadas;
+	@FXML
+	private Button botonComprimirPortadas;
 
-	    @FXML
-	    private Button botonDescargarSQL;
+	@FXML
+	private Button botonDescargarSQL;
 
-	    @FXML
-	    private Button botonNormalizarDB;
+	@FXML
+	private Button botonNormalizarDB;
 
-	    @FXML
-	    private Button botonReCopiarPortadas;
+	@FXML
+	private Button botonReCopiarPortadas;
 
-	    @FXML
-	    private Button botonRecomponerPortadas;
+	@FXML
+	private Button botonRecomponerPortadas;
 
-	    @FXML
-	    private Label labelComprobar;
+	@FXML
+	private Button botonActualizarPrecio;
 
-	    @FXML
-	    private Label labelVersion;
+	@FXML
+	private Label labelComprobar;
 
-	    @FXML
-	    private Label labelVersionEspecial;
+	@FXML
+	private Label labelVersion;
 
-	    @FXML
-	    private Label labelVersionPortadas;
+	@FXML
+	private Label labelVersionEspecial;
 
-	    @FXML
-	    private Label prontInfo;
+	@FXML
+	private Label labelVersionPortadas;
 
-	    @FXML
-	    private Label prontInfoEspecial;
+	@FXML
+	private Label prontInfo;
 
-	    @FXML
-	    private Label prontInfoPortadas;
+	@FXML
+	private Label prontInfoEspecial;
+
+	@FXML
+	private Label prontInfoPortadas;
 
 	public static final ObservableList<String> urlActualizados = FXCollections.observableArrayList();
 
@@ -151,6 +154,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		referenciaVentana.setProntInfoLabel(prontInfo);
 		referenciaVentana.setProntInfoEspecial(prontInfoEspecial);
 		referenciaVentana.setProntInfoPortadas(prontInfoPortadas);
+		referenciaVentana.setBotonActualizarPrecios(botonActualizarPrecio);
 		referenciaVentana.setStageVentana(estadoStage());
 
 		referenciaVentana.setBotonComprimirPortadas(botonComprimirPortadas);
@@ -299,7 +303,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		Utilidades.crearCarpeta();
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
-		AccionModificar.actualizarDatabase("modificar", actualizarFima.get(), estadoStage());
+		AccionModificar.actualizarDatabase("modificar", estadoStage());
 
 	}
 
@@ -307,7 +311,14 @@ public class OpcionesAvanzadasController implements Initializable {
 	void actualizarDatosCarta(ActionEvent event) {
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
-		AccionModificar.actualizarDatabase("actualizar datos", actualizarFima.get(), estadoStage());
+		AccionModificar.actualizarDatabase("actualizar datos", estadoStage());
+	}
+
+	@FXML
+	void actualizarPreciosCarta(ActionEvent event) {
+		AccionModificar.setReferenciaVentana(guardarReferencia());
+		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
+		AccionModificar.actualizarDatabase("actualizar precios", estadoStage());
 	}
 
 	@FXML
@@ -315,8 +326,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		Utilidades.crearCarpeta();
 		AccionModificar.setReferenciaVentana(guardarReferencia());
 		AccionFuncionesComunes.setReferenciaVentana(guardarReferencia());
-		AccionModificar.actualizarDatabase("actualizar portadas", actualizarFima.get(), estadoStage());
-
+		AccionModificar.actualizarDatabase("actualizar portadas", estadoStage());
 	}
 
 	@FXML
@@ -552,7 +562,8 @@ public class OpcionesAvanzadasController implements Initializable {
 					for (String idCarta : listaID) {
 						Carta comicNuevo = CartaManagerDAO.cartaDatos(idCarta);
 
-						String nombre_portada = Utilidades.obtenerNombrePortada(false, comicNuevo.getDireccionImagenCarta());
+						String nombre_portada = Utilidades.obtenerNombrePortada(false,
+								comicNuevo.getDireccionImagenCarta());
 						String nombre_modificado = Utilidades.convertirNombreArchivo(nombre_portada);
 						if (!Utilidades.existeArchivo(FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH, nombre_portada)) {
 							FuncionesExcel.copiarPortadaPredeterminada(selectedDirectory.getAbsolutePath(),

@@ -5,19 +5,19 @@
 package funcionesAuxiliares;
 
 /**
- * Programa que permite el acceso a una base de datos de comics. Mediante JDBC con mySql
+ * Programa que permite el acceso a una base de datos de cartas. Mediante JDBC con mySql
  * Las ventanas graficas se realizan con JavaFX.
  * El programa permite:
  *  - Conectarse a la base de datos.
  *  - Ver la base de datos completa o parcial segun parametros introducidos.
  *  - Guardar el contenido de la base de datos en un fichero .txt y .xlsx,CSV
  *  - Copia de seguridad de la base de datos en formato .sql
- *  - Introducir comics a la base de datos.
- *  - Modificar comics de la base de datos.
- *  - Eliminar comics de la base de datos(Solamente cambia el estado de "En posesion" a "Vendido". Los datos siguen en la bbdd pero estos no los muestran el programa
- *  - Ver frases de personajes de comics
+ *  - Introducir cartas a la base de datos.
+ *  - Modificar cartas de la base de datos.
+ *  - Eliminar cartas de la base de datos(Solamente cambia el estado de "En posesion" a "Vendido". Los datos siguen en la bbdd pero estos no los muestran el programa
+ *  - Ver frases de personajes de cartas
  *  - Opcion de escoger algo para leer de forma aleatoria.
- *  - Puntuar comics que se encuentren dentro de la base de datos.
+ *  - Puntuar cartas que se encuentren dentro de la base de datos.
  *  Esta clase permite acceder al menu principal donde se puede viajar a diferentes ventanas, etc.
  *
  *  Version 8.0.0.0
@@ -132,7 +132,7 @@ public class Ventanas {
 					scene.getStylesheets().add(getClass().getResource("/style/acces_style.css").toExternalForm());
 					accesoBBDDStage = new Stage();
 					accesoBBDDStage.setResizable(false);
-					accesoBBDDStage.setTitle("Aplicacion bbdd comics");
+					accesoBBDDStage.setTitle("Aplicacion bbdd cartas");
 
 					accesoBBDDStage.getIcons().add(new Image("/Icono/icon2.png"));
 
@@ -250,7 +250,7 @@ public class Ventanas {
 			Scene scene = new Scene(root);
 			accionCarta = new Stage();
 			accionCarta.setResizable(false);
-			accionCarta.setTitle("Acciones comic"); // Titulo de la aplicación.
+			accionCarta.setTitle("Acciones carta"); // Titulo de la aplicación.
 
 			accionCarta.getIcons().add(new Image("/Icono/icon2.png"));
 
@@ -460,7 +460,7 @@ public class Ventanas {
 				Scene scene = new Scene(root);
 				Stage stage = new Stage();
 				stage.setResizable(false);
-				stage.setTitle("Carga de comics"); // Titulo de la aplicacion.
+				stage.setTitle("Carga de cartas"); // Titulo de la aplicacion.
 				stage.getIcons().add(new Image("/Icono/icon2.png"));
 
 				cargaCartas = stage;
@@ -562,7 +562,28 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Accion . . .");
 		alert.setHeaderText("Vas a realizar una accion.");
-		alert.setContentText("¿Estas seguro que quieres realizar la accion para el comic?");
+		alert.setContentText("¿Estas seguro que quieres realizar la accion para el carta?");
+		if (alert.showAndWait().get() == ButtonType.OK) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Llama a una ventana de alarma para eliminar datos
+	 *
+	 * @return
+	 */
+	public boolean alertaAccionNavegador() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
+		stage.setResizable(false);
+		alert.setTitle("Accion . . .");
+		alert.setHeaderText("Vas a realizar una accion.");
+		alert.setContentText(
+				"Se va a abrir el navegador para descargar nodeJS ¿Estas seguro? (Sin nodeJS la funcionalidad del programa deja de ser automatica)");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -582,7 +603,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Accion . . .");
 		alert.setHeaderText("Vas a realizar una accion.");
-		alert.setContentText("¿Estas seguro que quieres actualizar comics con firmas tambien?");
+		alert.setContentText("¿Estas seguro que quieres actualizar cartas con firmas tambien?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -622,7 +643,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Eliminando . . .");
 		alert.setHeaderText("Estas apunto de eliminar datos.");
-		alert.setContentText(" Estas seguro que quieres eliminar el comic?");
+		alert.setContentText(" Estas seguro que quieres eliminar el carta?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -641,7 +662,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Modificando . . .");
 		alert.setHeaderText("Estas apunto de modificar datos.");
-		alert.setContentText(" Estas seguro que quieres modificar el comic?");
+		alert.setContentText(" Estas seguro que quieres modificar el carta?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -660,7 +681,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Borrando puntuacion . . .");
 		alert.setHeaderText("Estas apunto de borrar la puntuacion.");
-		alert.setContentText(" Estas seguro que borrar la puntuacion del comic?");
+		alert.setContentText(" Estas seguro que borrar la puntuacion del carta?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -679,7 +700,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Agregando puntuacion . . .");
 		alert.setHeaderText("Estas apunto de agregar la puntuacion.");
-		alert.setContentText(" Estas seguro que agregar la puntuacion del comic?");
+		alert.setContentText(" Estas seguro que agregar la puntuacion del carta?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -698,7 +719,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Insertando . . .");
 		alert.setHeaderText("Estas apunto de introducir datos.");
-		alert.setContentText(" Estas seguro que quieres introducir el comic/comics?");
+		alert.setContentText(" Estas seguro que quieres introducir el carta/comics?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -737,7 +758,7 @@ public class Ventanas {
 		stage.setResizable(false);
 		alert.setTitle("Insertando . . .");
 		alert.setHeaderText("Parece que te has olvidado de la portada.");
-		alert.setContentText(" Estas seguro que quieres introducir el comic sin portada??");
+		alert.setContentText(" Estas seguro que quieres introducir el carta sin portada??");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		}
@@ -851,7 +872,7 @@ public class Ventanas {
 
 	/**
 	 * Solicita confirmación al usuario antes de borrar el contenido de la lista de
-	 * comics guardados.
+	 * cartas guardados.
 	 *
 	 * @return true si el usuario confirma la eliminación, o false si el usuario
 	 *         cancela la operación.
@@ -878,7 +899,7 @@ public class Ventanas {
 	 *         confirma la cancelación, o con false si el usuario decide continuar
 	 *         la subida.
 	 */
-	public CompletableFuture<Boolean> cancelar_subida_portadas() {
+	public CompletableFuture<Boolean> cancelarSubidaPortadas() {
 		CompletableFuture<Boolean> futureResult = new CompletableFuture<>();
 
 		Platform.runLater(() -> {
