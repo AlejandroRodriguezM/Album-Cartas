@@ -1,5 +1,6 @@
-# Album![zydtwmqji7vbmyv2fopr](https://github.com/AlejandroRodriguezM/Album-Cartas/assets/104910719/5b5040ab-b610-46d2-872e-cf108ee2f46e)
--Cartas
+![zydtwmqji7vbmyv2fopr](https://github.com/AlejandroRodriguezM/Album-Cartas/assets/104910719/5b5040ab-b610-46d2-872e-cf108ee2f46e)
+
+#Album de Cartas Card Market
 
 Este programa sirve para tener un recuento de tu colección de cartas dentro de un formato admitido por Card Market. Desarrollado en Java, utilizando JavaFX y SQLite.
 
