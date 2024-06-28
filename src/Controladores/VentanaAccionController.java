@@ -384,7 +384,6 @@ public class VentanaAccionController implements Initializable {
 
 		if (getCartaCache() != null) {
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
-
 			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
 				nav.verVentanaImagen();
 			}
@@ -489,6 +488,7 @@ public class VentanaAccionController implements Initializable {
 		nav.cerrarMenuOpciones();
 		AccionModificar.actualizarCartaLista();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -506,6 +506,7 @@ public class VentanaAccionController implements Initializable {
 		AccionAniadir.guardarContenidoLista(false, getCartaCache());
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -523,6 +524,7 @@ public class VentanaAccionController implements Initializable {
 		AccionAniadir.guardarContenidoLista(true, null);
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -543,6 +545,7 @@ public class VentanaAccionController implements Initializable {
 		AccionModificar.modificarCarta();
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	@FXML
@@ -552,6 +555,7 @@ public class VentanaAccionController implements Initializable {
 		AccionEliminar.eliminarCartaLista();
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	@FXML
@@ -732,6 +736,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		AccionFuncionesComunes.limpiarDatosPantallaAccion();
 		rellenarCombosEstaticos();
+		setCartaCache(null);
 	}
 
 	/**
@@ -832,7 +837,7 @@ public class VentanaAccionController implements Initializable {
 	public void closeWindow() {
 
 		stage = estadoStage();
-
+		setCartaCache(null);
 		if (stage != null) {
 
 			if (FuncionesManejoFront.getStageVentanas().contains(estadoStage())) {
