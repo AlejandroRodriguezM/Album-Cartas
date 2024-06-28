@@ -78,7 +78,6 @@ public class AccionReferencias {
 	private Button botonActualizarTodo;
 	private Button botonDescargarPdf;
 	private Button botonDescargarSQL;
-	private Button botonNormalizarDB;
 	private Button botonGuardarListaCartas;
 	private Button botonEliminarImportadoListaCarta;
 	private Button botonActualizarPrecio;
@@ -158,6 +157,8 @@ public class AccionReferencias {
 	private ProgressIndicator progresoCarga;
 
 	private CheckBox checkFirmas;
+
+	private List<Control> controlAccion;
 
 	private static List<ComboBox<String>> listaComboboxes;
 	private static List<TableColumn<Carta, String>> listaColumnasTabla;
@@ -353,10 +354,6 @@ public class AccionReferencias {
 
 	public Button getBotonDescargarSQL() {
 		return botonDescargarSQL;
-	}
-
-	public Button getBotonNormalizarDB() {
-		return botonNormalizarDB;
 	}
 
 	public Button getBotonActualizarPrecios() {
@@ -661,6 +658,10 @@ public class AccionReferencias {
 		return botonEliminarImportadoListaCarta;
 	}
 
+	public List<Control> getControlAccion() {
+		return controlAccion;
+	}
+
 	/**
 	 * @param botonGuardarListaCartas the botonGuardarListaCartas to set
 	 */
@@ -862,10 +863,6 @@ public class AccionReferencias {
 
 	public void setBotonDescargarSQL(Button botonDescargarSQL) {
 		this.botonDescargarSQL = botonDescargarSQL;
-	}
-
-	public void setBotonNormalizarDB(Button botonNormalizarDB) {
-		this.botonNormalizarDB = botonNormalizarDB;
 	}
 
 	public void setBotonActualizarPrecios(Button botonActualizarPrecio) {
@@ -1130,6 +1127,10 @@ public class AccionReferencias {
 
 	public void setCheckFirmas(CheckBox checkFirmas) {
 		this.checkFirmas = checkFirmas;
+	}
+
+	public void setControlesCarta(List<Control> controles) {
+		this.controlAccion = controles;
 	}
 
 	public void setListaComboboxes(List<ComboBox<String>> listaComboboxes) {

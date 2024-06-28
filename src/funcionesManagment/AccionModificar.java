@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import alarmas.AlarmaList;
@@ -23,8 +25,11 @@ import funcionesInterfaz.FuncionesTableView;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import webScrap.WebScrapNodeJSInstall;
 
 public class AccionModificar {
 
@@ -109,8 +114,7 @@ public class AccionModificar {
 				getReferenciaVentana().getTablaBBDD().refresh();
 				FuncionesTableView.nombreColumnas();
 				FuncionesTableView.tablaBBDD(listaCartas);
-			}
-			else {
+			} else {
 				listaCartas = CartaManagerDAO.verLibreria(sentenciaSQL);
 //				CartaManagerDAO.borrarCarta(idCarta);
 				ListasCartasDAO.reiniciarListaCartas();
@@ -130,27 +134,23 @@ public class AccionModificar {
 			return; // Agregar return para salir del método en este punto
 		}
 
-		List<String> controls = new ArrayList<>();
-
-		for (Control control : referenciaVentana.getListaTextFields()) {
+		List<Control> allControls = getReferenciaVentana().getControlAccion();
+		List<String> valorControles = new ArrayList<>();
+		for (Control control : allControls) {
 			if (control instanceof TextField) {
-				controls.add(((TextField) control).getText()); // Add the Control object itself
+				String value = ((TextField) control).getText();
+				valorControles.add(value);
 			} else if (control instanceof ComboBox<?>) {
 				Object selectedItem = ((ComboBox<?>) control).getSelectionModel().getSelectedItem();
-				if (selectedItem != null) {
-					controls.add(selectedItem.toString());
-				} else {
-					controls.add(""); // Add the Control object itself
-				}
+				String value = selectedItem != null ? selectedItem.toString() : "";
+				valorControles.add(value);
+			} else if (control instanceof TextArea) {
+				String value = ((TextArea) control).getText();
+				valorControles.add(value);
 			}
 		}
-		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
-		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
-			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
-			controls.add(selectedItem != null ? selectedItem.toString() : "");
-		}
 
-		Carta datos = AccionControlUI.camposCarta(controls, true);
+		Carta datos = AccionControlUI.camposCarta(valorControles, true);
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
 
@@ -190,18 +190,19 @@ public class AccionModificar {
 				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(),
 				referenciaVentana.getLabelEstado(), referenciaVentana.getLabelReferencia()));
 
-		elementosAMostrarYHabilitar.addAll(
-				Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEsFoilCombobox(),
-						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(), getReferenciaVentana().getRootVBox(),
-						getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
-						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getNumeroCartaCombobox(),
+				referenciaVentana.getNombreEsFoilCombobox(), referenciaVentana.getGradeoCartaCombobox(),
+				referenciaVentana.getEstadoCartaCombobox(), getReferenciaVentana().getRootVBox(),
+				getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
+				getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
 				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
 				referenciaVentana.getUrlReferenciaTextField(), referenciaVentana.getGradeoCartaCombobox()));
 
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),getReferenciaVentana().getBotonModificarCarta()));
+		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),
+				getReferenciaVentana().getBotonModificarCarta()));
 
 		getReferenciaVentana().getRootVBox().toFront();
 	}
@@ -240,14 +241,15 @@ public class AccionModificar {
 			}
 		}
 
-		AccionFuncionesComunes.busquedaPorListaDatabase(listaCartasDatabase, tipoUpdate);
+		if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+			AccionFuncionesComunes.busquedaPorListaDatabase(listaCartasDatabase, tipoUpdate);
 
-		if (getReferenciaVentana().getTablaBBDD() != null) {
-			getReferenciaVentana().getTablaBBDD().refresh();
-			FuncionesTableView.nombreColumnas();
-			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
+			if (getReferenciaVentana().getTablaBBDD() != null) {
+				getReferenciaVentana().getTablaBBDD().refresh();
+				FuncionesTableView.nombreColumnas();
+				FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
+			}
 		}
-
 	}
 
 	public static AccionReferencias getReferenciaVentana() {

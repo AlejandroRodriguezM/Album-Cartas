@@ -392,7 +392,6 @@ public class FuncionesManejoFront {
 			deshabilitarSiNoNulo(referenciaVentana.getBotonReCopiarPortadas(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonDescargarPdf(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonDescargarSQL(), estadoAccion);
-			deshabilitarSiNoNulo(referenciaVentana.getBotonNormalizarDB(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getCheckFirmas(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonEliminarImportadoListaCarta(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonGuardarListaCartas(), estadoAccion);

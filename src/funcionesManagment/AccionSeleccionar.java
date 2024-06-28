@@ -75,6 +75,16 @@ public class AccionSeleccionar {
 		}
 	}
 
+	public static void actualizarRefrenciaClick(AccionReferencias referenciaFXML) {
+		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
+
+		if (scene != null) {
+			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				setReferenciaVentana(referenciaFXML);
+			});
+		}
+	}
+
 	public static void mostrarCarta(String idCarta, boolean esPrincipal) {
 
 		Carta comicTemp = null;

@@ -63,6 +63,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import webScrap.WebScrapGoogleCardTrader;
+import webScrap.WebScrapNodeJSInstall;
 
 /**
  * Clase controladora para la ventana de acciones, que gestiona la interfaz de
@@ -268,7 +269,7 @@ public class VentanaAccionController implements Initializable {
 
 		referenciaVentana.setBotonGuardarCarta(botonGuardarCarta);
 		referenciaVentana.setBotonEliminarImportadoCarta(botonEliminarImportadoCarta);
-		
+
 		referenciaVentana.setBotonEliminarImportadoListaCarta(botonEliminarImportadoListaCarta);
 		referenciaVentana.setBotonGuardarListaCartas(botonGuardarListaCartas);
 
@@ -307,6 +308,11 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta,
 				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta,
 				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
+
+		referenciaVentana.setControlesCarta(Arrays.asList(textFieldNombreCarta, comboboxNumeroCarta,
+				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, comboboxEsFoilCarta,
+				comboboxGradeoCarta, textFieldUrlCarta, textFieldPrecioCarta, textFieldIdCarta,
+				textFieldDireccionPortada, comboboxEstadoCarta, textAreaNormasCarta));
 
 		AccionReferencias.setListaColumnasTabla(
 				Arrays.asList(columnaNombre, columnaEditorial, columnaColeccion, columnaRareza, columnaPrecio));
@@ -362,7 +368,7 @@ public class VentanaAccionController implements Initializable {
 			FuncionesManejoFront.getStageVentanas().add(estadoStage());
 
 			estadoStage().setOnCloseRequest(event -> stop());
-
+			AccionSeleccionar.actualizarRefrenciaClick(guardarReferencia());
 		});
 
 		ListasCartasDAO.cartasImportados.clear();
@@ -375,10 +381,9 @@ public class VentanaAccionController implements Initializable {
 
 	@FXML
 	void ampliarImagen(MouseEvent event) {
-
+		enviarReferencias();
 		if (getCartaCache() != null) {
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
-
 			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
 				nav.verVentanaImagen();
 			}
@@ -483,6 +488,7 @@ public class VentanaAccionController implements Initializable {
 		nav.cerrarMenuOpciones();
 		AccionModificar.actualizarCartaLista();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -500,6 +506,7 @@ public class VentanaAccionController implements Initializable {
 		AccionAniadir.guardarContenidoLista(false, getCartaCache());
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -517,6 +524,7 @@ public class VentanaAccionController implements Initializable {
 		AccionAniadir.guardarContenidoLista(true, null);
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	/**
@@ -537,6 +545,7 @@ public class VentanaAccionController implements Initializable {
 		AccionModificar.modificarCarta();
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	@FXML
@@ -546,6 +555,7 @@ public class VentanaAccionController implements Initializable {
 		AccionEliminar.eliminarCartaLista();
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
+		setCartaCache(null);
 	}
 
 	@FXML
@@ -571,12 +581,16 @@ public class VentanaAccionController implements Initializable {
 	 * tabla.
 	 *
 	 * @param event
+	 * @throws IOException
+	 * @throws SQLException
 	 */
 	@FXML
 	void clickRaton(MouseEvent event) {
 		enviarReferencias();
-		setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-		AccionSeleccionar.seleccionarCartas(false);
+		if (!tablaBBDD.isDisabled()) {
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
+			AccionSeleccionar.seleccionarCartas(true);
+		}
 	}
 
 	/**
@@ -589,11 +603,12 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void teclasDireccion(KeyEvent event) {
-		if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
-			enviarReferencias();
+		enviarReferencias();
+		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(false);
+			AccionSeleccionar.seleccionarCartas(true);
 		}
+
 	}
 
 	/**
@@ -637,8 +652,10 @@ public class VentanaAccionController implements Initializable {
 			if (fichero != null) {
 				enviarReferencias();
 				rellenarCombosEstaticos();
+				if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+				}
 
-				AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
 			}
 		}
 
@@ -680,7 +697,9 @@ public class VentanaAccionController implements Initializable {
 					if (fichero != null) {
 						enviarReferencias();
 						rellenarCombosEstaticos();
-						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+						if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+							AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+						}
 					}
 
 				} catch (IOException e) {
@@ -722,6 +741,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		AccionFuncionesComunes.limpiarDatosPantallaAccion();
 		rellenarCombosEstaticos();
+		setCartaCache(null);
 	}
 
 	/**
@@ -731,6 +751,7 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void nuevaPortada(ActionEvent event) {
+		enviarReferencias();
 		nav.cerrarMenuOpciones();
 		AccionFuncionesComunes.subirPortada();
 	}
@@ -822,7 +843,7 @@ public class VentanaAccionController implements Initializable {
 	public void closeWindow() {
 
 		stage = estadoStage();
-
+		setCartaCache(null);
 		if (stage != null) {
 
 			if (FuncionesManejoFront.getStageVentanas().contains(estadoStage())) {

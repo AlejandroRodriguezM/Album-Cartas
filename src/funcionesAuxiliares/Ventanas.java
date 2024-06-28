@@ -670,44 +670,6 @@ public class Ventanas {
 	}
 
 	/**
-	 * Llama a una ventana de alarma que avisa si se va a modificar un dato
-	 *
-	 * @return
-	 */
-	public boolean alertaBorrarPuntuacion() {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
-		stage.setResizable(false);
-		alert.setTitle("Borrando puntuacion . . .");
-		alert.setHeaderText("Estas apunto de borrar la puntuacion.");
-		alert.setContentText(" Estas seguro que borrar la puntuacion del carta?");
-		if (alert.showAndWait().get() == ButtonType.OK) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Llama a una ventana de alarma que avisa si se va a modificar un dato
-	 *
-	 * @return
-	 */
-	public boolean alertaAgregarPuntuacion() {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
-		stage.setResizable(false);
-		alert.setTitle("Agregando puntuacion . . .");
-		alert.setHeaderText("Estas apunto de agregar la puntuacion.");
-		alert.setContentText(" Estas seguro que agregar la puntuacion del carta?");
-		if (alert.showAndWait().get() == ButtonType.OK) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Llama a una ventana de alarma que avisa si se va a introducir un dato
 	 *
 	 * @return
@@ -785,25 +747,6 @@ public class Ventanas {
 	}
 
 	/**
-	 * Llama a una ventana de alarma que avisa si se va reconstruir la base de datos
-	 *
-	 * @return
-	 */
-	public boolean alertaRestablecerApi() {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
-		stage.setResizable(false);
-		alert.setTitle("Tablas no encontradas");
-		alert.setHeaderText("Vas a reconstruir el fichero donde se encuentra el api..");
-		alert.setContentText("¿Quieres recontruir el fichero?");
-		if (alert.showAndWait().get() == ButtonType.OK) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Solicita confirmación al usuario antes de borrar el contenido de la tabla.
 	 *
 	 * @return Un objeto CompletableFuture que se completará con true si el usuario
@@ -846,6 +789,30 @@ public class Ventanas {
 		});
 
 		return futureResult;
+	}
+
+	/**
+	 * Solicita confirmación al usuario antes de borrar el contenido de la
+	 * configuración.
+	 *
+	 * @return true si el usuario confirma la eliminación, o false si el usuario
+	 *         cancela la operación.
+	 */
+	public boolean reiniciarOrdenadorVentana() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.setResizable(false);
+		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
+		alert.setTitle("Borrando . . .");
+		alert.setHeaderText("Estas a punto de reiniciar el sistema");
+		alert.setContentText(
+				"Para poder utilizar el programar de forma correcta, se recomienda la primera vez que se reinicie el sistema "
+						+ "para asegurar que nodejs esta instalado correctamente. ¿Quieres reiniciar el ordenador ahora?");
+		if (alert.showAndWait().get() == ButtonType.OK) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

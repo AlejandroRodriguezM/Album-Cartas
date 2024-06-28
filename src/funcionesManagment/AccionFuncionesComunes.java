@@ -339,10 +339,9 @@ public class AccionFuncionesComunes {
 
 			ListasCartasDAO.cartasImportados.clear();
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
-
+			getReferenciaVentana().getTablaBBDD().refresh();
 		}
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
-		getReferenciaVentana().getTablaBBDD().getItems().clear();
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
 		getReferenciaVentana().getBotonGuardarListaCartas().setVisible(false);
@@ -586,6 +585,7 @@ public class AccionFuncionesComunes {
 
 						reader.lines().forEach(linea -> {
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+								ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 								return;
 							}
 
@@ -605,6 +605,7 @@ public class AccionFuncionesComunes {
 				} else {
 					listaCartasDatabase.forEach(carta -> {
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 							return; // Salir del forEach si el Task está cancelado
 						}
 						processCarta(carta, tipoUpdate);
@@ -769,8 +770,6 @@ public class AccionFuncionesComunes {
 				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
 				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
 				nav.cerrarCargaCartas();
-				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
-				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 				getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
 			} else {
 				if (tipoUpdate.isEmpty()) {
@@ -789,7 +788,8 @@ public class AccionFuncionesComunes {
 
 					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
 				}
-
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 			}
 
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
@@ -834,6 +834,12 @@ public class AccionFuncionesComunes {
 				}
 
 			}
+
+			if (!ListasCartasDAO.cartasImportados.isEmpty()) {
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
+			}
+
 			AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
 			AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
@@ -903,11 +909,19 @@ public class AccionFuncionesComunes {
 	 */
 	public static void borrarErrores() {
 
-		getReferenciaVentana().getNombreCartaTextField().setStyle("");
-		getReferenciaVentana().getNumeroCartaCombobox().setStyle("");
-		getReferenciaVentana().getEditorialCartaTextField().setStyle("");
-		getReferenciaVentana().getColeccionCartaTextField().setStyle("");
-		getReferenciaVentana().getPrecioCartaTextField().setStyle("");
+		if (getReferenciaVentana() != null) {
+			setStyleIfNotNull(getReferenciaVentana().getNombreCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getNumeroCartaCombobox());
+			setStyleIfNotNull(getReferenciaVentana().getEditorialCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getColeccionCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getPrecioCartaTextField());
+		}
+	}
+
+	public static void setStyleIfNotNull(Node element) {
+		if (element != null) {
+			element.setStyle("");
+		}
 	}
 
 	/**

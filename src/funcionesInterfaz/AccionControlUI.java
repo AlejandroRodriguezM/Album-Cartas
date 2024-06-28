@@ -117,8 +117,11 @@ public class AccionControlUI {
 
 	private static void mostrarElementos(List<Node> elementosAMostrarYHabilitar) {
 		for (Node elemento : elementosAMostrarYHabilitar) {
-			elemento.setVisible(true);
-			elemento.setDisable(false);
+
+			if (elemento != null) {
+				elemento.setVisible(true);
+				elemento.setDisable(false);
+			}
 		}
 
 		if (!AccionFuncionesComunes.TIPO_ACCION.equals("modificar")) {
@@ -222,7 +225,7 @@ public class AccionControlUI {
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
 
 		referenciaVentana.getUrlReferenciaTextField().setText(cartaTemp.getUrlReferenciaCarta());
-		
+
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
@@ -301,21 +304,23 @@ public class AccionControlUI {
 				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getPrecioCartaTextField());
 
 		for (TextField campoUi : camposUi) {
-			String datoCarta = campoUi.getText();
 
-			if (esBorrado) {
-				if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
-					campoUi.setStyle("");
-				}
-			} else {
-				// Verificar si el campo está vacío, es nulo o tiene el valor "Vacio"
-				if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
-					campoUi.setStyle("-fx-background-color: red;");
+			if (campoUi != null) {
+				String datoCarta = campoUi.getText();
+
+				if (esBorrado) {
+					if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
+						campoUi.setStyle("");
+					}
 				} else {
-					campoUi.setStyle("");
+					// Verificar si el campo está vacío, es nulo o tiene el valor "Vacio"
+					if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
+						campoUi.setStyle("-fx-background-color: red;");
+					} else {
+						campoUi.setStyle("");
+					}
 				}
 			}
-
 		}
 	}
 
@@ -531,9 +536,7 @@ public class AccionControlUI {
 		List<Node> elementos = Arrays.asList(referenciaVentana.getBotonGuardarCarta(),
 				referenciaVentana.getBotonEliminarImportadoCarta(),
 				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
-				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
-				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta(),
-				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta());
+				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonGuardarCarta());
 
 		ListasCartasDAO.cartasImportados.addListener((ListChangeListener<Carta>) change -> {
 			while (change.next()) {
@@ -606,12 +609,12 @@ public class AccionControlUI {
 		String idCartaTratar = "";
 
 		if (esAccion) {
-			normasCarta = camposCarta.get(4);
-			precioCarta = camposCarta.get(5);
-
-			direccionImagenCarta = camposCarta.get(7);
-			urlReferenciaCarta = camposCarta.get(8);
-			idCartaTratar = camposCarta.get(6);
+			urlReferenciaCarta = camposCarta.get(7);
+			precioCarta = camposCarta.get(8);
+			idCartaTratar = camposCarta.get(9);
+			direccionImagenCarta = camposCarta.get(10);
+			estadoCarta = camposCarta.get(11);
+			normasCarta = camposCarta.get(12);
 		}
 
 		cartaTemp.setNomCarta(Utilidades.defaultIfNullOrEmpty(nomCarta, ""));

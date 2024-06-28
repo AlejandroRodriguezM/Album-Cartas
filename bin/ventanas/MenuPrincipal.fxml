@@ -51,7 +51,6 @@
 						<MenuItem fx:id="menuEstadisticaPosesion" mnemonicParsing="false" onAction="#comicsEnPosesion" text="Cartas en posesion" />
 						<MenuItem fx:id="menuEstadisticaComprados" mnemonicParsing="false" onAction="#comicsComprados" text="Cartas Comprados" />
 						<MenuItem fx:id="menuEstadisticaVendidos" mnemonicParsing="false" onAction="#comicsVendidos" text="Cartas vendidos" />
-						<MenuItem fx:id="menuEstadisticaKeyIssue" mnemonicParsing="false" onAction="#comicsKeyIssue" text="Carta con Key_issue" />
 						<MenuItem fx:id="menuEstadisticaEstadistica" mnemonicParsing="false" onAction="#verEstadistica" text="Descargar estadistica global" />
 					</items>
 				</Menu>

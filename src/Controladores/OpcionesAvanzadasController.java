@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +27,6 @@ import ficherosFunciones.FuncionesExcel;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 import funcionesAuxiliares.VersionService;
-import funcionesInterfaz.FuncionesComboBox;
 import funcionesInterfaz.FuncionesManejoFront;
 import funcionesManagment.AccionFuncionesComunes;
 import funcionesManagment.AccionModificar;
@@ -44,8 +42,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -76,9 +72,6 @@ public class OpcionesAvanzadasController implements Initializable {
 
 	@FXML
 	private Button botonDescargarSQL;
-
-	@FXML
-	private Button botonNormalizarDB;
 
 	@FXML
 	private Button botonReCopiarPortadas;
@@ -117,11 +110,6 @@ public class OpcionesAvanzadasController implements Initializable {
 	private static AccionReferencias referenciaVentanaPrincipal = getReferenciaVentanaPrincipal();
 
 	/**
-	 * Instancia de la clase FuncionesComboBox para el manejo de ComboBox.
-	 */
-	private static FuncionesComboBox funcionesCombo = new FuncionesComboBox();
-
-	/**
 	 * Referencia a la ventana (stage).
 	 */
 	private Scene ventanaOpciones;
@@ -148,7 +136,6 @@ public class OpcionesAvanzadasController implements Initializable {
 		referenciaVentana.setBotonActualizarSoftware(botonActualizarSoftware);
 		referenciaVentana.setBotonActualizarTodo(botonActualizarTodo);
 		referenciaVentana.setBotonDescargarSQL(botonDescargarSQL);
-		referenciaVentana.setBotonNormalizarDB(botonNormalizarDB);
 		referenciaVentana.setLabelComprobar(labelComprobar);
 		referenciaVentana.setLabelVersion(labelVersion);
 		referenciaVentana.setProntInfoLabel(prontInfo);
@@ -235,54 +222,6 @@ public class OpcionesAvanzadasController implements Initializable {
 		if (!estaActualizado) {
 			botonActualizarSoftware.setVisible(true);
 		}
-	}
-
-	@FXML
-	void normalizarDataBase(ActionEvent event) {
-
-		Task<Void> task = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				DatabaseManagerDAO.comprobarNormalizado("nomCarta", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("nivel_gradeo", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("precio_comic", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("codigo_comic", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("numCarta", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("firma", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("nomEditorial", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("formato", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("procedencia", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("puntuacion", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("key_issue", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("estado", prontInfo);
-
-				DatabaseManagerDAO.comprobarNormalizado("nomGuionista", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("nomDibujante", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("nomVariante", prontInfo);
-				DatabaseManagerDAO.comprobarNormalizado("", prontInfo);
-
-				ListasCartasDAO.reiniciarListaCartas();
-				ListasCartasDAO.listasAutoCompletado();
-				List<String> inputPaths = DBUtilidades.obtenerValoresColumna("portada");
-
-				Utilidades.borrarArchivosNoEnLista(inputPaths);
-
-				List<ComboBox<String>> comboboxes = referenciaVentana.getListaComboboxes();
-				if (comboboxes != null) {
-					Platform.runLater(() -> funcionesCombo.rellenarComboBox(comboboxes));
-				}
-				return null;
-			}
-		};
-
-		Thread thread = new Thread(task);
-		thread.setDaemon(true); // Hacer que el hilo sea demonio para que termine cuando la aplicación se cierre
-
-		task.setOnRunning(e -> estadoStage().setOnCloseRequest(closeEvent -> task.cancel(true)));
-
-		task.setOnSucceeded(e -> System.out.println("Terminado"));
-
-		thread.start();
 	}
 
 	public void obtenerVersionDesdeOtraClase() {
