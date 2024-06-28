@@ -309,6 +309,11 @@ public class VentanaAccionController implements Initializable {
 				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta,
 				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
 
+		referenciaVentana.setControlesCarta(Arrays.asList(textFieldNombreCarta, comboboxNumeroCarta,
+				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, comboboxEsFoilCarta,
+				comboboxGradeoCarta, textFieldUrlCarta, textFieldPrecioCarta, textFieldIdCarta,
+				textFieldDireccionPortada, comboboxEstadoCarta, textAreaNormasCarta));
+
 		AccionReferencias.setListaColumnasTabla(
 				Arrays.asList(columnaNombre, columnaEditorial, columnaColeccion, columnaRareza, columnaPrecio));
 

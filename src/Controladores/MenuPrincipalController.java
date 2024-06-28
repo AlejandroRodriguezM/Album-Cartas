@@ -322,6 +322,8 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
 				comboboxEditorialCarta, comboboxColeccionCarta, comboboxRarezaCarta, comboboxEsFoilCarta,
 				comboboxGradeoCarta, comboboxEstadoCarta, comboboxPrecioCarta));
+		
+		
 
 		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));

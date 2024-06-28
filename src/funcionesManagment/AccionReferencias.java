@@ -158,6 +158,8 @@ public class AccionReferencias {
 
 	private CheckBox checkFirmas;
 
+	private List<Control> controlAccion;
+
 	private static List<ComboBox<String>> listaComboboxes;
 	private static List<TableColumn<Carta, String>> listaColumnasTabla;
 	private static ObservableList<Control> listaTextFields;
@@ -656,6 +658,10 @@ public class AccionReferencias {
 		return botonEliminarImportadoListaCarta;
 	}
 
+	public List<Control> getControlAccion() {
+		return controlAccion;
+	}
+
 	/**
 	 * @param botonGuardarListaCartas the botonGuardarListaCartas to set
 	 */
@@ -1121,6 +1127,10 @@ public class AccionReferencias {
 
 	public void setCheckFirmas(CheckBox checkFirmas) {
 		this.checkFirmas = checkFirmas;
+	}
+
+	public void setControlesCarta(List<Control> controles) {
+		this.controlAccion = controles;
 	}
 
 	public void setListaComboboxes(List<ComboBox<String>> listaComboboxes) {

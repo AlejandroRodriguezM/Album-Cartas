@@ -528,8 +528,8 @@ public class AccionControlUI {
 			AccionSeleccionar.mostrarCarta(newValue, false);
 		});
 
-		List<Node> elementos = Arrays.asList(
-				referenciaVentana.getBotonGuardarCarta(),referenciaVentana.getBotonEliminarImportadoCarta(),
+		List<Node> elementos = Arrays.asList(referenciaVentana.getBotonGuardarCarta(),
+				referenciaVentana.getBotonEliminarImportadoCarta(),
 				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
 				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonGuardarCarta());
 
@@ -604,12 +604,12 @@ public class AccionControlUI {
 		String idCartaTratar = "";
 
 		if (esAccion) {
-			normasCarta = camposCarta.get(4);
-			precioCarta = camposCarta.get(5);
-
-			direccionImagenCarta = camposCarta.get(7);
-			urlReferenciaCarta = camposCarta.get(8);
-			idCartaTratar = camposCarta.get(6);
+			urlReferenciaCarta = camposCarta.get(7);
+			precioCarta = camposCarta.get(8);
+			idCartaTratar = camposCarta.get(9);
+			direccionImagenCarta = camposCarta.get(10);
+			estadoCarta = camposCarta.get(11);
+			normasCarta = camposCarta.get(12);
 		}
 
 		cartaTemp.setNomCarta(Utilidades.defaultIfNullOrEmpty(nomCarta, ""));

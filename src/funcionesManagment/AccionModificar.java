@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import alarmas.AlarmaList;
@@ -23,8 +25,10 @@ import funcionesInterfaz.FuncionesTableView;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import webScrap.WebScrapNodeJSInstall;
 
 public class AccionModificar {
@@ -130,27 +134,23 @@ public class AccionModificar {
 			return; // Agregar return para salir del método en este punto
 		}
 
-		List<String> controls = new ArrayList<>();
-
-		for (Control control : referenciaVentana.getListaTextFields()) {
+		List<Control> allControls = getReferenciaVentana().getControlAccion();
+		List<String> valorControles = new ArrayList<>();
+		for (Control control : allControls) {
 			if (control instanceof TextField) {
-				controls.add(((TextField) control).getText()); // Add the Control object itself
+				String value = ((TextField) control).getText();
+				valorControles.add(value);
 			} else if (control instanceof ComboBox<?>) {
 				Object selectedItem = ((ComboBox<?>) control).getSelectionModel().getSelectedItem();
-				if (selectedItem != null) {
-					controls.add(selectedItem.toString());
-				} else {
-					controls.add(""); // Add the Control object itself
-				}
+				String value = selectedItem != null ? selectedItem.toString() : "";
+				valorControles.add(value);
+			} else if (control instanceof TextArea) {
+				String value = ((TextArea) control).getText();
+				valorControles.add(value);
 			}
 		}
-		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
-		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
-			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
-			controls.add(selectedItem != null ? selectedItem.toString() : "");
-		}
 
-		Carta datos = AccionControlUI.camposCarta(controls, true);
+		Carta datos = AccionControlUI.camposCarta(valorControles, true);
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty()) {
 
