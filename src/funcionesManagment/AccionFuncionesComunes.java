@@ -339,10 +339,9 @@ public class AccionFuncionesComunes {
 
 			ListasCartasDAO.cartasImportados.clear();
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
-
+			getReferenciaVentana().getTablaBBDD().refresh();
 		}
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
-		getReferenciaVentana().getTablaBBDD().getItems().clear();
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
 		getReferenciaVentana().getBotonGuardarListaCartas().setVisible(false);
@@ -910,11 +909,19 @@ public class AccionFuncionesComunes {
 	 */
 	public static void borrarErrores() {
 
-		getReferenciaVentana().getNombreCartaTextField().setStyle("");
-		getReferenciaVentana().getNumeroCartaCombobox().setStyle("");
-		getReferenciaVentana().getEditorialCartaTextField().setStyle("");
-		getReferenciaVentana().getColeccionCartaTextField().setStyle("");
-		getReferenciaVentana().getPrecioCartaTextField().setStyle("");
+		if (getReferenciaVentana() != null) {
+			setStyleIfNotNull(getReferenciaVentana().getNombreCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getNumeroCartaCombobox());
+			setStyleIfNotNull(getReferenciaVentana().getEditorialCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getColeccionCartaTextField());
+			setStyleIfNotNull(getReferenciaVentana().getPrecioCartaTextField());
+		}
+	}
+
+	public static void setStyleIfNotNull(Node element) {
+		if (element != null) {
+			element.setStyle("");
+		}
 	}
 
 	/**

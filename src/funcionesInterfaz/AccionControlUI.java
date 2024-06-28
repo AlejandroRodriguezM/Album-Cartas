@@ -117,8 +117,11 @@ public class AccionControlUI {
 
 	private static void mostrarElementos(List<Node> elementosAMostrarYHabilitar) {
 		for (Node elemento : elementosAMostrarYHabilitar) {
-			elemento.setVisible(true);
-			elemento.setDisable(false);
+
+			if (elemento != null) {
+				elemento.setVisible(true);
+				elemento.setDisable(false);
+			}
 		}
 
 		if (!AccionFuncionesComunes.TIPO_ACCION.equals("modificar")) {
@@ -301,21 +304,23 @@ public class AccionControlUI {
 				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getPrecioCartaTextField());
 
 		for (TextField campoUi : camposUi) {
-			String datoCarta = campoUi.getText();
 
-			if (esBorrado) {
-				if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
-					campoUi.setStyle("");
-				}
-			} else {
-				// Verificar si el campo está vacío, es nulo o tiene el valor "Vacio"
-				if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
-					campoUi.setStyle("-fx-background-color: red;");
+			if (campoUi != null) {
+				String datoCarta = campoUi.getText();
+
+				if (esBorrado) {
+					if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
+						campoUi.setStyle("");
+					}
 				} else {
-					campoUi.setStyle("");
+					// Verificar si el campo está vacío, es nulo o tiene el valor "Vacio"
+					if (datoCarta == null || datoCarta.isEmpty() || datoCarta.equalsIgnoreCase("vacio")) {
+						campoUi.setStyle("-fx-background-color: red;");
+					} else {
+						campoUi.setStyle("");
+					}
 				}
 			}
-
 		}
 	}
 

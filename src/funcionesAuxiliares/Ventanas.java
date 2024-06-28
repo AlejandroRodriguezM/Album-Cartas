@@ -805,15 +805,16 @@ public class Ventanas {
 		stage.getIcons().add(new Image("/Icono/warning.jpg")); // To add an icon
 		alert.setTitle("Borrando . . .");
 		alert.setHeaderText("Estas a punto de reiniciar el sistema");
-		alert.setContentText("Para poder utilizar el programar de forma correcta, se recomienda la primera vez que se reinicie el sistema "
-				+ "para asegurar que nodejs esta instalado correctamente. ¿Quieres reiniciar el ordenador ahora?");
+		alert.setContentText(
+				"Para poder utilizar el programar de forma correcta, se recomienda la primera vez que se reinicie el sistema "
+						+ "para asegurar que nodejs esta instalado correctamente. ¿Quieres reiniciar el ordenador ahora?");
 		if (alert.showAndWait().get() == ButtonType.OK) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Solicita confirmación al usuario antes de borrar el contenido de la
 	 * configuración.

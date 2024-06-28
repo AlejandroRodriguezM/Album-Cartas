@@ -368,7 +368,7 @@ public class VentanaAccionController implements Initializable {
 			FuncionesManejoFront.getStageVentanas().add(estadoStage());
 
 			estadoStage().setOnCloseRequest(event -> stop());
-
+			AccionSeleccionar.actualizarRefrenciaClick(guardarReferencia());
 		});
 
 		ListasCartasDAO.cartasImportados.clear();
@@ -381,7 +381,7 @@ public class VentanaAccionController implements Initializable {
 
 	@FXML
 	void ampliarImagen(MouseEvent event) {
-
+		enviarReferencias();
 		if (getCartaCache() != null) {
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
 			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
@@ -581,12 +581,16 @@ public class VentanaAccionController implements Initializable {
 	 * tabla.
 	 *
 	 * @param event
+	 * @throws IOException
+	 * @throws SQLException
 	 */
 	@FXML
 	void clickRaton(MouseEvent event) {
 		enviarReferencias();
-		setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-		AccionSeleccionar.seleccionarCartas(false);
+		if (!tablaBBDD.isDisabled()) {
+			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
+			AccionSeleccionar.seleccionarCartas(true);
+		}
 	}
 
 	/**
@@ -599,11 +603,12 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void teclasDireccion(KeyEvent event) {
-		if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
-			enviarReferencias();
+		enviarReferencias();
+		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(false);
+			AccionSeleccionar.seleccionarCartas(true);
 		}
+
 	}
 
 	/**
@@ -746,6 +751,7 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void nuevaPortada(ActionEvent event) {
+		enviarReferencias();
 		nav.cerrarMenuOpciones();
 		AccionFuncionesComunes.subirPortada();
 	}

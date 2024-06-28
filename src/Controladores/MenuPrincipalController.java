@@ -322,8 +322,6 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
 				comboboxEditorialCarta, comboboxColeccionCarta, comboboxRarezaCarta, comboboxEsFoilCarta,
 				comboboxGradeoCarta, comboboxEstadoCarta, comboboxPrecioCarta));
-		
-		
 
 		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
@@ -398,8 +396,8 @@ public class MenuPrincipalController implements Initializable {
 			FuncionesTableView.modificarColumnas(true);
 			AccionControlUI.controlarEventosInterfazPrincipal(guardarReferencia());
 			FuncionesManejoFront.getStageVentanas().add(estadoStage());
-
 			cargarDatosDataBase();
+			AccionSeleccionar.actualizarRefrenciaClick(guardarReferencia());
 		});
 
 		AccionControlUI.establecerTooltips();
@@ -410,7 +408,7 @@ public class MenuPrincipalController implements Initializable {
 
 	@FXML
 	void ampliarImagen(MouseEvent event) {
-
+		enviarReferencias();
 		if (getCartaCache() != null) {
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
 
@@ -599,6 +597,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void verSobreMi(ActionEvent event) {
+		enviarReferencias();
 		nav.verSobreMi();
 	}
 
@@ -663,6 +662,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsPuntuacion(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.PUNTUACION, false);
 	}
 
@@ -675,6 +675,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsVendidos(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.VENDIDOS, false);
 	}
 
@@ -687,6 +688,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsFirmados(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.FIRMADOS, false);
 	}
 
@@ -699,6 +701,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsComprados(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.COMPRADOS, false);
 	}
 
@@ -711,17 +714,20 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsEnPosesion(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.POSESION, false);
 	}
 
 	@FXML
 	void comicsGuardados(ActionEvent event) {
+		enviarReferencias();
 		imprimirCartasEstado(null, true);
 
 	}
 
 	@FXML
 	void verOpcionesAvanzadas(ActionEvent event) {
+		enviarReferencias();
 		nav.verOpcionesAvanzadas();
 
 	}
@@ -734,10 +740,12 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void comicsKeyIssue(ActionEvent event) throws SQLException {
+		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.KEY_ISSUE, false);
 	}
 
 	private void imprimirCartasEstado(TipoBusqueda tipoBusqueda, boolean esGuardado) {
+		enviarReferencias();
 		limpiezaDeDatos();
 		limpiarComboBox();
 		ListasCartasDAO.reiniciarListaCartas();
@@ -772,7 +780,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void importCSV(ActionEvent event) {
-
+		enviarReferencias();
 		limpiezaDeDatos();
 		limpiarComboBox();
 
@@ -793,7 +801,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void exportCSV(ActionEvent event) throws SQLException {
-
+		enviarReferencias();
 		boolean estaVacia = false;
 		String mensaje = "";
 		if (!ListasCartasDAO.listaNombre.isEmpty()) {
@@ -854,7 +862,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void verEstadistica(ActionEvent event) {
-
+		enviarReferencias();
 		AlarmaList.iniciarAnimacionEstadistica(prontInfo);
 		ListasCartasDAO.generar_fichero_estadisticas();
 		AlarmaList.detenerAnimacionPront(prontInfo);
@@ -877,11 +885,9 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void clickRaton(MouseEvent event) {
-
+		enviarReferencias();
 		if (!tablaBBDD.isDisabled()) {
-			enviarReferencias();
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-
 			AccionSeleccionar.seleccionarCartas(true);
 		}
 	}
@@ -896,8 +902,9 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void teclasDireccion(KeyEvent event) {
+		enviarReferencias();
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
-			enviarReferencias();
+
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
 			AccionSeleccionar.seleccionarCartas(true);
 		}
@@ -921,7 +928,7 @@ public class MenuPrincipalController implements Initializable {
 
 		prontInfo.clear();
 		String tipoBusqueda = "Parcial";
-
+		enviarReferencias();
 		if (!ListasCartasDAO.cartasGuardadosList.isEmpty()) {
 			cargaExportExcel(ListasCartasDAO.cartasGuardadosList, tipoBusqueda);
 
@@ -945,7 +952,7 @@ public class MenuPrincipalController implements Initializable {
 	 */
 	@FXML
 	void guardarResultado(ActionEvent event) throws SQLException {
-
+		enviarReferencias();
 		Carta cartaRaw = tablaBBDD.getSelectionModel().getSelectedItem();
 		String mensaje = "";
 		if (cartaRaw != null) {
@@ -971,6 +978,7 @@ public class MenuPrincipalController implements Initializable {
 
 	@FXML
 	void borrarContenidoTabla(ActionEvent event) {
+		enviarReferencias();
 		try {
 			Thread borradoTablaThread = new Thread(() -> {
 				try {
@@ -1089,7 +1097,7 @@ public class MenuPrincipalController implements Initializable {
 	 * @param listaCartas La lista de cómics a exportar.
 	 */
 	private void cargaExportExcel(List<Carta> listaCartas, String tipoBusqueda) {
-
+		enviarReferencias();
 		FuncionesExcel excelFuntions = new FuncionesExcel();
 		String mensajeErrorExportar = "ERROR. No se ha podido exportar correctamente.";
 		String mensajeCancelarExportar = "ERROR. Se ha cancelado la exportación.";
@@ -1175,7 +1183,7 @@ public class MenuPrincipalController implements Initializable {
 	}
 
 	public void guardarDatosCSV() {
-
+		enviarReferencias();
 		String frase = "Fichero CSV";
 		String formatoFichero = "*.csv";
 
@@ -1249,7 +1257,7 @@ public class MenuPrincipalController implements Initializable {
 	 * Realiza la limpieza de datos en la interfaz gráfica.
 	 */
 	private void limpiezaDeDatos() {
-
+		enviarReferencias();
 		prontInfo.clear();
 		prontInfo.setText(null);
 		prontInfo.setOpacity(0);
@@ -1257,7 +1265,6 @@ public class MenuPrincipalController implements Initializable {
 		tablaBBDD.refresh();
 		imagenCarta.setImage(null);
 		imagenCarta.setOpacity(0);
-
 
 		modificarEstadoTabla(259, 0.6);
 	}
