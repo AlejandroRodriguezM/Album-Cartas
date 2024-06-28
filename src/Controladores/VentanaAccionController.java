@@ -63,6 +63,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import webScrap.WebScrapGoogleCardTrader;
+import webScrap.WebScrapNodeJSInstall;
 
 /**
  * Clase controladora para la ventana de acciones, que gestiona la interfaz de
@@ -268,7 +269,7 @@ public class VentanaAccionController implements Initializable {
 
 		referenciaVentana.setBotonGuardarCarta(botonGuardarCarta);
 		referenciaVentana.setBotonEliminarImportadoCarta(botonEliminarImportadoCarta);
-		
+
 		referenciaVentana.setBotonEliminarImportadoListaCarta(botonEliminarImportadoListaCarta);
 		referenciaVentana.setBotonGuardarListaCartas(botonGuardarListaCartas);
 
@@ -637,8 +638,10 @@ public class VentanaAccionController implements Initializable {
 			if (fichero != null) {
 				enviarReferencias();
 				rellenarCombosEstaticos();
+				if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+				}
 
-				AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
 			}
 		}
 
@@ -680,7 +683,9 @@ public class VentanaAccionController implements Initializable {
 					if (fichero != null) {
 						enviarReferencias();
 						rellenarCombosEstaticos();
-						AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+						if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+							AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+						}
 					}
 
 				} catch (IOException e) {

@@ -175,64 +175,6 @@ public class DatabaseManagerDAO {
 		}
 	}
 
-	public static void comprobarNormalizado(String columna, Label prontInfo) {
-		String url = "jdbc:sqlite:" + DB_FOLDER + FuncionesFicheros.datosEnvioFichero();
-
-		String cadena = "";
-
-		if (columna.equalsIgnoreCase("")) {
-			contadorCambios.set(0);
-			return;
-		}
-
-		if (SelectManager.countRows() == 0) {
-			cadena = "La base de datos esta vacia";
-			AlarmaList.iniciarAnimacionAvanzado(prontInfo, cadena);
-		}
-
-		// Construir la consulta para seleccionar los nombres de la columna
-		String consultaSelect = "SELECT idCarta, " + columna + " FROM albumbbdd";
-
-		Map<Integer, String> actualizaciones = new HashMap<>(); // Contenedor para acumular las actualizaciones en lote
-
-		try (Connection connection = DriverManager.getConnection(url);
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(consultaSelect)) {
-
-			while (rs.next()) {
-				int id = rs.getInt("ID");
-				String nombre = rs.getString(columna);
-				String nombreCorregido = "";
-				if (columna.equalsIgnoreCase("nomCarta") || columna.equalsIgnoreCase("coleccionCarta")) {
-					nombreCorregido = corregirPatrones(nombre);
-				} else {
-					nombreCorregido = corregirNombre(nombre);
-				}
-
-				// Verificar si el nombre no está normalizado
-				if (!nombre.equals(nombreCorregido)) {
-					actualizaciones.put(id, nombreCorregido); // Agregar la actualización al contenedor
-					contadorCambios.incrementAndGet();
-				}
-			}
-
-			if (!actualizaciones.isEmpty()) {
-				actualizarNombresEnLote(columna, actualizaciones); // Ejecutar las actualizaciones en lote
-			}
-
-			if (contadorCambios.get() == 0) {
-				cadena = "Ya está todo normalizado.";
-			} else {
-				cadena = "Se han normalizado: " + contadorCambios.get();
-			}
-			AlarmaList.iniciarAnimacionAvanzado(prontInfo, cadena);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			Utilidades.manejarExcepcion(e);
-		}
-	}
-
 	// Método para corregir los nombres según los patrones especificados
 	public static String corregirNombre(String nombre) {
 		// Convertir primera letra de cada palabra a mayúscula

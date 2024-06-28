@@ -5,6 +5,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import funcionesAuxiliares.AddToPath;
+import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 
 import java.io.*;
@@ -18,20 +20,18 @@ public class WebScrapNodeJSInstall {
 
 	private static final String NODEJS_DIST_URL = "https://nodejs.org/dist/latest/";
 	private static final String DOWNLOAD_DIR = System.getProperty("user.home") + File.separator + "nodejs";
-	private static Ventanas nav = new Ventanas();
 
 	public static void estadoNodeInstallacion() {
 		try {
 			String nodeZipUrl = getNodeJsDownloadUrl();
 			String urlCompleta = NODEJS_DIST_URL + nodeZipUrl;
-			if (nodeZipUrl != null && !checkNodeJSVersion() && !isPuppeteerInstalled()) {
-				if (nav.alertaAccionNavegador()) {
-					downloadAndExtractNodeJS(urlCompleta);
-					installPuppeteer();
-				}
-
+			if (nodeZipUrl != null && !checkNodeJSVersion()) {
+				downloadAndExtractNodeJS(urlCompleta);
 			}
 
+			if (!isPuppeteerInstalled()) {
+				installPuppeteer();
+			}
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -134,7 +134,7 @@ public class WebScrapNodeJSInstall {
 			unzip(zipPath, extractPath);
 		}
 
-		addToSystemPath();
+		AddToPath.createAndRunPowerShellScript();
 	}
 
 	private static void downloadFile(String urlStr, Path destination) throws IOException {
@@ -206,52 +206,61 @@ public class WebScrapNodeJSInstall {
 	}
 
 	private static boolean isPuppeteerInstalled() {
-		String os = System.getProperty("os.name").toLowerCase();
-		String nodeExec = "";
-		String npmCli = "";
+	    String os = System.getProperty("os.name").toLowerCase();
+	    String nodeExec = "";
+	    String npmCli = "";
 
-		if (os.contains("win")) {
-			nodeExec = DOWNLOAD_DIR + "\\node.exe";
-			npmCli = DOWNLOAD_DIR + "\\node_modules\\npm\\bin\\npm-cli.js";
-		} else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-			nodeExec = DOWNLOAD_DIR + "/node";
-			npmCli = DOWNLOAD_DIR + "/node_modules/npm/bin/npm-cli.js";
-		} else {
-			System.out.println("Sistema operativo no soportado.");
-			return false;
-		}
+	    if (os.contains("win")) {
+	        nodeExec = DOWNLOAD_DIR + "\\node.exe";
+	        npmCli = DOWNLOAD_DIR + "\\node_modules\\npm\\bin\\npm-cli.js";
+	    } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+	        nodeExec = DOWNLOAD_DIR + "/node";
+	        npmCli = DOWNLOAD_DIR + "/node_modules/npm/bin/npm-cli.js";
+	    } else {
+	        System.out.println("Sistema operativo no soportado.");
+	        return false;
+	    }
 
-		try {
-			// Verificar si Puppeteer está instalado
-			ProcessBuilder processBuilder = new ProcessBuilder(nodeExec, npmCli, "list", "puppeteer");
-			processBuilder.directory(new File(DOWNLOAD_DIR));
-			Process process = processBuilder.start();
+	    try {
+	        // Verificar si Puppeteer está instalado
+	        ProcessBuilder processBuilder = new ProcessBuilder(nodeExec, npmCli, "list", "puppeteer");
+	        processBuilder.directory(new File(DOWNLOAD_DIR));
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			boolean puppeteerInstalled = false;
+	        // Asegurar permisos de ejecución
+	        File downloadDirFile = new File(DOWNLOAD_DIR);
+	        if (!downloadDirFile.canExecute()) {
+	            System.out.println("No se pueden ejecutar comandos en el directorio: " + DOWNLOAD_DIR);
+	            return false;
+	        }
 
-			while ((line = reader.readLine()) != null) {
-				if (line.contains("puppeteer")) {
-					puppeteerInstalled = true;
-					break;
-				}
-			}
+	        Process process = processBuilder.start();
 
-			if (puppeteerInstalled) {
-				System.out.println("Libreria puppeteer instalada");
-			} else {
-				System.err.println("Libreria no puppeteer instalada");
-			}
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	        String line;
+	        boolean puppeteerInstalled = false;
 
-			return puppeteerInstalled;
+	        while ((line = reader.readLine()) != null) {
+	            if (line.contains("puppeteer")) {
+	                puppeteerInstalled = true;
+	                break;
+	            }
+	        }
 
-		} catch (IOException e) {
-			System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
-			e.printStackTrace();
-			return false;
-		}
+	        if (puppeteerInstalled) {
+	            System.out.println("Librería puppeteer instalada");
+	        } else {
+	            System.err.println("Librería puppeteer no instalada");
+	        }
+
+	        return puppeteerInstalled;
+
+	    } catch (IOException e) {
+	        System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
+
 
 	private static void installPuppeteer() {
 		String os = System.getProperty("os.name").toLowerCase();
@@ -287,62 +296,6 @@ public class WebScrapNodeJSInstall {
 		} catch (IOException e) {
 			System.out.println("Ocurrió un error al instalar Puppeteer.");
 			e.printStackTrace();
-		}
-	}
-
-	private static void addToSystemPath() throws IOException, InterruptedException {
-		String userHome = System.getProperty("user.home");
-		String nodeBinPath = userHome.replace("Users" + File.separator, "") + File.separator + "nodejs";
-		System.out.println("Ruta de nodejs: " + nodeBinPath);
-
-		String os = System.getProperty("os.name").toLowerCase();
-		String command = "";
-
-		if (os.contains("win")) {
-			// Comando usando PowerShell para agregar al PATH del usuario actual
-			command = "powershell.exe -Command \"$env:PATH += ';\"" + nodeBinPath + "\"'\"";
-		} else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-			// Comando para sistemas Unix (Linux, macOS) usando export
-			command = "export PATH=\"$PATH:" + nodeBinPath + "\"";
-		} else {
-			System.out.println("Sistema operativo no soportado.");
-			return;
-		}
-
-		System.out.println("Ejecutando comando: " + command);
-
-		ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
-		processBuilder.redirectErrorStream(true);
-
-		// Verificar si la aplicación se está ejecutando como administrador y agregar
-		// configuración
-		processBuilder.environment().put("elevatecmd", "1");
-
-		try {
-			Process process = processBuilder.start();
-			process.waitFor();
-
-			// Verificar el resultado del proceso
-			int exitCode = process.exitValue();
-
-			if (exitCode == 0) {
-				System.out.println("Node.js agregado al PATH del sistema correctamente.");
-			} else {
-				// Leer el error stream para obtener más detalles
-				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-				String line;
-				StringBuilder errorMsg = new StringBuilder();
-				while ((line = reader.readLine()) != null) {
-					errorMsg.append(line).append("\n");
-				}
-				System.err.println("Error al agregar Node.js al PATH del sistema. Código de salida: " + exitCode);
-				System.err.println("Detalles del error:");
-				System.err.println(errorMsg.toString());
-			}
-
-		} catch (IOException | InterruptedException e) {
-			System.err.println(
-					"Error al ejecutar el comando para agregar Node.js al PATH del sistema: " + e.getMessage());
 		}
 	}
 

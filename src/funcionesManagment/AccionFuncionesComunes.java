@@ -586,6 +586,7 @@ public class AccionFuncionesComunes {
 
 						reader.lines().forEach(linea -> {
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+								ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 								return;
 							}
 
@@ -605,6 +606,7 @@ public class AccionFuncionesComunes {
 				} else {
 					listaCartasDatabase.forEach(carta -> {
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
+							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 							return; // Salir del forEach si el Task está cancelado
 						}
 						processCarta(carta, tipoUpdate);
@@ -769,8 +771,6 @@ public class AccionFuncionesComunes {
 				String cadenaAfirmativo = "No se han encontrado Cartas en los datos proporcionados";
 				AlarmaList.mostrarMensajePront(cadenaAfirmativo, false, getReferenciaVentana().getProntInfoTextArea());
 				nav.cerrarCargaCartas();
-				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
-				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 				getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
 			} else {
 				if (tipoUpdate.isEmpty()) {
@@ -789,7 +789,8 @@ public class AccionFuncionesComunes {
 
 					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
 				}
-
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 			}
 
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
@@ -834,6 +835,12 @@ public class AccionFuncionesComunes {
 				}
 
 			}
+
+			if (!ListasCartasDAO.cartasImportados.isEmpty()) {
+				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
+			}
+
 			AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
 			AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);

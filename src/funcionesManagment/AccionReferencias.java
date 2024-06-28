@@ -78,7 +78,6 @@ public class AccionReferencias {
 	private Button botonActualizarTodo;
 	private Button botonDescargarPdf;
 	private Button botonDescargarSQL;
-	private Button botonNormalizarDB;
 	private Button botonGuardarListaCartas;
 	private Button botonEliminarImportadoListaCarta;
 	private Button botonActualizarPrecio;
@@ -353,10 +352,6 @@ public class AccionReferencias {
 
 	public Button getBotonDescargarSQL() {
 		return botonDescargarSQL;
-	}
-
-	public Button getBotonNormalizarDB() {
-		return botonNormalizarDB;
 	}
 
 	public Button getBotonActualizarPrecios() {
@@ -862,10 +857,6 @@ public class AccionReferencias {
 
 	public void setBotonDescargarSQL(Button botonDescargarSQL) {
 		this.botonDescargarSQL = botonDescargarSQL;
-	}
-
-	public void setBotonNormalizarDB(Button botonNormalizarDB) {
-		this.botonNormalizarDB = botonNormalizarDB;
 	}
 
 	public void setBotonActualizarPrecios(Button botonActualizarPrecio) {

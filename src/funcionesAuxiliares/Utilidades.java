@@ -2391,6 +2391,64 @@ public class Utilidades {
             e.printStackTrace();
         }
     }
+    
+    public static void reiniciarOrdenadorOS() {
+        // Determinar el sistema operativo
+        String os = System.getProperty("os.name").toLowerCase();
+
+        // Llamar a la función correspondiente
+        if (os.contains("win")) {
+           reiniciarOrdenadorWindows();
+        } else if (os.contains("mac")) {
+            reiniciarOrdenadorMac();
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            reiniciarOrdenadorLinux();
+        } else {
+            System.err.println("Sistema operativo no soportado para reiniciar.");
+        }
+    }
+    
+    public static void reiniciarOrdenadorWindows() {
+        try {
+            Process process = Runtime.getRuntime().exec("shutdown -r -t 0");
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("Reinicio exitoso en Windows.");
+            } else {
+                System.err.println("No se pudo reiniciar el ordenador en Windows.");
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error al reiniciar el ordenador en Windows: " + e.getMessage());
+        }
+    }
+
+    public static void reiniciarOrdenadorMac() {
+        try {
+            Process process = Runtime.getRuntime().exec("sudo shutdown -r now");
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("Reinicio exitoso en MacOS.");
+            } else {
+                System.err.println("No se pudo reiniciar el ordenador en MacOS.");
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error al reiniciar el ordenador en MacOS: " + e.getMessage());
+        }
+    }
+
+    public static void reiniciarOrdenadorLinux() {
+        try {
+            Process process = Runtime.getRuntime().exec("sudo reboot");
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("Reinicio exitoso en Linux.");
+            } else {
+                System.err.println("No se pudo reiniciar el ordenador en Linux.");
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error al reiniciar el ordenador en Linux: " + e.getMessage());
+        }
+    }
 
 	public static AccionReferencias getReferenciaVentana() {
 		return referenciaVentana;

@@ -222,7 +222,7 @@ public class AccionControlUI {
 		referenciaVentana.getEstadoCartaCombobox().getSelectionModel().select(cartaTemp.getEstadoCarta());
 
 		referenciaVentana.getUrlReferenciaTextField().setText(cartaTemp.getUrlReferenciaCarta());
-		
+
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
 
 		referenciaVentana.getNormasCartaTextArea().setText(cartaTemp.getNormasCarta());
@@ -528,12 +528,10 @@ public class AccionControlUI {
 			AccionSeleccionar.mostrarCarta(newValue, false);
 		});
 
-		List<Node> elementos = Arrays.asList(referenciaVentana.getBotonGuardarCarta(),
-				referenciaVentana.getBotonEliminarImportadoCarta(),
+		List<Node> elementos = Arrays.asList(
+				referenciaVentana.getBotonGuardarCarta(),referenciaVentana.getBotonEliminarImportadoCarta(),
 				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
-				referenciaVentana.getBotonEliminarImportadoListaCarta(), referenciaVentana.getBotonGuardarListaCartas(),
-				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta(),
-				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonEliminarImportadoCarta());
+				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonGuardarCarta());
 
 		ListasCartasDAO.cartasImportados.addListener((ListChangeListener<Carta>) change -> {
 			while (change.next()) {

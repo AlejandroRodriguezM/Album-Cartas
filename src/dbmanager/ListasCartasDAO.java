@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import cartaManagement.Carta;
+import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -174,6 +175,13 @@ public class ListasCartasDAO {
 	 */
 	public static ObservableList<Carta> cartasGuardadosList = FXCollections.observableArrayList();
 
+	public static void eliminarUltimaCartaImportada() {
+	    ObservableList<Carta> cartasImportados = ListasCartasDAO.cartasImportados;
+	    if (!cartasImportados.isEmpty()) {
+	        cartasImportados.remove(cartasImportados.size() - 1);
+	    }
+	}
+	
 	public static boolean verificarIDExistente(String id, boolean esGuardado) {
 		// Verificar que el id no sea nulo ni esté vacío
 		if (id == null || id.isEmpty()) {
@@ -472,18 +480,6 @@ public class ListasCartasDAO {
 	 * @param map El HashMap a ordenar.
 	 * @return Una lista de entradas ordenadas por valor ascendente.
 	 */
-	public static List<Map.Entry<String, Integer>> sortByValue(Map<String, Integer> map) {
-		List<Map.Entry<String, Integer>> list = new LinkedList<>(map.entrySet());
-		list.sort(Map.Entry.comparingByKey());
-		return list;
-	}
-
-	/**
-	 * Ordena un HashMap en orden ascendente por valor (valor de tipo Integer).
-	 *
-	 * @param map El HashMap a ordenar.
-	 * @return Una lista de entradas ordenadas por valor ascendente.
-	 */
 	public static List<Map.Entry<Integer, Integer>> sortByValueInt(Map<Integer, Integer> map) {
 		List<Map.Entry<Integer, Integer>> list = new LinkedList<>(map.entrySet());
 		list.sort(Map.Entry.comparingByValue());
@@ -657,22 +653,18 @@ public class ListasCartasDAO {
 		// Crear HashMaps para almacenar los datos de cada campo sin repetición y sus
 		// conteos
 		Map<String, Integer> nomCartaEstadistica = new HashMap<>();
-
 		Map<String, Integer> nivelGradeoEstadistica = new HashMap<>();
-		Map<String, Integer> nomVarianteEstadistica = new HashMap<>();
-		Map<String, Integer> firmaEstadistica = new HashMap<>();
 		Map<String, Integer> nomEditorialEstadistica = new HashMap<>();
-		Map<String, Integer> formatoEstadistica = new HashMap<>();
-		Map<String, Integer> procedenciaEstadistica = new HashMap<>();
-		Map<String, Integer> fechaPublicacionEstadistica = new HashMap<>();
-		Map<String, Integer> nomGuionistaEstadistica = new HashMap<>();
-		Map<String, Integer> nomDibujanteEstadistica = new HashMap<>();
-		Map<String, Integer> puntuacionEstadistica = new HashMap<>();
-		Map<String, Integer> estadoEstadistica = new HashMap<>();
-		List<String> keyIssueDataList = new ArrayList<>();
+		Map<String, Double> precioCartaEstadistica = new HashMap<>();
+		Map<String, Integer> coleccionCartaEstadistica = new HashMap<>();
+		Map<String, Integer> rarezaCartaEstadistica = new HashMap<>();
+		Map<String, Integer> esFoilCartaEstadistica = new HashMap<>();
+		Map<String, Integer> estadoCartaEstadistica = new HashMap<>();
+		Map<String, Integer> normasCartaEstadistica = new HashMap<>();
 
 		final String CONSULTA_SQL = "SELECT * FROM albumbbdd";
 		int totalCartas = 0;
+
 		try (Connection conn = ConectManager.conexion();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(CONSULTA_SQL)) {
@@ -681,92 +673,36 @@ public class ListasCartasDAO {
 			while (rs.next()) {
 				// Obtener los datos de cada campo
 				String nomCarta = rs.getString("nomCarta");
-				int numCarta = rs.getInt("numCarta");
-				String nivelGradeo = rs.getString("nivel_gradeo");
-				String nomVariante = rs.getString("nomVariante");
-				String firma = rs.getString("firma");
-				String nomEditorial = rs.getString("nomEditorial");
-				String formato = rs.getString("formato");
-				String procedencia = rs.getString("procedencia");
-				String fechaPublicacion = rs.getString("fecha_publicacion");
-				String nomGuionista = rs.getString("nomGuionista");
-				String nomDibujante = rs.getString("nomDibujante");
-				String puntuacion = rs.getString("puntuacion");
-				String estado = rs.getString("estado");
-				String clave_comic = rs.getString("key_issue");
-
+				String numCarta = rs.getString("numCarta");
+				String nivelGradeo = rs.getString("gradeoCarta");
+				String nomEditorial = rs.getString("editorialCarta");
+				String coleccion = rs.getString("coleccionCarta");
+				String precioCartaStr = rs.getString("precioCarta");
+				String rarezaCarta = rs.getString("rarezaCarta");
+				String esFoilCarta = rs.getString("esFoilCarta");
+				String estadoCarta = rs.getString("estadoCarta");
+				String normasCarta = rs.getString("normasCarta");
+				
 				// Actualizar los HashMaps para cada campo
 				nomCartaEstadistica.put(nomCarta, nomCartaEstadistica.getOrDefault(nomCarta, 0) + 1);
 				nivelGradeoEstadistica.put(nivelGradeo, nivelGradeoEstadistica.getOrDefault(nivelGradeo, 0) + 1);
-
-				firmaEstadistica.put(firma, firmaEstadistica.getOrDefault(firma, 0) + 1);
 				nomEditorialEstadistica.put(nomEditorial, nomEditorialEstadistica.getOrDefault(nomEditorial, 0) + 1);
-				formatoEstadistica.put(formato, formatoEstadistica.getOrDefault(formato, 0) + 1);
-				procedenciaEstadistica.put(procedencia, procedenciaEstadistica.getOrDefault(procedencia, 0) + 1);
-				fechaPublicacionEstadistica.put(fechaPublicacion,
-						fechaPublicacionEstadistica.getOrDefault(fechaPublicacion, 0) + 1);
+				coleccionCartaEstadistica.put(coleccion, coleccionCartaEstadistica.getOrDefault(coleccion, 0) + 1);
+				rarezaCartaEstadistica.put(rarezaCarta, rarezaCartaEstadistica.getOrDefault(rarezaCarta, 0) + 1);
+				esFoilCartaEstadistica.put(esFoilCarta, esFoilCartaEstadistica.getOrDefault(esFoilCarta, 0) + 1);
+				estadoCartaEstadistica.put(estadoCarta, estadoCartaEstadistica.getOrDefault(estadoCarta, 0) + 1);
+				normasCartaEstadistica.put(normasCarta, normasCartaEstadistica.getOrDefault(normasCarta, 0) + 1);
 
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-				String[] claveList = clave_comic.split("-");
-				for (String clave : claveList) {
-					clave = clave.trim(); // Remove leading and trailing spaces
-
-					// Aquí verificamos si clave_comic no es "Vacio" ni está vacío antes de agregar
-					// a keyIssueDataList
-					if (!clave.equalsIgnoreCase("Vacio") && !clave.isEmpty()) {
-						String keyIssueData = "Nombre del comic: " + nomCarta + " - " + "Numero: " + numCarta
-								+ " - Key issue:  " + clave;
-						keyIssueDataList.add(keyIssueData);
+				// Convertir precioCarta de String a Double y añadir a la estadística de precios
+				try {
+					double precioCarta = Double.parseDouble(precioCartaStr);
+					if (precioCarta > 0) {
+						precioCartaEstadistica.put(nomCarta, precioCarta);
 					}
+				} catch (NumberFormatException e) {
+					// Manejar excepción si no se puede convertir a double
+					System.err.println("No se pudo convertir el precio de la carta a número: " + precioCartaStr);
 				}
-
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-				String[] varianteList = nomVariante.split("-");
-				for (String variante : varianteList) {
-					variante = variante.trim(); // Remove leading and trailing spaces
-					nomVarianteEstadistica.put(variante, nomVarianteEstadistica.getOrDefault(variante, 0) + 1);
-				}
-
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-				String[] guionistaList = nomGuionista.split("-");
-				for (String guionista : guionistaList) {
-					guionista = guionista.trim(); // Remove leading and trailing spaces
-					nomGuionistaEstadistica.put(guionista, nomGuionistaEstadistica.getOrDefault(guionista, 0) + 1);
-				}
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-
-				String[] dibujanteList = nomDibujante.split("-");
-				for (String dibujante : dibujanteList) {
-					dibujante = dibujante.trim(); // Remove leading and trailing spaces
-					nomDibujanteEstadistica.put(dibujante, nomDibujanteEstadistica.getOrDefault(dibujante, 0) + 1);
-				}
-
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-				String[] firmaList = firma.split("-");
-				for (String firmaValor : firmaList) {
-					firmaValor = firmaValor.trim(); // Remove leading and trailing spaces
-					firmaEstadistica.put(firmaValor, firmaEstadistica.getOrDefault(firmaValor, 0) + 1);
-				}
-
-				// Dividir los valores separados por guiones ("-") en cada campo y contarlos
-				// como entradas independientes en las estadísticas
-				String[] procedenciaList = procedencia.split("-");
-				for (String procedenciaValor : procedenciaList) {
-					procedenciaValor = procedenciaValor.trim(); // Remove leading and trailing spaces
-					procedenciaEstadistica.put(procedenciaValor,
-							procedenciaEstadistica.getOrDefault(procedenciaValor, 0) + 1);
-				}
-
-				puntuacionEstadistica.put(puntuacion, puntuacionEstadistica.getOrDefault(puntuacion, 0) + 1);
-				estadoEstadistica.put(estado, estadoEstadistica.getOrDefault(estado, 0) + 1);
-
-				totalCartas++; // Incrementar el contador de cómics
-
 			}
 
 		} catch (SQLException e) {
@@ -775,139 +711,36 @@ public class ListasCartasDAO {
 
 		// Generar la cadena de estadística
 		StringBuilder estadisticaStr = new StringBuilder();
-		String lineaDecorativa1 = "\n--------------------------------------------------------";
-		String lineaDecorativa2 = "--------------------------------------------------------\n";
-
+		String lineaDecorativa = "\n--------------------------------------------------------\n";
 		String fechaActual = Utilidades.obtenerFechaActual();
-
-		estadisticaStr.append("Estadisticas de comics de la base de datos: " + ConectManager.DB_NAME + ", a fecha de: "
+		String datosFichero = FuncionesFicheros.datosEnvioFichero();
+		// Encabezado
+		estadisticaStr.append("Estadisticas de cartas de la base de datos: " + datosFichero + ", a fecha de: "
 				+ fechaActual + "\n");
 
-		// Agregar los valores de nomCarta a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de los nombres de comics:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nomCartaList = sortByValue(nomCartaEstadistica);
-		for (Map.Entry<String, Integer> entry : nomCartaList) {
+		// Generar estadísticas para cada tipo de dato
+		generarEstadistica(estadisticaStr, "Estadística de nombres de cartas:\n", nomCartaEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de niveles de gradeo:\n", nivelGradeoEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de editoriales:\n", nomEditorialEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de colecciones:\n", coleccionCartaEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de rarezas:\n", rarezaCartaEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de esFoil:\n", esFoilCartaEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de estados:\n", estadoCartaEstadistica);
+		generarEstadistica(estadisticaStr, "Estadística de normas:\n", normasCartaEstadistica);
+
+		// Agregar estadística de precios
+		estadisticaStr.append(lineaDecorativa);
+		estadisticaStr.append("\nEstadística de precios de cartas:\n");
+		estadisticaStr.append(lineaDecorativa);
+		for (Map.Entry<String, Double> entry : precioCartaEstadistica.entrySet()) {
 			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 		}
 
-		// Agregar los valores de nivelGradeo a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de las cajas:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nivelGradeoList = sortByValue(nivelGradeoEstadistica);
-		for (Map.Entry<String, Integer> entry : nivelGradeoList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de nomVariante a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de los nombres de variantes:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nomVarianteList = sortByValue(nomVarianteEstadistica);
-		for (Map.Entry<String, Integer> entry : nomVarianteList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de firma a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de autores firma:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> firmaList = sortByValue(firmaEstadistica);
-		for (Map.Entry<String, Integer> entry : firmaList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de nomGuionista a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de guionistas:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nomGuionistaList = sortByValue(nomGuionistaEstadistica);
-		for (Map.Entry<String, Integer> entry : nomGuionistaList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de nomDibujante a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de dibujantes:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nomDibujantesList = sortByValue(nomDibujanteEstadistica);
-		for (Map.Entry<String, Integer> entry : nomDibujantesList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de nomEditorial a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de Editoriales:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> nomEditorialList = sortByValue(nomEditorialEstadistica);
-		for (Map.Entry<String, Integer> entry : nomEditorialList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de procedencia a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de procedencia:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> procedenciaList = sortByValue(procedenciaEstadistica);
-		for (Map.Entry<String, Integer> entry : procedenciaList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de fechaPublicacion a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de fecha publicacion:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> fechaPublicacionList = sortByValue(fechaPublicacionEstadistica);
-		for (Map.Entry<String, Integer> entry : fechaPublicacionList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de puntuacion a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de puntuacion:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> puntuacionList = sortByValue(puntuacionEstadistica);
-		for (Map.Entry<String, Integer> entry : puntuacionList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de estado a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de estado:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		List<Map.Entry<String, Integer>> estadoList = sortByValue(estadoEstadistica);
-		for (Map.Entry<String, Integer> entry : estadoList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		// Agregar los valores de formato a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de key issue:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		for (String keyIssueData : keyIssueDataList) {
-			estadisticaStr.append(keyIssueData).append("\n");
-		}
-
-		// Agregar los valores de formato a la estadística
-		estadisticaStr.append(lineaDecorativa1);
-		estadisticaStr.append("\nEstadística de formato:\n");
-		estadisticaStr.append(lineaDecorativa2);
-		estadisticaStr.append("Cartas en total: " + totalCartas).append("\n");
-		List<Map.Entry<String, Integer>> formatoList = sortByValue(formatoEstadistica);
-		for (Map.Entry<String, Integer> entry : formatoList) {
-			estadisticaStr.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-		}
-
-		estadisticaStr.append(lineaDecorativa1);
+		estadisticaStr.append(lineaDecorativa);
 
 		// Crear el archivo de estadística y escribir los datos en él
 		String nombreArchivo = "estadistica_" + fechaActual + ".txt";
-		String userHome = System.getProperty("user.home");
-		String ubicacion = userHome + File.separator + "AppData" + File.separator + "Roaming";
-		String carpetaLibreria = ubicacion + File.separator + "libreria";
-		String rutaCompleta = carpetaLibreria + File.separator + nombreArchivo;
+		String rutaCompleta = obtenerRutaArchivo(nombreArchivo);
 
 		try (PrintWriter writer = new PrintWriter(new FileWriter(rutaCompleta))) {
 			writer.print(estadisticaStr);
@@ -918,6 +751,34 @@ public class ListasCartasDAO {
 		} catch (IOException e) {
 			Utilidades.manejarExcepcion(e);
 		}
+	}
+
+	// Método para generar estadística de un HashMap específico
+	private static void generarEstadistica(StringBuilder sb, String titulo, Map<String, Integer> estadistica) {
+		sb.append("\n--------------------------------------------------------\n");
+		sb.append(titulo);
+		sb.append("\n--------------------------------------------------------\n");
+
+		List<Map.Entry<String, Integer>> listaOrdenada = sortByValue(estadistica);
+		for (Map.Entry<String, Integer> entry : listaOrdenada) {
+			sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+		}
+	}
+
+	// Método para obtener la ruta completa del archivo de estadísticas
+	private static String obtenerRutaArchivo(String nombreArchivo) {
+		String userHome = System.getProperty("user.home");
+		String ubicacion = userHome + File.separator + "AppData" + File.separator + "Roaming";
+		String carpetaLibreria = ubicacion + File.separator + "album";
+		return carpetaLibreria + File.separator + nombreArchivo;
+	}
+
+	// Método para ordenar un Map por los valores (conteos en este caso)
+	private static List<Map.Entry<String, Integer>> sortByValue(Map<String, Integer> estadistica) {
+		List<Map.Entry<String, Integer>> lista = new LinkedList<>(estadistica.entrySet());
+		lista.sort(Map.Entry.comparingByValue());
+		Collections.reverse(lista); // Para orden descendente
+		return lista;
 	}
 
 }

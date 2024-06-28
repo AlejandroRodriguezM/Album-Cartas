@@ -28,10 +28,8 @@
 						</Label>
 						<Label layoutX="6.0" layoutY="108.0" prefHeight="17.0" prefWidth="136.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Descargar Copia SQL Lite" />
 						<Button fx:id="botonDescargarSQL" layoutX="186.0" layoutY="104.0" mnemonicParsing="false" onAction="#descargarSQL" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Descargar" />
-						<Label fx:id="labelComprobar" layoutX="6.0" layoutY="200.0" prefHeight="17.0" prefWidth="108.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Comprobar versión" />
-						<Button fx:id="botonActualizarSoftware" layoutX="186.0" layoutY="191.0" mnemonicParsing="false" onAction="#comprobarVersion" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Comprobar" />
-						<Label layoutX="6.0" layoutY="147.0" prefHeight="38.0" prefWidth="107.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Normalizar Base de Datos" wrapText="true" />
-						<Button fx:id="botonNormalizarDB" layoutX="186.0" layoutY="148.0" mnemonicParsing="false" onAction="#normalizarDataBase" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Normalizar" />
+						<Label fx:id="labelComprobar" layoutX="6.0" layoutY="156.0" prefHeight="17.0" prefWidth="108.0" style="-fx-text-fill: white; -fx-background-color: grey;" text="Comprobar versión" />
+						<Button fx:id="botonActualizarSoftware" layoutX="186.0" layoutY="147.0" mnemonicParsing="false" onAction="#comprobarVersion" prefHeight="33.0" prefWidth="73.0" stylesheets="@../style/genericos_style.css" text="Comprobar" />
 						<Label layoutX="172.0" layoutY="282.0" prefHeight="17.0" prefWidth="45.0" style="-fx-text-fill: white;" text="Versión" />
 						<Label fx:id="labelVersion" layoutX="222.0" layoutY="282.0" prefHeight="17.0" prefWidth="45.0" style="-fx-text-fill: white;" text="0.0.0.0" />
 					</children>
