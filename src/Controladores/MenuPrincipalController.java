@@ -202,8 +202,6 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	private MenuItem menuEstadisticaEstadistica;
 	@FXML
-	private MenuItem menuEstadisticaKeyIssue;
-	@FXML
 	private MenuItem menuEstadisticaPosesion;
 	@FXML
 	private MenuItem menuEstadisticaVendidos;
@@ -375,7 +373,6 @@ public class MenuPrincipalController implements Initializable {
 		menuEstadisticaPosesion.setGraphic(Utilidades.createIcon("/Icono/Estadistica/posesion.png", 16, 16));
 		menuEstadisticaComprados.setGraphic(Utilidades.createIcon("/Icono/Estadistica/comprado.png", 16, 16));
 		menuEstadisticaVendidos.setGraphic(Utilidades.createIcon("/Icono/Estadistica/vendido.png", 16, 16));
-		menuEstadisticaKeyIssue.setGraphic(Utilidades.createIcon("/Icono/Estadistica/keys.png", 16, 16));
 		menuEstadisticaEstadistica.setGraphic(Utilidades.createIcon("/Icono/Estadistica/descarga.png", 16, 16));
 
 		Platform.runLater(() -> {
@@ -730,18 +727,6 @@ public class MenuPrincipalController implements Initializable {
 		enviarReferencias();
 		nav.verOpcionesAvanzadas();
 
-	}
-
-	/**
-	 * Maneja la acción de mostrar los cómics considerados "Key Issue".
-	 *
-	 * @param event El evento que desencadenó esta acción.
-	 * @throws SQLException Si ocurre un error al acceder a la base de datos.
-	 */
-	@FXML
-	void comicsKeyIssue(ActionEvent event) throws SQLException {
-		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.KEY_ISSUE, false);
 	}
 
 	private void imprimirCartasEstado(TipoBusqueda tipoBusqueda, boolean esGuardado) {
