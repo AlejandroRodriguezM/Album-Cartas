@@ -88,5 +88,7 @@
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/okhttp-5.0.0-alpha.14.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/slf4j-log4j12-1.7.32.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/json-20240303.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/httpclient-4.5.14.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/httpcore-4.4.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

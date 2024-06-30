@@ -1,6 +1,7 @@
 package UNIT_TEST;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -232,16 +233,43 @@ public class ScryfallScraper {
 		return null; // No se encontró el nombre de la carta
 	}
 
-	public static void main(String[] args) {
+	public static void comprobarScrap() {
+		String url = "https://www.cardmarket.com/en/Magic/Products/Singles/Future-Sight/Sliver-Legion?language=1";
+		String filePath = "output.txt"; // El archivo donde se guardará el texto plano
+
 		try {
+			// Conectar a la URL y obtener el documento HTML
+			Document doc = Jsoup.connect(url).get();
 
-			String busqueda = "Sliver";
-			String nombreCarta = buscarEnGoogle(busqueda);
+			// Extraer el texto plano de la página
+			String plainText = doc.text();
 
-			List<String> cardLinks = getCardLinks(nombreCarta);
-			extractCardDetails(cardLinks);
-		} catch (IOException | URISyntaxException e) {
+			// Escribir el texto plano en un archivo
+			try (FileWriter writer = new FileWriter(filePath)) {
+				writer.write(plainText);
+			}
+
+			System.out.println("El contenido de texto plano ha sido escrito en " + filePath);
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) {
+//		try {
+//
+//			String busqueda = "Sliver";
+//			String nombreCarta = buscarEnGoogle(busqueda);
+//			List<String> cardLinks = getCardLinks(nombreCarta);
+//			extractCardDetails(cardLinks);
+//			
+//			
+//
+//		} catch (IOException | URISyntaxException e) {
+//			e.printStackTrace();
+//		}
+
+		comprobarScrap();
 	}
 }

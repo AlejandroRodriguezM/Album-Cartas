@@ -88,12 +88,13 @@ public class WebScrapGoogleCardTrader {
 
 		// Agregar enlaces originales al mapa
 		for (String enlace : enlaceOriginales) {
+			enlace = enlace + "?language=1";
 			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlace);
 		}
 
 		// Agregar enlaces modificados al mapa
 		for (String enlace : enlaceOriginales) {
-			String enlaceModificado = enlace + "?isFoil=Y";
+			String enlaceModificado = enlace + "?language=1" + "?isFoil=Y";
 			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlaceModificado);
 		}
 
