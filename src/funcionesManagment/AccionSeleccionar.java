@@ -93,13 +93,13 @@ public class AccionSeleccionar {
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && !esPrincipal) {
 			comicTemp = ListasCartasDAO.buscarCartaPorID(ListasCartasDAO.cartasImportados, idCarta);
+
 		} else if (CartaManagerDAO.comprobarIdentificadorCarta(idCarta)) {
 			comicTemp = CartaManagerDAO.cartaDatos(idCarta);
 		}
 
 		if (idCarta == null || idCarta.isEmpty() || comicTemp == null) {
 			AccionControlUI.limpiarAutorellenos(esPrincipal);
-
 			return;
 		}
 

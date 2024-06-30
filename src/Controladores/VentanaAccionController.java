@@ -589,7 +589,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if (!tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(true);
+			AccionSeleccionar.seleccionarCartas(false);
 		}
 	}
 
@@ -606,7 +606,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(true);
+			AccionSeleccionar.seleccionarCartas(false);
 		}
 
 	}

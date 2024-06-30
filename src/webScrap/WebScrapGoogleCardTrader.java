@@ -80,6 +80,7 @@ public class WebScrapGoogleCardTrader {
 
 	public static List<String> extraerEnlacesDePagina(String urlString) {
 		// Conectar y extraer enlaces originales
+		urlString = urlString.replaceFirst("/\\w{2}/", "/en/");
 		List<String> enlaceOriginales = getEnlacesFromPuppeteer(urlString);
 
 		// Crear un mapa para agrupar enlaces por su versión sin "?isFoil=Y"
@@ -138,84 +139,84 @@ public class WebScrapGoogleCardTrader {
 		};
 	}
 
-    public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
-        try {
-            // Codificar el término de búsqueda
-            String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
+	public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
+		try {
+			// Codificar el término de búsqueda
+			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
 
-            // Construir la URL de búsqueda en Google
-            String urlString = "https://www.google.com/search?q=cardmarket+" + encodedSearchTerm + "+versions";
+			// Construir la URL de búsqueda en Google
+			String urlString = "https://www.google.com/search?q=cardmarket+" + encodedSearchTerm + "+versions";
 
-            // Crear objeto URI y URL
-            URI uri = new URI(urlString);
-            URL url = uri.toURL();
+			// Crear objeto URI y URL
+			URI uri = new URI(urlString);
+			URL url = uri.toURL();
 
-            // Establecer la conexión HTTP
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+			// Establecer la conexión HTTP
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
 
-            // Establecer el User-Agent para simular una solicitud desde el navegador Chrome
-            con.setRequestProperty("User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36");
+			// Establecer el User-Agent para simular una solicitud desde el navegador Chrome
+			con.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36");
 
-            // Leer la respuesta
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
+			// Leer la respuesta
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuilder content = new StringBuilder();
+			while ((inputLine = in.readLine()) != null) {
+				content.append(inputLine);
+			}
+			in.close();
+			con.disconnect();
 
-            // Convertir la respuesta a String
-            String html = content.toString();
+			// Convertir la respuesta a String
+			String html = content.toString();
 
-            // Buscar la URL de Cardmarket
-            int startIndex = html.indexOf("www.cardmarket.com/");
-            List<String> urls = new ArrayList<>();
+			// Buscar la URL de Cardmarket
+			int startIndex = html.indexOf("www.cardmarket.com/");
+			List<String> urls = new ArrayList<>();
 
-            while (startIndex != -1) {
-                int endIndex = html.indexOf("\"", startIndex);
-                if (endIndex != -1) {
-                    String urlFound = html.substring(startIndex, endIndex);
+			while (startIndex != -1) {
+				int endIndex = html.indexOf("\"", startIndex);
+				if (endIndex != -1) {
+					String urlFound = html.substring(startIndex, endIndex);
 
-                    // Verificar si la URL termina con "/Versions"
-                    if (urlFound.endsWith("/Versions")) {
-                        List<String> versionLinks = extraerEnlacesDePagina("https://" + urlFound);
+					// Verificar si la URL termina con "/Versions"
+					if (urlFound.endsWith("/Versions")) {
+						List<String> versionLinks = extraerEnlacesDePagina("https://" + urlFound);
 
-                        if (versionLinks.isEmpty()) {
-                            return null; // No se encontraron enlaces de versiones
-                        } else {
-                            return versionLinks; // Devolver los enlaces de versiones encontrados
-                        }
-                    } else {
-                        urls.add(urlFound); // Agregar la URL a la lista
-                    }
+						if (versionLinks.isEmpty()) {
+							return null; // No se encontraron enlaces de versiones
+						} else {
+							return versionLinks; // Devolver los enlaces de versiones encontrados
+						}
+					} else {
+						urls.add(urlFound); // Agregar la URL a la lista
+					}
 
-                    // Buscar la siguiente ocurrencia de "www.cardmarket.com/"
-                    startIndex = html.indexOf("www.cardmarket.com/", endIndex);
-                } else {
-                    break;
-                }
-            }
+					// Buscar la siguiente ocurrencia de "www.cardmarket.com/"
+					startIndex = html.indexOf("www.cardmarket.com/", endIndex);
+				} else {
+					break;
+				}
+			}
 
-            // Devolver la lista de URLs encontradas
-            if (urls.isEmpty()) {
-                return null; // No se encontraron URLs
-            } else {
-                return urls;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null; // Devolver null en caso de excepción
-        }
-    }
+			// Devolver la lista de URLs encontradas
+			if (urls.isEmpty()) {
+				return null; // No se encontraron URLs
+			} else {
+				return urls;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null; // Devolver null en caso de excepción
+		}
+	}
 
 	public static Carta extraerDatosMTG(String url) {
 
 		List<String> data = getCartaFromPuppeteer(url); // Método para obtener datos de la carta
-		
+
 		String referencia = "";
 		String nombre = "";
 		String coleccion = "";
@@ -281,67 +282,67 @@ public class WebScrapGoogleCardTrader {
 	}
 
 	public static List<String> getCartaFromPuppeteer(String url) {
-	    List<String> dataArrayList = new ArrayList<>();
+		List<String> dataArrayList = new ArrayList<>();
 
-	    try {
-	        String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap.js";
-	        String command = "node " + scriptPath + " " + url;
+		try {
+			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap.js";
+			String command = "node " + scriptPath + " " + url;
 
-	        int attempt = 0;
-	        int backoff = 2000; // Tiempo de espera inicial en milisegundos
+			int attempt = 0;
+			int backoff = 2000; // Tiempo de espera inicial en milisegundos
 
-	        while (true) {
-	            attempt++;
-	            Process process = Runtime.getRuntime().exec(command);
+			while (true) {
+				attempt++;
+				Process process = Runtime.getRuntime().exec(command);
 
-	            // Leer la salida del proceso
-	            BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	            String outputLine;
-	            StringBuilder output = new StringBuilder();
-	            while ((outputLine = processReader.readLine()) != null) {
-	                output.append(outputLine).append("\n");
-	            }
-	            processReader.close();
+				// Leer la salida del proceso
+				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String outputLine;
+				StringBuilder output = new StringBuilder();
+				while ((outputLine = processReader.readLine()) != null) {
+					output.append(outputLine).append("\n");
+				}
+				processReader.close();
 
-	            // Esperar a que termine el proceso
-	            int exitCode = process.waitFor();
-	            if (exitCode == 0) {
-	                // Proceso terminado exitosamente, obtener el resultado
-	                String dataString = output.toString().trim();
-	                if (!dataString.isEmpty()) {
-	                    // Dividir los pares clave-valor y añadirlos al List<String>
-	                    String[] keyValuePairs = dataString.split("\n");
-	                    for (String pair : keyValuePairs) {
-	                        dataArrayList.add(pair.trim());
-	                    }
-	                    return dataArrayList;
-	                } else {
-	                    System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
-	                    Thread.sleep(backoff); // Esperar antes de intentar nuevamente
-	                    backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
-	                }
+				// Esperar a que termine el proceso
+				int exitCode = process.waitFor();
+				if (exitCode == 0) {
+					// Proceso terminado exitosamente, obtener el resultado
+					String dataString = output.toString().trim();
+					if (!dataString.isEmpty()) {
+						// Dividir los pares clave-valor y añadirlos al List<String>
+						String[] keyValuePairs = dataString.split("\n");
+						for (String pair : keyValuePairs) {
+							dataArrayList.add(pair.trim());
+						}
+						return dataArrayList;
+					} else {
+						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
+						Thread.sleep(backoff); // Esperar antes de intentar nuevamente
+						backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
+					}
 
-	                if (attempt >= 5) {
-	                    // Si se superan los intentos, devolver un List<String> vacío
-	                    return new ArrayList<>();
-	                }
-	            } else {
-	                // Error al ejecutar el script
-	                System.err.println("Error al ejecutar el script de Puppeteer");
-	                break; // Salir del bucle si hay un error
-	            }
-	        }
-	    } catch (InterruptedException e) {
-	        // Restaurar el estado de interrupción
-	        Thread.currentThread().interrupt();
-	        System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
-	        // Opcional: Manejar la interrupción de manera adecuada, por ejemplo, limpiando recursos
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
+					if (attempt >= 5) {
+						// Si se superan los intentos, devolver un List<String> vacío
+						return new ArrayList<>();
+					}
+				} else {
+					// Error al ejecutar el script
+					System.err.println("Error al ejecutar el script de Puppeteer");
+					break; // Salir del bucle si hay un error
+				}
+			}
+		} catch (InterruptedException e) {
+			// Restaurar el estado de interrupción
+			Thread.currentThread().interrupt();
+			System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+			// Opcional: Manejar la interrupción de manera adecuada, por ejemplo, limpiando
+			// recursos
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
 	}
-
 
 	public static List<String> getEnlacesFromPuppeteer(String url) {
 		List<String> dataArrayList = new ArrayList<>();
