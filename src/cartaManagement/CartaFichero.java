@@ -25,27 +25,23 @@ public class CartaFichero extends Carta {
 			String editorialCarta = data[3];
 			String coleccionCarta = data[4];
 			String rarezaCarta = data[5];
-			String esFoilCartaStr = data[6];
-			String esFoilCarta = esFoilCartaStr;
-			String gradeoCarta = data[7];
-			String estadoCarta = data[8];
-			String precioCarta = data[9];
-			String urlReferenciaCarta = data[10];
-			String direccionImagenCarta = data[11];
-			String normasCarta = data[12];
+			String precioCartaNormal = data[6];
+			String precioCartaFoil = data[7];
+			String urlReferenciaCarta = data[8];
+			String direccionImagenCarta = data[9];
+			String normasCarta = data[10];
 			String nombrePortada = Utilidades.obtenerNombrePortada(false, direccionImagenCarta);
 			String imagen = FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH + File.separator + nombrePortada;
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCarta = (Double.parseDouble(precioCarta) <= 0) ? "0.0" : precioCarta;
-			gradeoCarta = comprobarGradeo(gradeoCarta);
+			precioCartaNormal = (Double.parseDouble(precioCartaNormal) <= 0) ? "0.0" : precioCartaNormal;
+			precioCartaFoil = (Double.parseDouble(precioCartaFoil) <= 0) ? "0.0" : precioCartaFoil;
 			urlReferenciaCarta = (urlReferenciaCarta.isEmpty()) ? "Sin referencia" : urlReferenciaCarta;
 
 			return new Carta.CartaBuilder("", nombre).numCarta(numCarta).editorialCarta(editorialCarta)
-					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta)
-					.gradeoCarta(gradeoCarta).estadoCarta(estadoCarta).precioCarta(precioCarta)
-					.urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen).normasCarta(normasCarta)
-					.build();
+					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).precioCartaNormal(precioCartaNormal)
+					.precioCartaFoil(precioCartaFoil).urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen)
+					.normasCarta(normasCarta).build();
 		} else {
 			return null;
 		}

@@ -86,15 +86,6 @@ public class ListasCartasDAO {
 	public static List<String> listaEditorial = new ArrayList<>();
 
 	/**
-	 * Lista de dibujantes.
-	 */
-	public static List<String> listaEsFoil = new ArrayList<>();
-
-	public static List<String> listaGradeo = new ArrayList<>();
-
-	public static List<String> listaEstado = new ArrayList<>();
-
-	/**
 	 * Lista de procedencias.
 	 */
 	public static List<String> listaColeccion = new ArrayList<>();
@@ -109,14 +100,9 @@ public class ListasCartasDAO {
 	 */
 	public static List<String> numeroCartaList = new ArrayList<>();
 
-	/**
-	 * Lista de nombres de variantes.
-	 */
-	public static List<String> nombreGradeoList = new ArrayList<>();
-
-	public static List<String> nombreEstadoList = new ArrayList<>();
-
-	public static List<String> nombrePrecioList = new ArrayList<>();
+	public static List<String> nombrePrecioNormalList = new ArrayList<>();
+	
+	public static List<String> nombrePrecioFoilList = new ArrayList<>();
 
 	/**
 	 * Lista de nombres de procedencia.
@@ -136,14 +122,13 @@ public class ListasCartasDAO {
 	/**
 	 * Lista de nombres de dibujantes.
 	 */
-	public static List<String> nombreEsFoilList = new ArrayList<>();
-
-	/**
-	 * Lista de nombres de dibujantes.
-	 */
 	public static List<String> listaImagenes = new ArrayList<>();
 
-	public static List<String> listaPrecios = new ArrayList<>();
+	public static List<String> listaReferencia = new ArrayList<>();
+
+	public static List<String> listaPreciosNormal = new ArrayList<>();
+
+	public static List<String> listaPreciosFoil = new ArrayList<>();
 
 	/**
 	 * Lista de cómics limpios.
@@ -160,15 +145,13 @@ public class ListasCartasDAO {
 	 * Lista ordenada que contiene todas las listas anteriores.
 	 */
 	public static List<List<String>> listaOrdenada = Arrays.asList(nombreCartaList, numeroCartaList,
-			nombreEditorialList, nombreColeccionList, nombreRarezaList, nombreEsFoilList, nombreGradeoList,
-			nombreEstadoList, nombrePrecioList);
+			nombreEditorialList, nombreColeccionList, nombreRarezaList, nombrePrecioNormalList, nombrePrecioFoilList);
 
 	/**
 	 * Lista de listas de elementos.
 	 */
 	public static List<List<String>> itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaEditorial,
-			listaColeccion, listaRareza, listaEsFoil, nombreEsFoilList, nombreGradeoList, nombreEstadoList,
-			nombrePrecioList);
+			listaColeccion, listaRareza, nombrePrecioNormalList, nombrePrecioFoilList);
 
 	/**
 	 * Lista de comics guardados para poder ser impresos
@@ -176,12 +159,12 @@ public class ListasCartasDAO {
 	public static ObservableList<Carta> cartasGuardadosList = FXCollections.observableArrayList();
 
 	public static void eliminarUltimaCartaImportada() {
-	    ObservableList<Carta> cartasImportados = ListasCartasDAO.cartasImportados;
-	    if (!cartasImportados.isEmpty()) {
-	        cartasImportados.remove(cartasImportados.size() - 1);
-	    }
+		ObservableList<Carta> cartasImportados = ListasCartasDAO.cartasImportados;
+		if (!cartasImportados.isEmpty()) {
+			cartasImportados.remove(cartasImportados.size() - 1);
+		}
 	}
-	
+
 	public static boolean verificarIDExistente(String id, boolean esGuardado) {
 		// Verificar que el id no sea nulo ni esté vacío
 		if (id == null || id.isEmpty()) {
@@ -229,11 +212,7 @@ public class ListasCartasDAO {
 		listaEditorial = DBUtilidades.obtenerValoresColumna("editorialCarta");
 		listaColeccion = DBUtilidades.obtenerValoresColumna("coleccionCarta");
 		listaRareza = DBUtilidades.obtenerValoresColumna("rarezaCarta");
-		listaEsFoil = DBUtilidades.obtenerValoresColumna("esFoilCarta");
-		listaGradeo = DBUtilidades.obtenerValoresColumna("gradeoCarta");
-		listaEstado = DBUtilidades.obtenerValoresColumna("estadoCarta");
-		listaImagenes = DBUtilidades.obtenerValoresColumna("urlReferenciaCarta");
-		listaPrecios = DBUtilidades.obtenerValoresColumna("precioCarta");
+		listaReferencia = DBUtilidades.obtenerValoresColumna("urlReferenciaCarta");
 
 		listaID = ordenarLista(listaID);
 
@@ -243,7 +222,7 @@ public class ListasCartasDAO {
 		listaNumeroCarta = numerosCarta.stream().map(String::valueOf).collect(Collectors.toList());
 
 		itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaEditorial, listaColeccion, listaRareza,
-				listaEsFoil, listaGradeo, listaEstado, listaPrecios);
+				listaPreciosNormal, listaPreciosFoil);
 
 	}
 
@@ -378,12 +357,8 @@ public class ListasCartasDAO {
 		nombreColeccionList.clear();
 		nombreRarezaList.clear();
 		nombreEditorialList.clear();
-		nombreEsFoilList.clear();
-
-		nombreEsFoilList.clear();
-		nombreGradeoList.clear();
-		nombreEstadoList.clear();
-		nombrePrecioList.clear();
+		nombrePrecioNormalList.clear();
+		nombrePrecioFoilList.clear();
 	}
 
 	/**
@@ -395,7 +370,6 @@ public class ListasCartasDAO {
 		listaNombre.clear();
 		listaNumeroCarta.clear();
 		listaEditorial.clear();
-		listaEsFoil.clear();
 		listaRareza.clear();
 		listaColeccion.clear();
 	}
@@ -422,18 +396,15 @@ public class ListasCartasDAO {
 		listaNumeroCarta.clear();
 		listaRareza.clear();
 		listaEditorial.clear();
-		listaEsFoil.clear();
 		listaColeccion.clear();
 		nombreCartaList.clear();
 		numeroCartaList.clear();
-		nombreEsFoilList.clear();
-		nombreGradeoList.clear();
-		nombreEstadoList.clear();
-		nombrePrecioList.clear();
+		nombrePrecioNormalList.clear();
+		nombrePrecioFoilList.clear();
 		nombreColeccionList.clear();
 		nombreRarezaList.clear();
 		nombreEditorialList.clear();
-		nombreEsFoilList.clear();
+		listaReferencia.clear();
 		listaImagenes.clear();
 		listaLimpia.clear();
 		listaLimpiaAutoCompletado.clear();
@@ -625,18 +596,14 @@ public class ListasCartasDAO {
 		System.out.println("Tamaño de listaNumeroCarta: " + listaNumeroCarta.size());
 		System.out.println("Tamaño de listaRareza: " + listaRareza.size());
 		System.out.println("Tamaño de listaEditorial: " + listaEditorial.size());
-		System.out.println("Tamaño de listaEsFoil: " + listaEsFoil.size());
 		System.out.println("Tamaño de listaColeccion: " + listaColeccion.size());
 		System.out.println("Tamaño de nombreCartaList: " + nombreCartaList.size());
 		System.out.println("Tamaño de numeroCartaList: " + numeroCartaList.size());
-		System.out.println("Tamaño de nombreEsFoilList: " + nombreEsFoilList.size());
-		System.out.println("Tamaño de nombreGradeoList: " + nombreGradeoList.size());
-		System.out.println("Tamaño de nombreEstadoList: " + nombreEstadoList.size());
-		System.out.println("Tamaño de nombrePrecioList: " + nombrePrecioList.size());
+		System.out.println("Tamaño de nombrePrecioListNormal: " + nombrePrecioNormalList.size());
+		System.out.println("Tamaño de nombrePrecioListFoil: " + nombrePrecioFoilList.size());
 		System.out.println("Tamaño de nombreColeccionList: " + nombreColeccionList.size());
 		System.out.println("Tamaño de nombreRarezaList: " + nombreRarezaList.size());
 		System.out.println("Tamaño de nombreEditorialList: " + nombreEditorialList.size());
-		System.out.println("Tamaño de nombreEsFoilList: " + nombreEsFoilList.size());
 		System.out.println("Tamaño de listaImagenes: " + listaImagenes.size());
 		System.out.println("Tamaño de listaLimpia: " + listaLimpia.size());
 		System.out.println("Tamaño de listaLimpiaAutoCompletado: " + listaLimpiaAutoCompletado.size());
@@ -682,7 +649,7 @@ public class ListasCartasDAO {
 				String esFoilCarta = rs.getString("esFoilCarta");
 				String estadoCarta = rs.getString("estadoCarta");
 				String normasCarta = rs.getString("normasCarta");
-				
+
 				// Actualizar los HashMaps para cada campo
 				nomCartaEstadistica.put(nomCarta, nomCartaEstadistica.getOrDefault(nomCarta, 0) + 1);
 				nivelGradeoEstadistica.put(nivelGradeo, nivelGradeoEstadistica.getOrDefault(nivelGradeo, 0) + 1);
@@ -715,8 +682,8 @@ public class ListasCartasDAO {
 		String fechaActual = Utilidades.obtenerFechaActual();
 		String datosFichero = FuncionesFicheros.datosEnvioFichero();
 		// Encabezado
-		estadisticaStr.append("Estadisticas de cartas de la base de datos: " + datosFichero + ", a fecha de: "
-				+ fechaActual + "\n");
+		estadisticaStr.append(
+				"Estadisticas de cartas de la base de datos: " + datosFichero + ", a fecha de: " + fechaActual + "\n");
 
 		// Generar estadísticas para cada tipo de dato
 		generarEstadistica(estadisticaStr, "Estadística de nombres de cartas:\n", nomCartaEstadistica);

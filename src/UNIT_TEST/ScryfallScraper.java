@@ -10,7 +10,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,141 +20,172 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cartaManagement.Carta;
+import javafx.concurrent.Task;
 
 public class ScryfallScraper {
 
-	public static List<String> getCardLinks(String cardName) throws IOException {
-		String searchUrl = String.format(
-				"https://scryfall.com/search?as=grid&order=released&q=%%21%%22%s%%22+include%%3Aextras&unique=prints",
-				cardName.replace(" ", "+"));
-		Document doc = Jsoup.connect(searchUrl).get();
-		Elements cardElements = doc.select("a.card-grid-item-card");
+	public static CompletableFuture<List<String>> getCardLinks(String cardName) {
+		CompletableFuture<List<String>> future = new CompletableFuture<>();
 
-		List<String> cardLinks = new ArrayList<>();
-		for (Element cardElement : cardElements) {
-			cardLinks.add(cardElement.attr("href"));
-		}
-		return cardLinks;
+		Task<List<String>> task = new Task<>() {
+			@Override
+			protected List<String> call() throws IOException, URISyntaxException {
+				String searchedCardName = buscarEnGoogle(cardName); // Usar una nueva variable aquí
+				String searchUrl = String.format(
+						"https://scryfall.com/search?as=grid&order=released&q=%%21%%22%s%%22+include%%3Aextras&unique=prints",
+						searchedCardName.replace(" ", "+"));
+				Document doc = Jsoup.connect(searchUrl).get();
+				Elements cardElements = doc.select("a.card-grid-item-card");
+
+				List<String> cardLinks = new ArrayList<>();
+				for (Element cardElement : cardElements) {
+					cardLinks.add(cardElement.attr("href"));
+				}
+
+				if (cardLinks.isEmpty()) {
+					System.err.println(
+							"No se encontraron enlaces de cartas para el nombre de carta: " + searchedCardName);
+				}
+
+				return cardLinks;
+			}
+		};
+
+		task.setOnSucceeded(e -> {
+			List<String> urls = task.getValue();
+			if (urls == null || urls.isEmpty()) {
+				future.complete(Collections.emptyList()); // Return an empty list if no results are found
+			} else {
+				future.complete(urls); // Completes the future with the results
+			}
+		});
+
+		task.setOnFailed(e -> {
+			future.completeExceptionally(task.getException()); // Completes the future with an exception if the task
+																// fails
+		});
+
+		new Thread(task).start();
+
+		return future;
 	}
 
-	public static void extractCardDetails(List<String> cardLinks) throws IOException {
-		for (String link : cardLinks) {
-			Document doc = Jsoup.connect(link).get();
+	public static Carta extractCardDetails(String cardLinks) throws IOException {
 
-			// Nombre
-			String name = doc.select("span.card-text-card-name").text();
+		Document doc = Jsoup.connect(cardLinks).get();
 
-			// Número
-			String number = "";
-			Elements detailsElements = doc.select("span.prints-current-set-details");
-			if (!detailsElements.isEmpty()) {
-				String detailsText = detailsElements.text();
-				number = detailsText.split(" ")[0].substring(1); // Tomar solo el número después de #
-			}
-			String rareza = "";
-			if (!detailsElements.isEmpty()) {
-				String detailsText = detailsElements.text();
+		// Nombre
+		String name = doc.select("span.card-text-card-name").text();
 
-				// Buscar la parte entre dos puntos
-				int startIndex = detailsText.indexOf("·");
-				int endIndex = detailsText.indexOf("·", startIndex + 1);
-
-				if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-					String extractedText = detailsText.substring(startIndex + 1, endIndex).trim();
-					rareza = extractedText;
-				}
-			}
-
-			// Colección
-			String collection = doc.select("span.prints-current-set-name").text();
-
-			// Imagen
-			String imageUrl = "";
-			Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
-			if (imageElement != null) {
-				imageUrl = imageElement.attr("src");
-			}
-
-			String normasCarta = "";
-			Element normasElement = doc.select("div.card-text-box div.card-text-oracle p").first();
-			if (imageElement != null) {
-				normasCarta = normasElement.text();
-			}
-
-			String normalPrice = "";
-			Elements priceElements = doc.select("span.currency-eur");
-
-			for (Element priceElement : priceElements) {
-				Element prevSibling = priceElement.previousElementSibling();
-				if (prevSibling != null && prevSibling.tagName().equals("i")
-						&& prevSibling.text().equals("Buy on Cardmarket")) {
-					normalPrice = priceElement.text();
-				}
-			}
-
-			String foilPrice = "";
-			for (Element priceElement : priceElements) {
-				Element prevSibling = priceElement.previousElementSibling();
-				if (prevSibling != null && prevSibling.tagName().equals("i")
-						&& prevSibling.text().equals("Buy foil on Cardmarket")) {
-					foilPrice = priceElement.text();
-
-				}
-			}
-
-			// Precios
-			String normalPriceTCG = "";
-			Elements priceElementsTCG = doc.select("span.currency-usd");
-			for (Element priceElement : priceElementsTCG) {
-				Element prevSibling = priceElement.previousElementSibling();
-				if (prevSibling != null && prevSibling.tagName().equals("i")
-						&& prevSibling.text().equals("Buy on TCGplayer")) {
-					normalPriceTCG = priceElement.text();
-				}
-			}
-
-			String foilPriceTCG = "";
-			for (Element priceElement : priceElementsTCG) {
-				Element prevSibling = priceElement.previousElementSibling();
-				if (prevSibling != null && prevSibling.tagName().equals("i")
-						&& prevSibling.text().equals("Buy foil on TCGplayer")) {
-					foilPriceTCG = priceElement.text();
-				}
-			}
-
-			// Referencia de compra
-			String buyLink = "";
-			Element buyElement = doc.select("a.button-n").first();
-			if (buyElement != null) {
-				buyLink = buyElement.parent().attr("href");
-			}
-
-			if (normalPrice.isEmpty() && foilPrice.isEmpty() && normalPriceTCG.isEmpty() && foilPriceTCG.isEmpty()) {
-				System.out.println("No capturado");
-			} else {
-				// Imprimir los detalles
-				System.out.println("Nombre: " + name);
-				System.out.println("Número: " + number);
-				System.out.println("Edicion: Magic: The Gathering");
-				System.out.println("Colección: " + collection);
-				System.out.println("Rareza: " + rareza);
-				System.out.println("Imagen: " + imageUrl);
-				System.out.println("Precio Normal CardMarket: " + normalPrice);
-				System.out.println("Precio Foil CardMarket: " + foilPrice);
-				System.out.println("Precio Normal TCGplayer: " + normalPriceTCG);
-				System.out.println("Precio Foil TCGplayer: " + foilPriceTCG);
-				System.out.println("Referencia de compra: " + link);
-				System.out.println("Normas: " + normasCarta);
-
-				System.out.println("--------");
-//
-//				return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
-//						.coleccionCarta(collection).rarezaCarta(rareza).esFoilCarta(esFoil)
-//						.gradeoCarta("NM (Noir Medium)").estadoCarta("Comprado").precioCarta(normalPrice)
-//						.urlReferenciaCarta(referencia).direccionImagenCarta(imageUrl).normasCarta(normasCarta).build();
-			}
-
+		// Número
+		String number = "";
+		Elements detailsElements = doc.select("span.prints-current-set-details");
+		if (!detailsElements.isEmpty()) {
+			String detailsText = detailsElements.text();
+			number = detailsText.split(" ")[0].substring(1); // Tomar solo el número después de #
 		}
+		String rareza = "";
+		if (!detailsElements.isEmpty()) {
+			String detailsText = detailsElements.text();
+
+			// Buscar la parte entre dos puntos
+			int startIndex = detailsText.indexOf("·");
+			int endIndex = detailsText.indexOf("·", startIndex + 1);
+
+			if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+				String extractedText = detailsText.substring(startIndex + 1, endIndex).trim();
+				rareza = extractedText;
+			}
+		}
+
+		// Colección
+		String collection = doc.select("span.prints-current-set-name").text();
+
+		// Imagen
+		String imageUrl = "";
+		Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
+		if (imageElement != null) {
+			imageUrl = imageElement.attr("src");
+		}
+
+		String normasCarta = "";
+		Element normasElement = doc.select("div.card-text-box div.card-text-oracle p").first();
+		if (imageElement != null) {
+			normasCarta = normasElement.text();
+		}
+
+		String normalPrice = "";
+		Elements priceElements = doc.select("span.currency-eur");
+
+		for (Element priceElement : priceElements) {
+			Element prevSibling = priceElement.previousElementSibling();
+			if (prevSibling != null && prevSibling.tagName().equals("i")
+					&& prevSibling.text().equals("Buy on Cardmarket")) {
+				normalPrice = priceElement.text();
+			}
+		}
+
+		String foilPrice = "";
+		for (Element priceElement : priceElements) {
+			Element prevSibling = priceElement.previousElementSibling();
+			if (prevSibling != null && prevSibling.tagName().equals("i")
+					&& prevSibling.text().equals("Buy foil on Cardmarket")) {
+				foilPrice = priceElement.text();
+
+			}
+		}
+
+		// Precios
+		String normalPriceTCG = "";
+		Elements priceElementsTCG = doc.select("span.currency-usd");
+		for (Element priceElement : priceElementsTCG) {
+			Element prevSibling = priceElement.previousElementSibling();
+			if (prevSibling != null && prevSibling.tagName().equals("i")
+					&& prevSibling.text().equals("Buy on TCGplayer")) {
+				normalPriceTCG = priceElement.text();
+			}
+		}
+
+		String foilPriceTCG = "";
+		for (Element priceElement : priceElementsTCG) {
+			Element prevSibling = priceElement.previousElementSibling();
+			if (prevSibling != null && prevSibling.tagName().equals("i")
+					&& prevSibling.text().equals("Buy foil on TCGplayer")) {
+				foilPriceTCG = priceElement.text();
+			}
+		}
+
+		// Referencia de compra
+		String buyLink = "";
+		Element buyElement = doc.select("a.button-n").first();
+		if (buyElement != null) {
+			buyLink = buyElement.parent().attr("href");
+		}
+
+		if (normalPrice.isEmpty() && foilPrice.isEmpty() && normalPriceTCG.isEmpty() && foilPriceTCG.isEmpty()) {
+			System.out.println("No capturado");
+		} else {
+			// Imprimir los detalles
+//				System.out.println("Nombre: " + name);
+//				System.out.println("Número: " + number);
+//				System.out.println("Edicion: Magic: The Gathering");
+//				System.out.println("Colección: " + collection);
+//				System.out.println("Rareza: " + rareza);
+//				System.out.println("Imagen: " + imageUrl);
+//				System.out.println("Precio Normal CardMarket: " + normalPrice);
+//				System.out.println("Precio Foil CardMarket: " + foilPrice);
+//				System.out.println("Precio Normal TCGplayer: " + normalPriceTCG);
+//				System.out.println("Precio Foil TCGplayer: " + foilPriceTCG);
+//				System.out.println("Referencia de compra: " + link);
+//				System.out.println("Normas: " + normasCarta);
+//
+			return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
+					.coleccionCarta(collection).rarezaCarta(rareza).precioCartaNormal(normalPrice)
+					.precioCartaFoil(foilPrice).urlReferenciaCarta(cardLinks).direccionImagenCarta(imageUrl)
+					.normasCarta(normasCarta).build();
+		}
+		return null;
+
 	}
 
 	public static String buscarEnGoogle(String searchTerm) throws URISyntaxException {
@@ -226,41 +259,12 @@ public class ScryfallScraper {
 		return null; // No se encontró el nombre de la carta
 	}
 
-//    public static void comprobarScrap() {
-//        String url = "https://www.tcgplayer.com/product/10956/magic-scourge-sliver-overlord?Language=English";
-//        String filePath = "output.html"; // El archivo donde se guardará el HTML
-//
-//        try {
-//            // Conectar a la URL y obtener el documento HTML
-//            Document doc = Jsoup.connect(url).get();
-//
-//            // Obtener el HTML de la página
-//            String htmlContent = doc.html();
-//
-//            // Escribir el HTML en un archivo
-//            try (FileWriter writer = new FileWriter(filePath)) {
-//                writer.write(htmlContent);
-//            }
-//
-//            System.out.println("El contenido HTML ha sido escrito en " + filePath);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-	public static void main(String[] args) {
+	public static Carta devolverCartaBuscada(String urlCarta) {
 		try {
-
-			String busqueda = "Sliver";
-			String nombreCarta = buscarEnGoogle(busqueda);
-			List<String> cardLinks = getCardLinks(nombreCarta);
-			extractCardDetails(cardLinks);
-
-		} catch (IOException | URISyntaxException e) {
+			return extractCardDetails(urlCarta);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-//		comprobarScrap();
+		return null;
 	}
 }

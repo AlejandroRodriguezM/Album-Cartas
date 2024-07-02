@@ -79,97 +79,151 @@ import javafx.stage.Stage;
 public class MenuPrincipalController implements Initializable {
 
 	@FXML
-	private AnchorPane anchoPaneInfo;
-	@FXML
-	private AnchorPane rootAnchorPane;
-
-	@FXML
-	private VBox comboboxVbox;
-	@FXML
-	private VBox rootVBox;
-	@FXML
-	private VBox vboxContenido;
-	@FXML
-	private VBox vboxImage;
-
-	@FXML
 	private Label alarmaConexionInternet;
 
 	@FXML
-	private ImageView backgroundImage;
+	private AnchorPane anchoPaneInfo;
+
 	@FXML
-	private ImageView imagenCarta;
+	private ImageView backgroundImage;
 
 	@FXML
 	private Rectangle barraCambioAltura;
 
 	@FXML
 	private Button botonCancelarSubida;
+
 	@FXML
 	private Button botonEliminar;
+
 	@FXML
 	private Button botonGuardarResultado;
+
 	@FXML
 	private Button botonImprimir;
+
 	@FXML
 	private Button botonIntroducir;
+
 	@FXML
 	private Button botonLimpiar;
+
 	@FXML
 	private Button botonModificar;
+
 	@FXML
 	private Button botonMostrarGuardados;
+
 	@FXML
 	private Button botonMostrarParametro;
+
 	@FXML
 	private Button botonbbdd;
 
 	@FXML
 	private TextField busquedaGeneral;
+
+	@FXML
+	private TableColumn<Carta, String> columnaColeccion;
+
+	@FXML
+	private TableColumn<Carta, String> columnaEditorial;
+
+	@FXML
+	private TableColumn<Carta, String> columnaId;
+
+	@FXML
+	private TableColumn<Carta, String> columnaNombre;
+
+	@FXML
+	private TableColumn<Carta, String> columnaNumero;
+
+	@FXML
+	private TableColumn<Carta, String> columnaPrecioFoil;
+
+	@FXML
+	private TableColumn<Carta, String> columnaPrecioNormal;
+
+	@FXML
+	private TableColumn<Carta, String> columnaRareza;
+
+	@FXML
+	private TableColumn<Carta, String> columnaReferencia;
+
 	@FXML
 	private ComboBox<String> comboboxColeccionCarta;
+
 	@FXML
 	private ComboBox<String> comboboxEditorialCarta;
-	@FXML
-	private ComboBox<String> comboboxEsFoilCarta;
-	@FXML
-	private ComboBox<String> comboboxEstadoCarta;
-	@FXML
-	private ComboBox<String> comboboxGradeoCarta;
+
 	@FXML
 	private ComboBox<String> comboboxNombreCarta;
+
 	@FXML
 	private ComboBox<String> comboboxNumeroCarta;
-	@FXML
-	private ComboBox<String> comboboxPrecioCarta;
+
 	@FXML
 	private ComboBox<String> comboboxRarezaCarta;
 
 	@FXML
-	private TableView<Carta> tablaBBDD;
+	private VBox comboboxVbox;
 
 	@FXML
-	private TableColumn<Carta, String> columnaColeccion;
+	private ImageView imagenCarta;
+
 	@FXML
-	private TableColumn<Carta, String> columnaEditorial;
+	private MenuItem menuArchivoAvanzado;
+
 	@FXML
-	private TableColumn<Carta, String> columnaEsFoil;
+	private MenuItem menuArchivoCerrar;
+
 	@FXML
-	private TableColumn<Carta, String> columnaEstado;
+	private MenuItem menuArchivoDelete;
+
 	@FXML
-	private TableColumn<Carta, String> columnaGradeo;
+	private MenuItem menuArchivoDesconectar;
+
 	@FXML
-	private TableColumn<Carta, String> columnaId;
+	private MenuItem menuArchivoExcel;
+
 	@FXML
-	private TableColumn<Carta, String> columnaNombre;
+	private MenuItem menuArchivoImportar;
+
 	@FXML
-	private TableColumn<Carta, String> columnaNumero;
+	private MenuItem menuArchivoSobreMi;
+
 	@FXML
-	private TableColumn<Carta, String> columnaPrecio;
+	private MenuItem menuCartaAniadir;
+
 	@FXML
-	private TableColumn<Carta, String> columnaRareza;
+	private MenuItem menuCartaEliminar;
+
 	@FXML
-	private TableColumn<Carta, String> columnaReferencia;
+	private MenuItem menuCartaModificar;
+
+	@FXML
+	private MenuItem menuEstadisticaComprados;
+
+	@FXML
+	private MenuItem menuEstadisticaEstadistica;
+
+	@FXML
+	private MenuItem menuEstadisticaPosesion;
+
+	@FXML
+	private MenuItem menuEstadisticaVendidos;
+
+	@FXML
+	private MenuBar menuNavegacion;
+
+	@FXML
+	private Menu navegacionCarta;
+
+	@FXML
+	private Menu navegacionCerrar;
+
+	@FXML
+	private Menu navegacionEstadistica;
 
 	@FXML
 	private ProgressIndicator progresoCarga;
@@ -178,43 +232,19 @@ public class MenuPrincipalController implements Initializable {
 	private TextArea prontInfo;
 
 	@FXML
-	private MenuItem menuArchivoAvanzado;
-	@FXML
-	private MenuItem menuArchivoCerrar;
-	@FXML
-	private MenuItem menuArchivoDelete;
-	@FXML
-	private MenuItem menuArchivoDesconectar;
-	@FXML
-	private MenuItem menuArchivoExcel;
-	@FXML
-	private MenuItem menuArchivoImportar;
-	@FXML
-	private MenuItem menuArchivoSobreMi;
-	@FXML
-	private MenuItem menuCartaAniadir;
-	@FXML
-	private MenuItem menuCartaEliminar;
-	@FXML
-	private MenuItem menuCartaModificar;
-	@FXML
-	private MenuItem menuEstadisticaComprados;
-	@FXML
-	private MenuItem menuEstadisticaEstadistica;
-	@FXML
-	private MenuItem menuEstadisticaPosesion;
-	@FXML
-	private MenuItem menuEstadisticaVendidos;
+	private AnchorPane rootAnchorPane;
 
 	@FXML
-	private MenuBar menuNavegacion;
+	private VBox rootVBox;
 
 	@FXML
-	private Menu navegacionCerrar;
+	private TableView<Carta> tablaBBDD;
+
 	@FXML
-	private Menu navegacionCarta;
+	private VBox vboxContenido;
+
 	@FXML
-	private Menu navegacionEstadistica;
+	private VBox vboxImage;
 
 	public Carta cartaCache;
 
@@ -284,13 +314,11 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setiDColumna(columnaId);
 		referenciaVentana.setNombreColumna(columnaNombre);
 		referenciaVentana.setNumeroColumna(columnaNumero);
-		referenciaVentana.setGradeoColumna(columnaGradeo);
 		referenciaVentana.setEditorialColumna(columnaEditorial);
 		referenciaVentana.setColeccionColumna(columnaColeccion);
 		referenciaVentana.setRarezaColumna(columnaRareza);
-		referenciaVentana.setEsFoilColumna(columnaEsFoil);
-		referenciaVentana.setEstadoColumna(columnaEstado);
-		referenciaVentana.setPrecioColumna(columnaPrecio);
+		referenciaVentana.setPrecioColumnaNormal(columnaPrecioNormal);
+		referenciaVentana.setPrecioColumnaFoil(columnaPrecioFoil);
 		referenciaVentana.setReferenciaColumna(columnaReferencia);
 
 		// ComboBoxes
@@ -299,10 +327,6 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setNombreEditorialCombobox(comboboxEditorialCarta);
 		referenciaVentana.setNombreColeccionCombobox(comboboxColeccionCarta);
 		referenciaVentana.setNombreRarezaCombobox(comboboxRarezaCarta);
-		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
-		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
-		referenciaVentana.setEstadoCartaCombobox(comboboxEstadoCarta);
-		referenciaVentana.setPrecioCartaCombobox(comboboxPrecioCarta);
 
 		// Others
 		referenciaVentana.setProntInfoTextArea(prontInfo);
@@ -317,9 +341,8 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setStageVentana(estadoStage());
 
 		// ComboBox List
-		referenciaVentana.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
-				comboboxEditorialCarta, comboboxColeccionCarta, comboboxRarezaCarta, comboboxEsFoilCarta,
-				comboboxGradeoCarta, comboboxEstadoCarta, comboboxPrecioCarta));
+		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNombreCarta, comboboxNumeroCarta,
+				comboboxEditorialCarta, comboboxColeccionCarta, comboboxRarezaCarta));
 
 		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
@@ -327,8 +350,8 @@ public class MenuPrincipalController implements Initializable {
 				botonbbdd, botonImprimir, botonGuardarResultado, botonCancelarSubida));
 
 		AccionReferencias.setListaColumnasTabla(
-				Arrays.asList(columnaNombre, columnaNumero, columnaGradeo, columnaEditorial, columnaColeccion,
-						columnaRareza, columnaEsFoil, columnaEstado, columnaId, columnaPrecio, columnaReferencia));
+				Arrays.asList(columnaNombre, columnaNumero, columnaEditorial, columnaColeccion,
+						columnaRareza, columnaId, columnaPrecioNormal,columnaPrecioFoil, columnaReferencia));
 
 		return referenciaVentana;
 	}
@@ -469,11 +492,11 @@ public class MenuPrincipalController implements Initializable {
 					botonEliminar.setLayoutX(231);
 					botonEliminar.setLayoutY(237);
 
-					botonGuardarResultado.setLayoutX(231);
-					botonGuardarResultado.setLayoutY(324);
-
-					botonImprimir.setLayoutX(290);
-					botonImprimir.setLayoutY(324);
+//					botonGuardarResultado.setLayoutX(231);
+//					botonGuardarResultado.setLayoutY(324);
+//
+//					botonImprimir.setLayoutX(290);
+//					botonImprimir.setLayoutY(324);
 
 				} else if (newWidth >= 1131) {
 
@@ -500,7 +523,7 @@ public class MenuPrincipalController implements Initializable {
 
 		// Ajustar el máximo altura permitido según la posición del AnchorPane
 		// numeroCaja
-		return windowHeight - comboboxGradeoCarta.getLayoutY() - 150;
+		return windowHeight - vboxContenido.getLayoutY() - 350;
 	}
 
 	/**
@@ -524,8 +547,8 @@ public class MenuPrincipalController implements Initializable {
 				Task<Void> task = new Task<Void>() {
 					@Override
 					protected Void call() throws Exception {
-						funcionesCombo.rellenarComboBox(referenciaVentana.getListaComboboxes());
-						funcionesCombo.lecturaComboBox(referenciaVentana.getListaComboboxes());
+						funcionesCombo.rellenarComboBox(AccionReferencias.getListaComboboxes());
+						funcionesCombo.lecturaComboBox(AccionReferencias.getListaComboboxes());
 						return null;
 					}
 				};
@@ -637,7 +660,7 @@ public class MenuPrincipalController implements Initializable {
 			AccionSeleccionar.verBasedeDatos(esCompleto, false, null);
 		} else {
 			List<String> controls = new ArrayList<>();
-			List<ComboBox<String>> listaComboboxes = referenciaVentana.getListaComboboxes();
+			List<ComboBox<String>> listaComboboxes = AccionReferencias.getListaComboboxes();
 
 			// Iterar sobre los ComboBox en orden
 			for (ComboBox<String> comboBox : listaComboboxes) {
@@ -1257,7 +1280,7 @@ public class MenuPrincipalController implements Initializable {
 	private void limpiarComboBox() {
 
 		// Iterar sobre todos los ComboBox para realizar la limpieza
-		for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
+		for (ComboBox<String> comboBox : AccionReferencias.getListaComboboxes()) {
 			// Limpiar el campo
 			comboBox.setValue("");
 			comboBox.getEditor().setText("");
@@ -1277,7 +1300,7 @@ public class MenuPrincipalController implements Initializable {
 		tablaBBDD.getItems().clear();
 
 		// Pasar la lista de ComboBoxes a VentanaAccionController
-		referenciaVentana.setListaComboboxes(referenciaVentana.getListaComboboxes());
+		AccionReferencias.setListaComboboxes(AccionReferencias.getListaComboboxes());
 
 		if (fuente instanceof Button botonPresionado) {
 			if (botonPresionado == botonIntroducir) {

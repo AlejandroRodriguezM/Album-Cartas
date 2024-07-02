@@ -2,7 +2,9 @@ package funcionesInterfaz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.controlsfx.control.textfield.TextFields;
 
@@ -40,7 +42,7 @@ public class FuncionesManejoFront {
 			')', '[', ']', '{', '}', ';', ':', '|', '\\', '<', '>', '/', '?', '~', '`', '+', '=', '.');
 
 	public static void establecerFondoDinamico() {
-		for (Node elemento : referenciaVentana.getListaElementosFondo()) {
+		for (Node elemento : AccionReferencias.getListaElementosFondo()) {
 			if (elemento instanceof ImageView imageview) {
 				imageview.fitWidthProperty().bind(referenciaVentana.getRootAnchorPane().widthProperty());
 				imageview.fitHeightProperty().bind(referenciaVentana.getRootAnchorPane().heightProperty());
@@ -53,7 +55,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoColumnas(double numColumns) {
-		for (TableColumn<Carta, String> columna : referenciaVentana.getListaColumnasTabla()) {
+		for (TableColumn<Carta, String> columna : AccionReferencias.getListaColumnasTabla()) {
 			columna.prefWidthProperty().bind(referenciaVentana.getTablaBBDD().widthProperty().divide(numColumns));
 		}
 	}
@@ -65,7 +67,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoMaximoCamposTexto(double maxTextComboWidth) {
-		for (Control campo : referenciaVentana.getListaComboboxes()) {
+		for (Control campo : AccionReferencias.getListaComboboxes()) {
 			if (campo instanceof TextField campoTexto) {
 				Platform.runLater(() -> campoTexto.maxWidthProperty()
 						.bind(Bindings.max(maxTextComboWidth, campoTexto.widthProperty())));
@@ -74,7 +76,7 @@ public class FuncionesManejoFront {
 	}
 
 	public static void establecerAnchoMaximoComboBoxes(double maxTextComboWidth) {
-		for (ComboBox<String> comboBox : referenciaVentana.getListaComboboxes()) {
+		for (ComboBox<String> comboBox : AccionReferencias.getListaComboboxes()) {
 
 			comboBox.maxWidthProperty().bind(Bindings.max(maxTextComboWidth, comboBox.widthProperty()));
 		}
@@ -164,6 +166,50 @@ public class FuncionesManejoFront {
 			});
 		}
 	}
+	
+    // Conjunto de símbolos permitidos
+    private static final Set<Character> simbolosPermitidos = new HashSet<>();
+    static {
+        simbolosPermitidos.add('$');
+        simbolosPermitidos.add('€');
+    }
+
+    public static void permitirSimbolosEspecificos(TextField textField) {
+        if (textField != null) {
+            textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    StringBuilder filteredValue = new StringBuilder();
+                    boolean puntoPermitido = true; // Para controlar que solo haya un punto
+
+                    // Recorrer cada caracter del nuevo valor
+                    for (int i = 0; i < newValue.length(); i++) {
+                        char c = newValue.charAt(i);
+
+                        if (isSimbolo(c)) {
+                            // Si es un símbolo permitido, añadirlo al valor filtrado
+                            filteredValue.append(c);
+                            puntoPermitido = true; // Reiniciar la bandera de punto permitido
+                        } else if (Character.isDigit(c)) {
+                            // Si es un dígito, añadirlo al valor filtrado
+                            filteredValue.append(c);
+                        } else if (c == '.' && puntoPermitido) {
+                            // Si es un punto y aún no se ha agregado uno, añadirlo al valor filtrado
+                            filteredValue.append(c);
+                            puntoPermitido = false; // Marcar que ya se añadió un punto
+                        }
+                    }
+
+                    // Establecer el texto filtrado en el TextField
+                    textField.setText(filteredValue.toString());
+                }
+            });
+        }
+    }
+
+    // Método para verificar si un carácter es un símbolo
+    private static boolean isSimbolo(char c) {
+        return simbolosPermitidos.contains(c);
+    }
 
 	public static void restringirSimbolos(TextField textField) {
 		if (textField != null) {
@@ -313,15 +359,13 @@ public class FuncionesManejoFront {
 		disableControls(estadoAccion, referenciaVentana.getNombreCartaCombobox(),
 				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEditorialCombobox(),
 				referenciaVentana.getNombreColeccionCombobox(), referenciaVentana.getNombreRarezaCombobox(),
-				referenciaVentana.getNombreEsFoilCombobox(), referenciaVentana.getGradeoCartaCombobox(),
-				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getEstadoCartaCombobox(),
-				referenciaVentana.getPrecioCartaCombobox());
+				referenciaVentana.getNumeroCartaCombobox());
 
 		disableTextFields(estadoAccion, referenciaVentana.getNombreCartaTextField(),
 				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
 				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getBusquedaGeneralTextField(),
 				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getNormasCartaTextArea(),
-				referenciaVentana.getPrecioCartaTextField(), referenciaVentana.getCodigoCartaTratarTextField(),
+				referenciaVentana.getPrecioCartaNormalTextField(),referenciaVentana.getPrecioCartaFoilTextField(), referenciaVentana.getCodigoCartaTratarTextField(),
 				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getIdCartaTratarTextField(),
 				referenciaVentana.getUrlReferenciaTextField());
 
@@ -395,7 +439,7 @@ public class FuncionesManejoFront {
 			deshabilitarSiNoNulo(referenciaVentana.getCheckFirmas(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonEliminarImportadoListaCarta(), estadoAccion);
 			deshabilitarSiNoNulo(referenciaVentana.getBotonGuardarListaCartas(), estadoAccion);
-			deshabilitarSiNoNulo(referenciaVentana.getBotonActualizarPrecios(), estadoAccion);
+			deshabilitarSiNoNulo(referenciaVentana.getBotonActualizarPrecio(), estadoAccion);
 		}
 	}
 

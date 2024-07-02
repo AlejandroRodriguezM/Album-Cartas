@@ -48,24 +48,14 @@ public class Carta {
 	protected String rarezaCarta;
 
 	/**
-	 * Indica si la carta es foil (brillante).
+	 * Precio de la carta.
 	 */
-	protected String esFoilCarta;
-
-	/**
-	 * Valor del gradeo de la carta.
-	 */
-	protected String gradeoCarta;
-
-	/**
-	 * Estado de la carta.
-	 */
-	protected String estadoCarta;
+	protected String precioCartaNormal;
 
 	/**
 	 * Precio de la carta.
 	 */
-	protected String precioCarta;
+	protected String precioCartaFoil;
 
 	/**
 	 * URL de referencia relacionada con la carta.
@@ -89,10 +79,8 @@ public class Carta {
 		this.editorialCarta = builder.editorialCarta;
 		this.coleccionCarta = builder.coleccionCarta;
 		this.rarezaCarta = builder.rarezaCarta;
-		this.esFoilCarta = builder.esFoilCarta;
-		this.gradeoCarta = builder.gradeoCarta;
-		this.estadoCarta = builder.estadoCarta;
-		this.precioCarta = builder.precioCarta;
+		this.precioCartaNormal = builder.precioCartaNormal;
+		this.precioCartaFoil = builder.precioCartaFoil;
 		this.urlReferenciaCarta = builder.urlReferenciaCarta;
 		this.direccionImagenCarta = builder.direccionImagenCarta;
 		this.normasCarta = builder.normasCarta;
@@ -108,10 +96,8 @@ public class Carta {
 		this.editorialCarta = "";
 		this.coleccionCarta = "";
 		this.rarezaCarta = "";
-		this.esFoilCarta = "";
-		this.gradeoCarta = "";
-		this.estadoCarta = "";
-		this.precioCarta = "0.0";
+		this.precioCartaNormal = "";
+		this.precioCartaFoil = "";
 		this.urlReferenciaCarta = "";
 		this.direccionImagenCarta = "";
 		this.normasCarta = "";
@@ -124,10 +110,8 @@ public class Carta {
 		private String editorialCarta;
 		private String coleccionCarta;
 		private String rarezaCarta;
-		private String esFoilCarta;
-		private String gradeoCarta;
-		private String estadoCarta;
-		private String precioCarta;
+		private String precioCartaFoil;
+		private String precioCartaNormal;
 		private String urlReferenciaCarta;
 		private String direccionImagenCarta;
 		private String normasCarta;
@@ -157,23 +141,13 @@ public class Carta {
 			return this;
 		}
 
-		public CartaBuilder esFoilCarta(String esFoilCarta) {
-			this.esFoilCarta = esFoilCarta;
+		public CartaBuilder precioCartaNormal(String precioCartaNormal) {
+			this.precioCartaNormal = precioCartaNormal;
 			return this;
 		}
 
-		public CartaBuilder gradeoCarta(String gradeoCarta) {
-			this.gradeoCarta = gradeoCarta;
-			return this;
-		}
-
-		public CartaBuilder estadoCarta(String estadoCarta) {
-			this.estadoCarta = estadoCarta;
-			return this;
-		}
-
-		public CartaBuilder precioCarta(String precioCarta) {
-			this.precioCarta = precioCarta;
+		public CartaBuilder precioCartaFoil(String precioCartaFoil) {
+			this.precioCartaFoil = precioCartaFoil;
 			return this;
 		}
 
@@ -222,20 +196,12 @@ public class Carta {
 		return rarezaCarta;
 	}
 
-	public String getEsFoilCarta() {
-		return esFoilCarta;
+	public String getPrecioCartaNormal() {
+		return precioCartaNormal;
 	}
 
-	public String getGradeoCarta() {
-		return gradeoCarta;
-	}
-
-	public String getEstadoCarta() {
-		return estadoCarta;
-	}
-
-	public String getPrecioCarta() {
-		return precioCarta;
+	public String getPrecioCartaFoil() {
+		return precioCartaFoil;
 	}
 
 	public String getUrlReferenciaCarta() {
@@ -278,20 +244,12 @@ public class Carta {
 		this.rarezaCarta = rarezaCarta;
 	}
 
-	public void setEsFoilCarta(String esFoilCarta) {
-		this.esFoilCarta = esFoilCarta;
+	public void setPrecioCartaNormal(String precioCartaNormal) {
+		this.precioCartaNormal = precioCartaNormal;
 	}
 
-	public void setGradeoCarta(String gradeoCarta) {
-		this.gradeoCarta = gradeoCarta;
-	}
-
-	public void setEstadoCarta(String estadoCarta) {
-		this.estadoCarta = estadoCarta;
-	}
-
-	public void setPrecioCarta(String precioCarta) {
-		this.precioCarta = precioCarta;
+	public void setPrecioCartaFoil(String precioCartaFoil) {
+		this.precioCartaFoil = precioCartaFoil;
 	}
 
 	public void setUrlReferenciaCarta(String urlReferenciaCarta) {
@@ -322,8 +280,8 @@ public class Carta {
 	 */
 	public boolean estaVacio() {
 		return isNullOrEmpty(this.nomCarta) && this.numCarta.equals("0") && isNullOrEmpty(this.coleccionCarta)
-				&& isNullOrEmpty(this.rarezaCarta) && isNullOrEmpty(this.gradeoCarta) && isNullOrEmpty(this.estadoCarta)
-				&& this.precioCarta.equals("0.0") && isNullOrEmpty(this.urlReferenciaCarta)
+				&& isNullOrEmpty(this.rarezaCarta) && this.precioCartaNormal.equals("0.0")
+				&& this.precioCartaFoil.equals("0.0") && isNullOrEmpty(this.urlReferenciaCarta)
 				&& isNullOrEmpty(this.direccionImagenCarta) && isNullOrEmpty(this.editorialCarta);
 	}
 
@@ -341,13 +299,7 @@ public class Carta {
 		// Limpiar campo rarezaCarta
 		carta.setRarezaCarta(limpiarCampo(carta.getRarezaCarta()));
 
-		// Limpiar campo gradeoCarta
-		carta.setGradeoCarta(limpiarCampo(carta.getGradeoCarta()));
-
 		carta.setEditorialCarta(limpiarCampo(carta.getEditorialCarta()));
-
-		// Limpiar campo estadoCarta
-		carta.setEstadoCarta(limpiarCampo(carta.getEstadoCarta()));
 	}
 
 	public static String limpiarCampo(String campo) {
@@ -379,13 +331,7 @@ public class Carta {
 		if (carta.getRarezaCarta() != null && !carta.getRarezaCarta().isEmpty()) {
 			return true;
 		}
-		if (carta.getGradeoCarta() != null && !carta.getGradeoCarta().isEmpty()) {
-			return true;
-		}
 		if (carta.getEditorialCarta() != null && !carta.getEditorialCarta().isEmpty()) {
-			return true;
-		}
-		if (carta.getEstadoCarta() != null && !carta.getEstadoCarta().isEmpty()) {
 			return true;
 		}
 		// Si ninguno de los campos tiene datos, devuelve false
@@ -424,9 +370,8 @@ public class Carta {
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Editorial", String.valueOf(editorialCarta));
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Colección", coleccionCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Rareza", rarezaCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Gradeo", gradeoCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Estado", estadoCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio", String.valueOf(precioCarta));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio Normal", String.valueOf(precioCartaNormal));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio Foil", String.valueOf(precioCartaFoil));
 		Utilidades.appendIfNotEmpty(contenidoCarta, "URL Referencia", urlReferenciaCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
 
@@ -449,10 +394,8 @@ public class Carta {
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Editorial", editorialCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Colección", coleccionCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Rareza", rarezaCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Es Foil", String.valueOf(esFoilCarta));
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Gradeo", gradeoCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Estado", estadoCarta);
-		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio", String.valueOf(precioCarta));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio Normal", String.valueOf(precioCartaNormal));
+		Utilidades.appendIfNotEmpty(contenidoCarta, "Precio Foil", String.valueOf(precioCartaFoil));
 		Utilidades.appendIfNotEmpty(contenidoCarta, "URL Referencia", urlReferenciaCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Dirección Imagen", direccionImagenCarta);
 		Utilidades.appendIfNotEmpty(contenidoCarta, "Normas", normasCarta);
@@ -462,20 +405,22 @@ public class Carta {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Carta carta = (Carta) o;
-		return Objects.equals(getPrecioCarta(), carta.getPrecioCarta())
-				&& Objects.equals(getNomCarta(), carta.getNomCarta())
-				&& Objects.equals(getNumCarta(), carta.getNumCarta())
-				&& Objects.equals(getColeccionCarta(), carta.getColeccionCarta());
+	    if (this == o)
+	        return true;
+	    if (o == null || getClass() != o.getClass())
+	        return false;
+	    Carta carta = (Carta) o;
+	    return Objects.equals(getPrecioCartaNormal(), carta.getPrecioCartaNormal()) &&
+	           Objects.equals(getPrecioCartaFoil(), carta.getPrecioCartaFoil()) &&
+	           Objects.equals(getNomCarta(), carta.getNomCarta()) &&
+	           Objects.equals(getNumCarta(), carta.getNumCarta()) &&
+	           Objects.equals(getColeccionCarta(), carta.getColeccionCarta());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getPrecioCarta(), getNomCarta(), getNumCarta(), getColeccionCarta());
+	    return Objects.hash(getPrecioCartaNormal(), getPrecioCartaFoil(), getNomCarta(), getNumCarta(), getColeccionCarta());
 	}
+
 
 }
