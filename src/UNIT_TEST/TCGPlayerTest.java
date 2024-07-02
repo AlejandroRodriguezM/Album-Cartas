@@ -12,7 +12,8 @@ import ficherosFunciones.FuncionesFicheros;
 public class TCGPlayerTest {
 
 	public static List<String> urlTCG(String parametro) {
-		String url = "https://www.tcgplayer.com/search/all/product?productName=" + parametro;
+		String url = "https://www.tcgplayer.com/search/all/product?q=" + parametro + "&ProductTypeName=Cards&page=1";
+		System.out.println(url);
 		String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap4.js";
 		String command = "node " + scriptPath + " " + url;
 		return executeScript(command);
@@ -106,7 +107,7 @@ public class TCGPlayerTest {
 
 	public static void main(String[] args) {
 
-		String parametro = "charizard";
+		String parametro = "Fragmentado";
 		List<String> listaCartas = urlTCG(parametro);
 
 		for (String string : listaCartas) {

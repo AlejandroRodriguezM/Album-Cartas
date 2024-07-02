@@ -67,7 +67,6 @@ public class ScryfallScraper {
 			String collection = doc.select("span.prints-current-set-name").text();
 
 			// Imagen
-			// Imagen
 			String imageUrl = "";
 			Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
 			if (imageElement != null) {
@@ -80,8 +79,6 @@ public class ScryfallScraper {
 				normasCarta = normasElement.text();
 			}
 
-			// Precios
-			String esFoil = "No";
 			String normalPrice = "";
 			Elements priceElements = doc.select("span.currency-eur");
 
@@ -130,27 +127,23 @@ public class ScryfallScraper {
 				buyLink = buyElement.parent().attr("href");
 			}
 
-			if (normalPrice.isEmpty() && normalPriceTCG.isEmpty()) {
-				esFoil = "Si";
-			}
-
 			if (normalPrice.isEmpty() && foilPrice.isEmpty() && normalPriceTCG.isEmpty() && foilPriceTCG.isEmpty()) {
 				System.out.println("No capturado");
 			} else {
 				// Imprimir los detalles
 				System.out.println("Nombre: " + name);
 				System.out.println("Número: " + number);
-				System.out.println("Colección: " + collection);
 				System.out.println("Edicion: Magic: The Gathering");
-				System.out.println("Imagen: " + imageUrl);
-				System.out.println("Es foil: " + esFoil);
+				System.out.println("Colección: " + collection);
 				System.out.println("Rareza: " + rareza);
-				System.out.println("Normas: " + normasCarta);
+				System.out.println("Imagen: " + imageUrl);
 				System.out.println("Precio Normal CardMarket: " + normalPrice);
 				System.out.println("Precio Foil CardMarket: " + foilPrice);
 				System.out.println("Precio Normal TCGplayer: " + normalPriceTCG);
 				System.out.println("Precio Foil TCGplayer: " + foilPriceTCG);
 				System.out.println("Referencia de compra: " + link);
+				System.out.println("Normas: " + normasCarta);
+
 				System.out.println("--------");
 //
 //				return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
@@ -233,43 +226,41 @@ public class ScryfallScraper {
 		return null; // No se encontró el nombre de la carta
 	}
 
-    public static void comprobarScrap() {
-        String url = "https://www.tcgplayer.com/product/10956/magic-scourge-sliver-overlord?Language=English";
-        String filePath = "output.html"; // El archivo donde se guardará el HTML
-
-        try {
-            // Conectar a la URL y obtener el documento HTML
-            Document doc = Jsoup.connect(url).get();
-
-            // Obtener el HTML de la página
-            String htmlContent = doc.html();
-
-            // Escribir el HTML en un archivo
-            try (FileWriter writer = new FileWriter(filePath)) {
-                writer.write(htmlContent);
-            }
-
-            System.out.println("El contenido HTML ha sido escrito en " + filePath);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void comprobarScrap() {
+//        String url = "https://www.tcgplayer.com/product/10956/magic-scourge-sliver-overlord?Language=English";
+//        String filePath = "output.html"; // El archivo donde se guardará el HTML
+//
+//        try {
+//            // Conectar a la URL y obtener el documento HTML
+//            Document doc = Jsoup.connect(url).get();
+//
+//            // Obtener el HTML de la página
+//            String htmlContent = doc.html();
+//
+//            // Escribir el HTML en un archivo
+//            try (FileWriter writer = new FileWriter(filePath)) {
+//                writer.write(htmlContent);
+//            }
+//
+//            System.out.println("El contenido HTML ha sido escrito en " + filePath);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 	public static void main(String[] args) {
-//		try {
-//
-//			String busqueda = "Sliver";
-//			String nombreCarta = buscarEnGoogle(busqueda);
-//			List<String> cardLinks = getCardLinks(nombreCarta);
-//			extractCardDetails(cardLinks);
-//			
-//			
-//
-//		} catch (IOException | URISyntaxException e) {
-//			e.printStackTrace();
-//		}
+		try {
 
-		comprobarScrap();
+			String busqueda = "Sliver";
+			String nombreCarta = buscarEnGoogle(busqueda);
+			List<String> cardLinks = getCardLinks(nombreCarta);
+			extractCardDetails(cardLinks);
+
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+
+//		comprobarScrap();
 	}
 }
