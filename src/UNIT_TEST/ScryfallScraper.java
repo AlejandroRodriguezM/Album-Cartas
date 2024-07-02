@@ -233,28 +233,28 @@ public class ScryfallScraper {
 		return null; // No se encontró el nombre de la carta
 	}
 
-	public static void comprobarScrap() {
-		String url = "https://www.cardmarket.com/en/Magic/Products/Singles/Future-Sight/Sliver-Legion?language=1";
-		String filePath = "output.txt"; // El archivo donde se guardará el texto plano
+    public static void comprobarScrap() {
+        String url = "https://www.tcgplayer.com/product/10956/magic-scourge-sliver-overlord?Language=English";
+        String filePath = "output.html"; // El archivo donde se guardará el HTML
 
-		try {
-			// Conectar a la URL y obtener el documento HTML
-			Document doc = Jsoup.connect(url).get();
+        try {
+            // Conectar a la URL y obtener el documento HTML
+            Document doc = Jsoup.connect(url).get();
 
-			// Extraer el texto plano de la página
-			String plainText = doc.text();
+            // Obtener el HTML de la página
+            String htmlContent = doc.html();
 
-			// Escribir el texto plano en un archivo
-			try (FileWriter writer = new FileWriter(filePath)) {
-				writer.write(plainText);
-			}
+            // Escribir el HTML en un archivo
+            try (FileWriter writer = new FileWriter(filePath)) {
+                writer.write(htmlContent);
+            }
 
-			System.out.println("El contenido de texto plano ha sido escrito en " + filePath);
+            System.out.println("El contenido HTML ha sido escrito en " + filePath);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public static void main(String[] args) {
 //		try {
