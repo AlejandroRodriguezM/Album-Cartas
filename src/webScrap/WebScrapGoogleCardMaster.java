@@ -28,7 +28,7 @@ import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
 
-public class WebScrapGoogleCardTrader {
+public class WebScrapGoogleCardMaster {
 
 	public static String agregarMasAMayusculas(String cadena) {
 		return cadena.toUpperCase();
@@ -255,9 +255,9 @@ public class WebScrapGoogleCardTrader {
 				double numFormateado = Double.parseDouble(numeroFormateado);
 
 				if (referencia.endsWith("?isFoil=Y")) {
-					precioFoil = String.valueOf(numFormateado);
+					precioFoil = "€" + String.valueOf(numFormateado);
 				} else {
-					precioNormal = String.valueOf(numFormateado);
+					precioNormal = "€" + String.valueOf(numFormateado);
 				}
 			} else if (line.startsWith("Normas: ")) {
 				normas = line.substring("Normas: ".length()).trim();

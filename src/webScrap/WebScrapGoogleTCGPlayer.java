@@ -1,4 +1,4 @@
-package UNIT_TEST;
+package webScrap;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
 
-public class TCGPlayerTest {
+public class WebScrapGoogleTCGPlayer {
 
 	public static CompletableFuture<List<String>> urlTCG(String parametro) {
 		CompletableFuture<List<String>> future = new CompletableFuture<>();

@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import Controladores.CargaCartasController;
-import UNIT_TEST.ScryfallScraper;
-import UNIT_TEST.TCGPlayerTest;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
@@ -39,7 +37,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleCardTrader;
+import webScrap.WebScrapGoogleCardMaster;
+import webScrap.WebScrapGoogleScryfall;
+import webScrap.WebScrapGoogleTCGPlayer;
 
 public class AccionFuncionesComunes {
 
@@ -282,10 +282,10 @@ public class AccionFuncionesComunes {
 
 		String argument = "cardtrader+" + cartaOriginal.getNomCarta().replace(" ", "+") + "+"
 				+ cartaOriginal.getNumCarta() + "+" + cartaOriginal.getColeccionCarta().replace(" ", "+");
-		String urlCarta = WebScrapGoogleCardTrader.searchWebImagen(argument);
+		String urlCarta = WebScrapGoogleCardMaster.searchWebImagen(argument);
 		String imagen = "";
 		if (urlCarta.contains("/cards/")) {
-			imagen = WebScrapGoogleCardTrader.extraerDatosImagen(urlCarta);
+			imagen = WebScrapGoogleCardMaster.extraerDatosImagen(urlCarta);
 		}
 		cartaOriginal.setDireccionImagenCarta(urlFinal);
 		actualizarPortadaCartas(codigoNuevoCarta, imagen);
@@ -501,18 +501,18 @@ public class AccionFuncionesComunes {
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
 				if (tipoTienda.equalsIgnoreCase("Card Market")) {
-					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(finalValorCodigo));
+					cartaInfo.add(WebScrapGoogleCardMaster.extraerDatosMTG(finalValorCodigo));
 				} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
-					cartaInfo.add(ScryfallScraper.devolverCartaBuscada(finalValorCodigo));
+					cartaInfo.add(WebScrapGoogleScryfall.devolverCartaBuscada(finalValorCodigo));
 				} else if (tipoTienda.equals("TCGPlayer")) {
-					cartaInfo.add(TCGPlayerTest.devolverCartaBuscada(finalValorCodigo));
+					cartaInfo.add(WebScrapGoogleTCGPlayer.devolverCartaBuscada(finalValorCodigo));
 				}
 			} else {
-				List<String> enlaces = WebScrapGoogleCardTrader.buscarEnGoogle(finalValorCodigo);
+				List<String> enlaces = WebScrapGoogleCardMaster.buscarEnGoogle(finalValorCodigo);
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
-					cartaInfo.add(WebScrapGoogleCardTrader.extraerDatosMTG(string));
+					cartaInfo.add(WebScrapGoogleCardMaster.extraerDatosMTG(string));
 				}
 			}
 

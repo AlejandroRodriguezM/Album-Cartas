@@ -1,4 +1,4 @@
-package UNIT_TEST;
+package webScrap;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -25,7 +25,7 @@ import org.jsoup.select.Elements;
 import cartaManagement.Carta;
 import javafx.concurrent.Task;
 
-public class ScryfallScraper {
+public class WebScrapGoogleScryfall {
 
 	public static CompletableFuture<List<String>> getCardLinks(String cardName) {
 		CompletableFuture<List<String>> future = new CompletableFuture<>();
