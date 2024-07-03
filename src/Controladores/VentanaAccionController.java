@@ -19,8 +19,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import UNIT_TEST.ScryfallScraper;
-import UNIT_TEST.TCGPlayerTest;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.ConectManager;
@@ -64,7 +62,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleCardTrader;
+import webScrap.WebScrapGoogleCardMaster;
+import webScrap.WebScrapGoogleScryfall;
+import webScrap.WebScrapGoogleTCGPlayer;
 import webScrap.WebScrapNodeJSInstall;
 
 /**
@@ -722,11 +722,11 @@ public class VentanaAccionController implements Initializable {
 			CompletableFuture<List<String>> future;
 
 			if (tipoTienda.equalsIgnoreCase("Card Market")) {
-				future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
+				future = WebScrapGoogleCardMaster.iniciarBusquedaGoogle(valorCodigo);
 			} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
-				future = ScryfallScraper.getCardLinks(valorCodigo);
+				future = WebScrapGoogleScryfall.getCardLinks(valorCodigo);
 			} else if (tipoTienda.equals("TCGPlayer")) {
-				future = TCGPlayerTest.urlTCG(valorCodigo);
+				future = WebScrapGoogleTCGPlayer.urlTCG(valorCodigo);
 			} else {
 				future = CompletableFuture.completedFuture(new ArrayList<>());
 			}
