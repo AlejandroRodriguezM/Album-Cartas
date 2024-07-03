@@ -77,7 +77,8 @@ public class AccionModificar {
 				String mensaje = ". Has puesto a la venta el comic";
 				AlarmaList.mostrarMensajePront(mensaje, false, getReferenciaVentana().getProntInfoTextArea());
 
-				List<ComboBox<String>> comboboxes = getReferenciaVentana().getListaComboboxes();
+				getReferenciaVentana();
+				List<ComboBox<String>> comboboxes = AccionReferencias.getListaComboboxes();
 
 				funcionesCombo.rellenarComboBox(comboboxes);
 				getReferenciaVentana().getTablaBBDD().refresh();
@@ -185,21 +186,19 @@ public class AccionModificar {
 	public void mostrarElementosModificar(List<Node> elementosAMostrarYHabilitar) {
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelRareza(),
-				referenciaVentana.getLabelEsFoil(), referenciaVentana.getLabelGradeo(),
-				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecio(),
-				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(),
-				referenciaVentana.getLabelEstado(), referenciaVentana.getLabelReferencia()));
+				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecioNormal(),
+				referenciaVentana.getLabelPrecioFoil(), referenciaVentana.getLabelIdMod(),
+				referenciaVentana.getLabelPortada(), referenciaVentana.getLabelReferencia()));
 
-		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getNumeroCartaCombobox(),
-				referenciaVentana.getNombreEsFoilCombobox(), referenciaVentana.getGradeoCartaCombobox(),
-				referenciaVentana.getEstadoCartaCombobox(), getReferenciaVentana().getRootVBox(),
-				getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
-				getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
+		elementosAMostrarYHabilitar
+				.addAll(Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), getReferenciaVentana().getRootVBox(),
+						getReferenciaVentana().getBotonSubidaPortada(), getReferenciaVentana().getBotonbbdd(),
+						getReferenciaVentana().getTablaBBDD(), getReferenciaVentana().getBotonParametroCarta()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
-				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
-				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
-				referenciaVentana.getUrlReferenciaTextField(), referenciaVentana.getGradeoCartaCombobox()));
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getIdCartaTratarTextField(),
+				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getUrlReferenciaTextField(),
+				referenciaVentana.getPrecioCartaNormalTextField(), referenciaVentana.getPrecioCartaFoilTextField()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getBotonSubidaPortada(),
 				getReferenciaVentana().getBotonModificarCarta()));

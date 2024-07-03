@@ -163,7 +163,8 @@ public class FuncionesTableView {
 		mensajeBuilder.append("Nombre: ").append(carta.getNomCarta()).append("\nNumero: ").append(carta.getNumCarta())
 				.append("\nEditorial: ").append(carta.getEditorialCarta()).append("\nColeccion: ")
 				.append(carta.getColeccionCarta()).append("\nPrecio: ")
-				.append(carta.getPrecioCarta().equals("0") ? carta.getPrecioCarta() + " $" : "");
+				.append(carta.getPrecioCartaNormal().equals("0") ? carta.getPrecioCartaNormal() + " $" : "")
+				.append(carta.getPrecioCartaFoil().equals("0") ? carta.getPrecioCartaFoil() + " $" : "");
 
 		return mensajeBuilder.toString();
 	}
@@ -195,7 +196,8 @@ public class FuncionesTableView {
 	}
 
 	public static void actualizarBusquedaRaw() {
-		getReferenciaVentana().getListaColumnasTabla()
+		getReferenciaVentana();
+		AccionReferencias.getListaColumnasTabla()
 				.forEach(columna -> columna.setCellFactory(column -> new TableCell<Carta, String>() {
 					private VBox vbox = new VBox();
 					private String lastItem = null;
@@ -268,7 +270,8 @@ public class FuncionesTableView {
 	 * @param listaCarta
 	 */
 	public static void tablaBBDD(List<Carta> listaCarta) {
-		getReferenciaVentana().getTablaBBDD().getColumns().setAll(getReferenciaVentana().getListaColumnasTabla());
+		getReferenciaVentana();
+		getReferenciaVentana().getTablaBBDD().getColumns().setAll(AccionReferencias.getListaColumnasTabla());
 		getReferenciaVentana().getTablaBBDD().getItems().setAll(listaCarta);
 		getReferenciaVentana().getImagenCarta().setVisible(true);
 	}
@@ -300,51 +303,45 @@ public class FuncionesTableView {
 	 * @param tablaBBDD  La TableView en la que se aplicarán las configuraciones.
 	 */
 	public static void nombreColumnas() {
-		for (TableColumn<Carta, String> column : referenciaVentana.getListaColumnasTabla()) {
+		for (TableColumn<Carta, String> column : AccionReferencias.getListaColumnasTabla()) {
 			String columnName = column.getText(); // Obtiene el nombre de la columna
 //
 			configureColumn(column, columnName);
 		}
 	}
-	
-    private static void configureColumn(TableColumn<Carta, String> column, String property) {
-        switch (property) {
-            case "Nombre":
-                property = "nomCarta";
-                break;
-            case "Numero":
-                property = "numCarta";
-                break;
-            case "Editorial":
-                property = "editorialCarta";
-                break;
-            case "Referencia":
-                property = "urlReferenciaCarta";
-                break;
-            case "Coleccion":
-                property = "coleccionCarta";
-                break;
-            case "Foil":
-                property = "esFoilCarta";
-                break;
-            case "estado":
-                property = "estadoCarta";
-                break;
-            case "gradeo":
-                property = "gradeoCarta";
-                break;
-            case "ID":
-                property = "idCarta";
-                break;
-            case "Precio":
-                property = "precioCarta";
-                break;
-            case "Rareza":
-                property = "rarezaCarta";
-                break;
-        }
-        column.setCellValueFactory(new PropertyValueFactory<>(property));
-    }
+
+	private static void configureColumn(TableColumn<Carta, String> column, String property) {
+		switch (property) {
+		case "Nombre":
+			property = "nomCarta";
+			break;
+		case "Numero":
+			property = "numCarta";
+			break;
+		case "Editorial":
+			property = "editorialCarta";
+			break;
+		case "Referencia":
+			property = "urlReferenciaCarta";
+			break;
+		case "Coleccion":
+			property = "coleccionCarta";
+			break;
+		case "ID":
+			property = "idCarta";
+			break;
+		case "Precio Normal":
+			property = "precioCartaNormal";
+			break;
+		case "Precio Foil":
+			property = "precioCartaFoil";
+			break;
+		case "Rareza":
+			property = "rarezaCarta";
+			break;
+		}
+		column.setCellValueFactory(new PropertyValueFactory<>(property));
+	}
 
 	/**
 	 * Modifica los tamaños de las columnas de una TableView de acuerdo a los
@@ -356,7 +353,8 @@ public class FuncionesTableView {
 	 */
 	public static void modificarColumnas(boolean esPrincipal) {
 
-		for (TableColumn<Carta, String> column : getReferenciaVentana().getListaColumnasTabla()) {
+		getReferenciaVentana();
+		for (TableColumn<Carta, String> column : AccionReferencias.getListaColumnasTabla()) {
 			column.prefWidthProperty().unbind(); // Desvincular cualquier propiedad prefWidth existente
 		}
 
@@ -389,9 +387,11 @@ public class FuncionesTableView {
 			};
 		}
 
+		getReferenciaVentana();
 		// Aplicar los anchos específicos a cada columna
-		for (int i = 0; i < getReferenciaVentana().getListaColumnasTabla().size(); i++) {
-			TableColumn<Carta, String> column = getReferenciaVentana().getListaColumnasTabla().get(i);
+		for (int i = 0; i < AccionReferencias.getListaColumnasTabla().size(); i++) {
+			getReferenciaVentana();
+			TableColumn<Carta, String> column = AccionReferencias.getListaColumnasTabla().get(i);
 			Double columnWidth = columnWidths[i];
 			column.setPrefWidth(columnWidth);
 		}

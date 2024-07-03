@@ -84,16 +84,10 @@ public class FuncionesComboBox {
 				carta.setRarezaCarta(value);
 				break;
 			case 5:
-				carta.setEsFoilCarta(value);
+				carta.setPrecioCartaNormal(value);
 				break;
 			case 6:
-				carta.setGradeoCarta(value);
-				break;
-			case 7:
-				carta.setEstadoCarta(value);
-				break;
-			case 8:
-				carta.setPrecioCarta(value);
+				carta.setPrecioCartaFoil(value);
 				break;
 			// Add more cases for additional comboboxes if needed
 			default:
@@ -154,10 +148,9 @@ public class FuncionesComboBox {
 
 		Carta cartaTemp = new Carta.CartaBuilder("", carta.getNomCarta()).numCarta(carta.getNumCarta())
 				.editorialCarta(carta.getEditorialCarta()).coleccionCarta(carta.getColeccionCarta())
-				.rarezaCarta(carta.getRarezaCarta()).esFoilCarta(carta.getEsFoilCarta())
-				.gradeoCarta(carta.getGradeoCarta()).estadoCarta(carta.getEstadoCarta())
-				.precioCarta(carta.getPrecioCarta()).urlReferenciaCarta("").direccionImagenCarta("").normasCarta("")
-				.build();
+				.rarezaCarta(carta.getRarezaCarta()).precioCartaNormal(carta.getPrecioCartaNormal())
+				.precioCartaFoil(carta.getPrecioCartaFoil()).urlReferenciaCarta("").direccionImagenCarta("")
+				.normasCarta("").build();
 
 		String sql = DBUtilidades.datosConcatenados(cartaTemp);
 
@@ -170,11 +163,11 @@ public class FuncionesComboBox {
 				comboboxes.get(i).hide();
 
 				List<String> itemsActuales = ListasCartasDAO.listaOrdenada.get(i);
-				
+
 				if (itemsActuales != null && !itemsActuales.isEmpty()) {
 
 					ObservableList<String> itemsObservable = FXCollections.observableArrayList(itemsActuales);
-					
+
 					comboboxes.get(i).setItems(itemsObservable);
 				}
 			}
@@ -580,13 +573,11 @@ public class FuncionesComboBox {
 	 * @param comboboxes La lista de ComboBoxes a rellenar.
 	 */
 	public static void rellenarComboBoxEstaticos(List<ComboBox<String>> comboboxes) {
-		String[][] valores = { { "Si", "No" },
-				{ "NM (Noir Medium)", "SM (Standard Medium)", "LM (Light Medium)", "FL (Fine Light)", "VF (Very Fine)",
-						"M (Medium)", "F (Fine)" },
+		String[][] valores = { { "Card Market", "ScryFall", "TCGPlayer" }
 
-				{ "En posesion", "Comprado", "En venta" } };
+		};
 
-		String[] ids = { "comboboxEsFoilCarta", "comboboxGradeoCarta", "comboboxEstadoCarta", };
+		String[] ids = { "comboBoxTienda" };
 
 		// Verificar que la lista de ComboBox tenga al menos el mismo tamaño que los
 		// arreglos

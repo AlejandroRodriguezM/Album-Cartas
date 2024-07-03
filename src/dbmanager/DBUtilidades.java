@@ -25,13 +25,11 @@ public class DBUtilidades {
 		ps.setString(3, datos.getEditorialCarta());
 		ps.setString(4, datos.getColeccionCarta());
 		ps.setString(5, datos.getRarezaCarta());
-		ps.setString(6, datos.getEsFoilCarta()); // Assuming esFoilCarta is a boolean
-		ps.setString(7, datos.getGradeoCarta());
-		ps.setString(8, datos.getEstadoCarta());
-		ps.setString(9, datos.getPrecioCarta());
-		ps.setString(10, datos.getUrlReferenciaCarta());
-		ps.setString(11, datos.getDireccionImagenCarta());
-		ps.setString(12, datos.getNormasCarta());
+		ps.setString(6, datos.getPrecioCartaNormal());
+		ps.setString(7, datos.getPrecioCartaFoil());
+		ps.setString(8, datos.getUrlReferenciaCarta());
+		ps.setString(9, datos.getDireccionImagenCarta());
+		ps.setString(10, datos.getNormasCarta());
 
 		if (includeID) {
 			ps.setString(13, datos.getIdCarta()); // Assuming getIdCarta() returns an integer
@@ -45,14 +43,8 @@ public class DBUtilidades {
 	public static String construirSentenciaSQL(TipoBusqueda tipoBusqueda) {
 
 		switch (tipoBusqueda) {
-		case POSESION:
-			return SelectManager.SENTENCIA_POSESION;
 		case COMPLETA:
 			return SelectManager.SENTENCIA_COMPLETA;
-		case VENDIDOS:
-			return SelectManager.SENTENCIA_VENDIDOS;
-		case COMPRADOS:
-			return SelectManager.SENTENCIA_COMPRADOS;
 		default:
 			throw new IllegalArgumentException("Tipo de búsqueda no válido");
 		}
@@ -65,15 +57,10 @@ public class DBUtilidades {
 
 		connector = agregarCondicion(sql, connector, "idCarta", carta.getIdCarta());
 		connector = agregarCondicion(sql, connector, "nomCarta", carta.getNomCarta());
-		connector = agregarCondicion(sql, connector, "gradeoCarta", carta.getGradeoCarta());
 		connector = agregarCondicion(sql, connector, "numCarta", carta.getNumCarta());
 		connector = agregarCondicion(sql, connector, "editorialCarta", carta.getEditorialCarta());
 		connector = agregarCondicionLike(sql, connector, "coleccionCarta", carta.getColeccionCarta());
 		connector = agregarCondicionLike(sql, connector, "rarezaCarta", carta.getRarezaCarta());
-		connector = agregarCondicion(sql, connector, "esFoilCarta", carta.getEsFoilCarta());
-		connector = agregarCondicionLike(sql, connector, "estadoCarta", carta.getEstadoCarta());
-		connector = agregarCondicion(sql, connector, "precioCarta", carta.getPrecioCarta());
-
 		if (connector.trim().equalsIgnoreCase("WHERE")) {
 			return "";
 		}
@@ -259,20 +246,19 @@ public class DBUtilidades {
 			String editorialCarta = rs.getString("editorialCarta");
 			String coleccionCarta = rs.getString("coleccionCarta");
 			String rarezaCarta = rs.getString("rarezaCarta");
-			String esFoilCarta = rs.getString("esFoilCarta");
-			String gradeoCarta = rs.getString("gradeoCarta");
-			String estadoCarta = rs.getString("estadoCarta");
-			String precioCarta = rs.getString("precioCarta");
+			String precioCartaNormal = rs.getString("precioCartaNormal");
+			String precioCartaFoil = rs.getString("precioCartaFoil");
 			String urlReferenciaCarta = rs.getString("urlReferenciaCarta");
 			String direccionImagenCarta = rs.getString("direccionImagenCarta");
 			String normasCarta = rs.getString("normasCarta");
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCarta = (Double.parseDouble(precioCarta) <= 0) ? "0.0" : precioCarta;
+			precioCartaNormal = (Double.parseDouble(precioCartaNormal) <= 0) ? "0.0" : precioCartaNormal;
+			precioCartaFoil = (Double.parseDouble(precioCartaFoil) <= 0) ? "0.0" : precioCartaFoil;
 
-			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).editorialCarta(editorialCarta).coleccionCarta(coleccionCarta)
-					.rarezaCarta(rarezaCarta).esFoilCarta(esFoilCarta).gradeoCarta(gradeoCarta).estadoCarta(estadoCarta)
-					.precioCarta(precioCarta).urlReferenciaCarta(urlReferenciaCarta)
+			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).editorialCarta(editorialCarta)
+					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).precioCartaNormal(precioCartaNormal)
+					.precioCartaFoil(precioCartaFoil).urlReferenciaCarta(urlReferenciaCarta)
 					.direccionImagenCarta(direccionImagenCarta).normasCarta(normasCarta).build();
 		} catch (SQLException e) {
 			// Manejar la excepción según tus necesidades

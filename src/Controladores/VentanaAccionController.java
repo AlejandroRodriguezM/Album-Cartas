@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import UNIT_TEST.ScryfallScraper;
+import UNIT_TEST.TCGPlayerTest;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.ConectManager;
@@ -70,154 +72,185 @@ import webScrap.WebScrapNodeJSInstall;
  * usuario y las operaciones relacionadas con los cómics.
  */
 public class VentanaAccionController implements Initializable {
-
-	@FXML
-	private VBox rootVBox;
-	@FXML
-	private VBox vboxImage;
-
 	@FXML
 	private Label alarmaConexionInternet;
+
 	@FXML
 	private Label alarmaConexionSql;
+
 	@FXML
-	private Label labelCodigo;
-	@FXML
-	private Label labelEstado;
-	@FXML
-	private Label labelFoil;
-	@FXML
-	private Label labelGradeo;
-	@FXML
-	private Label labelId;
-	@FXML
-	private Label labelNormas;
-	@FXML
-	private Label labelPortada;
-	@FXML
-	private Label labelPrecio;
-	@FXML
-	private Label labelRareza;
-	@FXML
-	private Label labelReferencia;
-	@FXML
-	private Label labelcoleccion;
+	private Label labelNombre;
 
 	@FXML
 	private Button botonBusquedaAvanzada;
-	@FXML
-	private Button botonBusquedaCodigo;
-	@FXML
-	private Button botonCancelarSubida;
-	@FXML
-	private Button botonEliminar;
-	@FXML
-	private Button botonEliminarImportadoCarta;
-	@FXML
-	private Button botonGuardarCambioCarta;
-	@FXML
-	private Button botonGuardarCarta;
-	@FXML
-	private Button botonLimpiar;
-	@FXML
-	private Button botonModificarCarta;
-	@FXML
-	private Button botonParametroCarta;
-	@FXML
-	private Button botonSubidaPortada;
-	@FXML
-	private Button botonVender;
-	@FXML
-	private Button botonbbdd;
-	@FXML
-	private Button botonGuardarListaCartas;
-	@FXML
-	private Button botonEliminarImportadoListaCarta;
-	@FXML
-	private TextField busquedaCodigo;
-	@FXML
-	private TextField textFieldColeccion;
-	@FXML
-	private TextField textFieldDireccionPortada;
-	@FXML
-	private TextField textFieldEditorialCarta;
-	@FXML
-	private TextField textFieldIdCarta;
-	@FXML
-	private TextField textFieldNombreCarta;
-	@FXML
-	private TextArea textAreaNormasCarta;
-	@FXML
-	private TextField textFieldPrecioCarta;
-	@FXML
-	private TextField textFieldRarezaCarta;
-	@FXML
-	private TextField textFieldUrlCarta;
 
 	@FXML
-	private ComboBox<String> comboboxEsFoilCarta;
+	private Button botonBusquedaCodigo;
+
 	@FXML
-	private ComboBox<String> comboboxEstadoCarta;
+	private Button botonCancelarSubida;
+
 	@FXML
-	private ComboBox<String> comboboxGradeoCarta;
+	private Button botonEliminar;
+
+	@FXML
+	private Button botonEliminarImportadoCarta;
+
+	@FXML
+	private Button botonEliminarImportadoListaCarta;
+
+	@FXML
+	private Button botonGuardarCambioCarta;
+
+	@FXML
+	private Button botonGuardarCarta;
+
+	@FXML
+	private Button botonGuardarListaCartas;
+
+	@FXML
+	private Button botonLimpiar;
+
+	@FXML
+	private Button botonModificarCarta;
+
+	@FXML
+	private Button botonParametroCarta;
+
+	@FXML
+	private Button botonSubidaPortada;
+
+	@FXML
+	private Button botonVender;
+
+	@FXML
+	private Button botonbbdd;
+
+	@FXML
+	private TextField busquedaCodigo;
+
+	@FXML
+	private ImageView cargaImagen;
+
+	@FXML
+	private TableColumn<Carta, String> columnaColeccion;
+
+	@FXML
+	private TableColumn<Carta, String> columnaEditorial;
+
+	@FXML
+	private TableColumn<Carta, String> columnaNombre;
+
+	@FXML
+	private TableColumn<Carta, String> columnaPrecioFoil;
+
+	@FXML
+	private TableColumn<Carta, String> columnaPrecioNormal;
+
+	@FXML
+	private TableColumn<Carta, String> columnaRareza;
+
+	@FXML
+	private ComboBox<String> comboBoxTienda;
+
 	@FXML
 	private ComboBox<String> comboboxNumeroCarta;
 
 	@FXML
-	private ImageView cargaImagen;
+	private TableColumn<Carta, String> fecha;
+
+	@FXML
+	private TableColumn<Carta, String> id;
+
 	@FXML
 	private ImageView imagencarta;
 
 	@FXML
-	private TableView<Carta> tablaBBDD;
+	private Label labelId;
 
 	@FXML
-	private TableColumn<Carta, String> columnaColeccion;
-	@FXML
-	private TableColumn<Carta, String> columnaEditorial;
-	@FXML
-	private TableColumn<Carta, String> columnaNombre;
-	@FXML
-	private TableColumn<Carta, String> columnaPrecio;
-	@FXML
-	private TableColumn<Carta, String> columnaRareza;
-	@FXML
-	private TableColumn<Carta, String> fecha;
-	@FXML
-	private TableColumn<Carta, String> firma;
-	@FXML
-	private TableColumn<Carta, String> formato;
-	@FXML
-	private TableColumn<Carta, String> gradeo;
-	@FXML
-	private TableColumn<Carta, String> id;
-	@FXML
-	private TableColumn<Carta, String> numero;
-	@FXML
-	private TableColumn<Carta, String> procedencia;
-	@FXML
-	private TableColumn<Carta, String> referencia;
+	private Label labelNormas;
 
 	@FXML
-	private TextArea prontInfo;
+	private Label labelPortada;
 
 	@FXML
-	private ProgressIndicator progresoCarga;
+	private Label labelPrecioFoil;
 
 	@FXML
-	private MenuItem menuCodigoBarras;
+	private Label labelPrecioNormal;
+
+	@FXML
+	private Label labelRareza;
+
+	@FXML
+	private Label labelReferencia;
+
+	@FXML
+	private Label labelcoleccion;
+
 	@FXML
 	private MenuItem menuImportarFichero;
-	@FXML
-	private MenuItem navegacionMostrarEstadistica;
 
 	@FXML
 	private MenuBar menuNavegacion;
 
 	@FXML
 	private Menu navegacionEstadistica;
+
+	@FXML
+	private MenuItem navegacionMostrarEstadistica;
+
 	@FXML
 	private Menu navegacionOpciones;
+
+	@FXML
+	private TableColumn<Carta, String> numero;
+
+	@FXML
+	private ProgressIndicator progresoCarga;
+
+	@FXML
+	private TextArea prontInfo;
+
+	@FXML
+	private VBox rootVBox;
+
+	@FXML
+	private TableView<Carta> tablaBBDD;
+
+	@FXML
+	private TextArea textAreaNormasCarta;
+
+	@FXML
+	private TextField textFieldColeccion;
+
+	@FXML
+	private TextField textFieldDireccionPortada;
+
+	@FXML
+	private TextField textFieldEditorialCarta;
+
+	@FXML
+	private TextField textFieldIdCarta;
+
+	@FXML
+	private TextField textFieldNombreCarta;
+
+	@FXML
+	private TextField textFieldPrecioCartaFoil;
+
+	@FXML
+	private TextField textFieldPrecioCartaNormal;
+
+	@FXML
+	private TextField textFieldRarezaCarta;
+
+	@FXML
+	private TextField textFieldUrlCarta;
+
+	@FXML
+	private VBox vboxImage;
 
 	/**
 	 * Referencia a la ventana (stage).
@@ -246,15 +279,14 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setEditorialCartaTextField(textFieldEditorialCarta);
 		referenciaVentana.setColeccionCartaTextField(textFieldColeccion);
 		referenciaVentana.setRarezaCartaTextField(textFieldRarezaCarta);
-		referenciaVentana.setNombreEsFoilCombobox(comboboxEsFoilCarta);
-		referenciaVentana.setGradeoCartaCombobox(comboboxGradeoCarta);
 		referenciaVentana.setNormasCartaTextArea(textAreaNormasCarta);
-		referenciaVentana.setPrecioCartaTextField(textFieldPrecioCarta);
-		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
+		referenciaVentana.setPrecioCartaNormalTextField(textFieldPrecioCartaNormal);
+		referenciaVentana.setPrecioCartaFoilTextField(textFieldPrecioCartaFoil);
 		referenciaVentana.setDireccionImagenTextField(textFieldDireccionPortada);
-		referenciaVentana.setEstadoCartaCombobox(comboboxEstadoCarta);
+		referenciaVentana.setNombreTiendaCombobox(comboBoxTienda);
 		referenciaVentana.setUrlReferenciaTextField(textFieldUrlCarta);
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
+		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
 
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
 		referenciaVentana.setBotonBusquedaCodigo(botonBusquedaCodigo);
@@ -279,14 +311,13 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setProgresoCarga(progresoCarga);
 
 		referenciaVentana.setLabelColeccion(labelcoleccion);
+		referenciaVentana.setLabelNombre(labelNombre);
 		referenciaVentana.setLabelRareza(labelRareza);
-		referenciaVentana.setLabelEsFoil(labelFoil);
-		referenciaVentana.setLabelGradeo(labelGradeo);
 		referenciaVentana.setLabelNormas(labelNormas);
-		referenciaVentana.setLabelPrecio(labelPrecio);
+		referenciaVentana.setLabelPrecioNormal(labelPrecioNormal);
+		referenciaVentana.setLabelPrecioFoil(labelPrecioFoil);
 		referenciaVentana.setLabelIdMod(labelId);
 		referenciaVentana.setLabelPortada(labelPortada);
-		referenciaVentana.setLabelEstado(labelEstado);
 		referenciaVentana.setLabelReferencia(labelReferencia);
 		referenciaVentana.setAlarmaConexionInternet(alarmaConexionInternet);
 		referenciaVentana.setAlarmaConexionSql(alarmaConexionSql);
@@ -302,20 +333,20 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setNavegacionCerrar(navegacionOpciones);
 		referenciaVentana.setNavegacionEstadistica(navegacionEstadistica);
 
-		referenciaVentana.setListaComboboxes(
-				Arrays.asList(comboboxEsFoilCarta, comboboxEstadoCarta, comboboxGradeoCarta, comboboxNumeroCarta));
+		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNumeroCarta, comboBoxTienda));
 
-		referenciaVentana.setListaTextFields(FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta,
-				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta,
-				textFieldPrecioCarta, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
+		AccionReferencias.setListaTextFields(
+				FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta, textFieldEditorialCarta,
+						textFieldColeccion, textFieldRarezaCarta, textAreaNormasCarta, textFieldPrecioCartaFoil,
+						textFieldPrecioCartaNormal, textFieldIdCarta, textFieldDireccionPortada, textFieldUrlCarta)));
 
-		referenciaVentana.setControlesCarta(Arrays.asList(textFieldNombreCarta, comboboxNumeroCarta,
-				textFieldEditorialCarta, textFieldColeccion, textFieldRarezaCarta, comboboxEsFoilCarta,
-				comboboxGradeoCarta, textFieldUrlCarta, textFieldPrecioCarta, textFieldIdCarta,
-				textFieldDireccionPortada, comboboxEstadoCarta, textAreaNormasCarta));
+		referenciaVentana
+				.setControlAccion(Arrays.asList(textFieldNombreCarta, comboboxNumeroCarta, textFieldEditorialCarta,
+						textFieldColeccion, textFieldRarezaCarta, textFieldUrlCarta, textFieldPrecioCartaNormal,
+						textFieldPrecioCartaFoil, textFieldIdCarta, textFieldDireccionPortada, textAreaNormasCarta));
 
-		AccionReferencias.setListaColumnasTabla(
-				Arrays.asList(columnaNombre, columnaEditorial, columnaColeccion, columnaRareza, columnaPrecio));
+		AccionReferencias.setListaColumnasTabla(Arrays.asList(columnaNombre, columnaEditorial, columnaColeccion,
+				columnaRareza, columnaPrecioNormal, columnaPrecioFoil));
 
 		return referenciaVentana;
 	}
@@ -395,7 +426,7 @@ public class VentanaAccionController implements Initializable {
 	 * ComboBoxes con opciones estáticas predefinidas.
 	 */
 	public void rellenarCombosEstaticos() {
-		FuncionesComboBox.rellenarComboBoxEstaticos(referenciaVentana.getListaComboboxes());
+		FuncionesComboBox.rellenarComboBoxEstaticos(AccionReferencias.getListaComboboxes());
 	}
 
 	public void formatearTextField() {
@@ -416,12 +447,14 @@ public class VentanaAccionController implements Initializable {
 		FuncionesManejoFront.permitirUnSimbolo(textFieldEditorialCarta);
 		FuncionesManejoFront.permitirUnSimbolo(textFieldColeccion);
 		FuncionesManejoFront.permitirUnSimbolo(textFieldRarezaCarta);
-		FuncionesManejoFront.permitirUnSimbolo(textFieldPrecioCarta);
+		FuncionesManejoFront.permitirSimbolosEspecificos(textFieldPrecioCartaNormal);
+		FuncionesManejoFront.permitirSimbolosEspecificos(textFieldPrecioCartaFoil);
 		FuncionesManejoFront.permitirUnSimbolo(busquedaCodigo);
 
 		comboboxNumeroCarta.getEditor().setTextFormatter(FuncionesComboBox.validadorNenteros());
 		textFieldIdCarta.setTextFormatter(FuncionesComboBox.validadorNenteros());
-		textFieldPrecioCarta.setTextFormatter(FuncionesComboBox.validadorNdecimales());
+//		textFieldPrecioCartaNormal.setTextFormatter(FuncionesComboBox.validadorNdecimales());
+//		textFieldPrecioCartaFoil.setTextFormatter(FuncionesComboBox.validadorNdecimales());
 
 		if (AccionFuncionesComunes.TIPO_ACCION.equalsIgnoreCase("aniadir")) {
 			textFieldIdCarta.setTextFormatter(FuncionesComboBox.desactivarValidadorNenteros());
@@ -441,7 +474,7 @@ public class VentanaAccionController implements Initializable {
 		List<String> controls = new ArrayList<>();
 
 		// Iterar sobre los TextField y ComboBox en referenciaVentana
-		for (Control control : referenciaVentana.getListaTextFields()) {
+		for (Control control : AccionReferencias.getListaTextFields()) {
 			if (control instanceof TextField) {
 				controls.add(((TextField) control).getText());
 			} else if (control instanceof ComboBox<?>) {
@@ -451,7 +484,7 @@ public class VentanaAccionController implements Initializable {
 		}
 
 		// Añadir valores de los ComboBoxes de getListaComboboxes() a controls
-		for (ComboBox<?> comboBox : referenciaVentana.getListaComboboxes()) {
+		for (ComboBox<?> comboBox : AccionReferencias.getListaComboboxes()) {
 			Object selectedItem = comboBox.getSelectionModel().getSelectedItem();
 			controls.add(selectedItem != null ? selectedItem.toString() : "");
 		}
@@ -589,7 +622,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if (!tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(true);
+			AccionSeleccionar.seleccionarCartas(false);
 		}
 	}
 
@@ -606,7 +639,7 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) && !tablaBBDD.isDisabled()) {
 			setCartaCache(guardarReferencia().getTablaBBDD().getSelectionModel().getSelectedItem());
-			AccionSeleccionar.seleccionarCartas(true);
+			AccionSeleccionar.seleccionarCartas(false);
 		}
 
 	}
@@ -627,6 +660,7 @@ public class VentanaAccionController implements Initializable {
 		} else {
 			// Continuar con la lógica cuando ambas claves están presente
 			AccionFuncionesComunes.cambiarVisibilidadAvanzada();
+			
 		}
 	}
 
@@ -653,7 +687,7 @@ public class VentanaAccionController implements Initializable {
 				enviarReferencias();
 				rellenarCombosEstaticos();
 				if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
-					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero, "");
 				}
 
 			}
@@ -675,18 +709,27 @@ public class VentanaAccionController implements Initializable {
 		enviarReferencias();
 		if (Utilidades.isInternetAvailable()) {
 			String valorCodigo = busquedaCodigo.getText();
-
-			if (valorCodigo.isEmpty()) {
+			String tipoTienda = comboBoxTienda.getValue();
+			if (valorCodigo.isEmpty() || tipoTienda.isEmpty()) {
 				return;
 			}
-
 			nav.cerrarMenuOpciones();
-			AccionControlUI.limpiarAutorellenos(false);
+//			AccionControlUI.limpiarAutorellenos(false);
 			AccionControlUI.borrarDatosGraficos();
 
 			AccionFuncionesComunes.cargarRuning();
 
-			CompletableFuture<List<String>> future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
+			CompletableFuture<List<String>> future;
+
+			if (tipoTienda.equalsIgnoreCase("Card Market")) {
+				future = WebScrapGoogleCardTrader.iniciarBusquedaGoogle(valorCodigo);
+			} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
+				future = ScryfallScraper.getCardLinks(valorCodigo);
+			} else if (tipoTienda.equals("TCGPlayer")) {
+				future = TCGPlayerTest.urlTCG(valorCodigo);
+			} else {
+				future = CompletableFuture.completedFuture(new ArrayList<>());
+			}
 
 			future.thenAccept(enlaces -> {
 
@@ -698,7 +741,7 @@ public class VentanaAccionController implements Initializable {
 						enviarReferencias();
 						rellenarCombosEstaticos();
 						if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
-							AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+							AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero, tipoTienda);
 						}
 					}
 

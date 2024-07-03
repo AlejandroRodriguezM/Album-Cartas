@@ -11,7 +11,7 @@ public class UpdateManager {
 
 	private static final String UPDATE_CARTA = "UPDATE albumbbdd SET "
 			+ "nomCarta = ?, numCarta = ?, editorialCarta = ?, coleccionCarta = ?, rarezaCarta = ?, "
-			+ "esFoilCarta = ?, gradeoCarta = ?, estadoCarta = ?, precioCarta = ?, urlReferenciaCarta = ?, "
+			+ "precioCartaNormal = ?, precioCartaFoil = ?, urlReferenciaCarta = ?, "
 			+ "direccionImagenCarta = ?, normasCarta = ? " + "WHERE idCarta = ?";
 
 	private static final String UPDATE_ESTADO_VENDIDO = "UPDATE albumbbdd SET estado = 'Vendido' WHERE idCarta = ?";

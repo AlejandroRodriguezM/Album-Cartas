@@ -8,8 +8,8 @@ import cartaManagement.Carta;
 public class InsertManager {
 
 	public static final String INSERT_SENTENCIA = "INSERT INTO albumbbdd ("
-			+ "nomCarta, numCarta, editorialCarta, coleccionCarta, rarezaCarta, esFoilCarta, gradeoCarta, estadoCarta, "
-			+ "precioCarta, urlReferenciaCarta, direccionImagenCarta, normasCarta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "nomCarta, numCarta, editorialCarta, coleccionCarta, rarezaCarta, "
+			+ "precioCartaNormal, precioCartaFoil, urlReferenciaCarta, direccionImagenCarta, normasCarta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	/**
 	 * Inserta los datos de un cómic en la base de datos.

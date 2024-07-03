@@ -69,9 +69,9 @@ public class DatabaseManagerDAO {
 						+ "idCarta INTEGER PRIMARY KEY AUTOINCREMENT, " + "nomCarta TEXT NOT NULL, "
 						+ "numCarta TEXT NOT NULL, " + "editorialCarta TEXT NOT NULL, "
 						+ "coleccionCarta TEXT NOT NULL, " + "rarezaCarta TEXT NOT NULL, "
-						+ "esFoilCarta TEXT NOT NULL, " + "gradeoCarta TEXT, " + "estadoCarta TEXT NOT NULL, "
-						+ "precioCarta TEXT NOT NULL, " + "urlReferenciaCarta TEXT NOT NULL, "
-						+ "direccionImagenCarta TEXT NOT NULL, " + "normasCarta TEXT NOT NULL)";
+						+ "precioCartaNormal TEXT NOT NULL, " + "precioCartaFoil TEXT NOT NULL, "
+						+ "urlReferenciaCarta TEXT NOT NULL, " + "direccionImagenCarta TEXT NOT NULL, "
+						+ "normasCarta TEXT NOT NULL)";
 				statement.executeUpdate(createTableSQL);
 			}
 		} catch (SQLException e) {
@@ -118,8 +118,8 @@ public class DatabaseManagerDAO {
 				// La tabla existe, ahora verifiquemos las columnas
 				ResultSet columns = metaData.getColumns(nombreDatabase, null, "albumbbdd", null);
 				Set<String> expectedColumns = Set.of("idCarta", "nomCarta", "numCarta", "editorialCarta",
-						"coleccionCarta", "rarezaCarta", "esFoilCarta", "gradeoCarta", "estadoCarta", "precioCarta",
-						"urlReferenciaCarta", "direccionImagenCarta", "normasCarta");
+						"coleccionCarta", "rarezaCarta", "precioCartaNormal", "precioCartaFoil", "urlReferenciaCarta",
+						"direccionImagenCarta", "normasCarta");
 
 				Set<String> actualColumns = new HashSet<>();
 

@@ -33,11 +33,8 @@ public class AccionEliminar {
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelIdMod(),
 				referenciaVentana.getBotonVender(), referenciaVentana.getBotonEliminar(),
 				referenciaVentana.getTablaBBDD(), referenciaVentana.getBotonbbdd(), referenciaVentana.getRootVBox(),
-				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratarTextField(),
-				referenciaVentana.getNumeroCartaCombobox()));
+				referenciaVentana.getBotonParametroCarta(), referenciaVentana.getIdCartaTratarTextField()));
 		
-		referenciaVentana.getLabelColeccion().setVisible(false);
-		referenciaVentana.getLabelIdMod().setLayoutX(5);
 		referenciaVentana.getRootVBox().toFront();
 	}
 

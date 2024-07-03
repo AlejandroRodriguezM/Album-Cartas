@@ -352,13 +352,11 @@ public class FuncionesExcel {
 		fila.createCell(3).setCellValue(comic.getEditorialCarta());
 		fila.createCell(4).setCellValue(comic.getColeccionCarta());
 		fila.createCell(5).setCellValue(comic.getRarezaCarta());
-		fila.createCell(6).setCellValue(comic.getEsFoilCarta());
-		fila.createCell(7).setCellValue(comic.getGradeoCarta());
-		fila.createCell(8).setCellValue(comic.getEstadoCarta());
-		fila.createCell(9).setCellValue(comic.getPrecioCarta());
-		fila.createCell(10).setCellValue(comic.getUrlReferenciaCarta());
-		fila.createCell(11).setCellValue(comic.getDireccionImagenCarta());
-		fila.createCell(12).setCellValue(comic.getNormasCarta());
+		fila.createCell(6).setCellValue(comic.getPrecioCartaNormal());
+		fila.createCell(7).setCellValue(comic.getPrecioCartaFoil());
+		fila.createCell(8).setCellValue(comic.getUrlReferenciaCarta());
+		fila.createCell(9).setCellValue(comic.getDireccionImagenCarta());
+		fila.createCell(10).setCellValue(comic.getNormasCarta());
 	}
 
 	private void actualizarProgreso(AtomicReference<CargaCartasController> cargaCartasControllerRef) {

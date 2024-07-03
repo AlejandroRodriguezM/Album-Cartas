@@ -50,7 +50,7 @@ public class AccionAniadir {
 
 		List<String> controls = new ArrayList<>();
 
-		for (Control control : referenciaVentana.getListaTextFields()) {
+		for (Control control : AccionReferencias.getListaTextFields()) {
 			if (control instanceof TextField) {
 				controls.add(((TextField) control).getText()); // Add the Control object itself
 			} else if (control instanceof ComboBox<?>) {
@@ -93,7 +93,8 @@ public class AccionAniadir {
 			}
 
 			ListasCartasDAO.listasAutoCompletado();
-			List<ComboBox<String>> comboboxes = referenciaVentana.getListaComboboxes();
+			getReferenciaVentana();
+			List<ComboBox<String>> comboboxes = AccionReferencias.getListaComboboxes();
 			funcionesCombo.rellenarComboBox(comboboxes);
 
 			referenciaVentana.getTablaBBDD().getItems().clear();
@@ -109,17 +110,14 @@ public class AccionAniadir {
 	public void mostrarElementosAniadir(List<Node> elementosAMostrarYHabilitar) {
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getLabelRareza(),
-				referenciaVentana.getLabelEsFoil(), referenciaVentana.getLabelGradeo(),
-				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecio(),
-				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(),
-				referenciaVentana.getLabelEstado(), referenciaVentana.getLabelReferencia()));
+				referenciaVentana.getLabelNormas(), referenciaVentana.getLabelPrecioNormal(),referenciaVentana.getLabelPrecioFoil(),
+				referenciaVentana.getLabelIdMod(), referenciaVentana.getLabelPortada(), referenciaVentana.getLabelReferencia()));
 
 		elementosAMostrarYHabilitar.addAll(
-				Arrays.asList(referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEsFoilCombobox(),
-						referenciaVentana.getGradeoCartaCombobox(), referenciaVentana.getEstadoCartaCombobox()));
+				Arrays.asList(referenciaVentana.getNumeroCartaCombobox()));
 
 		elementosAMostrarYHabilitar.addAll(Arrays.asList(referenciaVentana.getRarezaCartaTextField(),
-				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaTextField(),
+				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getPrecioCartaNormalTextField(),referenciaVentana.getPrecioCartaFoilTextField(),
 				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
 				referenciaVentana.getUrlReferenciaTextField()));
 
