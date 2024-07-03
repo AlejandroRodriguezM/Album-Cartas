@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,12 +167,12 @@ public class AccionFuncionesComunes {
 		FuncionesTableView.actualizarBusquedaRaw();
 	}
 
-	public static boolean procesarCartaPorCodigo(Carta cartaInfo) {
+	public static boolean procesarCartaPorCodigo(Carta cartaInfo, boolean esClonar) {
 
 		boolean alMenosUnoProcesado = false;
 
 		if (comprobarCodigo(cartaInfo)) {
-			rellenarTablaImport(cartaInfo);
+			rellenarTablaImport(cartaInfo, esClonar);
 			alMenosUnoProcesado = true;
 		}
 
@@ -275,6 +278,49 @@ public class AccionFuncionesComunes {
 		}
 	}
 
+	public static Carta copiarCartaClon(Carta cartaOriginal) {
+	    try {
+	        // Clonar la carta original
+	        Carta cartaClon = (Carta) cartaOriginal.clone();
+
+	        // Obtener la dirección actual de la imagen
+	        String direccionActual = cartaOriginal.getDireccionImagenCarta();
+
+	        // Verificar si la dirección actual es válida
+	        if (direccionActual != null && !direccionActual.isEmpty()) {
+	            File imagenActual = new File(direccionActual);
+
+	            // Verificar si el archivo existe antes de proceder
+	            if (imagenActual.exists()) {
+	                // Generar un nuevo nombre de archivo y ruta destino
+	                String codigoNuevoCarta = codigoNuevaImagen();
+	                String nombreArchivoNuevo = codigoNuevoCarta + ".jpg";
+	                String carpetaPortadas = carpetaPortadas(Utilidades.nombreDB());
+	                String urlFinal = carpetaPortadas + File.separator + nombreArchivoNuevo;
+
+	                // Crear la ruta destino para el archivo nuevo
+	                Path rutaDestino = new File(urlFinal).toPath();
+
+	                // Copiar y renombrar el archivo de imagen
+	                Files.copy(imagenActual.toPath(), rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+
+	                // Actualizar la dirección de la imagen en la carta clonada
+	                cartaClon.setDireccionImagenCarta(urlFinal);
+
+	                // Devolver la carta clonada con la nueva dirección de imagen
+	                return cartaClon;
+	            }
+	        }
+
+	        // Si la dirección actual no es válida o el archivo no existe, devolver la carta original
+	        return cartaOriginal;
+	    } catch (CloneNotSupportedException | IOException e) {
+	        // Manejar la excepción de clonación o de operaciones de archivos
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
 	public static Carta actualizarCartasPortadas(Carta cartaOriginal) {
 
 		String codigoNuevoCarta = codigoNuevaImagen();
@@ -349,6 +395,7 @@ public class AccionFuncionesComunes {
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
 			getReferenciaVentana().getTablaBBDD().refresh();
 		}
+		getReferenciaVentana().getBotonClonarCarta().setVisible(false);
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
@@ -431,7 +478,7 @@ public class AccionFuncionesComunes {
 	 * @param comicInfo Un arreglo de strings con información del cómic.
 	 * @throws IOException
 	 */
-	private static void rellenarTablaImport(Carta comic) {
+	private static void rellenarTablaImport(Carta comic, boolean esClonar) {
 		Platform.runLater(() -> {
 
 			String numCartaStr = comic.getNumCarta();
@@ -451,38 +498,44 @@ public class AccionFuncionesComunes {
 					"Vacio");
 			String precioNormal = Utilidades.defaultIfNullOrEmpty(comic.getPrecioCartaNormal(), "0");
 			String precioFoil = Utilidades.defaultIfNullOrEmpty(comic.getPrecioCartaFoil(), "0");
-			// Variables relacionadas con la imagen del cómic
-
-			String urlImagen = comic.getDireccionImagenCarta();
 			String urlReferencia = Utilidades.defaultIfNullOrEmpty(comic.getUrlReferenciaCarta(), "Vacio");
-			File file = new File(urlImagen);
-			// Manejo de la ruta de la imagen
-			if (urlImagen == null || urlImagen.isEmpty()) {
-				String rutaImagen = "/imagenes/sinPortada.jpg";
-				URL url = Utilidades.class.getClass().getResource(rutaImagen);
-				if (url != null) {
-					urlImagen = url.toExternalForm();
+			// Variables relacionadas con la imagen del cómic
+			String imagen = "";
+			if (!esClonar) {
+				String urlImagen = comic.getDireccionImagenCarta();
+
+				File file = new File(urlImagen);
+				// Manejo de la ruta de la imagen
+				if (urlImagen == null || urlImagen.isEmpty()) {
+					String rutaImagen = "/imagenes/sinPortada.jpg";
+					URL url = Utilidades.class.getClass().getResource(rutaImagen);
+					if (url != null) {
+						urlImagen = url.toExternalForm();
+					}
+				} else {
+					file = new File(urlImagen);
+					urlImagen = file.toString();
 				}
+
+				// Corrección y generación de la URL final de la imagen
+				String correctedUrl = urlImagen.replace("\\", "/").replace("http:", "https:").replace("https:",
+						"https:/");
+				String codigoImagen = Utilidades
+						.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+				URI uri = null;
+				try {
+					uri = new URI(correctedUrl);
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+
+				imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
+				// Descarga y conversión asíncrona de la imagen
+				Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
+						codigoImagen + ".jpg");
 			} else {
-				file = new File(urlImagen);
-				urlImagen = file.toString();
+				imagen = comic.getDireccionImagenCarta();
 			}
-
-			// Corrección y generación de la URL final de la imagen
-			String correctedUrl = urlImagen.replace("\\", "/").replace("http:", "https:").replace("https:", "https:/");
-			String codigoImagen = Utilidades
-					.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
-			URI uri = null;
-			try {
-				uri = new URI(correctedUrl);
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-
-			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
-			// Descarga y conversión asíncrona de la imagen
-			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
-					codigoImagen + ".jpg");
 
 			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).editorialCarta(editorial)
 					.coleccionCarta(coleccion).rarezaCarta(rareza).precioCartaNormal(precioNormal)
@@ -490,7 +543,6 @@ public class AccionFuncionesComunes {
 					.normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
-//
 			FuncionesTableView.nombreColumnas();
 			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 		});
@@ -734,7 +786,7 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta carta, String tipoUpdate) {
 
 		if (tipoUpdate.isEmpty()) {
-			AccionFuncionesComunes.procesarCartaPorCodigo(carta);
+			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
 			AccionFuncionesComunes.actualizarCartasPortadas(carta);
 		} else {

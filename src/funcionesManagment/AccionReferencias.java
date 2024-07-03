@@ -49,6 +49,7 @@ public class AccionReferencias {
 	private ImageView imagenCarta;
 	private ImageView cargaImagen;
 
+	private Button botonClonarCarta;
 	private Button botonModificar;
 	private Button botonIntroducir;
 	private Button botonEliminar;
@@ -957,6 +958,20 @@ public class AccionReferencias {
 	 */
 	public Label getLabelNombre() {
 		return labelNombre;
+	}
+
+	/**
+	 * @return the botonClonarCarta
+	 */
+	public Button getBotonClonarCarta() {
+		return botonClonarCarta;
+	}
+
+	/**
+	 * @param botonClonarCarta the botonClonarCarta to set
+	 */
+	public void setBotonClonarCarta(Button botonClonarCarta) {
+		this.botonClonarCarta = botonClonarCarta;
 	}
 
 	/**

@@ -12,6 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -81,6 +82,9 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private Label labelNombre;
 
+    @FXML
+    private Button botonClonarCarta;
+	
 	@FXML
 	private Button botonBusquedaAvanzada;
 
@@ -288,6 +292,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
 		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
 
+		referenciaVentana.setBotonClonarCarta(botonClonarCarta);
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
 		referenciaVentana.setBotonBusquedaCodigo(botonBusquedaCodigo);
 		referenciaVentana.setBotonBusquedaAvanzada(botonBusquedaAvanzada);
@@ -581,6 +586,18 @@ public class VentanaAccionController implements Initializable {
 		setCartaCache(null);
 	}
 
+    @FXML
+    void clonarCartaSeleccionada(ActionEvent event) {
+
+    	int num = Ventanas.verVentanaNumero();
+    	Carta cartaCopiar = getCartaCache();
+    	
+    	for (int i = 0; i < num; i++) {
+    		Carta cartaModificada = AccionFuncionesComunes.copiarCartaClon(cartaCopiar);
+    		AccionFuncionesComunes.procesarCartaPorCodigo(cartaModificada, true);
+		}
+    }
+	
 	@FXML
 	void eliminarCartaSeleccionado(ActionEvent event) {
 		enviarReferencias();
@@ -589,24 +606,75 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		botonClonarCarta.setVisible(false);
 	}
 
 	@FXML
 	void eliminarListaCartas(ActionEvent event) {
-		enviarReferencias();
-		nav.cerrarMenuOpciones();
+	    enviarReferencias();
+	    nav.cerrarMenuOpciones();
 
-		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
-			guardarReferencia().getBotonGuardarCarta().setVisible(false);
-			guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
+	    if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
+	        // Ocultar botones relacionados con cartas
+	        ocultarBotonesCartas();
 
-			ListasCartasDAO.cartasImportados.clear();
-			guardarReferencia().getTablaBBDD().getItems().clear();
-			imagencarta.setImage(null);
-		}
+	        // Eliminar cada carta de la lista junto con su archivo de imagen
+	        for (Carta carta : ListasCartasDAO.cartasImportados) {
+	            eliminarCartaConImagen(carta);
+	        }
 
-		rellenarCombosEstaticos();
+	        // Limpiar la lista de cartas y la tabla de la interfaz
+	        limpiarListaCartas();
 
+	        // Reiniciar la imagen de la carta y limpiar la ventana
+	        reiniciarImagenCarta();
+	        limpiarVentana();
+	    }
+
+	    // Rellenar combos estáticos después de la operación
+	    rellenarCombosEstaticos();
+	}
+
+	// Función para ocultar botones relacionados con cartas
+	private void ocultarBotonesCartas() {
+	    guardarReferencia().getBotonGuardarCarta().setVisible(false);
+	    guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
+	}
+
+	// Función para eliminar una carta junto con su archivo de imagen
+	private void eliminarCartaConImagen(Carta carta) {
+	    // Eliminar archivo de imagen asociado a la carta
+	    eliminarArchivoImagen(carta.getDireccionImagenCarta());
+
+	    // Eliminar la carta de la lista
+	    ListasCartasDAO.cartasImportados.remove(carta);
+	}
+
+	// Función para eliminar archivo de imagen
+	private void eliminarArchivoImagen(String direccionImagen) {
+	    if (direccionImagen != null && !direccionImagen.isEmpty()) {
+	        File archivoImagen = new File(direccionImagen);
+	        if (archivoImagen.exists()) {
+	            // Intentar borrar el archivo de la imagen
+	            if (archivoImagen.delete()) {
+	                System.out.println("Archivo de imagen eliminado: " + direccionImagen);
+	            } else {
+	                System.err.println("No se pudo eliminar el archivo de imagen: " + direccionImagen);
+	                // Puedes lanzar una excepción aquí si lo prefieres
+	            }
+	        }
+	    }
+	}
+
+	// Función para limpiar la lista de cartas y la tabla de la interfaz
+	private void limpiarListaCartas() {
+	    ListasCartasDAO.cartasImportados.clear();
+	    guardarReferencia().getTablaBBDD().getItems().clear();
+	}
+
+	// Función para reiniciar la imagen de la carta
+	private void reiniciarImagenCarta() {
+	    imagencarta.setImage(null);
 	}
 
 	/**
@@ -781,6 +849,10 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void limpiarDatos(ActionEvent event) {
+		limpiarVentana();
+	}
+	
+	public void limpiarVentana() {
 		enviarReferencias();
 		AccionFuncionesComunes.limpiarDatosPantallaAccion();
 		rellenarCombosEstaticos();

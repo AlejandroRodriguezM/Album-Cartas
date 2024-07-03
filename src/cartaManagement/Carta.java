@@ -16,7 +16,7 @@ import funcionesAuxiliares.Utilidades;
  *
  * @author Alejandro Rodriguez
  */
-public class Carta {
+public class Carta implements Cloneable {
 	/**
 	 * Identificador único de la carta.
 	 */
@@ -405,22 +405,27 @@ public class Carta {
 
 	@Override
 	public boolean equals(Object o) {
-	    if (this == o)
-	        return true;
-	    if (o == null || getClass() != o.getClass())
-	        return false;
-	    Carta carta = (Carta) o;
-	    return Objects.equals(getPrecioCartaNormal(), carta.getPrecioCartaNormal()) &&
-	           Objects.equals(getPrecioCartaFoil(), carta.getPrecioCartaFoil()) &&
-	           Objects.equals(getNomCarta(), carta.getNomCarta()) &&
-	           Objects.equals(getNumCarta(), carta.getNumCarta()) &&
-	           Objects.equals(getColeccionCarta(), carta.getColeccionCarta());
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Carta carta = (Carta) o;
+		return Objects.equals(getPrecioCartaNormal(), carta.getPrecioCartaNormal())
+				&& Objects.equals(getPrecioCartaFoil(), carta.getPrecioCartaFoil())
+				&& Objects.equals(getNomCarta(), carta.getNomCarta())
+				&& Objects.equals(getNumCarta(), carta.getNumCarta())
+				&& Objects.equals(getColeccionCarta(), carta.getColeccionCarta());
 	}
 
 	@Override
 	public int hashCode() {
-	    return Objects.hash(getPrecioCartaNormal(), getPrecioCartaFoil(), getNomCarta(), getNumCarta(), getColeccionCarta());
+		return Objects.hash(getPrecioCartaNormal(), getPrecioCartaFoil(), getNomCarta(), getNumCarta(),
+				getColeccionCarta());
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone(); // Realiza una copia superficial
+	}
 
 }

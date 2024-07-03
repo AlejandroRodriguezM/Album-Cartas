@@ -44,6 +44,7 @@ import funcionesInterfaz.FuncionesManejoFront;
 import funcionesManagment.AccionReferencias;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -51,6 +52,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -358,6 +360,70 @@ public class Ventanas {
 			alertaException(ex.toString());
 			ex.printStackTrace();
 		}
+	}
+
+	public static int verVentanaNumero() {
+	    try {
+	        TextInputDialog dialog = new TextInputDialog();
+	        dialog.setTitle("Entrada de Número");
+	        dialog.setHeaderText("Por favor, ingrese un número (mayor que 0 y máximo 10):");
+	        dialog.setContentText("Número:");
+
+	        while (true) {
+	            Optional<String> result = dialog.showAndWait();
+	            
+	            if (result.isPresent()) {
+	                String input = result.get();
+	                if (isValidInteger(input)) {
+	                    int inputValue = Integer.parseInt(input);
+	                    if (inputValue > 0 && inputValue <= 10) {
+	                        boolean isConfirmed = mostrarDialogoConfirmacion("Confirmación",
+	                                "Se va a crear un clon de la carta un total de: " + inputValue + " veces. ¿Estas de acuerdo?");
+	                        if (isConfirmed) {
+	                            return inputValue;
+	                        }
+	                    } else {
+	                        mostrarAlerta("Entrada inválida", "Por favor, ingrese un número mayor que 0 y máximo 10.");
+	                    }
+	                } else {
+	                    mostrarAlerta("Entrada inválida", "Por favor, ingrese un número entero válido mayor que 0 y máximo 10.");
+	                }
+	            } else {
+	                return -1; // El diálogo fue cancelado
+	            }
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	        mostrarAlerta("Error", "Ocurrió un error al procesar la entrada.");
+	    }
+	    return -1;
+	}
+
+	private static boolean isValidInteger(String input) {
+		try {
+			int number = Integer.parseInt(input);
+			return number > 0 && number <= 10;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	private static boolean mostrarDialogoConfirmacion(String titulo, String mensaje) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle(titulo);
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		return result.isPresent() && result.get() == ButtonType.OK;
+	}
+
+	private static void mostrarAlerta(String titulo, String mensaje) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle(titulo);
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+		alert.showAndWait();
 	}
 
 	/**
