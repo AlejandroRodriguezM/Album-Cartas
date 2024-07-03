@@ -1,5 +1,8 @@
 package funcionesInterfaz;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -342,24 +345,87 @@ public class AccionControlUI {
 	}
 
 	public static boolean comprobarListaValidacion(Carta c) {
+		String numCartaStr = c.getNumCarta();
+		String precioCartaNormalStr = c.getPrecioCartaNormal();
+		String precioCartaFoilStr = c.getPrecioCartaFoil();
 
-		int numCarta = Integer.parseInt(c.getNumCarta());
-		double precioCartaNormal = Double.parseDouble(c.getPrecioCartaNormal());
-		double precioCartaFoil = Double.parseDouble(c.getPrecioCartaFoil());
+		// Validar campos requeridos y "vacio"
 		if (c.getNomCarta() == null || c.getNomCarta().isEmpty() || c.getNomCarta().equalsIgnoreCase("vacio")
-				|| numCarta <= 0 || c.getEditorialCarta() == null || c.getEditorialCarta().isEmpty()
+				|| numCartaStr == null || numCartaStr.isEmpty() || Integer.parseInt(numCartaStr) <= 0
+				|| c.getEditorialCarta() == null || c.getEditorialCarta().isEmpty()
 				|| c.getEditorialCarta().equalsIgnoreCase("vacio") || c.getColeccionCarta() == null
 				|| c.getColeccionCarta().isEmpty() || c.getColeccionCarta().equalsIgnoreCase("vacio")
 				|| c.getRarezaCarta() == null || c.getRarezaCarta().isEmpty()
-				|| c.getRarezaCarta().equalsIgnoreCase("vacio") || precioCartaNormal <= 0.0 || precioCartaFoil <= 0.0
+				|| c.getRarezaCarta().equalsIgnoreCase("vacio") || precioCartaNormalStr == null
+				|| precioCartaNormalStr.isEmpty() || !isValidPrecio(precioCartaNormalStr) || precioCartaFoilStr == null
+				|| precioCartaFoilStr.isEmpty() || !isValidPrecio(precioCartaFoilStr)
 				|| c.getUrlReferenciaCarta() == null || c.getUrlReferenciaCarta().isEmpty()
 				|| c.getUrlReferenciaCarta().equalsIgnoreCase("vacio")) {
 
-			String mensajePront = "Revisa la lista, algunos cartaTemps estan mal rellenados.";
+			String mensajePront = "Revisa la lista, algunos campos están mal rellenados.";
 			AlarmaList.mostrarMensajePront(mensajePront, false, referenciaVentana.getProntInfoTextArea());
 			return false;
 		}
+
 		return true;
+	}
+
+	public static boolean isValidPrecio(String precioStr) {
+		// Verificar si el precio es válido (no vacío, no solo un símbolo, no solo el
+		// número 0)
+		if (precioStr == null || precioStr.isEmpty()) {
+			return false;
+		}
+
+		// Formatear el precio
+		String formattedPrecio = parsePrecio(precioStr);
+
+		System.out.println(formattedPrecio);
+
+		// Verificar si el precio es "€0.0", "€0", "$0.0", "$0" o solo el símbolo de la
+		// moneda
+		if (formattedPrecio.equalsIgnoreCase("€0.0") || formattedPrecio.equalsIgnoreCase("€0")
+				|| formattedPrecio.equalsIgnoreCase("$0.0") || formattedPrecio.equalsIgnoreCase("$0")
+				|| formattedPrecio.equals("€") || formattedPrecio.equals("$")) {
+			return false;
+		}
+
+		// Verificar si el precio consiste solo en un símbolo
+		if (formattedPrecio.length() == 1) {
+			return false;
+		}
+
+		// Verificar si el precio consiste solo en el número 0
+		if (formattedPrecio.equals("0.0") || formattedPrecio.equals("0,0")) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static String parsePrecio(String precioStr) {
+		if (precioStr == null || precioStr.isEmpty()) {
+			return "€0.0";
+		}
+
+		// Crear un formateador decimal que maneje símbolos y formatos específicos
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(',');
+		DecimalFormat format = new DecimalFormat("#,##0.00", symbols);
+		format.setParseBigDecimal(true);
+
+		// Encontrar el símbolo de moneda al inicio de la cadena
+		char simbolo = precioStr.charAt(0);
+
+		// Eliminar todos los caracteres que no son dígitos, punto o coma
+		String cleanPrecioStr = precioStr.replaceAll("[^0-9.,]", "");
+
+		// Insertar el símbolo de moneda al inicio del número limpio
+		cleanPrecioStr = simbolo + cleanPrecioStr;
+
+		// Devolver el valor parseado como double
+		return cleanPrecioStr;
 	}
 
 	/**
@@ -566,9 +632,10 @@ public class AccionControlUI {
 		String precioCartaNormal = "";
 		String precioCartaFoil = "";
 		if (esAccion) {
-			precioCartaNormal = camposCarta.get(5);
-			precioCartaFoil = camposCarta.get(6);
-			urlReferenciaCarta = camposCarta.get(7);
+
+			urlReferenciaCarta = camposCarta.get(5);
+			precioCartaFoil = limpiarPrecio(camposCarta.get(6));
+			precioCartaNormal = limpiarPrecio(camposCarta.get(7));
 			idCartaTratar = camposCarta.get(8);
 			direccionImagenCarta = camposCarta.get(9);
 			normasCarta = camposCarta.get(10);
@@ -587,6 +654,21 @@ public class AccionControlUI {
 		cartaTemp.setIdCarta(Utilidades.defaultIfNullOrEmpty(idCartaTratar, ""));
 
 		return cartaTemp;
+	}
+
+	public static String limpiarPrecio(String precioStr) {
+		// Formatear el precio
+		String formattedPrecio = parsePrecio(precioStr);
+
+		// Verificar si el precio es "€0.0", "€0", "$0.0", "$0", "€" o "$"
+		if (formattedPrecio.equalsIgnoreCase("€0.0") || formattedPrecio.equalsIgnoreCase("€0")
+				|| formattedPrecio.equalsIgnoreCase("$0.0") || formattedPrecio.equalsIgnoreCase("$0")
+				|| formattedPrecio.equals("€") || formattedPrecio.equals("$")) {
+			return "0";
+		}
+
+		// En todos los otros casos, el precio es considerado válido
+		return precioStr;
 	}
 
 	public static List<String> comprobarYDevolverLista(List<ComboBox<String>> comboBoxes,

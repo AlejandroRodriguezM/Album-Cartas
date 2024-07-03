@@ -25,26 +25,59 @@ public class CartaFichero extends Carta {
 			String editorialCarta = data[3];
 			String coleccionCarta = data[4];
 			String rarezaCarta = data[5];
-			String precioCartaNormal = data[6];
-			String precioCartaFoil = data[7];
+			String precioCartaNormal = limpiarPrecio(data[6]);
+			String precioCartaFoil = limpiarPrecio(data[7]);
 			String urlReferenciaCarta = data[8];
 			String direccionImagenCarta = data[9];
 			String normasCarta = data[10];
 			String nombrePortada = Utilidades.obtenerNombrePortada(false, direccionImagenCarta);
 			String imagen = FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH + File.separator + nombrePortada;
 
-			// Verificaciones y asignaciones predeterminadas
-			precioCartaNormal = (Double.parseDouble(precioCartaNormal) <= 0) ? "0.0" : precioCartaNormal;
-			precioCartaFoil = (Double.parseDouble(precioCartaFoil) <= 0) ? "0.0" : precioCartaFoil;
 			urlReferenciaCarta = (urlReferenciaCarta.isEmpty()) ? "Sin referencia" : urlReferenciaCarta;
 
 			return new Carta.CartaBuilder("", nombre).numCarta(numCarta).editorialCarta(editorialCarta)
 					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).precioCartaNormal(precioCartaNormal)
-					.precioCartaFoil(precioCartaFoil).urlReferenciaCarta(urlReferenciaCarta).direccionImagenCarta(imagen)
-					.normasCarta(normasCarta).build();
+					.precioCartaFoil(precioCartaFoil).urlReferenciaCarta(urlReferenciaCarta)
+					.direccionImagenCarta(imagen).normasCarta(normasCarta).build();
 		} else {
 			return null;
 		}
+	}
+
+	public static String limpiarPrecio(String precioStr) {
+		// Verificar si el precio es nulo o está vacío
+		if (precioStr == null || precioStr.isEmpty()) {
+			return "0";
+		}
+
+		// Eliminar espacios en blanco al inicio y al final
+		precioStr = precioStr.trim();
+
+		// Eliminar símbolos repetidos y dejar solo uno
+		precioStr = precioStr.replaceAll("([€$])\\1+", "$1");
+
+		// Eliminar todos los símbolos excepto uno si hay varios
+		precioStr = precioStr.replaceAll("[€$]", "");
+
+		// Eliminar caracteres no numéricos excepto el primer punto decimal
+		precioStr = precioStr.replaceAll("[^\\d.]", "");
+		int dotIndex = precioStr.indexOf('.');
+		if (dotIndex != -1) {
+			precioStr = precioStr.substring(0, dotIndex + 1) + precioStr.substring(dotIndex + 1).replaceAll("\\.", "");
+		}
+
+		// Verificar si el precio contiene solo un punto decimal y ningún otro número
+		if (precioStr.equals(".") || precioStr.equals(".0")) {
+			return "0";
+		}
+
+		// Si el precio después de limpiar es vacío, retornar "0"
+		if (precioStr.isEmpty()) {
+			return "0";
+		}
+
+		// Retornar el precio limpiado
+		return precioStr;
 	}
 
 	public static String comprobarGradeo(String valorGradeo) {

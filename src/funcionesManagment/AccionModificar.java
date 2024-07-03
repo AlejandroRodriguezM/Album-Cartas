@@ -170,6 +170,7 @@ public class AccionModificar {
 		} else {
 			String id = "A" + 0 + "" + (ListasCartasDAO.cartasImportados.size() + 1);
 			datos.setIdCarta(id);
+			
 			ListasCartasDAO.cartasImportados.add(datos);
 		}
 

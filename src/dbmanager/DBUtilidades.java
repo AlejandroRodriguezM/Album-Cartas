@@ -253,8 +253,8 @@ public class DBUtilidades {
 			String normasCarta = rs.getString("normasCarta");
 
 			// Verificaciones y asignaciones predeterminadas
-			precioCartaNormal = (Double.parseDouble(precioCartaNormal) <= 0) ? "0.0" : precioCartaNormal;
-			precioCartaFoil = (Double.parseDouble(precioCartaFoil) <= 0) ? "0.0" : precioCartaFoil;
+//			precioCartaNormal = (Double.parseDouble(precioCartaNormal) <= 0) ? "0.0" : precioCartaNormal;
+//			precioCartaFoil = (Double.parseDouble(precioCartaFoil) <= 0) ? "0.0" : precioCartaFoil;
 
 			return new Carta.CartaBuilder(id, nombre).numCarta(numCarta).editorialCarta(editorialCarta)
 					.coleccionCarta(coleccionCarta).rarezaCarta(rarezaCarta).precioCartaNormal(precioCartaNormal)

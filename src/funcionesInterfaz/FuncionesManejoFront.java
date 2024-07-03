@@ -174,37 +174,44 @@ public class FuncionesManejoFront {
 		simbolosPermitidos.add('€');
 	}
 
-	public static void permitirSimbolosEspecificos(TextField textField) {
-		if (textField != null) {
-			textField.textProperty().addListener((observable, oldValue, newValue) -> {
-				if (newValue != null) {
-					StringBuilder filteredValue = new StringBuilder();
-					boolean puntoPermitido = true; // Para controlar que solo haya un punto
+    public static void permitirSimbolosEspecificos(TextField textField) {
+        if (textField != null) {
+            textField.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (newValue != null) {
+                        StringBuilder filteredValue = new StringBuilder();
+                        boolean puntoPermitido = true; // Para controlar que solo haya un punto
+                        boolean simboloPermitido = true; // Para controlar que solo haya un símbolo
 
-					// Recorrer cada caracter del nuevo valor
-					for (int i = 0; i < newValue.length(); i++) {
-						char c = newValue.charAt(i);
+                        // Recorrer cada caracter del nuevo valor
+                        for (int i = 0; i < newValue.length(); i++) {
+                            char c = newValue.charAt(i);
 
-						if (isSimbolo(c)) {
-							// Si es un símbolo permitido, añadirlo al valor filtrado
-							filteredValue.append(c);
-							puntoPermitido = true; // Reiniciar la bandera de punto permitido
-						} else if (Character.isDigit(c)) {
-							// Si es un dígito, añadirlo al valor filtrado
-							filteredValue.append(c);
-						} else if (c == '.' && puntoPermitido) {
-							// Si es un punto y aún no se ha agregado uno, añadirlo al valor filtrado
-							filteredValue.append(c);
-							puntoPermitido = false; // Marcar que ya se añadió un punto
-						}
-					}
+                            if (simbolosPermitidos.contains(c) && simboloPermitido) {
+                                // Si es un símbolo permitido y aún no se ha agregado uno, añadirlo al valor filtrado
+                                filteredValue.append(c);
+                                simboloPermitido = false; // Marcar que ya se añadió un símbolo
+                                puntoPermitido = true; // Reiniciar la bandera de punto permitido
+                            } else if (Character.isDigit(c)) {
+                                // Si es un dígito, añadirlo al valor filtrado
+                                filteredValue.append(c);
+                                simboloPermitido = true; // Reiniciar la bandera de símbolo permitido
+                            } else if (c == '.' && puntoPermitido) {
+                                // Si es un punto y aún no se ha agregado uno, añadirlo al valor filtrado
+                                filteredValue.append(c);
+                                puntoPermitido = false; // Marcar que ya se añadió un punto
+                                simboloPermitido = true; // Reiniciar la bandera de símbolo permitido
+                            }
+                        }
 
-					// Establecer el texto filtrado en el TextField
-					textField.setText(filteredValue.toString());
-				}
-			});
-		}
-	}
+                        // Establecer el texto filtrado en el TextField
+                        textField.setText(filteredValue.toString());
+                    }
+                }
+            });
+        }
+    }
 
 	// Método para verificar si un carácter es un símbolo
 	private static boolean isSimbolo(char c) {
