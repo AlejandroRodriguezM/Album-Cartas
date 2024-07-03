@@ -153,11 +153,6 @@ public class ListasCartasDAO {
 	public static List<List<String>> itemsList = Arrays.asList(listaNombre, listaNumeroCarta, listaEditorial,
 			listaColeccion, listaRareza, nombrePrecioNormalList, nombrePrecioFoilList);
 
-	/**
-	 * Lista de comics guardados para poder ser impresos
-	 */
-	public static ObservableList<Carta> cartasGuardadosList = FXCollections.observableArrayList();
-
 	public static void eliminarUltimaCartaImportada() {
 		ObservableList<Carta> cartasImportados = ListasCartasDAO.cartasImportados;
 		if (!cartasImportados.isEmpty()) {
@@ -165,19 +160,10 @@ public class ListasCartasDAO {
 		}
 	}
 
-	public static boolean verificarIDExistente(String id, boolean esGuardado) {
+	public static boolean verificarIDExistente(String id) {
 		// Verificar que el id no sea nulo ni esté vacío
 		if (id == null || id.isEmpty()) {
 			return false;
-		}
-
-		// Buscar en comicsGuardadosList si es necesario
-		if (esGuardado) {
-			for (Carta carta : cartasGuardadosList) {
-				if (id.equals(carta.getIdCarta())) {
-					return true; // Si encuentra un comic con el mismo id, devuelve true
-				}
-			}
 		}
 
 		// Buscar en comicsImportados
@@ -381,13 +367,6 @@ public class ListasCartasDAO {
 		listaCartas.clear(); // Limpia la lista de cómics
 	}
 
-	/**
-	 * Funcion que permite limpiar de contenido la lista de comics guardados
-	 */
-	public static void limpiarListaGuardados() {
-		cartasGuardadosList.clear();
-	}
-
 	public static void reiniciarListas() {
 		listaCartas.clear();
 		listaCartasCheck.clear();
@@ -422,27 +401,6 @@ public class ListasCartasDAO {
 			return true; // La lista está vacía
 		}
 		return false; // La lista contiene elementos
-	}
-
-	/**
-	 * Agrega un elemento único a la lista principal de cómics guardados,
-	 * ordenándolos por ID en orden descendente de longitud.
-	 *
-	 * @param comicToAdd Carta a añadir a la lista principal.
-	 */
-	public static void agregarElementoUnico(Carta cartaToAdd) {
-		// Usamos un Set para mantener los elementos únicos
-		Set<String> idsUnicos = cartasGuardadosList.stream().map(Carta::getIdCarta).collect(Collectors.toSet());
-
-		// Verificamos si la ID del cómic ya está en la lista principal
-		if (!idsUnicos.contains(cartaToAdd.getIdCarta())) {
-			// Añadimos el cómic a la lista principal
-			cartasGuardadosList.add(cartaToAdd);
-
-			// Ordenamos la lista por ID en orden descendente de longitud
-			cartasGuardadosList
-					.sort(Comparator.comparing(Carta::getIdCarta, Comparator.comparingInt(String::length).reversed()));
-		}
 	}
 
 	/**

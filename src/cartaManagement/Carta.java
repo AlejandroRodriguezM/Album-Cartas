@@ -263,7 +263,7 @@ public class Carta {
 	public static Carta obtenerCarta(String idCarta) {
 		boolean existeComic = CartaManagerDAO.comprobarIdentificadorCarta(idCarta);
 		if (!existeComic) {
-			existeComic = ListasCartasDAO.verificarIDExistente(idCarta, false);
+			existeComic = ListasCartasDAO.verificarIDExistente(idCarta);
 			if (existeComic) {
 				return ListasCartasDAO.devolverCartaLista(idCarta);
 			}

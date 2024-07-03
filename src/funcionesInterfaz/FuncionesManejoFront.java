@@ -166,50 +166,50 @@ public class FuncionesManejoFront {
 			});
 		}
 	}
-	
-    // Conjunto de símbolos permitidos
-    private static final Set<Character> simbolosPermitidos = new HashSet<>();
-    static {
-        simbolosPermitidos.add('$');
-        simbolosPermitidos.add('€');
-    }
 
-    public static void permitirSimbolosEspecificos(TextField textField) {
-        if (textField != null) {
-            textField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
-                    StringBuilder filteredValue = new StringBuilder();
-                    boolean puntoPermitido = true; // Para controlar que solo haya un punto
+	// Conjunto de símbolos permitidos
+	private static final Set<Character> simbolosPermitidos = new HashSet<>();
+	static {
+		simbolosPermitidos.add('$');
+		simbolosPermitidos.add('€');
+	}
 
-                    // Recorrer cada caracter del nuevo valor
-                    for (int i = 0; i < newValue.length(); i++) {
-                        char c = newValue.charAt(i);
+	public static void permitirSimbolosEspecificos(TextField textField) {
+		if (textField != null) {
+			textField.textProperty().addListener((observable, oldValue, newValue) -> {
+				if (newValue != null) {
+					StringBuilder filteredValue = new StringBuilder();
+					boolean puntoPermitido = true; // Para controlar que solo haya un punto
 
-                        if (isSimbolo(c)) {
-                            // Si es un símbolo permitido, añadirlo al valor filtrado
-                            filteredValue.append(c);
-                            puntoPermitido = true; // Reiniciar la bandera de punto permitido
-                        } else if (Character.isDigit(c)) {
-                            // Si es un dígito, añadirlo al valor filtrado
-                            filteredValue.append(c);
-                        } else if (c == '.' && puntoPermitido) {
-                            // Si es un punto y aún no se ha agregado uno, añadirlo al valor filtrado
-                            filteredValue.append(c);
-                            puntoPermitido = false; // Marcar que ya se añadió un punto
-                        }
-                    }
+					// Recorrer cada caracter del nuevo valor
+					for (int i = 0; i < newValue.length(); i++) {
+						char c = newValue.charAt(i);
 
-                    // Establecer el texto filtrado en el TextField
-                    textField.setText(filteredValue.toString());
-                }
-            });
-        }
-    }
+						if (isSimbolo(c)) {
+							// Si es un símbolo permitido, añadirlo al valor filtrado
+							filteredValue.append(c);
+							puntoPermitido = true; // Reiniciar la bandera de punto permitido
+						} else if (Character.isDigit(c)) {
+							// Si es un dígito, añadirlo al valor filtrado
+							filteredValue.append(c);
+						} else if (c == '.' && puntoPermitido) {
+							// Si es un punto y aún no se ha agregado uno, añadirlo al valor filtrado
+							filteredValue.append(c);
+							puntoPermitido = false; // Marcar que ya se añadió un punto
+						}
+					}
 
-    // Método para verificar si un carácter es un símbolo
-    private static boolean isSimbolo(char c) {
-        return simbolosPermitidos.contains(c);
-    }
+					// Establecer el texto filtrado en el TextField
+					textField.setText(filteredValue.toString());
+				}
+			});
+		}
+	}
+
+	// Método para verificar si un carácter es un símbolo
+	private static boolean isSimbolo(char c) {
+		return simbolosPermitidos.contains(c);
+	}
 
 	public static void restringirSimbolos(TextField textField) {
 		if (textField != null) {
@@ -346,28 +346,27 @@ public class FuncionesManejoFront {
 
 		disableButtons(estadoAccion, referenciaVentana.getBotonIntroducir(), referenciaVentana.getBotonModificar(),
 				referenciaVentana.getBotonEliminar(), referenciaVentana.getBotonLimpiar(),
-				referenciaVentana.getBotonMostrarParametro(), referenciaVentana.getBotonImprimir(),
-				referenciaVentana.getBotonGuardarResultado(), referenciaVentana.getBotonbbdd(),
+				referenciaVentana.getBotonMostrarParametro(), referenciaVentana.getBotonbbdd(),
 				referenciaVentana.getBotonLimpiar(), referenciaVentana.getBotonBusquedaAvanzada(),
 				referenciaVentana.getBotonLimpiar(), referenciaVentana.getBotonSubidaPortada(),
 				referenciaVentana.getBotonGuardarCarta(), referenciaVentana.getBotonGuardarCambioCarta(),
 				referenciaVentana.getBotonEliminarImportadoCarta(), referenciaVentana.getBotonParametroCarta(),
 				referenciaVentana.getBotonbbdd(), referenciaVentana.getBotonBusquedaCodigo(),
-				referenciaVentana.getBotonGuardarResultado(), referenciaVentana.getBotonEliminarImportadoListaCarta(),
+				referenciaVentana.getBotonEliminarImportadoListaCarta(),
 				referenciaVentana.getBotonGuardarListaCartas());
 
 		disableControls(estadoAccion, referenciaVentana.getNombreCartaCombobox(),
 				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEditorialCombobox(),
 				referenciaVentana.getNombreColeccionCombobox(), referenciaVentana.getNombreRarezaCombobox(),
-				referenciaVentana.getNumeroCartaCombobox(),referenciaVentana.getNombreTiendaCombobox());
+				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreTiendaCombobox());
 
 		disableTextFields(estadoAccion, referenciaVentana.getNombreCartaTextField(),
 				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
 				referenciaVentana.getRarezaCartaTextField(), referenciaVentana.getBusquedaGeneralTextField(),
 				referenciaVentana.getNormasCartaTextArea(), referenciaVentana.getNormasCartaTextArea(),
-				referenciaVentana.getPrecioCartaNormalTextField(),referenciaVentana.getPrecioCartaFoilTextField(), referenciaVentana.getCodigoCartaTratarTextField(),
-				referenciaVentana.getDireccionImagenTextField(), referenciaVentana.getIdCartaTratarTextField(),
-				referenciaVentana.getUrlReferenciaTextField());
+				referenciaVentana.getPrecioCartaNormalTextField(), referenciaVentana.getPrecioCartaFoilTextField(),
+				referenciaVentana.getCodigoCartaTratarTextField(), referenciaVentana.getDireccionImagenTextField(),
+				referenciaVentana.getIdCartaTratarTextField(), referenciaVentana.getUrlReferenciaTextField());
 
 		if (referenciaVentana.getBotonModificar() != null) {
 			// Limpiar elementos adicionales de la interfaz
@@ -380,7 +379,8 @@ public class FuncionesManejoFront {
 
 		if (referenciaVentana.getNombreCartaTextField() != null) {
 			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonBusquedaCodigo(),
-					getReferenciaVentana().getBusquedaCodigoTextField(),getReferenciaVentana().getNombreTiendaCombobox());
+					getReferenciaVentana().getBusquedaCodigoTextField(),
+					getReferenciaVentana().getNombreTiendaCombobox());
 			Utilidades.cambiarVisibilidad(elementos, true);
 		}
 

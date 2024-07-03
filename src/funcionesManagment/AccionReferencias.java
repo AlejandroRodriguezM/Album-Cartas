@@ -67,9 +67,6 @@ public class AccionReferencias {
 	private Button botonEliminarImportadoCarta;
 	private Button botonSubidaPortada;
 	private Button botonMostrarParametro;
-	private Button botonImprimir;
-	private Button botonGuardarResultado;
-	private Button botonMostrarGuardados;
 	private Button botonActualizarDatos;
 	private Button botonActualizarPortadas;
 	private Button botonActualizarSoftware;
@@ -414,27 +411,6 @@ public class AccionReferencias {
 	 */
 	public Button getBotonMostrarParametro() {
 		return botonMostrarParametro;
-	}
-
-	/**
-	 * @return the botonImprimir
-	 */
-	public Button getBotonImprimir() {
-		return botonImprimir;
-	}
-
-	/**
-	 * @return the botonGuardarResultado
-	 */
-	public Button getBotonGuardarResultado() {
-		return botonGuardarResultado;
-	}
-
-	/**
-	 * @return the botonMostrarGuardados
-	 */
-	public Button getBotonMostrarGuardados() {
-		return botonMostrarGuardados;
 	}
 
 	/**
@@ -1240,27 +1216,6 @@ public class AccionReferencias {
 	 */
 	public void setBotonMostrarParametro(Button botonMostrarParametro) {
 		this.botonMostrarParametro = botonMostrarParametro;
-	}
-
-	/**
-	 * @param botonImprimir the botonImprimir to set
-	 */
-	public void setBotonImprimir(Button botonImprimir) {
-		this.botonImprimir = botonImprimir;
-	}
-
-	/**
-	 * @param botonGuardarResultado the botonGuardarResultado to set
-	 */
-	public void setBotonGuardarResultado(Button botonGuardarResultado) {
-		this.botonGuardarResultado = botonGuardarResultado;
-	}
-
-	/**
-	 * @param botonMostrarGuardados the botonMostrarGuardados to set
-	 */
-	public void setBotonMostrarGuardados(Button botonMostrarGuardados) {
-		this.botonMostrarGuardados = botonMostrarGuardados;
 	}
 
 	/**

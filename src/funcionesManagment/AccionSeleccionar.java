@@ -41,6 +41,7 @@ public class AccionSeleccionar {
 		getReferenciaVentana().getImagenCarta().setOpacity(1);
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
+		@SuppressWarnings("unchecked")
 		final List<Node>[] elementos = new ArrayList[1];
 		elementos[0] = new ArrayList<>();
 
@@ -156,13 +157,6 @@ public class AccionSeleccionar {
 				FuncionesTableView.tablaBBDD(listaParametro);
 
 				if (!esAccion) {
-					if (!listaParametro.isEmpty()) {
-						getReferenciaVentana().getBotonImprimir().setVisible(true);
-						getReferenciaVentana().getBotonGuardarResultado().setVisible(true);
-					} else {
-						getReferenciaVentana().getBotonImprimir().setVisible(false);
-						getReferenciaVentana().getBotonGuardarResultado().setVisible(false);
-					}
 					getReferenciaVentana().getBusquedaGeneralTextField().setText("");
 				}
 

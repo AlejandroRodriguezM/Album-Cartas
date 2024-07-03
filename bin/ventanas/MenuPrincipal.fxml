@@ -140,12 +140,6 @@
             <Font size="10.0" />
          </font></Button>
       <Button fx:id="botonEliminar" layoutX="329.0" layoutY="116.0" mnemonicParsing="false" onAction="#accionCarta" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Eliminar Carta" />
-      <Button fx:id="botonImprimir" layoutX="65.0" layoutY="269.0" mnemonicParsing="false" onAction="#imprimirResultado" prefHeight="21.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Imprimir" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="botonGuardarResultado" layoutX="6.0" layoutY="269.0" mnemonicParsing="false" onAction="#guardarResultado" prefHeight="13.0" prefWidth="53.0" stylesheets="@../style/genericos_style.css" text="Guardar" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="botonMostrarGuardados" alignment="CENTER" contentDisplay="BOTTOM" layoutX="6.0" layoutY="229.0" mnemonicParsing="false" onAction="#comicsGuardados" prefHeight="35.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Ver Guardados" visible="false">
-         <font>
-            <Font size="11.0" />
-         </font></Button>
         <ProgressIndicator fx:id="progresoCarga" layoutX="1154.0" layoutY="317.0" prefHeight="66.0" prefWidth="70.0" stylesheets="@../style/progreso_style.css" visible="false" />
       <Button fx:id="botonCancelarSubida" layoutX="1090.0" layoutY="317.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="57.0" style="-fx-border-color: none; -fx-background-color: none;" visible="false">
          <stylesheets>

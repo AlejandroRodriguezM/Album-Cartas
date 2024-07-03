@@ -537,22 +537,8 @@ public class AccionControlUI {
 
 					if (newSelection != null) {
 						Carta idRow = referenciaVentana.getTablaBBDD().getSelectionModel().getSelectedItem();
-
-						if (idRow != null) {
-							referenciaVentana.getBotonGuardarResultado().setVisible(true);
-							referenciaVentana.getBotonGuardarResultado().setDisable(false);
-						}
 					}
 				});
-
-		ListasCartasDAO.cartasGuardadosList.addListener((ListChangeListener.Change<? extends Carta> change) -> {
-			while (change.next()) {
-				if (!ListasCartasDAO.cartasGuardadosList.isEmpty()) {
-					referenciaVentana.getBotonImprimir().setVisible(true);
-					referenciaVentana.getBotonImprimir().setDisable(false);
-				}
-			}
-		});
 
 		// Establecer un Listener para el tamaño del AnchorPane
 		referenciaVentana.getRootAnchorPane().widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -560,13 +546,6 @@ public class AccionControlUI {
 			FuncionesTableView.ajustarAnchoVBox();
 			FuncionesTableView.seleccionarRaw();
 			FuncionesTableView.modificarColumnas(true);
-		});
-
-		referenciaVentana.getBotonGuardarResultado().setOnMousePressed(event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				// Si la lista está vacía, oculta el botón
-				referenciaVentana.getBotonMostrarGuardados().setVisible(true);
-			}
 		});
 	}
 
