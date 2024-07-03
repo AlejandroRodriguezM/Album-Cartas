@@ -43,14 +43,8 @@ public class DBUtilidades {
 	public static String construirSentenciaSQL(TipoBusqueda tipoBusqueda) {
 
 		switch (tipoBusqueda) {
-		case POSESION:
-			return SelectManager.SENTENCIA_POSESION;
 		case COMPLETA:
 			return SelectManager.SENTENCIA_COMPLETA;
-		case VENDIDOS:
-			return SelectManager.SENTENCIA_VENDIDOS;
-		case COMPRADOS:
-			return SelectManager.SENTENCIA_COMPRADOS;
 		default:
 			throw new IllegalArgumentException("Tipo de búsqueda no válido");
 		}

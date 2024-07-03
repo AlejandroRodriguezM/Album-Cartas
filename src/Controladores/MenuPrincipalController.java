@@ -709,7 +709,7 @@ public class MenuPrincipalController implements Initializable {
 	@FXML
 	void comicsComprados(ActionEvent event) {
 		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.COMPRADOS);
+		imprimirCartasEstado(TipoBusqueda.COMPLETA);
 	}
 
 	/**
