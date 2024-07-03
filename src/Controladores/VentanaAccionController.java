@@ -82,9 +82,9 @@ public class VentanaAccionController implements Initializable {
 	@FXML
 	private Label labelNombre;
 
-    @FXML
-    private Button botonClonarCarta;
-	
+	@FXML
+	private Button botonClonarCarta;
+
 	@FXML
 	private Button botonBusquedaAvanzada;
 
@@ -431,8 +431,8 @@ public class VentanaAccionController implements Initializable {
 	 * ComboBoxes con opciones estáticas predefinidas.
 	 */
 	public void rellenarCombosEstaticos() {
-        List<ComboBox<String>> listaComboboxes = new ArrayList<>();
-        listaComboboxes.add(comboBoxTienda);
+		List<ComboBox<String>> listaComboboxes = new ArrayList<>();
+		listaComboboxes.add(comboBoxTienda);
 		FuncionesComboBox.rellenarComboBoxEstaticos(listaComboboxes);
 	}
 
@@ -591,18 +591,18 @@ public class VentanaAccionController implements Initializable {
 		setCartaCache(null);
 	}
 
-    @FXML
-    void clonarCartaSeleccionada(ActionEvent event) {
+	@FXML
+	void clonarCartaSeleccionada(ActionEvent event) {
 
-    	int num = Ventanas.verVentanaNumero();
-    	Carta cartaCopiar = getCartaCache();
-    	
-    	for (int i = 0; i < num; i++) {
-    		Carta cartaModificada = AccionFuncionesComunes.copiarCartaClon(cartaCopiar);
-    		AccionFuncionesComunes.procesarCartaPorCodigo(cartaModificada, true);
+		int num = Ventanas.verVentanaNumero();
+		Carta cartaCopiar = getCartaCache();
+
+		for (int i = 0; i < num; i++) {
+			Carta cartaModificada = AccionFuncionesComunes.copiarCartaClon(cartaCopiar);
+			AccionFuncionesComunes.procesarCartaPorCodigo(cartaModificada, true);
 		}
-    }
-	
+	}
+
 	@FXML
 	void eliminarCartaSeleccionado(ActionEvent event) {
 		enviarReferencias();
@@ -616,71 +616,53 @@ public class VentanaAccionController implements Initializable {
 
 	@FXML
 	void eliminarListaCartas(ActionEvent event) {
-	    enviarReferencias();
-	    nav.cerrarMenuOpciones();
+		enviarReferencias();
+		nav.cerrarMenuOpciones();
 
-	    if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
-	        // Ocultar botones relacionados con cartas
-	        ocultarBotonesCartas();
+		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
+			// Ocultar botones relacionados con cartas
+			ocultarBotonesCartas();
 
-	        // Eliminar cada carta de la lista junto con su archivo de imagen
-	        for (Carta carta : ListasCartasDAO.cartasImportados) {
-	            eliminarCartaConImagen(carta);
-	        }
+			// Eliminar cada carta de la lista
+			for (Carta carta : ListasCartasDAO.cartasImportados) {
+				// Eliminar archivo de imagen asociado a la carta
+				eliminarArchivoImagen(carta.getDireccionImagenCarta());
+			}
 
-	        // Limpiar la lista de cartas y la tabla de la interfaz
-	        limpiarListaCartas();
+			// Limpiar la lista de cartas y la tabla de la interfaz
+			ListasCartasDAO.cartasImportados.clear();
+			guardarReferencia().getTablaBBDD().getItems().clear();
 
-	        // Reiniciar la imagen de la carta y limpiar la ventana
-	        reiniciarImagenCarta();
-	        limpiarVentana();
-	    }
+			// Reiniciar la imagen de la carta y limpiar la ventana
+			imagencarta.setImage(null);
+			limpiarVentana();
+		}
 
-	    // Rellenar combos estáticos después de la operación
-	    rellenarCombosEstaticos();
-	}
-
-	// Función para ocultar botones relacionados con cartas
-	private void ocultarBotonesCartas() {
-		 guardarReferencia().getBotonClonarCarta().setVisible(false);
-	    guardarReferencia().getBotonGuardarCarta().setVisible(false);
-	    guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
-	}
-
-	// Función para eliminar una carta junto con su archivo de imagen
-	private void eliminarCartaConImagen(Carta carta) {
-	    // Eliminar archivo de imagen asociado a la carta
-	    eliminarArchivoImagen(carta.getDireccionImagenCarta());
-
-	    // Eliminar la carta de la lista
-	    ListasCartasDAO.cartasImportados.remove(carta);
+		// Rellenar combos estáticos después de la operación
+		rellenarCombosEstaticos();
 	}
 
 	// Función para eliminar archivo de imagen
 	private void eliminarArchivoImagen(String direccionImagen) {
-	    if (direccionImagen != null && !direccionImagen.isEmpty()) {
-	        File archivoImagen = new File(direccionImagen);
-	        if (archivoImagen.exists()) {
-	            // Intentar borrar el archivo de la imagen
-	            if (archivoImagen.delete()) {
-	                System.out.println("Archivo de imagen eliminado: " + direccionImagen);
-	            } else {
-	                System.err.println("No se pudo eliminar el archivo de imagen: " + direccionImagen);
-	                // Puedes lanzar una excepción aquí si lo prefieres
-	            }
-	        }
-	    }
+		if (direccionImagen != null && !direccionImagen.isEmpty()) {
+			File archivoImagen = new File(direccionImagen);
+			if (archivoImagen.exists()) {
+				// Intentar borrar el archivo de la imagen
+				if (archivoImagen.delete()) {
+					System.out.println("Archivo de imagen eliminado: " + direccionImagen);
+				} else {
+					System.err.println("No se pudo eliminar el archivo de imagen: " + direccionImagen);
+					// Puedes lanzar una excepción aquí si lo prefieres
+				}
+			}
+		}
 	}
 
-	// Función para limpiar la lista de cartas y la tabla de la interfaz
-	private void limpiarListaCartas() {
-	    ListasCartasDAO.cartasImportados.clear();
-	    guardarReferencia().getTablaBBDD().getItems().clear();
-	}
-
-	// Función para reiniciar la imagen de la carta
-	private void reiniciarImagenCarta() {
-	    imagencarta.setImage(null);
+	// Función para ocultar botones relacionados con cartas
+	private void ocultarBotonesCartas() {
+		guardarReferencia().getBotonClonarCarta().setVisible(false);
+		guardarReferencia().getBotonGuardarCarta().setVisible(false);
+		guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
 	}
 
 	/**
@@ -734,7 +716,7 @@ public class VentanaAccionController implements Initializable {
 		} else {
 			// Continuar con la lógica cuando ambas claves están presente
 			AccionFuncionesComunes.cambiarVisibilidadAvanzada();
-			
+
 		}
 	}
 
@@ -857,7 +839,7 @@ public class VentanaAccionController implements Initializable {
 	void limpiarDatos(ActionEvent event) {
 		limpiarVentana();
 	}
-	
+
 	public void limpiarVentana() {
 		enviarReferencias();
 		AccionFuncionesComunes.limpiarDatosPantallaAccion();
