@@ -140,97 +140,84 @@ public class WebScrapGoogleCardTrader {
 		};
 	}
 
-    public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException, IOException {
-        int maxAttempts = 3;
-        int delaySeconds = 1;
-        List<String> urls = new ArrayList<>();
+	public static List<String> buscarEnGoogle(String searchTerm) throws URISyntaxException {
+		try {
+			// Codificar el término de búsqueda
+			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
 
-        for (int attempt = 0; attempt < maxAttempts; attempt++) {
-            try {
-                // Codificar el término de búsqueda
-                String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
+			// Construir la URL de búsqueda en Google
+			String urlString = "https://www.google.com/search?q=cardmarket+" + encodedSearchTerm + "+versions";
 
-                // Construir la URL de búsqueda en Google
-                String urlString = "https://www.google.com/search?q=cardmarket+" + encodedSearchTerm + "+versions";
+			// Crear objeto URI y URL
+			URI uri = new URI(urlString);
+			URL url = uri.toURL();
 
-                // Crear objeto URI y URL
-                URI uri = new URI(urlString);
-                URL url = uri.toURL();
+			// Establecer la conexión HTTP
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			try {
+				// Introduce un retardo de 1 segundo entre solicitudes
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// Establecer el User-Agent para simular una solicitud desde el navegador Chrome
+			con.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36");
 
-                // Establecer la conexión HTTP
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+			// Leer la respuesta
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuilder content = new StringBuilder();
+			while ((inputLine = in.readLine()) != null) {
+				content.append(inputLine);
+			}
+			in.close();
+			con.disconnect();
 
-                // Establecer el User-Agent para simular una solicitud desde el navegador Chrome
-                con.setRequestProperty("User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36");
+			// Convertir la respuesta a String
+			String html = content.toString();
 
-                // Leer la respuesta
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuilder content = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine);
-                }
-                in.close();
-                con.disconnect();
+			// Buscar la URL de Cardmarket
+			int startIndex = html.indexOf("www.cardmarket.com/");
+			List<String> urls = new ArrayList<>();
 
-                // Convertir la respuesta a String
-                String html = content.toString();
+			while (startIndex != -1) {
+				int endIndex = html.indexOf("\"", startIndex);
+				if (endIndex != -1) {
+					String urlFound = html.substring(startIndex, endIndex);
 
-                // Buscar la URL de Cardmarket
-                int startIndex = html.indexOf("www.cardmarket.com/");
-                
-                while (startIndex != -1) {
-                    int endIndex = html.indexOf("\"", startIndex);
-                    if (endIndex != -1) {
-                        String urlFound = html.substring(startIndex, endIndex);
+					// Verificar si la URL termina con "/Versions"
+					if (urlFound.endsWith("/Versions")) {
+						List<String> versionLinks = extraerEnlacesDePagina("https://" + urlFound);
 
-                        // Verificar si la URL termina con "/Versions"
-                        if (urlFound.endsWith("/Versions")) {
-                            List<String> versionLinks = extraerEnlacesDePagina("https://" + urlFound);
+						if (versionLinks.isEmpty()) {
+							return null; // No se encontraron enlaces de versiones
+						} else {
+							return versionLinks; // Devolver los enlaces de versiones encontrados
+						}
+					} else {
+						urls.add(urlFound); // Agregar la URL a la lista
+					}
 
-                            if (versionLinks.isEmpty()) {
-                                return null; // No se encontraron enlaces de versiones
-                            } else {
-                                return versionLinks; // Devolver los enlaces de versiones encontrados
-                            }
-                        } else {
-                            urls.add(urlFound); // Agregar la URL a la lista
-                        }
+					// Buscar la siguiente ocurrencia de "www.cardmarket.com/"
+					startIndex = html.indexOf("www.cardmarket.com/", endIndex);
+				} else {
+					break;
+				}
+			}
 
-                        // Buscar la siguiente ocurrencia de "www.cardmarket.com/"
-                        startIndex = html.indexOf("www.cardmarket.com/", endIndex);
-                    } else {
-                        break;
-                    }
-                }
-
-                // Si no se encontraron URLs de versiones, devolver la lista de URLs generales
-                return urls.isEmpty() ? null : urls;
-
-            } catch (IOException e) {
-                if (e instanceof java.io.IOException && e.getMessage().contains("Server returned HTTP response code: 429")) {
-                    // Demasiadas solicitudes, reintentar después de un retardo exponencial
-                    if (attempt < maxAttempts - 1) {
-                        try {
-                            Thread.sleep(delaySeconds * 1000); // Retardo exponencial
-                            delaySeconds *= 2;
-                        } catch (InterruptedException ignored) {
-                            Thread.currentThread().interrupt();
-                        }
-                    } else {
-                        e.printStackTrace();
-                    }
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null; // Si todos los intentos fallan
-    }
-
+			// Devolver la lista de URLs encontradas
+			if (urls.isEmpty()) {
+				return null; // No se encontraron URLs
+			} else {
+				return urls;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null; // Devolver null en caso de excepción
+		}
+	}
 
 	public static Carta extraerDatosMTG(String url) {
 
@@ -248,48 +235,45 @@ public class WebScrapGoogleCardTrader {
 		String precioFoil = "0.0";
 
 		for (String line : data) {
-		    if (line.startsWith("Referencia: ")) {
-		        referencia = line.substring("Referencia: ".length()).trim();
-		    } else if (line.startsWith("Nombre: ")) {
-		        String nombreLimpio = line.substring("Nombre: ".length()).trim().replaceAll("\\(.*\\)", "").trim();
-		        nombre = nombreLimpio;
-		    } else if (line.startsWith("Coleccion: ")) {
-		        String[] coleccionLimpio = line.substring("Coleccion: ".length()).trim().split(":");
-		        coleccion = coleccionLimpio[0];
-		    } else if (line.startsWith("Editorial: ")) {
-		        editorial = line.substring("Editorial: ".length()).trim();
-		    } else if (line.startsWith("Rareza: ")) {
-		        rareza = line.substring("Rareza: ".length()).trim();
-		    } else if (line.startsWith("Numero: ")) {
-		        numero = line.substring("Numero: ".length()).trim();
-		    } else if (line.startsWith("Valor: ")) {
-		        String[] precioCarta = line.substring("Valor: ".length()).trim().split("€");
-		        String numeroFormateado = precioCarta[0].replace(".", "").replace(",", ".");
-		        double numFormateado = Double.parseDouble(numeroFormateado);
-		        
-		        if (referencia.endsWith("?isFoil=Y")) {
-		            precioFoil = String.valueOf(numFormateado);
-		        } else {
-		            precioNormal = String.valueOf(numFormateado);
-		        }
-		    } else if (line.startsWith("Normas: ")) {
-		        normas = line.substring("Normas: ".length()).trim();
-		    } else if (line.startsWith("Imagen: ")) {
-		        String argument = "cardtrader+" + nombre.replace(" ", "+") + "+" + numero + "+"
-		                + coleccion.replace(" ", "+");
-		        String urlCarta = searchWebImagen(argument);
+			if (line.startsWith("Referencia: ")) {
+				referencia = line.substring("Referencia: ".length()).trim();
+			} else if (line.startsWith("Nombre: ")) {
+				String nombreLimpio = line.substring("Nombre: ".length()).trim().replaceAll("\\(.*\\)", "").trim();
+				nombre = nombreLimpio;
+			} else if (line.startsWith("Coleccion: ")) {
+				String[] coleccionLimpio = line.substring("Coleccion: ".length()).trim().split(":");
+				coleccion = coleccionLimpio[0];
+			} else if (line.startsWith("Editorial: ")) {
+				editorial = line.substring("Editorial: ".length()).trim();
+			} else if (line.startsWith("Rareza: ")) {
+				rareza = line.substring("Rareza: ".length()).trim();
+			} else if (line.startsWith("Numero: ")) {
+				numero = line.substring("Numero: ".length()).trim();
+			} else if (line.startsWith("Valor: ")) {
+				String[] precioCarta = line.substring("Valor: ".length()).trim().split("€");
+				String numeroFormateado = precioCarta[0].replace(".", "").replace(",", ".");
+				double numFormateado = Double.parseDouble(numeroFormateado);
 
-		        if (urlCarta.contains("/cards/")) {
-		            imagen = extraerDatosImagen(urlCarta);
-		        }
-		    }
+				if (referencia.endsWith("?isFoil=Y")) {
+					precioFoil = String.valueOf(numFormateado);
+				} else {
+					precioNormal = String.valueOf(numFormateado);
+				}
+			} else if (line.startsWith("Normas: ")) {
+				normas = line.substring("Normas: ".length()).trim();
+			} else if (line.startsWith("Imagen: ")) {
+				String argument = "cardtrader+" + nombre.replace(" ", "+") + "+" + numero + "+"
+						+ coleccion.replace(" ", "+");
+				String urlCarta = searchWebImagen(argument);
+
+				if (urlCarta.contains("/cards/")) {
+					imagen = extraerDatosImagen(urlCarta);
+				}
+			}
 		}
-
-
-
 		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
-				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil).urlReferenciaCarta(referencia)
-				.direccionImagenCarta(imagen).normasCarta(normas).build();
+				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
+				.urlReferenciaCarta(referencia).direccionImagenCarta(imagen).normasCarta(normas).build();
 	}
 
 	public static String limpiarTexto(String texto) {

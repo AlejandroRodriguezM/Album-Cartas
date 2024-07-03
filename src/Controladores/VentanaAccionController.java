@@ -282,11 +282,11 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setNormasCartaTextArea(textAreaNormasCarta);
 		referenciaVentana.setPrecioCartaNormalTextField(textFieldPrecioCartaNormal);
 		referenciaVentana.setPrecioCartaFoilTextField(textFieldPrecioCartaFoil);
-		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
 		referenciaVentana.setDireccionImagenTextField(textFieldDireccionPortada);
 		referenciaVentana.setNombreTiendaCombobox(comboBoxTienda);
 		referenciaVentana.setUrlReferenciaTextField(textFieldUrlCarta);
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
+		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
 
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
 		referenciaVentana.setBotonBusquedaCodigo(botonBusquedaCodigo);
@@ -660,6 +660,7 @@ public class VentanaAccionController implements Initializable {
 		} else {
 			// Continuar con la lógica cuando ambas claves están presente
 			AccionFuncionesComunes.cambiarVisibilidadAvanzada();
+			
 		}
 	}
 
@@ -709,19 +710,14 @@ public class VentanaAccionController implements Initializable {
 		if (Utilidades.isInternetAvailable()) {
 			String valorCodigo = busquedaCodigo.getText();
 			String tipoTienda = comboBoxTienda.getValue();
-			if (valorCodigo.isEmpty()) {
+			if (valorCodigo.isEmpty() || tipoTienda.isEmpty()) {
 				return;
 			}
-
 			nav.cerrarMenuOpciones();
-			AccionControlUI.limpiarAutorellenos(false);
+//			AccionControlUI.limpiarAutorellenos(false);
 			AccionControlUI.borrarDatosGraficos();
 
 			AccionFuncionesComunes.cargarRuning();
-
-			if (tipoTienda.isEmpty()) {
-				return;
-			}
 
 			CompletableFuture<List<String>> future;
 

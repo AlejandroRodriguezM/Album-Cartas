@@ -359,7 +359,7 @@ public class FuncionesManejoFront {
 		disableControls(estadoAccion, referenciaVentana.getNombreCartaCombobox(),
 				referenciaVentana.getNumeroCartaCombobox(), referenciaVentana.getNombreEditorialCombobox(),
 				referenciaVentana.getNombreColeccionCombobox(), referenciaVentana.getNombreRarezaCombobox(),
-				referenciaVentana.getNumeroCartaCombobox());
+				referenciaVentana.getNumeroCartaCombobox(),referenciaVentana.getNombreTiendaCombobox());
 
 		disableTextFields(estadoAccion, referenciaVentana.getNombreCartaTextField(),
 				referenciaVentana.getEditorialCartaTextField(), referenciaVentana.getColeccionCartaTextField(),
@@ -380,7 +380,7 @@ public class FuncionesManejoFront {
 
 		if (referenciaVentana.getNombreCartaTextField() != null) {
 			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonBusquedaCodigo(),
-					getReferenciaVentana().getBusquedaCodigoTextField());
+					getReferenciaVentana().getBusquedaCodigoTextField(),getReferenciaVentana().getNombreTiendaCombobox());
 			Utilidades.cambiarVisibilidad(elementos, true);
 		}
 

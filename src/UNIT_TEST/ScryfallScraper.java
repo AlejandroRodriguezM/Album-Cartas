@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,51 +25,68 @@ import javafx.concurrent.Task;
 
 public class ScryfallScraper {
 
-	public static CompletableFuture<List<String>> getCardLinks(String cardName) {
-		CompletableFuture<List<String>> future = new CompletableFuture<>();
+    public static CompletableFuture<List<String>> getCardLinks(String cardName) {
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
 
-		Task<List<String>> task = new Task<>() {
-			@Override
-			protected List<String> call() throws IOException, URISyntaxException {
-				String searchedCardName = buscarEnGoogle(cardName); // Usar una nueva variable aquí
-				String searchUrl = String.format(
-						"https://scryfall.com/search?as=grid&order=released&q=%%21%%22%s%%22+include%%3Aextras&unique=prints",
-						searchedCardName.replace(" ", "+"));
-				Document doc = Jsoup.connect(searchUrl).get();
-				Elements cardElements = doc.select("a.card-grid-item-card");
+        Task<List<String>> task = new Task<>() {
+            @Override
+            protected List<String> call() throws IOException, URISyntaxException {
+                String searchedCardName = buscarEnGoogle(cardName); // Usar una nueva variable aquí
+                String searchUrl = String.format("https://scryfall.com/search?as=grid&order=released&q="
+                        + searchedCardName.replaceAll(" ", "+") + "&unique=prints");
+                System.out.println(searchUrl);
 
-				List<String> cardLinks = new ArrayList<>();
-				for (Element cardElement : cardElements) {
-					cardLinks.add(cardElement.attr("href"));
-				}
+                Connection connection = Jsoup.connect(searchUrl);
+                Document doc = connection.get();
 
-				if (cardLinks.isEmpty()) {
-					System.err.println(
-							"No se encontraron enlaces de cartas para el nombre de carta: " + searchedCardName);
-				}
+                // Check if URL was redirected
+                String finalUrl = connection.response().url().toString();
 
-				return cardLinks;
-			}
-		};
+                List<String> cardLinks = new ArrayList<>();
+                if (!finalUrl.equals(searchUrl)) {
+                    // URL was redirected, add the final URL to the list
+                    cardLinks.add(finalUrl);
+                } else {
+                    // Check for multiple results
+                    Elements cardElements = doc.select("a.card-grid-item-card");
+                    for (Element cardElement : cardElements) {
+                        cardLinks.add(cardElement.attr("href"));
+                    }
 
-		task.setOnSucceeded(e -> {
-			List<String> urls = task.getValue();
-			if (urls == null || urls.isEmpty()) {
-				future.complete(Collections.emptyList()); // Return an empty list if no results are found
-			} else {
-				future.complete(urls); // Completes the future with the results
-			}
-		});
+                    // If no multiple results, check for single result
+                    if (cardLinks.isEmpty()) {
+                        Element singleCardElement = doc.selectFirst("a.card-profile");
+                        if (singleCardElement != null) {
+                            cardLinks.add(singleCardElement.attr("href"));
+                        }
+                    }
+                }
 
-		task.setOnFailed(e -> {
-			future.completeExceptionally(task.getException()); // Completes the future with an exception if the task
-																// fails
-		});
+                if (cardLinks.isEmpty()) {
+                    System.err.println("No se encontraron enlaces de cartas para el nombre de carta: " + searchedCardName);
+                }
 
-		new Thread(task).start();
+                return cardLinks;
+            }
+        };
 
-		return future;
-	}
+        task.setOnSucceeded(e -> {
+            List<String> urls = task.getValue();
+            if (urls == null || urls.isEmpty()) {
+                future.complete(Collections.emptyList()); // Return an empty list if no results are found
+            } else {
+                future.complete(urls); // Completes the future with the results
+            }
+        });
+
+        task.setOnFailed(e -> {
+            future.completeExceptionally(task.getException()); // Completes the future with an exception if the task fails
+        });
+
+        new Thread(task).start();
+
+        return future;
+    }
 
 	public static Carta extractCardDetails(String cardLinks) throws IOException {
 
@@ -166,19 +184,6 @@ public class ScryfallScraper {
 			System.out.println("No capturado");
 		} else {
 			// Imprimir los detalles
-//				System.out.println("Nombre: " + name);
-//				System.out.println("Número: " + number);
-//				System.out.println("Edicion: Magic: The Gathering");
-//				System.out.println("Colección: " + collection);
-//				System.out.println("Rareza: " + rareza);
-//				System.out.println("Imagen: " + imageUrl);
-//				System.out.println("Precio Normal CardMarket: " + normalPrice);
-//				System.out.println("Precio Foil CardMarket: " + foilPrice);
-//				System.out.println("Precio Normal TCGplayer: " + normalPriceTCG);
-//				System.out.println("Precio Foil TCGplayer: " + foilPriceTCG);
-//				System.out.println("Referencia de compra: " + link);
-//				System.out.println("Normas: " + normasCarta);
-//
 			return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
 					.coleccionCarta(collection).rarezaCarta(rareza).precioCartaNormal(normalPrice)
 					.precioCartaFoil(foilPrice).urlReferenciaCarta(cardLinks).direccionImagenCarta(imageUrl)
