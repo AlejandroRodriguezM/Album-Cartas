@@ -70,8 +70,8 @@
       <Label fx:id="labelId" focusTraversable="false" layoutX="5.0" layoutY="29.0" prefHeight="21.0" prefWidth="45.0" style="-fx-background-color: white;" stylesheets="@../style/genericos_style.css" text="Carta ID" />
       <Button fx:id="botonLimpiar" layoutX="187.0" layoutY="29.0" mnemonicParsing="false" onAction="#limpiarDatos" prefHeight="21.0" prefWidth="57.0" stylesheets="@../style/genericos_style.css" text="Limpiar" />
       <Button fx:id="botonBusquedaAvanzada" focusTraversable="false" layoutX="5.0" layoutY="273.0" mnemonicParsing="false" onAction="#busquedaAvanzada" prefHeight="25.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Opciones avanzada" visible="false" />
-      <TextField fx:id="busquedaCodigo" layoutX="98.0" layoutY="309.0" prefHeight="25.0" prefWidth="125.0" promptText="Codigo de busqueda" visible="false" />
-      <Button fx:id="botonBusquedaCodigo" layoutX="227.0" layoutY="302.0" mnemonicParsing="false" onAction="#busquedaPorCodigo" prefHeight="23.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Buscar Carta" visible="false" />
+      <TextField fx:id="busquedaCodigo" layoutX="121.0" layoutY="309.0" prefHeight="25.0" prefWidth="125.0" promptText="Codigo de busqueda" visible="false" />
+      <Button fx:id="botonBusquedaCodigo" layoutX="250.0" layoutY="302.0" mnemonicParsing="false" onAction="#busquedaPorCodigo" prefHeight="23.0" prefWidth="90.0" stylesheets="@../style/genericos_style.css" text="Buscar Carta" visible="false" />
       <Button fx:id="botonModificarCarta" layoutX="601.0" layoutY="260.0" mnemonicParsing="false" onAction="#modificarDatos" prefHeight="73.0" prefWidth="229.0" style="-fx-font-size: 25;" stylesheets="@../style/genericos_style.css" text="Modificar Carta" textAlignment="CENTER" visible="false" wrapText="true">
          <font>
             <Font size="13.0" />
@@ -163,6 +163,6 @@
             <Font size="10.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboBoxTienda" layoutX="4.0" layoutY="308.0" prefHeight="25.0" prefWidth="90.0" promptText="Tienda" visible="false" />
+      <ComboBox fx:id="comboBoxTienda" layoutX="4.0" layoutY="308.0" prefHeight="25.0" prefWidth="114.0" promptText="Tienda" visible="false" />
    </children>
 </Pane>
