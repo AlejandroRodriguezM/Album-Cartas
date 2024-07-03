@@ -379,7 +379,11 @@ public class AccionFuncionesComunes {
 		}
 
 		if ("aniadir".equals(TIPO_ACCION)) {
-			AccionFuncionesComunes.cambiarVisibilidadAvanzada();
+
+			if (getReferenciaVentana().getNombreTiendaCombobox().isVisible()) {
+				AccionFuncionesComunes.cambiarVisibilidadAvanzada();
+			}
+
 		}
 
 		// Borrar cualquier mensaje de error presente

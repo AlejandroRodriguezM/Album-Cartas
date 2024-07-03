@@ -334,8 +334,8 @@ public class MenuPrincipalController implements Initializable {
 
 		// FXCollections Lists
 		AccionReferencias.setListaElementosFondo(FXCollections.observableArrayList(backgroundImage, menuNavegacion));
-		AccionReferencias.setListaBotones(FXCollections.observableArrayList(botonLimpiar, botonMostrarParametro,
-				botonbbdd, botonCancelarSubida));
+		AccionReferencias.setListaBotones(
+				FXCollections.observableArrayList(botonLimpiar, botonMostrarParametro, botonbbdd, botonCancelarSubida));
 
 		AccionReferencias.setListaColumnasTabla(Arrays.asList(columnaNombre, columnaNumero, columnaEditorial,
 				columnaColeccion, columnaRareza, columnaId, columnaPrecioNormal, columnaPrecioFoil, columnaReferencia));
@@ -618,7 +618,7 @@ public class MenuPrincipalController implements Initializable {
 	void mostrarPorParametro(ActionEvent event) {
 		enviarReferencias();
 		mostrarCartas(false);
-		modificarEstadoTabla(384, 1);
+		modificarEstadoTabla(349, 1);
 	}
 
 	/**
@@ -632,7 +632,7 @@ public class MenuPrincipalController implements Initializable {
 	void verTodabbdd(ActionEvent event) {
 		enviarReferencias();
 		mostrarCartas(true);
-		modificarEstadoTabla(384, 1);
+		modificarEstadoTabla(349, 1);
 	}
 
 	public void modificarEstadoTabla(double altura, double opacidad) {
@@ -1170,7 +1170,7 @@ public class MenuPrincipalController implements Initializable {
 		imagenCarta.setImage(null);
 		imagenCarta.setOpacity(0);
 
-		modificarEstadoTabla(259, 0.6);
+		modificarEstadoTabla(349, 0.6);
 	}
 
 	private void limpiarComboBox() {
