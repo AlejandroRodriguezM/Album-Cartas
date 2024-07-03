@@ -338,7 +338,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setNavegacionCerrar(navegacionOpciones);
 		referenciaVentana.setNavegacionEstadistica(navegacionEstadistica);
 
-		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNumeroCarta, comboBoxTienda));
+		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNumeroCarta));
 
 		AccionReferencias.setListaTextFields(
 				FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta, textFieldEditorialCarta,
@@ -431,7 +431,9 @@ public class VentanaAccionController implements Initializable {
 	 * ComboBoxes con opciones estáticas predefinidas.
 	 */
 	public void rellenarCombosEstaticos() {
-		FuncionesComboBox.rellenarComboBoxEstaticos(AccionReferencias.getListaComboboxes());
+        List<ComboBox<String>> listaComboboxes = new ArrayList<>();
+        listaComboboxes.add(comboBoxTienda);
+		FuncionesComboBox.rellenarComboBoxEstaticos(listaComboboxes);
 	}
 
 	public void formatearTextField() {
@@ -527,6 +529,7 @@ public class VentanaAccionController implements Initializable {
 		AccionModificar.actualizarCartaLista();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -545,6 +548,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -563,6 +567,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -606,7 +611,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
-		botonClonarCarta.setVisible(false);
+		ocultarBotonesCartas();
 	}
 
 	@FXML
@@ -637,6 +642,7 @@ public class VentanaAccionController implements Initializable {
 
 	// Función para ocultar botones relacionados con cartas
 	private void ocultarBotonesCartas() {
+		 guardarReferencia().getBotonClonarCarta().setVisible(false);
 	    guardarReferencia().getBotonGuardarCarta().setVisible(false);
 	    guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
 	}
