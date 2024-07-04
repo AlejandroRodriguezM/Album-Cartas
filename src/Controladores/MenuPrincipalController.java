@@ -193,16 +193,10 @@ public class MenuPrincipalController implements Initializable {
 	private MenuItem menuCartaModificar;
 
 	@FXML
-	private MenuItem menuEstadisticaComprados;
-
-	@FXML
 	private MenuItem menuEstadisticaEstadistica;
 
 	@FXML
-	private MenuItem menuEstadisticaPosesion;
-
-	@FXML
-	private MenuItem menuEstadisticaVendidos;
+	private MenuItem menuPrecioTotal;
 
 	@FXML
 	private MenuBar menuNavegacion;
@@ -286,11 +280,9 @@ public class MenuPrincipalController implements Initializable {
 		referenciaVentana.setMenuCartaAniadir(menuCartaAniadir);
 		referenciaVentana.setMenuCartaEliminar(menuCartaEliminar);
 		referenciaVentana.setMenuCartaModificar(menuCartaModificar);
-		referenciaVentana.setMenuEstadisticaComprados(menuEstadisticaComprados);
 		referenciaVentana.setMenuEstadisticaEstadistica(menuEstadisticaEstadistica);
-		referenciaVentana.setMenuEstadisticaPosesion(menuEstadisticaPosesion);
-		referenciaVentana.setMenuEstadisticaVendidos(menuEstadisticaVendidos);
 		referenciaVentana.setMenuArchivoAvanzado(menuArchivoAvanzado);
+		referenciaVentana.setMenuEstadisticaSumaTotal(menuPrecioTotal);
 
 		// Menus
 		referenciaVentana.setMenuNavegacion(menuNavegacion);
@@ -380,9 +372,7 @@ public class MenuPrincipalController implements Initializable {
 		menuCartaEliminar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/delete.png", 16, 16));
 		menuCartaModificar.setGraphic(Utilidades.createIcon("/Icono/Ventanas/modify.png", 16, 16));
 
-		menuEstadisticaPosesion.setGraphic(Utilidades.createIcon("/Icono/Estadistica/posesion.png", 16, 16));
-		menuEstadisticaComprados.setGraphic(Utilidades.createIcon("/Icono/Estadistica/comprado.png", 16, 16));
-		menuEstadisticaVendidos.setGraphic(Utilidades.createIcon("/Icono/Estadistica/vendido.png", 16, 16));
+		menuPrecioTotal.setGraphic(Utilidades.createIcon("/Icono/Estadistica/posesion.png", 16, 16));
 		menuEstadisticaEstadistica.setGraphic(Utilidades.createIcon("/Icono/Estadistica/descarga.png", 16, 16));
 
 		Platform.runLater(() -> {
@@ -1220,6 +1210,24 @@ public class MenuPrincipalController implements Initializable {
 		imagenCarta.setImage(null);
 		prontInfo.setOpacity(0);
 		nav.verAccionCarta();
+	}
+
+	@FXML
+	void sumaPreciosCartas(ActionEvent event) {
+
+		List<String> preciosNormal = ListasCartasDAO.listaPreciosNormal;
+		List<String> precioFoil = ListasCartasDAO.listaPreciosFoil;
+
+		double preciosNormalSuma = Utilidades.sumaNumeros(preciosNormal);
+		double preciosFoilSuma = Utilidades.sumaNumeros(precioFoil);
+		double total = preciosNormalSuma + preciosFoilSuma;
+		total = Math.round(total * 100.0) / 100.0;
+
+		String mensaje ="Precio total de las cartas son: \n" + "Normal: " + preciosNormalSuma + "€\n" + "Foil: " + preciosFoilSuma + "€\nTotal: " + total + "€\n" + "\n" + "\n";
+
+		AlarmaList.detenerAnimacion();
+		AlarmaList.mostrarMensajePront(mensaje, true, prontInfo);
+
 	}
 
 	/////////////////////////////

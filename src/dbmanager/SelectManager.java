@@ -15,7 +15,7 @@ public class SelectManager {
 
 	public static final String TAMANIO_DATABASE = "SELECT COUNT(*) FROM albumbbdd;";
 	private static final String SENTENCIA_BUSQUEDA_INDIVIDUAL = "SELECT * FROM albumbbdd WHERE idCarta = ?;";
-	private static final String SENTENCIA_CONTAR_CARTAS_POR_ID = "SELECT COUNT(*) FROM albumbbdd WHERE idCarta = ?;";
+	private static final String SENTENCIA_CONTAR_CARTAS_POR_ID = "SELECT 1 FROM albumbbdd WHERE idCarta = ? LIMIT 1;";
 	private static final String SENTENCIA_BUSCAR_PORTADA = "SELECT portada FROM albumbbdd WHERE idCarta = ?;";
 	public static final String SENTENCIA_BUSQUEDA_COMPLETA = "SELECT * FROM albumbbdd";
 	public static final String SENTENCIA_TOTAL_BUSQUEDA = "SELECT COUNT(*) FROM albumbbdd WHERE 1=1;";
@@ -88,41 +88,37 @@ public class SelectManager {
 		return carta;
 	}
 
-	/**
-	 * Comprueba si el identificador introducido existe en la base de datos.
-	 *
-	 * @param identificador El identificador a verificar.
-	 * @return true si el identificador existe en la base de datos, false si no
-	 *         existe.
-	 * @throws SQLException Si ocurre un error en la consulta SQL.
-	 */
-	public static boolean comprobarIdentificadorCarta(String identificador) {
-
-		if (identificador == null || identificador.trim().isEmpty()) {
-			return false; // Si el identificador es nulo o está vacío, se considera que no existe
-		}
-
-		boolean existe = false; // Variable para almacenar si el identificador existe en la base de datos
+    /**
+     * Comprueba si un identificador de carta existe en la base de datos.
+     *
+     * @param identificador El identificador de la carta a comprobar.
+     * @return true si el identificador existe, false en caso contrario.
+     */
+    public static boolean comprobarIdentificadorCarta(String identificador) {
+    	
+        if (identificador == null || identificador.trim().isEmpty()) {
+            return false; // Si el identificador es nulo o está vacío, se considera que no existe
+        }
 
 		try (Connection conn = ConectManager.conexion();
 				PreparedStatement preparedStatement = conn.prepareStatement(SENTENCIA_CONTAR_CARTAS_POR_ID)) {
 
-			preparedStatement.setString(1, identificador.trim());
+            preparedStatement.setString(1, identificador.trim());
 
-			try (ResultSet rs = preparedStatement.executeQuery()) {
-				if (rs.next()) {
-					int rowCount = rs.getInt(1);
-					existe = (rowCount > 0);
-				}
-			}
-		} catch (Exception e) {
-			Utilidades.manejarExcepcion(e);
-			// Manejar error de sintaxis SQL de manera específica
-			return false;
-		}
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+            	            	
+                return rs.next(); // Si hay una fila, el identificador existe
+            }
+        } catch (SQLException e) {
+            Utilidades.manejarExcepcion(e);
+            // Manejar error de sintaxis SQL de manera específica
+        } catch (Exception e) {
+            Utilidades.manejarExcepcion(e);
+            // Manejar otros errores genéricos
+        }
 
-		return existe; // Devolver si el identificador existe en la base de datos o no
-	}
+        return false;
+    }
 
 	/**
 	 * Obtiene la dirección de la portada de un cómic.

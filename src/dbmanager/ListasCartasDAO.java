@@ -101,7 +101,7 @@ public class ListasCartasDAO {
 	public static List<String> numeroCartaList = new ArrayList<>();
 
 	public static List<String> nombrePrecioNormalList = new ArrayList<>();
-	
+
 	public static List<String> nombrePrecioFoilList = new ArrayList<>();
 
 	/**
@@ -199,6 +199,8 @@ public class ListasCartasDAO {
 		listaColeccion = DBUtilidades.obtenerValoresColumna("coleccionCarta");
 		listaRareza = DBUtilidades.obtenerValoresColumna("rarezaCarta");
 		listaReferencia = DBUtilidades.obtenerValoresColumna("urlReferenciaCarta");
+		listaPreciosNormal = DBUtilidades.obtenerValoresColumna("precioCartaNormal");
+		listaPreciosFoil = DBUtilidades.obtenerValoresColumna("precioCartaFoil");
 
 		listaID = ordenarLista(listaID);
 
@@ -448,13 +450,17 @@ public class ListasCartasDAO {
 				}
 			}
 
-			listaAutoCompletado = listaArregladaAutoComplete(listaAutoCompletado);
+			if (columna.contains("precio")) {
+				return listaAutoCompletado;
+			}
+
+			return listaArregladaAutoComplete(listaAutoCompletado);
 
 		} catch (SQLException e) {
 			Utilidades.manejarExcepcion(e);
 		}
 
-		return listaAutoCompletado;
+		return new ArrayList<>();
 	}
 
 	/**

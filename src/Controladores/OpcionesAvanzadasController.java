@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -270,7 +273,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 	@FXML
 	void comprimirPortadas(ActionEvent event) {
-		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("portada");
+		List<String> inputPortadas = DBUtilidades.obtenerValoresColumna("direccionImagenCarta");
 		Utilidades.borrarArchivosNoEnLista(inputPortadas);
 		List<String> inputPaths = ListasCartasDAO.listaImagenes;
 		cartasProcesados = new AtomicInteger(0);
@@ -285,7 +288,7 @@ public class OpcionesAvanzadasController implements Initializable {
 
 		final String DOCUMENTS_PATH = Utilidades.DOCUMENTS_PATH;
 		final String DB_NAME = Utilidades.nombreDB();
-		final String directorioComun = DOCUMENTS_PATH + File.separator + "libreria_cartas" + File.separator + DB_NAME
+		final String directorioComun = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator + DB_NAME
 				+ File.separator;
 		final String directorioOriginal = directorioComun + "portadas" + File.separator;
 		final String directorioNuevo = directorioComun + "portadas_originales";
@@ -300,7 +303,7 @@ public class OpcionesAvanzadasController implements Initializable {
 		thread.start();
 	}
 
-	private static void processCarta(String codigo) {
+	private static void processCarta() {
 		StringBuilder textoBuilder = new StringBuilder();
 
 		codigoFaltante.append("Comprimiendo: ").append(cartasProcesados.get()).append(" de ").append(numLineas)
@@ -332,7 +335,7 @@ public class OpcionesAvanzadasController implements Initializable {
 						return;
 					}
 
-					processCarta(codigo);
+					processCarta();
 					comprimirImagenes(codigo);
 				});
 
@@ -491,8 +494,13 @@ public class OpcionesAvanzadasController implements Initializable {
 					// Mostrar el diálogo de selección de carpeta
 
 					if (esCopia) {
+						// Crear la carpeta "portadas" dentro del directorio seleccionado
+						Path portadasDirectory = Paths.get(selectedDirectory.getAbsolutePath(), "portadas");
+						if (!Files.exists(portadasDirectory)) {
+							Files.createDirectories(portadasDirectory);
+						}
 						Utilidades.copyDirectory(FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH,
-								selectedDirectory.getAbsolutePath());
+								portadasDirectory.toString());
 					} else {
 						Utilidades.copyDirectory(selectedDirectory.getAbsolutePath(),
 								FuncionesExcel.DEFAULT_PORTADA_IMAGE_PATH);

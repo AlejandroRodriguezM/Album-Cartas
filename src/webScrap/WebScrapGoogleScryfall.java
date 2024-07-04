@@ -124,15 +124,11 @@ public class WebScrapGoogleScryfall {
 		String collection = doc.select("span.prints-current-set-name").text();
 
 		// Imagen
-		String imageUrl = "";
-		Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
-		if (imageElement != null) {
-			imageUrl = imageElement.attr("src");
-		}
+		String imageUrl = urlImagen(cardLinks);
 
 		String normasCarta = "";
 		Element normasElement = doc.select("div.card-text-box div.card-text-oracle p").first();
-		if (imageElement != null) {
+		if (normasElement != null) {
 			normasCarta = normasElement.text();
 		}
 
@@ -179,39 +175,52 @@ public class WebScrapGoogleScryfall {
 		}
 
 		if (normalPrice.isEmpty() && foilPrice.isEmpty() && normalPriceTCG.isEmpty() && foilPriceTCG.isEmpty()) {
-			System.out.println("No capturado");
-		} else {
-			// Imprimir los detalles
-			return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
-					.coleccionCarta(collection).rarezaCarta(rareza).precioCartaNormal(cleanPrice(normalPrice))
-					.precioCartaFoil(cleanPrice(foilPrice)).urlReferenciaCarta(cardLinks).direccionImagenCarta(imageUrl)
-					.normasCarta(normasCarta).build();
+			normalPrice = "0";
+			foilPrice = "0";
 		}
-		return null;
+		// Imprimir los detalles
+		return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
+				.coleccionCarta(collection).rarezaCarta(rareza).precioCartaNormal(cleanPrice(normalPrice))
+				.precioCartaFoil(cleanPrice(foilPrice)).urlReferenciaCarta(cardLinks).direccionImagenCarta(imageUrl)
+				.normasCarta(normasCarta).build();
 
+	}
+
+	public static String urlImagen(String urlWeb) {
+		Document doc;
+		try {
+			doc = Jsoup.connect(urlWeb).get();
+			Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
+			if (imageElement != null) {
+				return imageElement.attr("src");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	// Función para limpiar los precios
 	public static String cleanPrice(String price) {
-	    if (price == null || price.isEmpty()) {
-	        return "0";
-	    }
+		if (price == null || price.isEmpty()) {
+			return "0";
+		}
 
-	    // Patrón para extraer números, punto decimal, euro (€) y dólar ($)
-	    Pattern pattern = Pattern.compile("[0-9]+([,.][0-9]*)?|[€$]");
-	    Matcher matcher = pattern.matcher(price);
+		// Patrón para extraer números, punto decimal, euro (€) y dólar ($)
+		Pattern pattern = Pattern.compile("[0-9]+([,.][0-9]*)?|[€$]");
+		Matcher matcher = pattern.matcher(price);
 
-	    StringBuilder cleanedPrice = new StringBuilder();
-	    while (matcher.find()) {
-	        cleanedPrice.append(matcher.group());
-	    }
+		StringBuilder cleanedPrice = new StringBuilder();
+		while (matcher.find()) {
+			cleanedPrice.append(matcher.group());
+		}
 
-	    // Si no se encuentra ningún número, retornar "0"
-	    if (cleanedPrice.length() == 0) {
-	        return "0";
-	    }
+		// Si no se encuentra ningún número, retornar "0"
+		if (cleanedPrice.length() == 0) {
+			return "0";
+		}
 
-	    return cleanedPrice.toString();
+		return cleanedPrice.toString();
 	}
 
 	public static String buscarEnGoogle(String searchTerm) throws URISyntaxException {

@@ -136,10 +136,7 @@ public class AccionReferencias {
 	private MenuItem menuArchivoExcel;
 	private MenuItem menuArchivoImportar;
 	private MenuItem menuArchivoSobreMi;
-	private MenuItem menuEstadisticaComprados;
-	private MenuItem menuEstadisticaFirmados;
-	private MenuItem menuEstadisticaPosesion;
-	private MenuItem menuEstadisticaVendidos;
+	private MenuItem menuEstadisticaSumaTotal;
 	private MenuItem menuArchivoAvanzado;
 
 	private Menu navegacionCerrar;
@@ -828,34 +825,6 @@ public class AccionReferencias {
 	}
 
 	/**
-	 * @return the menuEstadisticaComprados
-	 */
-	public MenuItem getMenuEstadisticaComprados() {
-		return menuEstadisticaComprados;
-	}
-
-	/**
-	 * @return the menuEstadisticaFirmados
-	 */
-	public MenuItem getMenuEstadisticaFirmados() {
-		return menuEstadisticaFirmados;
-	}
-
-	/**
-	 * @return the menuEstadisticaPosesion
-	 */
-	public MenuItem getMenuEstadisticaPosesion() {
-		return menuEstadisticaPosesion;
-	}
-
-	/**
-	 * @return the menuEstadisticaVendidos
-	 */
-	public MenuItem getMenuEstadisticaVendidos() {
-		return menuEstadisticaVendidos;
-	}
-
-	/**
 	 * @return the menuArchivoAvanzado
 	 */
 	public MenuItem getMenuArchivoAvanzado() {
@@ -965,6 +934,13 @@ public class AccionReferencias {
 	 */
 	public Button getBotonClonarCarta() {
 		return botonClonarCarta;
+	}
+
+	/**
+	 * @return the menuEstadisticaSumaTotal
+	 */
+	public MenuItem getMenuEstadisticaSumaTotal() {
+		return menuEstadisticaSumaTotal;
 	}
 
 	/**
@@ -1651,29 +1627,8 @@ public class AccionReferencias {
 	/**
 	 * @param menuEstadisticaComprados the menuEstadisticaComprados to set
 	 */
-	public void setMenuEstadisticaComprados(MenuItem menuEstadisticaComprados) {
-		this.menuEstadisticaComprados = menuEstadisticaComprados;
-	}
-
-	/**
-	 * @param menuEstadisticaFirmados the menuEstadisticaFirmados to set
-	 */
-	public void setMenuEstadisticaFirmados(MenuItem menuEstadisticaFirmados) {
-		this.menuEstadisticaFirmados = menuEstadisticaFirmados;
-	}
-
-	/**
-	 * @param menuEstadisticaPosesion the menuEstadisticaPosesion to set
-	 */
-	public void setMenuEstadisticaPosesion(MenuItem menuEstadisticaPosesion) {
-		this.menuEstadisticaPosesion = menuEstadisticaPosesion;
-	}
-
-	/**
-	 * @param menuEstadisticaVendidos the menuEstadisticaVendidos to set
-	 */
-	public void setMenuEstadisticaVendidos(MenuItem menuEstadisticaVendidos) {
-		this.menuEstadisticaVendidos = menuEstadisticaVendidos;
+	public void setMenuEstadisticaSumaTotal(MenuItem menuEstadisticaSumaTotal) {
+		this.menuEstadisticaSumaTotal = menuEstadisticaSumaTotal;
 	}
 
 	/**
