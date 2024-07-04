@@ -227,10 +227,6 @@ public class ListasCartasDAO {
 				List<String> nombreEditorialSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<String> nombreColeccionSet = new ArrayList<>(); // Cambia el tipo aquí
 				List<String> rarezaCartaSet = new ArrayList<>(); // Cambia el tipo aquí
-				List<String> isFoilSet = new ArrayList<>(); // Cambia el tipo aquí
-				List<String> nombreGradeoSet = new ArrayList<>(); // Cambia el tipo aquí
-				List<String> nombreEstadoSet = new ArrayList<>(); // Cambia el tipo aquí
-				List<String> precioCartaSet = new ArrayList<>(); // Cambia el tipo aquí
 
 				do {
 					String nomCarta = rs.getString("nomCarta").trim();
@@ -248,18 +244,6 @@ public class ListasCartasDAO {
 					String rarezaCarta = rs.getString("rarezaCarta").trim();
 					rarezaCartaSet.add(rarezaCarta);
 
-					String esFoil = rs.getString("esFoilCarta").trim();
-					isFoilSet.add(esFoil);
-
-					String gradeoCarta = rs.getString("gradeoCarta").trim();
-					nombreGradeoSet.add(gradeoCarta);
-
-					String estadoCarta = rs.getString("estadoCarta").trim();
-					nombreEstadoSet.add(estadoCarta);
-
-					String precioCarta = rs.getString("precioCarta").trim();
-					precioCartaSet.add(precioCarta);
-
 				} while (rs.next());
 
 				procesarDatosAutocompletado(nombreColeccionSet);
@@ -270,11 +254,7 @@ public class ListasCartasDAO {
 				numeroCartaSet = listaArregladaAutoComplete(numeroCartaSet);
 				nombreColeccionSet = listaArregladaAutoComplete(nombreColeccionSet);
 				rarezaCartaSet = listaArregladaAutoComplete(rarezaCartaSet);
-				isFoilSet = listaArregladaAutoComplete(isFoilSet);
 				nombreEditorialSet = listaArregladaAutoComplete(nombreEditorialSet);
-				nombreGradeoSet = listaArregladaAutoComplete(nombreGradeoSet);
-				nombreEstadoSet = listaArregladaAutoComplete(nombreEstadoSet);
-				precioCartaSet = listaArregladaAutoComplete(precioCartaSet);
 
 				Collections.sort(numeroCartaSet, Comparable::compareTo);
 
@@ -283,11 +263,6 @@ public class ListasCartasDAO {
 				listaOrdenada.add(nombreEditorialSet);
 				listaOrdenada.add(nombreColeccionSet);
 				listaOrdenada.add(rarezaCartaSet);
-				listaOrdenada.add(isFoilSet);
-
-				listaOrdenada.add(nombreGradeoSet);
-				listaOrdenada.add(nombreEstadoSet);
-				listaOrdenada.add(precioCartaSet);
 
 				ListasCartasDAO.listaOrdenada = listaOrdenada;
 			}
@@ -589,12 +564,9 @@ public class ListasCartasDAO {
 		Map<String, Double> precioCartaEstadistica = new HashMap<>();
 		Map<String, Integer> coleccionCartaEstadistica = new HashMap<>();
 		Map<String, Integer> rarezaCartaEstadistica = new HashMap<>();
-		Map<String, Integer> esFoilCartaEstadistica = new HashMap<>();
-		Map<String, Integer> estadoCartaEstadistica = new HashMap<>();
 		Map<String, Integer> normasCartaEstadistica = new HashMap<>();
 
 		final String CONSULTA_SQL = "SELECT * FROM albumbbdd";
-		int totalCartas = 0;
 
 		try (Connection conn = ConectManager.conexion();
 				Statement stmt = conn.createStatement();
@@ -620,8 +592,6 @@ public class ListasCartasDAO {
 				nomEditorialEstadistica.put(nomEditorial, nomEditorialEstadistica.getOrDefault(nomEditorial, 0) + 1);
 				coleccionCartaEstadistica.put(coleccion, coleccionCartaEstadistica.getOrDefault(coleccion, 0) + 1);
 				rarezaCartaEstadistica.put(rarezaCarta, rarezaCartaEstadistica.getOrDefault(rarezaCarta, 0) + 1);
-				esFoilCartaEstadistica.put(esFoilCarta, esFoilCartaEstadistica.getOrDefault(esFoilCarta, 0) + 1);
-				estadoCartaEstadistica.put(estadoCarta, estadoCartaEstadistica.getOrDefault(estadoCarta, 0) + 1);
 				normasCartaEstadistica.put(normasCarta, normasCartaEstadistica.getOrDefault(normasCarta, 0) + 1);
 
 				// Convertir precioCarta de String a Double y añadir a la estadística de precios
@@ -655,8 +625,6 @@ public class ListasCartasDAO {
 		generarEstadistica(estadisticaStr, "Estadística de editoriales:\n", nomEditorialEstadistica);
 		generarEstadistica(estadisticaStr, "Estadística de colecciones:\n", coleccionCartaEstadistica);
 		generarEstadistica(estadisticaStr, "Estadística de rarezas:\n", rarezaCartaEstadistica);
-		generarEstadistica(estadisticaStr, "Estadística de esFoil:\n", esFoilCartaEstadistica);
-		generarEstadistica(estadisticaStr, "Estadística de estados:\n", estadoCartaEstadistica);
 		generarEstadistica(estadisticaStr, "Estadística de normas:\n", normasCartaEstadistica);
 
 		// Agregar estadística de precios
