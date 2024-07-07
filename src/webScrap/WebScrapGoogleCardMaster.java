@@ -261,15 +261,8 @@ public class WebScrapGoogleCardMaster {
 				}
 			} else if (line.startsWith("Normas: ")) {
 				normas = line.substring("Normas: ".length()).trim();
-			} else if (line.startsWith("Imagen: ")) {
-				String argument = "cardtrader+" + nombre.replace(" ", "+") + "+" + numero + "+"
-						+ coleccion.replace(" ", "+");
-				String urlCarta = searchWebImagen(argument);
+			} 
 
-				if (urlCarta.contains("/cards/")) {
-					imagen = extraerDatosImagen(urlCarta);
-				}
-			}
 		}
 		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
 				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
@@ -461,6 +454,17 @@ public class WebScrapGoogleCardMaster {
 			return url.substring(0, index);
 		}
 		return url;
+	}
+	
+	public static String extraerImagen(Carta carta) {
+		String argument = "cardtrader+" + carta.getNomCarta().replace(" ", "+") + "+" + carta.getNumCarta() + "+"
+				+ carta.getColeccionCarta().replace(" ", "+");
+		String urlCarta = searchWebImagen(argument);
+		if (urlCarta.contains("/cards/")) {
+			System.out.println(urlCarta);
+			return extraerDatosImagen(urlCarta);
+		}
+		return "";
 	}
 
 	public static String extraerDatosImagen(String url) {

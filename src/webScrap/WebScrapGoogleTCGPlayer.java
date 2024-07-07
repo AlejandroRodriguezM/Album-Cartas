@@ -141,6 +141,8 @@ public class WebScrapGoogleTCGPlayer {
 				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
 				.urlReferenciaCarta(referencia).direccionImagenCarta(direccionImagen).normasCarta(normas).build();
 	}
+	
+
 
 	public static String getUrlImagen(String datos) {
 

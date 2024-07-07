@@ -812,6 +812,8 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta carta, String tipoUpdate) {
 
 		if (tipoUpdate.isEmpty()) {
+			String urlImagen = WebScrapGoogleCardMaster.extraerImagen(carta);
+			carta.setDireccionImagenCarta(urlImagen);
 			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
 			String tipoTienda = determinarTipoTienda(carta.getUrlReferenciaCarta());
@@ -1153,25 +1155,22 @@ public class AccionFuncionesComunes {
 	}
 
 	public static void cambiarEstadoBotones(boolean esCancelado) {
-
 		if (TIPO_ACCION != null) {
-			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonSubidaPortada());
+			List<Node> elementos = new ArrayList<>();
+			elementos.add(getReferenciaVentana().getBotonSubidaPortada());
+			elementos.add(getReferenciaVentana().getBotonCancelarSubida());
+			elementos.add(getReferenciaVentana().getBotonLimpiar());
+			elementos.add(getReferenciaVentana().getBotonBusquedaAvanzada());
 
 			if (!TIPO_ACCION.equals("aniadir")) {
 				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
 				elementos.add(getReferenciaVentana().getBusquedaCodigoTextField());
 				elementos.add(getReferenciaVentana().getBotonCancelarSubida());
-				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
-				elementos.add(getReferenciaVentana().getBotonSubidaPortada());
 				elementos.add(getReferenciaVentana().getNombreTiendaCombobox());
 			}
 
-			getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
-			getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
-			getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
 			Utilidades.cambiarVisibilidad(elementos, esCancelado);
 		}
-
 	}
 
 	public static String carpetaRaizPortadas(String nombreDatabase) {

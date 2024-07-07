@@ -122,7 +122,7 @@
               <VBox fx:id="vboxContenido" layoutX="35.0" layoutY="1.0" prefHeight="285.0" prefWidth="244.0">
                <children>
             		
-                                            <ImageView fx:id="imagenCarta" fitHeight="355.0" fitWidth="244.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" />
+                                            <ImageView fx:id="imagenCarta" fitHeight="352.0" fitWidth="230.0" onMouseClicked="#ampliarImagen" pickOnBounds="true" preserveRatio="true" />
                </children>
               </VBox>
       		        <VBox fx:id="vboxImage" layoutX="300.0" layoutY="1.0" prefHeight="283.0" prefWidth="290.0">
