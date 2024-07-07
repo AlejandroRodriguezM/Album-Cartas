@@ -170,8 +170,12 @@ public class AccionModificar {
 		} else {
 			String id = "A" + 0 + "" + (ListasCartasDAO.cartasImportados.size() + 1);
 			datos.setIdCarta(id);
-			
 			ListasCartasDAO.cartasImportados.add(datos);
+			getReferenciaVentana().getBotonGuardarListaCartas().setVisible(true);
+			getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(true);
+
+			getReferenciaVentana().getBotonGuardarListaCartas().setDisable(false);
+			getReferenciaVentana().getBotonEliminarImportadoListaCarta().setDisable(false);
 		}
 
 		AccionFuncionesComunes.cambiarEstadoBotones(false);

@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +27,7 @@ import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
 import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
+import dbmanager.SelectManager;
 import dbmanager.UpdateManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
@@ -164,12 +168,12 @@ public class AccionFuncionesComunes {
 		FuncionesTableView.actualizarBusquedaRaw();
 	}
 
-	public static boolean procesarCartaPorCodigo(Carta cartaInfo) {
+	public static boolean procesarCartaPorCodigo(Carta cartaInfo, boolean esClonar) {
 
 		boolean alMenosUnoProcesado = false;
 
 		if (comprobarCodigo(cartaInfo)) {
-			rellenarTablaImport(cartaInfo);
+			rellenarTablaImport(cartaInfo, esClonar);
 			alMenosUnoProcesado = true;
 		}
 
@@ -216,7 +220,7 @@ public class AccionFuncionesComunes {
 
 	}
 
-	public static void actualizarCompletoCartas(Carta cartaOriginal, String urlFinal) {
+	public static void actualizarCompletoCartas(Carta cartaOriginal) {
 
 		String numCarta = cartaOriginal.getNumCarta();
 		String nombreCorregido = Utilidades.eliminarParentesis(cartaOriginal.getNomCarta());
@@ -227,8 +231,6 @@ public class AccionFuncionesComunes {
 		cartaOriginal.setNomCarta(nombreLimpio);
 		cartaOriginal.setNumCarta(numCarta);
 		cartaOriginal.setEditorialCarta(editorial);
-		Utilidades.deleteFile(cartaOriginal.getDireccionImagenCarta());
-		cartaOriginal.setDireccionImagenCarta(urlFinal);
 
 	}
 
@@ -246,51 +248,120 @@ public class AccionFuncionesComunes {
 	public static void actualizarCartasDatabase(Carta cartaOriginal, String tipoUpdate) {
 
 		String codigoCarta = cartaOriginal.getUrlReferenciaCarta();
-		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta, true, "");
+
+		String tipoTienda = determinarTipoTienda(codigoCarta);
+
+		List<Carta> cartaColeccion = obtenerCartaInfo(codigoCarta, true, tipoTienda);
 
 		for (Carta cartaInfo : cartaColeccion) {
-			cartaOriginal.setIdCarta(cartaOriginal.getIdCarta());
-			String urlImagen = cartaInfo.getDireccionImagenCarta();
-			String codigoNuevoCarta = codigoNuevaImagen();
-			String direccionCarta = urlFinalImagen(urlImagen);
-			String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoNuevoCarta + ".jpg";
-			String correctedUrl = direccionCarta.replace("\\", "/").replaceFirst("^http:", "https:");
+			cartaInfo.setIdCarta(cartaOriginal.getIdCarta());
 
 			if (tipoUpdate.equalsIgnoreCase("modificar")) {
-
-				cartaOriginal.setDireccionImagenCarta(urlFinal);
-				actualizarPortadaCartas(codigoNuevoCarta, correctedUrl);
-
+				cartaInfo.setDireccionImagenCarta(cartaOriginal.getDireccionImagenCarta());
 			} else if (tipoUpdate.equalsIgnoreCase("actualizar precio")) {
-				String cartaPrecioNuevoNormal = cartaInfo.getPrecioCartaNormal();
-				actualizarPrecioCartasNormal(cartaOriginal, cartaPrecioNuevoNormal);
-
-				String cartaPrecioNuevoFoil = cartaInfo.getPrecioCartaFoil();
-				actualizarPrecioCartasFoil(cartaOriginal, cartaPrecioNuevoFoil);
+				cartaInfo.setNomCarta(cartaOriginal.getNomCarta());
+				cartaInfo.setNumCarta(cartaOriginal.getNumCarta());
+				cartaInfo.setEditorialCarta(cartaOriginal.getEditorialCarta());
+				cartaInfo.setColeccionCarta(cartaOriginal.getColeccionCarta());
+				cartaInfo.setRarezaCarta(cartaOriginal.getRarezaCarta());
+				cartaInfo.setUrlReferenciaCarta(cartaOriginal.getUrlReferenciaCarta());
+				cartaInfo.setNormasCarta(cartaOriginal.getNormasCarta());
+				cartaInfo.setDireccionImagenCarta(cartaOriginal.getDireccionImagenCarta());
 			} else {
-				actualizarCompletoCartas(cartaOriginal, urlFinal);
+				AccionFuncionesComunes.actualizarValorPortadaCarta(cartaInfo, tipoTienda);
 			}
-
-			UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
+			UpdateManager.actualizarCartaBBDD(cartaInfo, "modificar");
 		}
 	}
 
-	public static Carta actualizarCartasPortadas(Carta cartaOriginal) {
+	public static String determinarTipoTienda(String url) {
+		if (url.contains("cardmarket.com")) {
+			return "Card Market";
+		} else if (url.contains("scryfall.com")) {
+			return "ScryFall";
+		} else if (url.contains("tcgplayer.com")) {
+			return "TCGPlayer";
+		} else {
+			return "Desconocido";
+		}
+	}
 
+	public static Carta copiarCartaClon(Carta cartaOriginal) {
+		try {
+			// Clonar la carta original
+			Carta cartaClon = (Carta) cartaOriginal.clone();
+
+			// Obtener la dirección actual de la imagen
+			String direccionActual = cartaOriginal.getDireccionImagenCarta();
+
+			// Verificar si la dirección actual es válida
+			if (direccionActual != null && !direccionActual.isEmpty()) {
+				File imagenActual = new File(direccionActual);
+
+				// Verificar si el archivo existe antes de proceder
+				if (imagenActual.exists()) {
+					// Generar un nuevo nombre de archivo y ruta destino
+					String codigoNuevoCarta = codigoNuevaImagen();
+					String nombreArchivoNuevo = codigoNuevoCarta + ".jpg";
+					String carpetaPortadas = carpetaPortadas(Utilidades.nombreDB());
+					String urlFinal = carpetaPortadas + File.separator + nombreArchivoNuevo;
+
+					// Crear la ruta destino para el archivo nuevo
+					Path rutaDestino = new File(urlFinal).toPath();
+
+					// Copiar y renombrar el archivo de imagen
+					Files.copy(imagenActual.toPath(), rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+
+					// Actualizar la dirección de la imagen en la carta clonada
+					cartaClon.setDireccionImagenCarta(urlFinal);
+
+					// Devolver la carta clonada con la nueva dirección de imagen
+					return cartaClon;
+				}
+			}
+
+			// Si la dirección actual no es válida o el archivo no existe, devolver la carta
+			// original
+			return cartaOriginal;
+		} catch (CloneNotSupportedException | IOException e) {
+			// Manejar la excepción de clonación o de operaciones de archivos
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static void actualizarCartasPortadas(Carta cartaOriginal, String tipoTienda) {
+
+		actualizarValorPortadaCarta(cartaOriginal, tipoTienda);
+		UpdateManager.actualizarCartaBBDD(cartaOriginal, "portada");
+	}
+
+	public static void actualizarValorPortadaCarta(Carta cartaOriginal, String tipoTienda) {
 		String codigoNuevoCarta = codigoNuevaImagen();
 		String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoNuevoCarta + ".jpg";
-
-		String argument = "cardtrader+" + cartaOriginal.getNomCarta().replace(" ", "+") + "+"
-				+ cartaOriginal.getNumCarta() + "+" + cartaOriginal.getColeccionCarta().replace(" ", "+");
-		String urlCarta = WebScrapGoogleCardMaster.searchWebImagen(argument);
 		String imagen = "";
-		if (urlCarta.contains("/cards/")) {
-			imagen = WebScrapGoogleCardMaster.extraerDatosImagen(urlCarta);
+		if (tipoTienda.equalsIgnoreCase("Card Market")) {
+			String argument = "cardtrader+" + cartaOriginal.getNomCarta().replace(" ", "+") + "+"
+					+ cartaOriginal.getNumCarta() + "+" + cartaOriginal.getColeccionCarta().replace(" ", "+");
+			String urlCarta = WebScrapGoogleCardMaster.searchWebImagen(argument);
+			if (urlCarta.contains("/cards/")) {
+				imagen = WebScrapGoogleCardMaster.extraerDatosImagen(urlCarta);
+			}
+		} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
+
+			imagen = WebScrapGoogleScryfall.urlImagen(cartaOriginal.getUrlReferenciaCarta());
+
+		} else if (tipoTienda.equals("TCGPlayer")) {
+			List<String> datos = WebScrapGoogleTCGPlayer.datosCartas(cartaOriginal.getUrlReferenciaCarta());
+			for (String string : datos) {
+				if (string.startsWith("Dirección de la imagen:")) {
+					imagen = WebScrapGoogleTCGPlayer.getUrlImagen(string);
+				}
+			}
 		}
-		cartaOriginal.setDireccionImagenCarta(urlFinal);
+
 		actualizarPortadaCartas(codigoNuevoCarta, imagen);
-		UpdateManager.actualizarCartaBBDD(cartaOriginal, "modificar");
-		return cartaOriginal;
+		cartaOriginal.setDireccionImagenCarta(urlFinal);
 	}
 
 	/**
@@ -349,6 +420,7 @@ public class AccionFuncionesComunes {
 			getReferenciaVentana().getTablaBBDD().getItems().clear();
 			getReferenciaVentana().getTablaBBDD().refresh();
 		}
+		getReferenciaVentana().getBotonClonarCarta().setVisible(false);
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
 		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
@@ -431,7 +503,7 @@ public class AccionFuncionesComunes {
 	 * @param comicInfo Un arreglo de strings con información del cómic.
 	 * @throws IOException
 	 */
-	private static void rellenarTablaImport(Carta comic) {
+	private static void rellenarTablaImport(Carta comic, boolean esClonar) {
 		Platform.runLater(() -> {
 
 			String numCartaStr = comic.getNumCarta();
@@ -451,38 +523,44 @@ public class AccionFuncionesComunes {
 					"Vacio");
 			String precioNormal = Utilidades.defaultIfNullOrEmpty(comic.getPrecioCartaNormal(), "0");
 			String precioFoil = Utilidades.defaultIfNullOrEmpty(comic.getPrecioCartaFoil(), "0");
-			// Variables relacionadas con la imagen del cómic
-
-			String urlImagen = comic.getDireccionImagenCarta();
 			String urlReferencia = Utilidades.defaultIfNullOrEmpty(comic.getUrlReferenciaCarta(), "Vacio");
-			File file = new File(urlImagen);
-			// Manejo de la ruta de la imagen
-			if (urlImagen == null || urlImagen.isEmpty()) {
-				String rutaImagen = "/imagenes/sinPortada.jpg";
-				URL url = Utilidades.class.getClass().getResource(rutaImagen);
-				if (url != null) {
-					urlImagen = url.toExternalForm();
+			// Variables relacionadas con la imagen del cómic
+			String imagen = "";
+			if (!esClonar) {
+				String urlImagen = comic.getDireccionImagenCarta();
+
+				File file = new File(urlImagen);
+				// Manejo de la ruta de la imagen
+				if (urlImagen == null || urlImagen.isEmpty()) {
+					String rutaImagen = "/imagenes/sinPortada.jpg";
+					URL url = Utilidades.class.getClass().getResource(rutaImagen);
+					if (url != null) {
+						urlImagen = url.toExternalForm();
+					}
+				} else {
+					file = new File(urlImagen);
+					urlImagen = file.toString();
 				}
+
+				// Corrección y generación de la URL final de la imagen
+				String correctedUrl = urlImagen.replace("\\", "/").replace("http:", "https:").replace("https:",
+						"https:/");
+				String codigoImagen = Utilidades
+						.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
+				URI uri = null;
+				try {
+					uri = new URI(correctedUrl);
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+
+				imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
+				// Descarga y conversión asíncrona de la imagen
+				Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
+						codigoImagen + ".jpg");
 			} else {
-				file = new File(urlImagen);
-				urlImagen = file.toString();
+				imagen = comic.getDireccionImagenCarta();
 			}
-
-			// Corrección y generación de la URL final de la imagen
-			String correctedUrl = urlImagen.replace("\\", "/").replace("http:", "https:").replace("https:", "https:/");
-			String codigoImagen = Utilidades
-					.generarCodigoUnico(carpetaPortadas(Utilidades.nombreDB()) + File.separator);
-			URI uri = null;
-			try {
-				uri = new URI(correctedUrl);
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-
-			String imagen = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoImagen + ".jpg";
-			// Descarga y conversión asíncrona de la imagen
-			Utilidades.descargarYConvertirImagenAsync(uri, carpetaPortadas(Utilidades.nombreDB()),
-					codigoImagen + ".jpg");
 
 			Carta comicImport = new Carta.CartaBuilder(id, titulo).numCarta(numero).editorialCarta(editorial)
 					.coleccionCarta(coleccion).rarezaCarta(rareza).precioCartaNormal(precioNormal)
@@ -490,7 +568,6 @@ public class AccionFuncionesComunes {
 					.normasCarta(normas).build();
 
 			ListasCartasDAO.cartasImportados.add(comicImport);
-//
 			FuncionesTableView.nombreColumnas();
 			FuncionesTableView.tablaBBDD(ListasCartasDAO.cartasImportados);
 		});
@@ -689,6 +766,7 @@ public class AccionFuncionesComunes {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
+
 					listaCartasDatabase.forEach(carta -> {
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
@@ -734,9 +812,12 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta carta, String tipoUpdate) {
 
 		if (tipoUpdate.isEmpty()) {
-			AccionFuncionesComunes.procesarCartaPorCodigo(carta);
+			String urlImagen = WebScrapGoogleCardMaster.extraerImagen(carta);
+			carta.setDireccionImagenCarta(urlImagen);
+			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
-			AccionFuncionesComunes.actualizarCartasPortadas(carta);
+			String tipoTienda = determinarTipoTienda(carta.getUrlReferenciaCarta());
+			AccionFuncionesComunes.actualizarCartasPortadas(carta, tipoTienda);
 		} else {
 			AccionFuncionesComunes.actualizarCartasDatabase(carta, tipoUpdate);
 		}
@@ -897,6 +978,8 @@ public class AccionFuncionesComunes {
 				getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
 			} else {
 				if (tipoUpdate.isEmpty()) {
+					referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
+					referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 					cargarCompletado();
 				} else {
 
@@ -911,9 +994,9 @@ public class AccionFuncionesComunes {
 					actualizarCombobox();
 
 					FuncionesManejoFront.cambiarEstadoOpcionesAvanzadas(false, getReferenciaVentana());
+
 				}
-				referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
-				referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
+
 			}
 
 			FuncionesManejoFront.cambiarEstadoMenuBar(false, referenciaVentana);
@@ -1072,25 +1155,22 @@ public class AccionFuncionesComunes {
 	}
 
 	public static void cambiarEstadoBotones(boolean esCancelado) {
-
 		if (TIPO_ACCION != null) {
-			List<Node> elementos = Arrays.asList(getReferenciaVentana().getBotonSubidaPortada());
+			List<Node> elementos = new ArrayList<>();
+			elementos.add(getReferenciaVentana().getBotonSubidaPortada());
+			elementos.add(getReferenciaVentana().getBotonCancelarSubida());
+			elementos.add(getReferenciaVentana().getBotonLimpiar());
+			elementos.add(getReferenciaVentana().getBotonBusquedaAvanzada());
 
 			if (!TIPO_ACCION.equals("aniadir")) {
 				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
 				elementos.add(getReferenciaVentana().getBusquedaCodigoTextField());
 				elementos.add(getReferenciaVentana().getBotonCancelarSubida());
-				elementos.add(getReferenciaVentana().getBotonBusquedaCodigo());
-				elementos.add(getReferenciaVentana().getBotonSubidaPortada());
 				elementos.add(getReferenciaVentana().getNombreTiendaCombobox());
 			}
 
-			getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
-			getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
-			getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
 			Utilidades.cambiarVisibilidad(elementos, esCancelado);
 		}
-
 	}
 
 	public static String carpetaRaizPortadas(String nombreDatabase) {

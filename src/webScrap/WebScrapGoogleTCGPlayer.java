@@ -129,8 +129,7 @@ public class WebScrapGoogleTCGPlayer {
 			} else if (line.startsWith("Precio Foil:")) {
 				precioFoil = line.substring("Precio Foil:".length()).trim().replace("$", "");
 			} else if (line.startsWith("Dirección de la imagen:")) {
-				direccionImagen = line.substring("Dirección de la imagen:".length()).trim().replace("344x344",
-						"437x437");
+				direccionImagen = getUrlImagen(line);
 			} else if (line.startsWith("Normas:")) {
 				normas = line.substring("Normas:".length()).trim();
 			} else if (line.startsWith("Referencia:")) {
@@ -141,6 +140,13 @@ public class WebScrapGoogleTCGPlayer {
 		return new Carta.CartaBuilder("", titulo).numCarta(numero).editorialCarta(categoria).coleccionCarta(coleccion)
 				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
 				.urlReferenciaCarta(referencia).direccionImagenCarta(direccionImagen).normasCarta(normas).build();
+	}
+	
+
+
+	public static String getUrlImagen(String datos) {
+
+		return datos.substring("Dirección de la imagen:".length()).trim().replace("344x344", "437x437");
 	}
 
 	public static Carta devolverCartaBuscada(String urlCarta) {

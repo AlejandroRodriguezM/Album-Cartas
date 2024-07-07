@@ -305,6 +305,16 @@
     -fx-background-color: green;
 }
 
+.button#botonClonarCarta { 
+    -fx-border-width: 5px;
+    -fx-font-size: 10.0px;
+    -fx-background-color: #4169E1;
+}
+
+.button#botonClonarCarta:hover {
+    -fx-background-color: #483D8B;
+}
+
 .button#botonBusquedaAvanzada:hover {
     -fx-background-color: #006400;
 }

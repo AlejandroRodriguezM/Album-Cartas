@@ -2449,6 +2449,27 @@ public class Utilidades {
             System.err.println("Error al reiniciar el ordenador en Linux: " + e.getMessage());
         }
     }
+    
+    public static double sumaNumeros(List<String> lista) {
+        double suma = 0.0;
+
+        for (String str : lista) {
+            // Eliminar símbolos no numéricos excepto el punto decimal
+            String numeroStr = str.replaceAll("[^0-9.]", "");
+
+            try {
+                // Intentar parsear la cadena a número
+                double numero = Double.parseDouble(numeroStr);
+                suma += numero;
+            } catch (NumberFormatException e) {
+                // Ignorar cadenas que no se pueden parsear como número
+                System.out.println("No se puede parsear como número: " + str);
+            }
+        }
+
+        // Redondear el resultado a dos decimales
+        return Math.round(suma * 100.0) / 100.0;
+    }
 
 	public static AccionReferencias getReferenciaVentana() {
 		return referenciaVentana;

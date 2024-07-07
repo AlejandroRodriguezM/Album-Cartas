@@ -110,6 +110,7 @@ public class AccionControlUI {
 		case "aniadir":
 			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonGuardarCarta());
 			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonEliminarImportadoCarta());
+			elementosAMostrarYHabilitar.add(referenciaVentana.getBotonClonarCarta());
 			break;
 		default:
 			break;

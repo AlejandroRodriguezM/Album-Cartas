@@ -23,9 +23,10 @@ public class WebScrapNodeJSInstall {
 
 	public static void estadoNodeInstallacion() {
 		try {
-			String nodeZipUrl = getNodeJsDownloadUrl();
-			String urlCompleta = NODEJS_DIST_URL + nodeZipUrl;
-			if (nodeZipUrl != null && !checkNodeJSVersion()) {
+
+			if (!checkNodeJSVersion()) {
+				String nodeZipUrl = getNodeJsDownloadUrl();
+				String urlCompleta = NODEJS_DIST_URL + nodeZipUrl;
 				downloadAndExtractNodeJS(urlCompleta);
 			}
 
@@ -206,61 +207,60 @@ public class WebScrapNodeJSInstall {
 	}
 
 	private static boolean isPuppeteerInstalled() {
-	    String os = System.getProperty("os.name").toLowerCase();
-	    String nodeExec = "";
-	    String npmCli = "";
+		String os = System.getProperty("os.name").toLowerCase();
+		String nodeExec = "";
+		String npmCli = "";
 
-	    if (os.contains("win")) {
-	        nodeExec = DOWNLOAD_DIR + "\\node.exe";
-	        npmCli = DOWNLOAD_DIR + "\\node_modules\\npm\\bin\\npm-cli.js";
-	    } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-	        nodeExec = DOWNLOAD_DIR + "/node";
-	        npmCli = DOWNLOAD_DIR + "/node_modules/npm/bin/npm-cli.js";
-	    } else {
-	        System.out.println("Sistema operativo no soportado.");
-	        return false;
-	    }
+		if (os.contains("win")) {
+			nodeExec = DOWNLOAD_DIR + "\\node.exe";
+			npmCli = DOWNLOAD_DIR + "\\node_modules\\npm\\bin\\npm-cli.js";
+		} else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+			nodeExec = DOWNLOAD_DIR + "/node";
+			npmCli = DOWNLOAD_DIR + "/node_modules/npm/bin/npm-cli.js";
+		} else {
+			System.out.println("Sistema operativo no soportado.");
+			return false;
+		}
 
-	    try {
-	        // Verificar si Puppeteer está instalado
-	        ProcessBuilder processBuilder = new ProcessBuilder(nodeExec, npmCli, "list", "puppeteer");
-	        processBuilder.directory(new File(DOWNLOAD_DIR));
+		try {
+			// Verificar si Puppeteer está instalado
+			ProcessBuilder processBuilder = new ProcessBuilder(nodeExec, npmCli, "list", "puppeteer");
+			processBuilder.directory(new File(DOWNLOAD_DIR));
 
-	        // Asegurar permisos de ejecución
-	        File downloadDirFile = new File(DOWNLOAD_DIR);
-	        if (!downloadDirFile.canExecute()) {
-	            System.out.println("No se pueden ejecutar comandos en el directorio: " + DOWNLOAD_DIR);
-	            return false;
-	        }
+			// Asegurar permisos de ejecución
+			File downloadDirFile = new File(DOWNLOAD_DIR);
+			if (!downloadDirFile.canExecute()) {
+				System.out.println("No se pueden ejecutar comandos en el directorio: " + DOWNLOAD_DIR);
+				return false;
+			}
 
-	        Process process = processBuilder.start();
+			Process process = processBuilder.start();
 
-	        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	        String line;
-	        boolean puppeteerInstalled = false;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			boolean puppeteerInstalled = false;
 
-	        while ((line = reader.readLine()) != null) {
-	            if (line.contains("puppeteer")) {
-	                puppeteerInstalled = true;
-	                break;
-	            }
-	        }
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("puppeteer")) {
+					puppeteerInstalled = true;
+					break;
+				}
+			}
 
-	        if (puppeteerInstalled) {
-	            System.out.println("Librería puppeteer instalada");
-	        } else {
-	            System.err.println("Librería puppeteer no instalada");
-	        }
+			if (puppeteerInstalled) {
+				System.out.println("Librería puppeteer instalada");
+			} else {
+				System.err.println("Librería puppeteer no instalada");
+			}
 
-	        return puppeteerInstalled;
+			return puppeteerInstalled;
 
-	    } catch (IOException e) {
-	        System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
-	        e.printStackTrace();
-	        return false;
-	    }
+		} catch (IOException e) {
+			System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
+			e.printStackTrace();
+			return false;
+		}
 	}
-
 
 	private static void installPuppeteer() {
 		String os = System.getProperty("os.name").toLowerCase();

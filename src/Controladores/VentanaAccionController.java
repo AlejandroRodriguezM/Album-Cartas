@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.JSONException;
+
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.ConectManager;
@@ -80,6 +82,9 @@ public class VentanaAccionController implements Initializable {
 
 	@FXML
 	private Label labelNombre;
+
+	@FXML
+	private Button botonClonarCarta;
 
 	@FXML
 	private Button botonBusquedaAvanzada;
@@ -288,6 +293,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setIdCartaTratarTextField(textFieldIdCarta);
 		referenciaVentana.setBusquedaCodigoTextField(busquedaCodigo);
 
+		referenciaVentana.setBotonClonarCarta(botonClonarCarta);
 		referenciaVentana.setBotonCancelarSubida(botonCancelarSubida);
 		referenciaVentana.setBotonBusquedaCodigo(botonBusquedaCodigo);
 		referenciaVentana.setBotonBusquedaAvanzada(botonBusquedaAvanzada);
@@ -333,7 +339,7 @@ public class VentanaAccionController implements Initializable {
 		referenciaVentana.setNavegacionCerrar(navegacionOpciones);
 		referenciaVentana.setNavegacionEstadistica(navegacionEstadistica);
 
-		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNumeroCarta, comboBoxTienda));
+		AccionReferencias.setListaComboboxes(Arrays.asList(comboboxNumeroCarta));
 
 		AccionReferencias.setListaTextFields(
 				FXCollections.observableArrayList(Arrays.asList(textFieldNombreCarta, textFieldEditorialCarta,
@@ -426,7 +432,9 @@ public class VentanaAccionController implements Initializable {
 	 * ComboBoxes con opciones estáticas predefinidas.
 	 */
 	public void rellenarCombosEstaticos() {
-		FuncionesComboBox.rellenarComboBoxEstaticos(AccionReferencias.getListaComboboxes());
+		List<ComboBox<String>> listaComboboxes = new ArrayList<>();
+		listaComboboxes.add(comboBoxTienda);
+		FuncionesComboBox.rellenarComboBoxEstaticos(listaComboboxes);
 	}
 
 	public void formatearTextField() {
@@ -522,6 +530,7 @@ public class VentanaAccionController implements Initializable {
 		AccionModificar.actualizarCartaLista();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -540,6 +549,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -558,6 +568,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	/**
@@ -582,6 +593,18 @@ public class VentanaAccionController implements Initializable {
 	}
 
 	@FXML
+	void clonarCartaSeleccionada(ActionEvent event) {
+
+		int num = Ventanas.verVentanaNumero();
+		Carta cartaCopiar = getCartaCache();
+
+		for (int i = 0; i < num; i++) {
+			Carta cartaModificada = AccionFuncionesComunes.copiarCartaClon(cartaCopiar);
+			AccionFuncionesComunes.procesarCartaPorCodigo(cartaModificada, true);
+		}
+	}
+
+	@FXML
 	void eliminarCartaSeleccionado(ActionEvent event) {
 		enviarReferencias();
 		nav.cerrarMenuOpciones();
@@ -589,6 +612,7 @@ public class VentanaAccionController implements Initializable {
 		rellenarCombosEstaticos();
 		imagencarta.setImage(null);
 		setCartaCache(null);
+		ocultarBotonesCartas();
 	}
 
 	@FXML
@@ -597,16 +621,49 @@ public class VentanaAccionController implements Initializable {
 		nav.cerrarMenuOpciones();
 
 		if (!ListasCartasDAO.cartasImportados.isEmpty() && nav.alertaBorradoLista()) {
-			guardarReferencia().getBotonGuardarCarta().setVisible(false);
-			guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
+			// Ocultar botones relacionados con cartas
+			ocultarBotonesCartas();
 
+			// Eliminar cada carta de la lista
+			for (Carta carta : ListasCartasDAO.cartasImportados) {
+				// Eliminar archivo de imagen asociado a la carta
+				eliminarArchivoImagen(carta.getDireccionImagenCarta());
+			}
+
+			// Limpiar la lista de cartas y la tabla de la interfaz
 			ListasCartasDAO.cartasImportados.clear();
 			guardarReferencia().getTablaBBDD().getItems().clear();
+
+			// Reiniciar la imagen de la carta y limpiar la ventana
 			imagencarta.setImage(null);
+			limpiarVentana();
 		}
 
+		// Rellenar combos estáticos después de la operación
 		rellenarCombosEstaticos();
+	}
 
+	// Función para eliminar archivo de imagen
+	private void eliminarArchivoImagen(String direccionImagen) {
+		if (direccionImagen != null && !direccionImagen.isEmpty()) {
+			File archivoImagen = new File(direccionImagen);
+			if (archivoImagen.exists()) {
+				// Intentar borrar el archivo de la imagen
+				if (archivoImagen.delete()) {
+					System.out.println("Archivo de imagen eliminado: " + direccionImagen);
+				} else {
+					System.err.println("No se pudo eliminar el archivo de imagen: " + direccionImagen);
+					// Puedes lanzar una excepción aquí si lo prefieres
+				}
+			}
+		}
+	}
+
+	// Función para ocultar botones relacionados con cartas
+	private void ocultarBotonesCartas() {
+		guardarReferencia().getBotonClonarCarta().setVisible(false);
+		guardarReferencia().getBotonGuardarCarta().setVisible(false);
+		guardarReferencia().getBotonEliminarImportadoCarta().setVisible(false);
 	}
 
 	/**
@@ -660,7 +717,7 @@ public class VentanaAccionController implements Initializable {
 		} else {
 			// Continuar con la lógica cuando ambas claves están presente
 			AccionFuncionesComunes.cambiarVisibilidadAvanzada();
-			
+
 		}
 	}
 
@@ -781,6 +838,10 @@ public class VentanaAccionController implements Initializable {
 	 */
 	@FXML
 	void limpiarDatos(ActionEvent event) {
+		limpiarVentana();
+	}
+
+	public void limpiarVentana() {
 		enviarReferencias();
 		AccionFuncionesComunes.limpiarDatosPantallaAccion();
 		rellenarCombosEstaticos();
