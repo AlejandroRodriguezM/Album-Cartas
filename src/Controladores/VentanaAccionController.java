@@ -64,7 +64,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleCardMaster;
+import webScrap.WebScrapGoogleCardMarket;
 import webScrap.WebScrapGoogleScryfall;
 import webScrap.WebScrapGoogleTCGPlayer;
 import webScrap.WebScrapNodeJSInstall;
@@ -779,7 +779,7 @@ public class VentanaAccionController implements Initializable {
 			CompletableFuture<List<String>> future;
 
 			if (tipoTienda.equalsIgnoreCase("Card Market")) {
-				future = WebScrapGoogleCardMaster.iniciarBusquedaGoogle(valorCodigo);
+				future = WebScrapGoogleCardMarket.iniciarBusquedaGoogle(valorCodigo);
 			} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
 				future = WebScrapGoogleScryfall.getCardLinks(valorCodigo);
 			} else if (tipoTienda.equals("TCGPlayer")) {

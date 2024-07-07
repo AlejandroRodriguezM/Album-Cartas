@@ -41,7 +41,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleCardMaster;
+import webScrap.WebScrapGoogleCardMarket;
 import webScrap.WebScrapGoogleScryfall;
 import webScrap.WebScrapGoogleTCGPlayer;
 
@@ -343,9 +343,9 @@ public class AccionFuncionesComunes {
 		if (tipoTienda.equalsIgnoreCase("Card Market")) {
 			String argument = "cardtrader+" + cartaOriginal.getNomCarta().replace(" ", "+") + "+"
 					+ cartaOriginal.getNumCarta() + "+" + cartaOriginal.getColeccionCarta().replace(" ", "+");
-			String urlCarta = WebScrapGoogleCardMaster.searchWebImagen(argument);
+			String urlCarta = WebScrapGoogleCardMarket.searchWebImagen(argument);
 			if (urlCarta.contains("/cards/")) {
-				imagen = WebScrapGoogleCardMaster.extraerDatosImagen(urlCarta);
+				imagen = WebScrapGoogleCardMarket.extraerDatosImagen(urlCarta);
 			}
 		} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
 
@@ -578,18 +578,18 @@ public class AccionFuncionesComunes {
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
 				if (tipoTienda.equalsIgnoreCase("Card Market")) {
-					cartaInfo.add(WebScrapGoogleCardMaster.extraerDatosMTG(finalValorCodigo));
+					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(finalValorCodigo));
 				} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
 					cartaInfo.add(WebScrapGoogleScryfall.devolverCartaBuscada(finalValorCodigo));
 				} else if (tipoTienda.equals("TCGPlayer")) {
 					cartaInfo.add(WebScrapGoogleTCGPlayer.devolverCartaBuscada(finalValorCodigo));
 				}
 			} else {
-				List<String> enlaces = WebScrapGoogleCardMaster.buscarEnGoogle(finalValorCodigo);
+				List<String> enlaces = WebScrapGoogleCardMarket.buscarEnGoogle(finalValorCodigo);
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
-					cartaInfo.add(WebScrapGoogleCardMaster.extraerDatosMTG(string));
+					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(string));
 				}
 			}
 
@@ -812,7 +812,7 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta carta, String tipoUpdate) {
 
 		if (tipoUpdate.isEmpty()) {
-			String urlImagen = WebScrapGoogleCardMaster.extraerImagen(carta);
+			String urlImagen = WebScrapGoogleCardMarket.extraerImagen(carta);
 			carta.setDireccionImagenCarta(urlImagen);
 			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {

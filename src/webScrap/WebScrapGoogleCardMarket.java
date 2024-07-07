@@ -28,7 +28,7 @@ import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
 
-public class WebScrapGoogleCardMaster {
+public class WebScrapGoogleCardMarket {
 
 	public static String agregarMasAMayusculas(String cadena) {
 		return cadena.toUpperCase();
