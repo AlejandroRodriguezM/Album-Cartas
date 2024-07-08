@@ -23,7 +23,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import Apis.ApiGoogle;
 import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
