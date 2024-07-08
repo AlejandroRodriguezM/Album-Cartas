@@ -92,12 +92,6 @@ public class WebScrapGoogleCardMarket {
 			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlace);
 		}
 
-		// Agregar enlaces modificados al mapa
-		for (String enlace : enlaceOriginales) {
-			String enlaceModificado = enlace + "?language=1" + "?isFoil=Y";
-			enlacesMap.computeIfAbsent(enlace, k -> new ArrayList<>()).add(enlaceModificado);
-		}
-
 		// Crear una nueva lista para contener todos los enlaces en el orden deseado
 		List<String> enlacesFinales = new ArrayList<>();
 
@@ -253,15 +247,15 @@ public class WebScrapGoogleCardMarket {
 				String[] precioCarta = line.substring("Valor: ".length()).trim().split("€");
 				String numeroFormateado = precioCarta[0].replace(".", "").replace(",", ".");
 				double numFormateado = Double.parseDouble(numeroFormateado);
-
-				if (referencia.endsWith("?isFoil=Y")) {
-					precioFoil = "€" + String.valueOf(numFormateado);
-				} else {
-					precioNormal = "€" + String.valueOf(numFormateado);
-				}
+				precioNormal = "€" + numFormateado;
+			} else if (line.startsWith("Valor (Foil)")) {
+				String[] precioCarta = line.substring("Valor (Foil): ".length()).trim().split("€");
+				String numeroFormateado = precioCarta[0].replace(".", "").replace(",", ".");
+				double numFormateado = Double.parseDouble(numeroFormateado);
+				precioFoil = "€" + numFormateado;
 			} else if (line.startsWith("Normas: ")) {
 				normas = line.substring("Normas: ".length()).trim();
-			} 
+			}
 
 		}
 		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
@@ -455,7 +449,7 @@ public class WebScrapGoogleCardMarket {
 		}
 		return url;
 	}
-	
+
 	public static String extraerImagen(Carta carta) {
 		String argument = "cardtrader+" + carta.getNomCarta().replace(" ", "+") + "+" + carta.getNumCarta() + "+"
 				+ carta.getColeccionCarta().replace(" ", "+");

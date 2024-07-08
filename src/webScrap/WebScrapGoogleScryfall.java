@@ -1,305 +1,158 @@
 package webScrap;
 
 import java.io.BufferedReader;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import cartaManagement.Carta;
+import ficherosFunciones.FuncionesFicheros;
 import javafx.concurrent.Task;
 
 public class WebScrapGoogleScryfall {
 
 	public static CompletableFuture<List<String>> getCardLinks(String cardName) {
-		CompletableFuture<List<String>> future = new CompletableFuture<>();
+	    CompletableFuture<List<String>> future = new CompletableFuture<>();
 
-		Task<List<String>> task = new Task<>() {
-			@Override
-			protected List<String> call() throws IOException, URISyntaxException {
-				String searchedCardName = buscarEnGoogle(cardName); // Usar una nueva variable aquí
-				String searchUrl = String.format("https://scryfall.com/search?as=grid&order=released&q="
-						+ searchedCardName.replaceAll(" ", "+") + "&unique=prints");
-				System.out.println(searchUrl);
+	    Task<List<String>> task = new Task<>() {
+	        @Override
+	        protected List<String> call() throws Exception {
+	            String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(cardName); // Usar una nueva variable aquí
+	            String searchUrl = String.format("https://scryfall.com/search?as=grid&order=released&q=%s&unique=prints",
+	                    searchedCardName.replace(" ", "+"));
+	            String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap7.js";
+	            String command = "node " + scriptPath + " " + searchUrl;
+	            return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
+	        }
+	    };
 
-				Connection connection = Jsoup.connect(searchUrl);
-				Document doc = connection.get();
+	    task.setOnSucceeded(e -> {
+	        future.complete(task.getValue());
+	    });
 
-				// Check if URL was redirected
-				String finalUrl = connection.response().url().toString();
+	    task.setOnFailed(e -> {
+	        future.completeExceptionally(task.getException());
+	    });
 
-				List<String> cardLinks = new ArrayList<>();
-				if (!finalUrl.equals(searchUrl)) {
-					// URL was redirected, add the final URL to the list
-					cardLinks.add(finalUrl);
-				} else {
-					// Check for multiple results
-					Elements cardElements = doc.select("a.card-grid-item-card");
-					for (Element cardElement : cardElements) {
-						cardLinks.add(cardElement.attr("href"));
-					}
+	    new Thread(task).start();
 
-					// If no multiple results, check for single result
-					if (cardLinks.isEmpty()) {
-						Element singleCardElement = doc.selectFirst("a.card-profile");
-						if (singleCardElement != null) {
-							cardLinks.add(singleCardElement.attr("href"));
-						}
-					}
-				}
-
-				if (cardLinks.isEmpty()) {
-					System.err.println(
-							"No se encontraron enlaces de cartas para el nombre de carta: " + searchedCardName);
-				}
-
-				return cardLinks;
-			}
-		};
-
-		task.setOnSucceeded(e -> {
-			List<String> urls = task.getValue();
-			if (urls == null || urls.isEmpty()) {
-				future.complete(Collections.emptyList()); // Return an empty list if no results are found
-			} else {
-				future.complete(urls); // Completes the future with the results
-			}
-		});
-
-		task.setOnFailed(e -> {
-			future.completeExceptionally(task.getException()); // Completes the future with an exception if the task
-																// fails
-		});
-
-		new Thread(task).start();
-
-		return future;
+	    return future;
 	}
 
-	public static Carta extractCardDetails(String cardLinks) throws IOException {
 
-		Document doc = Jsoup.connect(cardLinks).get();
+	public static Carta extraerDatosMTG(String url) {
+		List<String> data = getCartaFromPuppeteer(url); // Método para obtener datos de la carta
 
-		// Nombre
-		String name = doc.select("span.card-text-card-name").text();
-
-		// Número
-		String number = "";
-		Elements detailsElements = doc.select("span.prints-current-set-details");
-		if (!detailsElements.isEmpty()) {
-			String detailsText = detailsElements.text();
-			number = detailsText.split(" ")[0].substring(1); // Tomar solo el número después de #
-		}
+		String referencia = "";
+		String nombre = "";
+		String coleccion = "";
+		String editorial = "Magic: The Gathering"; // Asignamos directamente la editorial
 		String rareza = "";
-		if (!detailsElements.isEmpty()) {
-			String detailsText = detailsElements.text();
+		String numero = "";
+		String normas = "";
+		String imagen = "";
+		String precioNormal = "0.0";
+		String precioFoil = "0.0";
 
-			// Buscar la parte entre dos puntos
-			int startIndex = detailsText.indexOf("·");
-			int endIndex = detailsText.indexOf("·", startIndex + 1);
-
-			if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-				String extractedText = detailsText.substring(startIndex + 1, endIndex).trim();
-				rareza = extractedText;
+		for (String line : data) {
+			if (line.startsWith("Referencia: ")) {
+				referencia = line.substring("Referencia: ".length()).trim();
+			} else if (line.startsWith("Nombre: ")) {
+				nombre = line.substring("Nombre: ".length()).trim().replaceAll("\\(.*\\)", "").trim();
+			} else if (line.startsWith("Coleccion: ")) {
+				String[] coleccionLimpio = line.substring("Coleccion: ".length()).trim().split(":");
+				coleccion = coleccionLimpio[0].trim();
+			} else if (line.startsWith("Rareza: ")) {
+				rareza = line.substring("Rareza: ".length()).trim();
+			} else if (line.startsWith("Numero: ")) {
+				numero = line.substring("Numero: ".length()).trim();
+			} else if (line.startsWith("Valor: ")) {
+				precioNormal = line.substring("Valor: ".length()).trim();
+			} else if (line.startsWith("Foil: ")) {
+				precioFoil = line.substring("Foil: ".length()).trim();
+			} else if (line.startsWith("Normas: ")) {
+				normas = line.substring("Normas: ".length()).trim();
 			}
 		}
 
-		// Colección
-		String collection = doc.select("span.prints-current-set-name").text();
-
-		// Imagen
-		String imageUrl = urlImagen(cardLinks);
-
-		String normasCarta = "";
-		Element normasElement = doc.select("div.card-text-box div.card-text-oracle p").first();
-		if (normasElement != null) {
-			normasCarta = normasElement.text();
-		}
-
-		String normalPrice = "";
-		Elements priceElements = doc.select("span.currency-eur");
-
-		for (Element priceElement : priceElements) {
-			Element prevSibling = priceElement.previousElementSibling();
-			if (prevSibling != null && prevSibling.tagName().equals("i")
-					&& prevSibling.text().equals("Buy on Cardmarket")) {
-				normalPrice = priceElement.text();
-			}
-		}
-
-		String foilPrice = "";
-		for (Element priceElement : priceElements) {
-			Element prevSibling = priceElement.previousElementSibling();
-			if (prevSibling != null && prevSibling.tagName().equals("i")
-					&& prevSibling.text().equals("Buy foil on Cardmarket")) {
-				foilPrice = priceElement.text();
-
-			}
-		}
-
-		// Precios
-		String normalPriceTCG = "";
-		Elements priceElementsTCG = doc.select("span.currency-usd");
-
-		for (Element priceElement : priceElementsTCG) {
-			Element prevSibling = priceElement.previousElementSibling();
-			if (prevSibling != null && prevSibling.tagName().equals("i")
-					&& prevSibling.text().equals("Buy on TCGplayer")) {
-				normalPriceTCG = priceElement.text();
-			}
-		}
-
-		String foilPriceTCG = "";
-		for (Element priceElement : priceElementsTCG) {
-			Element prevSibling = priceElement.previousElementSibling();
-			if (prevSibling != null && prevSibling.tagName().equals("i")
-					&& prevSibling.text().equals("Buy foil on TCGplayer")) {
-				foilPriceTCG = priceElement.text();
-			}
-		}
-
-		if (normalPrice.isEmpty() && foilPrice.isEmpty() && normalPriceTCG.isEmpty() && foilPriceTCG.isEmpty()) {
-			normalPrice = "0";
-			foilPrice = "0";
-		}
-		// Imprimir los detalles
-		return new Carta.CartaBuilder("", name).numCarta(number).editorialCarta("Magic: The Gathering")
-				.coleccionCarta(collection).rarezaCarta(rareza).precioCartaNormal(cleanPrice(normalPrice))
-				.precioCartaFoil(cleanPrice(foilPrice)).urlReferenciaCarta(cardLinks).direccionImagenCarta(imageUrl)
-				.normasCarta(normasCarta).build();
-
+		// Construimos y retornamos el objeto Carta
+		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
+				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
+				.urlReferenciaCarta(referencia).direccionImagenCarta(imagen).normasCarta(normas).build();
 	}
 
-	public static String urlImagen(String urlWeb) {
-		Document doc;
+	public static List<String> getCartaFromPuppeteer(String url) {
+		List<String> dataArrayList = new ArrayList<>();
+
 		try {
-			doc = Jsoup.connect(urlWeb).get();
-			Element imageElement = doc.select("div.card-image-front img.card.border-black").first();
-			if (imageElement != null) {
-				return imageElement.attr("src");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
+			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap6.js";
+			String command = "node " + scriptPath + " " + url;
 
-	// Función para limpiar los precios
-	public static String cleanPrice(String price) {
-		if (price == null || price.isEmpty()) {
-			return "0";
-		}
+			int attempt = 0;
+			int backoff = 2000; // Tiempo de espera inicial en milisegundos
 
-		// Patrón para extraer números, punto decimal, euro (€) y dólar ($)
-		Pattern pattern = Pattern.compile("[0-9]+([,.][0-9]*)?|[€$]");
-		Matcher matcher = pattern.matcher(price);
+			while (true) {
+				attempt++;
+				Process process = Runtime.getRuntime().exec(command);
 
-		StringBuilder cleanedPrice = new StringBuilder();
-		while (matcher.find()) {
-			cleanedPrice.append(matcher.group());
-		}
+				// Leer la salida del proceso
+				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String outputLine;
+				StringBuilder output = new StringBuilder();
+				while ((outputLine = processReader.readLine()) != null) {
+					output.append(outputLine).append("\n");
+				}
+				processReader.close();
 
-		// Si no se encuentra ningún número, retornar "0"
-		if (cleanedPrice.length() == 0) {
-			return "0";
-		}
-
-		return cleanedPrice.toString();
-	}
-
-	public static String buscarEnGoogle(String searchTerm) throws URISyntaxException {
-		try {
-			// Codificar el término de búsqueda
-			String encodedSearchTerm = URLEncoder.encode(searchTerm, "UTF-8");
-
-			// Construir la URL de búsqueda en Google
-			String urlString = "https://www.google.com/search?q=cardmarket+" + encodedSearchTerm + "+versions";
-
-			// Crear objeto URI y URL
-			URI uri = new URI(urlString);
-			URL url = uri.toURL();
-
-			// Establecer la conexión HTTP
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-
-			// Establecer el User-Agent para simular una solicitud desde el navegador Chrome
-			con.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36");
-
-			// Leer la respuesta
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuilder content = new StringBuilder();
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
-			}
-			in.close();
-			con.disconnect();
-
-			// Convertir la respuesta a String
-			String html = content.toString();
-
-			// Buscar la URL de Cardmarket
-			int startIndex = html.indexOf("www.cardmarket.com/");
-			while (startIndex != -1) {
-				int endIndex = html.indexOf("\"", startIndex);
-				if (endIndex != -1) {
-					String urlFound = html.substring(startIndex, endIndex);
-					if (urlFound.endsWith("/Versions")) {
-						System.out.println("URL: " + urlFound);
-						urlFound = urlFound.replaceFirst("/\\w{2}/", "/en/");
-						return extractCardName(urlFound);
+				// Esperar a que termine el proceso
+				int exitCode = process.waitFor();
+				if (exitCode == 0) {
+					// Proceso terminado exitosamente, obtener el resultado
+					String dataString = output.toString().trim();
+					if (!dataString.isEmpty()) {
+						// Dividir los pares clave-valor y añadirlos al List<String>
+						String[] keyValuePairs = dataString.split("\n");
+						for (String pair : keyValuePairs) {
+							dataArrayList.add(pair.trim());
+						}
+						return dataArrayList;
+					} else {
+						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
+						Thread.sleep(backoff); // Esperar antes de intentar nuevamente
+						backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
 					}
-					startIndex = html.indexOf("www.cardmarket.com/", endIndex);
+
+					if (attempt >= 5) {
+						// Si se superan los intentos, devolver un List<String> vacío
+						return new ArrayList<>();
+					}
+				} else {
+					// Error al ejecutar el script
+					System.err.println("Error al ejecutar el script de Puppeteer. Código de salida: " + exitCode);
+					break; // Salir del bucle si hay un error
 				}
 			}
-			return null; // No se encontró ninguna URL
+		} catch (InterruptedException e) {
+			// Restaurar el estado de interrupción
+			Thread.currentThread().interrupt();
+			System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+			// Opcional: Manejar la interrupción de manera adecuada, por ejemplo, limpiando
+			// recursos
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null; // Devolver null en caso de excepción
+			System.err.println("Error de entrada/salida al ejecutar el script de Puppeteer.");
 		}
+		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
 	}
 
-	private static String extractCardName(String url) {
-		// Encontrar el índice de "/Cards/" en la URL
-		int cardsIndex = url.indexOf("/Cards/");
-		if (cardsIndex != -1) {
-			// Extraer el nombre de la carta entre "/Cards/" y "/Versions"
-			int startIndex = cardsIndex + "/Cards/".length();
-			int endIndex = url.indexOf("/Versions", startIndex);
-			if (endIndex != -1) {
-				String cardName = url.substring(startIndex, endIndex);
-				// Reemplazar guiones por espacios
-				cardName = cardName.replace("-", " ");
-				return cardName;
-			}
-		}
-		return null; // No se encontró el nombre de la carta
-	}
+	
+
+
 
 	public static Carta devolverCartaBuscada(String urlCarta) {
-		try {
-			return extractCardDetails(urlCarta);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return extraerDatosMTG(urlCarta);
 	}
 }

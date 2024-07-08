@@ -1,13 +1,10 @@
 package webScrap;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
@@ -21,21 +18,18 @@ public class WebScrapGoogleTCGPlayer {
 		Task<List<String>> task = new Task<>() {
 			@Override
 			protected List<String> call() throws Exception {
-				String url = "https://www.tcgplayer.com/search/all/product?q=" + parametro
+				String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(parametro); // Usar una nueva variable
+																								// aquí
+				String url = "https://www.tcgplayer.com/search/all/product?q=" + searchedCardName
 						+ "&ProductTypeName=Cards&page=1";
 				String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap4.js";
 				String command = "node " + scriptPath + " " + url;
-				return executeScript(command);
+				return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
 			}
 		};
 
 		task.setOnSucceeded(e -> {
-			List<String> result = task.getValue();
-			if (result == null || result.isEmpty()) {
-				future.complete(Collections.emptyList());
-			} else {
-				future.complete(result);
-			}
+			future.complete(task.getValue());
 		});
 
 		task.setOnFailed(e -> {
@@ -48,52 +42,15 @@ public class WebScrapGoogleTCGPlayer {
 	}
 
 	public static List<String> datosCartas(String url) {
-		String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap3.js";
-		String command = "node " + scriptPath + " " + url;
-		return executeScript(command);
-	}
 
-	private static List<String> executeScript(String command) {
-		List<String> dataArrayList = new ArrayList<>();
-		int maxAttempts = 5;
-		int backoff = 2000;
-
-		for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-			try {
-				Process process = Runtime.getRuntime().exec(command);
-				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-				StringBuilder output = new StringBuilder();
-				String line;
-
-				while ((line = processReader.readLine()) != null) {
-					output.append(line).append("\n");
-				}
-				processReader.close();
-
-				int exitCode = process.waitFor();
-				if (exitCode == 0) {
-					String dataString = output.toString().trim();
-					if (!dataString.isEmpty()) {
-						String[] keyValuePairs = dataString.split("\n");
-						for (String pair : keyValuePairs) {
-							dataArrayList.add(pair.trim());
-						}
-						return dataArrayList;
-					} else {
-						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
-					}
-				} else {
-					System.err.println("Error al ejecutar el script de Puppeteer, código de salida: " + exitCode);
-				}
-
-				Thread.sleep(backoff);
-				backoff += 2000;
-
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
-			}
+		try {
+			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap3.js";
+			String command = "node " + scriptPath + " " + url;
+			return FuncionesScrapeoComunes.executeScraping(command).get();
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 		return new ArrayList<>();
 	}
 
@@ -141,8 +98,6 @@ public class WebScrapGoogleTCGPlayer {
 				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
 				.urlReferenciaCarta(referencia).direccionImagenCarta(direccionImagen).normasCarta(normas).build();
 	}
-	
-
 
 	public static String getUrlImagen(String datos) {
 
