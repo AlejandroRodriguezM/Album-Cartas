@@ -148,10 +148,6 @@ public class WebScrapGoogleScryfall {
 		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
 	}
 
-	
-
-
-
 	public static Carta devolverCartaBuscada(String urlCarta) {
 		return extraerDatosMTG(urlCarta);
 	}
