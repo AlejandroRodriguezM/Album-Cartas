@@ -53,6 +53,8 @@ public class ListasCartasDAO {
 	private static final String SOURCE_PATH = DOCUMENTS_PATH + File.separator + "album_cartas" + File.separator
 			+ Utilidades.nombreDB() + File.separator + "portadas" + File.separator;
 
+	public static List<Carta> listaTemporalCartas = new ArrayList<>();
+
 	/**
 	 * Lista de cómics.
 	 */
@@ -404,8 +406,7 @@ public class ListasCartasDAO {
 	public static List<String> guardarDatosAutoCompletado(String sentenciaSQL, String columna) {
 		List<String> listaAutoCompletado = new ArrayList<>();
 		try (Connection conn = ConectManager.conexion();
-				PreparedStatement stmt = conn.prepareStatement(sentenciaSQL, ResultSet.TYPE_FORWARD_ONLY,
-						ResultSet.CONCUR_READ_ONLY);
+				PreparedStatement stmt = conn.prepareStatement(sentenciaSQL);
 				ResultSet rs = stmt.executeQuery()) {
 
 			while (rs.next()) {
@@ -432,10 +433,12 @@ public class ListasCartasDAO {
 			return listaArregladaAutoComplete(listaAutoCompletado);
 
 		} catch (SQLException e) {
-			Utilidades.manejarExcepcion(e);
+			Utilidades.manejarExcepcion(e); // Manejar la excepción adecuadamente, por ejemplo, registrándola o
+											// notificándola
+			// En caso de excepción, podrías decidir retornar una lista parcial o marcar que
+			// la operación fue interrumpida
+			return listaAutoCompletado; // Retorna lo que se haya procesado hasta el momento
 		}
-
-		return new ArrayList<>();
 	}
 
 	/**
