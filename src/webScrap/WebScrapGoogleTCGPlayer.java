@@ -1,10 +1,8 @@
 package webScrap;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import cartaManagement.Carta;
 import ficherosFunciones.FuncionesFicheros;
@@ -41,21 +39,9 @@ public class WebScrapGoogleTCGPlayer {
 		return future;
 	}
 
-	public static List<String> datosCartas(String url) {
-
-		try {
-			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap3.js";
-			String command = "node " + scriptPath + " " + url;
-			return FuncionesScrapeoComunes.executeScraping(command).get();
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new ArrayList<>();
-	}
-
-	private static Carta processLine(String urlCarta) {
-		List<String> datos = datosCartas(urlCarta);
+	private static Carta processLine(String url) {
+		String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap3.js";
+		List<String> data = FuncionesScrapeoComunes.getCartaFromPuppeteer(url,scriptPath);
 
 		// Variables para almacenar los valores extraídos
 		String titulo = "";
@@ -69,7 +55,7 @@ public class WebScrapGoogleTCGPlayer {
 		String normas = "";
 		String referencia = "";
 
-		for (String line : datos) {
+		for (String line : data) {
 			// Procesamiento de la línea
 			if (line.startsWith("Titulo:")) {
 				titulo = line.substring("Titulo:".length()).trim();

@@ -344,15 +344,8 @@ public class AccionFuncionesComunes {
 		String imagen = "";
 		if (tipoTienda.equalsIgnoreCase("Card Market")) {
 			imagen = imagenCarta(cartaOriginal);
-		} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
-			imagen = imagenCarta(cartaOriginal);
-		} else if (tipoTienda.equals("TCGPlayer")) {
-			List<String> datos = WebScrapGoogleTCGPlayer.datosCartas(cartaOriginal.getUrlReferenciaCarta());
-			for (String string : datos) {
-				if (string.startsWith("Dirección de la imagen:")) {
-					imagen = WebScrapGoogleTCGPlayer.getUrlImagen(string);
-				}
-			}
+		} else {
+			imagen = cartaOriginal.getDireccionImagenCarta();
 		}
 		actualizarPortadaCartas(codigoNuevoCarta, imagen);
 		cartaOriginal.setDireccionImagenCarta(urlFinal);
@@ -582,11 +575,12 @@ public class AccionFuncionesComunes {
 
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
+
 				if (tipoTienda.equalsIgnoreCase("CardMarket")) {
 					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(finalValorCodigo));
 				} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
 					cartaInfo.add(WebScrapGoogleScryfall.devolverCartaBuscada(finalValorCodigo));
-				} else if (tipoTienda.equals("TCGPlayer")) {
+				} else if (tipoTienda.equalsIgnoreCase("TCGPlayer")) {
 					cartaInfo.add(WebScrapGoogleTCGPlayer.devolverCartaBuscada(finalValorCodigo));
 				}
 			} else {
@@ -625,58 +619,61 @@ public class AccionFuncionesComunes {
 	}
 
 	private static void procesarCartas(List<Carta> cartaInfo) {
-		// Crear una lista temporal para almacenar las cartas procesadas
 		List<Carta> cartasProcesadas = new ArrayList<>();
 
-		// Iterar sobre la lista original
 		for (Carta cartaNueva : cartaInfo) {
-			// Obtener la referencia base de la nueva carta
 			String referenciaNueva = obtenerReferenciaBase(cartaNueva.getUrlReferenciaCarta());
 			boolean cartaDuplicada = false;
 
-			// Iterar sobre la lista de cartas procesadas
 			for (Carta cartaExistente : cartasProcesadas) {
-				// Obtener la referencia base de la carta existente
 				String referenciaExistente = obtenerReferenciaBase(cartaExistente.getUrlReferenciaCarta());
 
 				if (referenciaExistente.equals(referenciaNueva)) {
-					// Si las referencias son iguales, fusionar precios si es necesario
-					if (cartaNueva.getUrlReferenciaCarta().endsWith("?isFoil=Y")) {
-						// Si la nueva carta es Foil
-						if (cartaExistente.getPrecioCartaFoil().equals("0.0")) {
-							// Asignar precio Foil solo si no está asignado en la carta existente
-							cartaExistente.setPrecioCartaFoil(cartaNueva.getPrecioCartaFoil());
-						}
-					} else {
-						// Si la nueva carta es normal
-						if (cartaExistente.getPrecioCartaNormal().equals("0.0")) {
-							// Asignar precio normal solo si no está asignado en la carta existente
-							cartaExistente.setPrecioCartaNormal(cartaNueva.getPrecioCartaNormal());
-						}
-					}
-
-					// Fusionar precios si ambos están presentes
-					if (!cartaExistente.getPrecioCartaNormal().equals("0.0")
-							&& !cartaExistente.getPrecioCartaFoil().equals("0.0")) {
-						cartaNueva.setPrecioCartaNormal(cartaExistente.getPrecioCartaNormal());
-						cartaNueva.setPrecioCartaFoil(cartaExistente.getPrecioCartaFoil());
-					}
-
+					procesarCartaExistente(cartaNueva, cartaExistente);
 					cartaDuplicada = true;
-					break; // Salir del bucle si se encontró una carta duplicada
+					break;
 				}
 			}
 
-			// Si no se encontró una carta duplicada, agregar la nueva carta a la lista
-			// procesada
 			if (!cartaDuplicada) {
 				cartasProcesadas.add(cartaNueva);
 			}
 		}
 
-		// Limpiar la lista original y agregar las cartas procesadas
 		cartaInfo.clear();
 		cartaInfo.addAll(cartasProcesadas);
+	}
+
+	private static void procesarCartaExistente(Carta cartaNueva, Carta cartaExistente) {
+		if (cartaNueva.getUrlReferenciaCarta().endsWith("?isFoil=Y")) {
+			procesarCartaNuevaFoil(cartaNueva, cartaExistente);
+		} else {
+			procesarCartaNuevaNormal(cartaNueva, cartaExistente);
+		}
+	}
+
+	private static void procesarCartaNuevaFoil(Carta cartaNueva, Carta cartaExistente) {
+		if (cartaExistente.getPrecioCartaFoil().equals("0.0")) {
+			cartaExistente.setPrecioCartaFoil(cartaNueva.getPrecioCartaFoil());
+		}
+
+		fusionarPrecios(cartaNueva, cartaExistente);
+	}
+
+	private static void procesarCartaNuevaNormal(Carta cartaNueva, Carta cartaExistente) {
+		if (cartaExistente.getPrecioCartaNormal().equals("0.0")) {
+			cartaExistente.setPrecioCartaNormal(cartaNueva.getPrecioCartaNormal());
+		}
+
+		fusionarPrecios(cartaNueva, cartaExistente);
+	}
+
+	private static void fusionarPrecios(Carta cartaNueva, Carta cartaExistente) {
+		if (!cartaExistente.getPrecioCartaNormal().equals("0.0")
+				&& !cartaExistente.getPrecioCartaFoil().equals("0.0")) {
+			cartaNueva.setPrecioCartaNormal(cartaExistente.getPrecioCartaNormal());
+			cartaNueva.setPrecioCartaFoil(cartaExistente.getPrecioCartaFoil());
+		}
 	}
 
 	// Método auxiliar para obtener la referencia base sin el sufijo "?isFoil=Y"
@@ -829,8 +826,12 @@ public class AccionFuncionesComunes {
 	private static void processCarta(Carta carta, String tipoUpdate) {
 
 		if (tipoUpdate.isEmpty()) {
-			String urlImagen = WebScrapGoogleCardMarket.extraerImagen(carta);
-			carta.setDireccionImagenCarta(urlImagen);
+
+			String tipoTienda = obtenerNombreTienda(carta.getUrlReferenciaCarta());
+			if (tipoTienda.equalsIgnoreCase("CardMarket")) {
+				String urlImagen = WebScrapGoogleCardMarket.extraerImagen(carta);
+				carta.setDireccionImagenCarta(urlImagen);
+			}
 			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
 			String tipoTienda = determinarTipoTienda(carta.getUrlReferenciaCarta());
@@ -918,6 +919,11 @@ public class AccionFuncionesComunes {
 		getReferenciaVentana().getBotonEliminarImportadoListaCarta().setVisible(false);
 		getReferenciaVentana().getBotonGuardarListaCartas().setVisible(false);
 
+		getReferenciaVentana().getBotonClonarCarta().setVisible(false);
+		getReferenciaVentana().getBotonGuardarCarta().setVisible(false);
+		getReferenciaVentana().getBotonEliminarImportadoCarta().setVisible(false);
+		getReferenciaVentana().getTablaBBDD().setDisable(true);
+
 		AlarmaList.mostrarMensajePront("Se estan cargando los datos", true,
 				getReferenciaVentana().getProntInfoTextArea());
 		AlarmaList.iniciarAnimacionCarga(getReferenciaVentana().getProgresoCarga());
@@ -996,6 +1002,7 @@ public class AccionFuncionesComunes {
 				getReferenciaVentana().getBotonCancelarSubida().setVisible(false);
 			} else {
 				if (tipoUpdate.isEmpty()) {
+					getReferenciaVentana().getTablaBBDD().setDisable(false);
 					referenciaVentana.getBotonEliminarImportadoListaCarta().setVisible(true);
 					referenciaVentana.getBotonGuardarListaCartas().setVisible(true);
 
@@ -1041,6 +1048,7 @@ public class AccionFuncionesComunes {
 			} else {
 				if (tipoUpdate.isEmpty()) {
 					Thread.currentThread().interrupt();
+					getReferenciaVentana().getTablaBBDD().setDisable(false);
 					cambiarEstadoBotones(false);
 
 					Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("", "100%", 100.0));

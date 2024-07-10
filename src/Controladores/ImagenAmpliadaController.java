@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 import cartaManagement.Carta;
-import cartaManagement.Carta;
 import dbmanager.ConectManager;
 import funcionesAuxiliares.Utilidades;
 import funcionesInterfaz.FuncionesManejoFront;
@@ -28,7 +27,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ImagenAmpliadaController implements Initializable {
