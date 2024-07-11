@@ -1214,8 +1214,12 @@ public class AccionFuncionesComunes {
 			}
 
 			getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
-			getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
-			getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
+
+			if (getReferenciaVentana().getBotonLimpiar() != null) {
+				getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
+				getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
+			}
+
 			Utilidades.cambiarVisibilidad(elementos, esCancelado);
 		}
 
