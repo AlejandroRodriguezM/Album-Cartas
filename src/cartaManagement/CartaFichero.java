@@ -53,11 +53,18 @@ public class CartaFichero extends Carta {
 		// Eliminar espacios en blanco al inicio y al final
 		precioStr = precioStr.trim();
 
-		// Eliminar símbolos repetidos y dejar solo uno
+		// Paso 1: Eliminar símbolos repetidos y dejar solo uno
 		precioStr = precioStr.replaceAll("([€$])\\1+", "$1");
 
-		// Eliminar todos los símbolos excepto uno si hay varios
-		precioStr = precioStr.replaceAll("[€$]", "");
+		// Paso 2: Si hay varios símbolos, mantener solo uno y eliminar el resto
+		precioStr = precioStr.replaceAll("([€$])(.*)([€$])", "$1$2");
+
+		// Extraer el símbolo monetario, si existe
+		String symbol = "";
+		if (precioStr.startsWith("€") || precioStr.startsWith("$")) {
+			symbol = precioStr.substring(0, 1);
+			precioStr = precioStr.substring(1);
+		}
 
 		// Eliminar caracteres no numéricos excepto el primer punto decimal
 		precioStr = precioStr.replaceAll("[^\\d.]", "");
@@ -76,8 +83,8 @@ public class CartaFichero extends Carta {
 			return "0";
 		}
 
-		// Retornar el precio limpiado
-		return precioStr;
+		// Retornar el precio limpiado con el símbolo monetario
+		return symbol + precioStr;
 	}
 
 	public static String comprobarGradeo(String valorGradeo) {

@@ -27,7 +27,6 @@ import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
 import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
-import dbmanager.SelectManager;
 import dbmanager.UpdateManager;
 import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
@@ -1214,8 +1213,12 @@ public class AccionFuncionesComunes {
 			}
 
 			getReferenciaVentana().getBotonCancelarSubida().setVisible(esCancelado);
-			getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
-			getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
+
+			if (getReferenciaVentana().getBotonLimpiar() != null) {
+				getReferenciaVentana().getBotonLimpiar().setDisable(esCancelado);
+				getReferenciaVentana().getBotonBusquedaAvanzada().setDisable(esCancelado);
+			}
+
 			Utilidades.cambiarVisibilidad(elementos, esCancelado);
 		}
 
