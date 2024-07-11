@@ -771,7 +771,6 @@ public class VentanaAccionController implements Initializable {
 				return;
 			}
 			nav.cerrarMenuOpciones();
-//			AccionControlUI.limpiarAutorellenos(false);
 			AccionControlUI.borrarDatosGraficos();
 
 			AccionFuncionesComunes.cargarRuning();

@@ -469,12 +469,6 @@ public class MenuPrincipalController implements Initializable {
 					botonEliminar.setLayoutX(231);
 					botonEliminar.setLayoutY(237);
 
-//					botonGuardarResultado.setLayoutX(231);
-//					botonGuardarResultado.setLayoutY(324);
-//
-//					botonImprimir.setLayoutX(290);
-//					botonImprimir.setLayoutY(324);
-
 				} else if (newWidth >= 1131) {
 
 					botonIntroducir.setLayoutX(329);

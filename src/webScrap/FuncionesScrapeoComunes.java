@@ -159,5 +159,103 @@ public class FuncionesScrapeoComunes {
 		}
 		return null; // No se encontró el nombre de la carta
 	}
+	
+	public static List<String> getCartaFromPuppeteer(String url,String scriptPath) {
+		List<String> dataArrayList = new ArrayList<>();
+
+		try {
+			String command = "node " + scriptPath + " " + url;
+
+			int attempt = 0;
+			int backoff = 2000; // Tiempo de espera inicial en milisegundos
+
+			while (true) {
+				attempt++;
+				Process process = Runtime.getRuntime().exec(command);
+
+				// Leer la salida del proceso
+				BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String outputLine;
+				StringBuilder output = new StringBuilder();
+				while ((outputLine = processReader.readLine()) != null) {
+					output.append(outputLine).append("\n");
+				}
+				processReader.close();
+
+				// Esperar a que termine el proceso
+				int exitCode = process.waitFor();
+				if (exitCode == 0) {
+					// Proceso terminado exitosamente, obtener el resultado
+					String dataString = output.toString().trim();
+					if (!dataString.isEmpty()) {
+						// Dividir los pares clave-valor y añadirlos al List<String>
+						String[] keyValuePairs = dataString.split("\n");
+						for (String pair : keyValuePairs) {
+							dataArrayList.add(pair.trim());
+						}
+						return dataArrayList;
+					} else {
+						System.err.println("El resultado obtenido está vacío. Volviendo a intentar...");
+						Thread.sleep(backoff); // Esperar antes de intentar nuevamente
+						backoff += 10; // Aumentar el tiempo de espera (backoff exponencial)
+					}
+
+					if (attempt >= 5) {
+						// Si se superan los intentos, devolver un List<String> vacío
+						return new ArrayList<>();
+					}
+				} else {
+					// Error al ejecutar el script
+					System.err.println("Error al ejecutar el script de Puppeteer. Código de salida: " + exitCode);
+					break; // Salir del bucle si hay un error
+				}
+			}
+		} catch (InterruptedException e) {
+			// Restaurar el estado de interrupción
+			Thread.currentThread().interrupt();
+			System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+			// Opcional: Manejar la interrupción de manera adecuada, por ejemplo, limpiando
+			// recursos
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Error de entrada/salida al ejecutar el script de Puppeteer.");
+		}
+		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
+	}
+	
+    public static String getImagenFromPuppeteer(String url, String scriptPath) {
+        try {
+            String command = "node " + scriptPath + " " + url;
+
+            Process process = Runtime.getRuntime().exec(command);
+
+            // Leer la salida del proceso
+            BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String outputLine;
+            while ((outputLine = processReader.readLine()) != null) {
+                output.append(outputLine).append("\n");
+            }
+            processReader.close();
+
+            // Esperar a que termine el proceso
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                // Proceso terminado exitosamente, obtener el resultado
+                String dataString = output.toString().trim();
+                return dataString; // Devolver el resultado como un String
+            } else {
+                // Error al ejecutar el script
+                System.err.println("Error al ejecutar el script de Puppeteer. Código de salida: " + exitCode);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error de entrada/salida al ejecutar el script de Puppeteer.");
+        }
+        return ""; // Devolver una cadena vacía en caso de excepción
+    }
 
 }

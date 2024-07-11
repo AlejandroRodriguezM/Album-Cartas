@@ -461,21 +461,21 @@ public class WebScrapGoogleCardMarket {
 	}
 
 	public static String extraerDatosImagen(String url) {
+	    Document doc;
+	    try {
+	        doc = Jsoup.connect(url).get();
 
-		Document doc;
-		String imagen = "";
-		try {
-			doc = Jsoup.connect(url).get();
-
-			Element imagenElemento = doc.selectFirst(
-					"div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.jpg'], div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.png']");
-			if (imagenElemento != null) {
-				imagen = "https://www.cardtrader.com/" + imagenElemento.attr("src");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return imagen;
+	        // Adjust selector according to actual HTML structure of the target page
+	        Element imagenElemento = doc.selectFirst("div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.jpg'], div.image-flipper.border-radius-10 img[src*='/uploads/'][src$='.png']");
+	        
+	        if (imagenElemento != null) {
+	            return "https://www.cardtrader.com/" + imagenElemento.attr("src");
+	        }
+	    } catch (IOException e) {
+	        // Log the error or handle it appropriately
+	        System.err.println("Error fetching image: " + e.getMessage());
+	    }
+	    
+	    return "";
 	}
 }

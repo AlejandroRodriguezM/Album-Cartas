@@ -4,9 +4,7 @@
 */
 package funcionesAuxiliares;
 
-import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -58,6 +56,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+
 import Controladores.OpcionesAvanzadasController;
 import cartaManagement.Carta;
 import dbmanager.ConectManager;
@@ -1467,26 +1466,6 @@ public class Utilidades {
 		e.printStackTrace();
 	}
 
-	public static boolean codigoCorrectoImportado(String valorCodigo) {
-		try {
-			String finalValorCodigo = eliminarEspacios(valorCodigo).replace("-", "");
-			Carta cartaInfo = null;
-
-//			if (finalValorCodigo.length() == 9) {
-//				cartaInfo = WebScraperPreviewsWorld.displayCartaInfo(finalValorCodigo.trim(), null);
-//			} else {
-//
-//				if (cartaInfo== null) {
-//					cartaInfo = isbnGeneral.getBookInfo(finalValorCodigo.trim(), null);
-//				}
-//			}
-			return cartaInfo != null; // Devuelve true si se encontró información del cómic.
-		} catch (Exception e) {
-			manejarExcepcion(e);
-			return false;
-		}
-	}
-
 	public static int contarLineasFichero(File fichero) {
 		int contador = 0;
 
@@ -1725,16 +1704,12 @@ public class Utilidades {
 									throw new IOException("Error al cargar la imagen por defecto.");
 								}
 								// Actualizar la interfaz de usuario en el hilo de JavaFX
-								Platform.runLater(() -> {
-									imageView.setImage(imagenCargada);
-								});
+								Platform.runLater(() -> imageView.setImage(imagenCargada));
 								return imagenCargada;
 							}
 						}
 
-						// Si el archivo existe, cargar la imagen desde la ruta especificada
-						String imageUrl = fichero.toURI().toURL().toString();
-						Image imagenCargada = new Image(imageUrl, 250, 0, true, true);
+						Image imagenCargada = new Image(new File(urlImagen).toURI().toString(), true);
 
 						// Verificar si la imagen se ha cargado correctamente
 						if (imagenCargada.isError()) {
@@ -1742,9 +1717,7 @@ public class Utilidades {
 						}
 
 						// Actualizar la interfaz de usuario en el hilo de JavaFX
-						Platform.runLater(() -> {
-							imageView.setImage(imagenCargada);
-						});
+						Platform.runLater(() -> imageView.setImage(imagenCargada));
 						return imagenCargada;
 					} catch (Exception e) {
 						Thread.sleep(1500); // Puedes ajustar el tiempo de espera según sea necesario
@@ -2342,134 +2315,136 @@ public class Utilidades {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void checkAndInstallPuppeteer() {
-        try {
-            // Especificar la ruta completa del ejecutable npm
-            ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "list", "puppeteer");
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            boolean puppeteerInstalled = false;
+		try {
+			// Especificar la ruta completa del ejecutable npm
+			ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "list",
+					"puppeteer");
+			Process process = processBuilder.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			boolean puppeteerInstalled = false;
 
-            while ((line = reader.readLine()) != null) {
-                if (line.contains("puppeteer")) {
-                    puppeteerInstalled = true;
-                    break;
-                }
-            }
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("puppeteer")) {
+					puppeteerInstalled = true;
+					break;
+				}
+			}
 
-            if (puppeteerInstalled) {
-                System.out.println("Puppeteer ya está instalado.");
-            } else {
-                System.out.println("Puppeteer no está instalado. Instalando Puppeteer...");
-                installPuppeteer();
-            }
+			if (puppeteerInstalled) {
+				System.out.println("Puppeteer ya está instalado.");
+			} else {
+				System.out.println("Puppeteer no está instalado. Instalando Puppeteer...");
+				installPuppeteer();
+			}
 
-        } catch (IOException e) {
-            System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
-            e.printStackTrace();
-        }
-    }
+		} catch (IOException e) {
+			System.out.println("Ocurrió un error al verificar si Puppeteer está instalado.");
+			e.printStackTrace();
+		}
+	}
 
-    private static void installPuppeteer() {
-        try {
-            // Especificar la ruta completa del ejecutable npm
-            ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "install", "puppeteer");
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
+	private static void installPuppeteer() {
+		try {
+			// Especificar la ruta completa del ejecutable npm
+			ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "install",
+					"puppeteer");
+			Process process = processBuilder.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
 
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
 
-            System.out.println("Puppeteer se ha instalado correctamente.");
+			System.out.println("Puppeteer se ha instalado correctamente.");
 
-        } catch (IOException e) {
-            System.out.println("Ocurrió un error al instalar Puppeteer.");
-            e.printStackTrace();
-        }
-    }
-    
-    public static void reiniciarOrdenadorOS() {
-        // Determinar el sistema operativo
-        String os = System.getProperty("os.name").toLowerCase();
+		} catch (IOException e) {
+			System.out.println("Ocurrió un error al instalar Puppeteer.");
+			e.printStackTrace();
+		}
+	}
 
-        // Llamar a la función correspondiente
-        if (os.contains("win")) {
-           reiniciarOrdenadorWindows();
-        } else if (os.contains("mac")) {
-            reiniciarOrdenadorMac();
-        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
-            reiniciarOrdenadorLinux();
-        } else {
-            System.err.println("Sistema operativo no soportado para reiniciar.");
-        }
-    }
-    
-    public static void reiniciarOrdenadorWindows() {
-        try {
-            Process process = Runtime.getRuntime().exec("shutdown -r -t 0");
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Reinicio exitoso en Windows.");
-            } else {
-                System.err.println("No se pudo reiniciar el ordenador en Windows.");
-            }
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Error al reiniciar el ordenador en Windows: " + e.getMessage());
-        }
-    }
+	public static void reiniciarOrdenadorOS() {
+		// Determinar el sistema operativo
+		String os = System.getProperty("os.name").toLowerCase();
 
-    public static void reiniciarOrdenadorMac() {
-        try {
-            Process process = Runtime.getRuntime().exec("sudo shutdown -r now");
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Reinicio exitoso en MacOS.");
-            } else {
-                System.err.println("No se pudo reiniciar el ordenador en MacOS.");
-            }
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Error al reiniciar el ordenador en MacOS: " + e.getMessage());
-        }
-    }
+		// Llamar a la función correspondiente
+		if (os.contains("win")) {
+			reiniciarOrdenadorWindows();
+		} else if (os.contains("mac")) {
+			reiniciarOrdenadorMac();
+		} else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+			reiniciarOrdenadorLinux();
+		} else {
+			System.err.println("Sistema operativo no soportado para reiniciar.");
+		}
+	}
 
-    public static void reiniciarOrdenadorLinux() {
-        try {
-            Process process = Runtime.getRuntime().exec("sudo reboot");
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Reinicio exitoso en Linux.");
-            } else {
-                System.err.println("No se pudo reiniciar el ordenador en Linux.");
-            }
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Error al reiniciar el ordenador en Linux: " + e.getMessage());
-        }
-    }
-    
-    public static double sumaNumeros(List<String> lista) {
-        double suma = 0.0;
+	public static void reiniciarOrdenadorWindows() {
+		try {
+			Process process = Runtime.getRuntime().exec("shutdown -r -t 0");
+			int exitCode = process.waitFor();
+			if (exitCode == 0) {
+				System.out.println("Reinicio exitoso en Windows.");
+			} else {
+				System.err.println("No se pudo reiniciar el ordenador en Windows.");
+			}
+		} catch (IOException | InterruptedException e) {
+			System.err.println("Error al reiniciar el ordenador en Windows: " + e.getMessage());
+		}
+	}
 
-        for (String str : lista) {
-            // Eliminar símbolos no numéricos excepto el punto decimal
-            String numeroStr = str.replaceAll("[^0-9.]", "");
+	public static void reiniciarOrdenadorMac() {
+		try {
+			Process process = Runtime.getRuntime().exec("sudo shutdown -r now");
+			int exitCode = process.waitFor();
+			if (exitCode == 0) {
+				System.out.println("Reinicio exitoso en MacOS.");
+			} else {
+				System.err.println("No se pudo reiniciar el ordenador en MacOS.");
+			}
+		} catch (IOException | InterruptedException e) {
+			System.err.println("Error al reiniciar el ordenador en MacOS: " + e.getMessage());
+		}
+	}
 
-            try {
-                // Intentar parsear la cadena a número
-                double numero = Double.parseDouble(numeroStr);
-                suma += numero;
-            } catch (NumberFormatException e) {
-                // Ignorar cadenas que no se pueden parsear como número
-                System.out.println("No se puede parsear como número: " + str);
-            }
-        }
+	public static void reiniciarOrdenadorLinux() {
+		try {
+			Process process = Runtime.getRuntime().exec("sudo reboot");
+			int exitCode = process.waitFor();
+			if (exitCode == 0) {
+				System.out.println("Reinicio exitoso en Linux.");
+			} else {
+				System.err.println("No se pudo reiniciar el ordenador en Linux.");
+			}
+		} catch (IOException | InterruptedException e) {
+			System.err.println("Error al reiniciar el ordenador en Linux: " + e.getMessage());
+		}
+	}
 
-        // Redondear el resultado a dos decimales
-        return Math.round(suma * 100.0) / 100.0;
-    }
+	public static double sumaNumeros(List<String> lista) {
+		double suma = 0.0;
+
+		for (String str : lista) {
+			// Eliminar símbolos no numéricos excepto el punto decimal
+			String numeroStr = str.replaceAll("[^0-9.]", "");
+
+			try {
+				// Intentar parsear la cadena a número
+				double numero = Double.parseDouble(numeroStr);
+				suma += numero;
+			} catch (NumberFormatException e) {
+				// Ignorar cadenas que no se pueden parsear como número
+				System.out.println("No se puede parsear como número: " + str);
+			}
+		}
+
+		// Redondear el resultado a dos decimales
+		return Math.round(suma * 100.0) / 100.0;
+	}
 
 	public static AccionReferencias getReferenciaVentana() {
 		return referenciaVentana;

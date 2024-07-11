@@ -46,36 +46,47 @@ public class WebScrapNodeJSInstall {
 		for (Element link : links) {
 			String href = link.attr("href");
 
-			if (os.contains("win") && href.endsWith("-win-x64.zip")) {
+			if (isWindows(os) && href.endsWith("-win-x64.zip")) {
 				return href;
-			} else if (os.contains("linux") && href.contains("linux")) {
-				if (os.contains("arm64")) {
-					if (href.endsWith("arm64.tar.gz") || href.endsWith("arm64.tar.xz")) {
-						return href;
-					}
-				} else if (os.contains("armv7l")) {
-					if (href.endsWith("armv7l.tar.gz") || href.endsWith("armv7l.tar.xz")) {
-						return href;
-					}
-				} else if (os.contains("ppc64le")) {
-					if (href.endsWith("ppc64le.tar.gz") || href.endsWith("ppc64le.tar.xz")) {
-						return href;
-					}
-				} else if (os.contains("s390x")) {
-					if (href.endsWith("s390x.tar.gz") || href.endsWith("s390x.tar.xz")) {
-						return href;
-					}
-				} else if (href.endsWith("x64.tar.gz") || href.endsWith("x64.tar.xz")) {
-					return href;
-				}
-			} else if (os.contains("mac")
-					&& (href.endsWith("darwin-arm64.tar.gz") || href.endsWith("darwin-arm64.tar.xz")
-							|| href.endsWith("darwin-x64.tar.gz") || href.endsWith("darwin-x64.tar.xz"))) {
+			} else if (isLinux(os) && isLinuxArchitecture(href, os)) {
+				return href;
+			} else if (isMac(os) && isMacArchitecture(href, os)) {
 				return href;
 			}
 		}
 
 		return null;
+	}
+
+	private static boolean isWindows(String os) {
+		return os.contains("win");
+	}
+
+	private static boolean isLinux(String os) {
+		return os.contains("linux");
+	}
+
+	private static boolean isMac(String os) {
+		return os.contains("mac");
+	}
+
+	private static boolean isLinuxArchitecture(String href, String os) {
+		if (os.contains("arm64")) {
+			return href.endsWith("arm64.tar.gz") || href.endsWith("arm64.tar.xz");
+		} else if (os.contains("armv7l")) {
+			return href.endsWith("armv7l.tar.gz") || href.endsWith("armv7l.tar.xz");
+		} else if (os.contains("ppc64le")) {
+			return href.endsWith("ppc64le.tar.gz") || href.endsWith("ppc64le.tar.xz");
+		} else if (os.contains("s390x")) {
+			return href.endsWith("s390x.tar.gz") || href.endsWith("s390x.tar.xz");
+		} else {
+			return href.endsWith("x64.tar.gz") || href.endsWith("x64.tar.xz");
+		}
+	}
+
+	private static boolean isMacArchitecture(String href, String os) {
+		return href.endsWith("darwin-arm64.tar.gz") || href.endsWith("darwin-arm64.tar.xz")
+				|| href.endsWith("darwin-x64.tar.gz") || href.endsWith("darwin-x64.tar.xz");
 	}
 
 	public static boolean checkNodeJSVersion() {

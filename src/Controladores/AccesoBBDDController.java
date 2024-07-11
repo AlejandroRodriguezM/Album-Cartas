@@ -35,7 +35,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import webScrap.WebScrapGoogleCardMarket;
 import webScrap.WebScrapNodeJSInstall;
 
 /**

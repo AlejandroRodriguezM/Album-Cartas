@@ -2,9 +2,6 @@ package funcionesInterfaz;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +13,6 @@ import Controladores.VentanaAccionController;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
-import dbmanager.ConectManager;
 import dbmanager.ListasCartasDAO;
 import funcionesAuxiliares.Utilidades;
 import funcionesManagment.AccionAniadir;
@@ -26,18 +22,15 @@ import funcionesManagment.AccionModificar;
 import funcionesManagment.AccionReferencias;
 import funcionesManagment.AccionSeleccionar;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class AccionControlUI {
@@ -603,7 +596,8 @@ public class AccionControlUI {
 				.addListener((obs, oldSelection, newSelection) -> {
 
 					if (newSelection != null) {
-						Carta idRow = referenciaVentana.getTablaBBDD().getSelectionModel().getSelectedItem();
+						//Esto algo hace pero seguramente cambie de idea. Mejor no tocar
+//						Carta idRow = referenciaVentana.getTablaBBDD().getSelectionModel().getSelectedItem();
 					}
 				});
 
