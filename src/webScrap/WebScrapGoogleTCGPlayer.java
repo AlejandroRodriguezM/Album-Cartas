@@ -64,9 +64,9 @@ public class WebScrapGoogleTCGPlayer {
 			} else if (line.startsWith("Rareza:")) {
 				rareza = line.substring("Rareza:".length()).trim();
 			} else if (line.startsWith("Precio Normal:")) {
-				precioNormal = line.substring("Precio Normal:".length()).trim().replace("$", "");
+				precioNormal = line.substring("Precio Normal:".length()).trim();
 			} else if (line.startsWith("Precio Foil:")) {
-				precioFoil = line.substring("Precio Foil:".length()).trim().replace("$", "");
+				precioFoil = line.substring("Precio Foil:".length()).trim();
 			} else if (line.startsWith("Dirección de la imagen:")) {
 				direccionImagen = getUrlImagen(line);
 			} else if (line.startsWith("Normas:")) {

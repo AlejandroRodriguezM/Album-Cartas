@@ -526,6 +526,7 @@ public class MenuPrincipalController implements Initializable {
 
 				// Iniciar el Task en un nuevo hilo
 				Thread thread = new Thread(task);
+				thread.setDaemon(true);
 				thread.start();
 
 				// Manejar la cancelación
