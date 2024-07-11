@@ -2,7 +2,6 @@ package funcionesManagment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import alarmas.AlarmaList;
@@ -10,9 +9,9 @@ import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
 import dbmanager.DBUtilidades;
 import dbmanager.DBUtilidades.TipoBusqueda;
-import funcionesAuxiliares.Utilidades;
 import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
+import funcionesAuxiliares.Utilidades;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
