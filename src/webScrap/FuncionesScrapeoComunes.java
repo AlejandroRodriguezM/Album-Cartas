@@ -222,5 +222,40 @@ public class FuncionesScrapeoComunes {
 		}
 		return new ArrayList<>(); // Devolver un List<String> vacío en caso de excepción
 	}
+	
+    public static String getImagenFromPuppeteer(String url, String scriptPath) {
+        try {
+            String command = "node " + scriptPath + " " + url;
+
+            Process process = Runtime.getRuntime().exec(command);
+
+            // Leer la salida del proceso
+            BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String outputLine;
+            while ((outputLine = processReader.readLine()) != null) {
+                output.append(outputLine).append("\n");
+            }
+            processReader.close();
+
+            // Esperar a que termine el proceso
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                // Proceso terminado exitosamente, obtener el resultado
+                String dataString = output.toString().trim();
+                return dataString; // Devolver el resultado como un String
+            } else {
+                // Error al ejecutar el script
+                System.err.println("Error al ejecutar el script de Puppeteer. Código de salida: " + exitCode);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("El hilo fue interrumpido. Terminando la ejecución.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error de entrada/salida al ejecutar el script de Puppeteer.");
+        }
+        return ""; // Devolver una cadena vacía en caso de excepción
+    }
 
 }

@@ -27,13 +27,9 @@ public class WebScrapGoogleScryfall {
 			}
 		};
 
-		task.setOnSucceeded(e -> {
-			future.complete(task.getValue());
-		});
+		task.setOnSucceeded(e -> future.complete(task.getValue()));
 
-		task.setOnFailed(e -> {
-			future.completeExceptionally(task.getException());
-		});
+		task.setOnFailed(e -> future.completeExceptionally(task.getException()));
 
 		new Thread(task).start();
 
@@ -42,7 +38,7 @@ public class WebScrapGoogleScryfall {
 
 	public static Carta extraerDatosMTG(String url) {
 		String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap6.js";
-		List<String> data = FuncionesScrapeoComunes.getCartaFromPuppeteer(url,scriptPath);
+		List<String> data = FuncionesScrapeoComunes.getCartaFromPuppeteer(url, scriptPath);
 
 		String referencia = "";
 		String nombre = "";

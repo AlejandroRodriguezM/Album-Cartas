@@ -29,6 +29,7 @@ import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import dbmanager.UpdateManager;
+import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
 import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
@@ -41,6 +42,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import webScrap.FuncionesScrapeoComunes;
 import webScrap.WebScrapGoogleCardMarket;
 import webScrap.WebScrapGoogleScryfall;
 import webScrap.WebScrapGoogleTCGPlayer;
@@ -342,10 +344,18 @@ public class AccionFuncionesComunes {
 		String codigoNuevoCarta = codigoNuevaImagen();
 		String urlFinal = carpetaPortadas(Utilidades.nombreDB()) + File.separator + codigoNuevoCarta + ".jpg";
 		String imagen = "";
-		if (tipoTienda.equalsIgnoreCase("Card Market")) {
+		if (tipoTienda.equalsIgnoreCase("CardMarket")) {
 			imagen = imagenCarta(cartaOriginal);
-		} else {
-			imagen = cartaOriginal.getDireccionImagenCarta();
+
+		} else if (tipoTienda.equalsIgnoreCase("scryfall")) {
+			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrapImagenScryFall.js";
+			String urlReferencia = cartaOriginal.getUrlReferenciaCarta();
+			imagen = FuncionesScrapeoComunes.getImagenFromPuppeteer(urlReferencia, scriptPath);
+		} else if (tipoTienda.equalsIgnoreCase("tcgplayer")) {
+			String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrapImagenTCG.js";
+			String urlReferencia = cartaOriginal.getUrlReferenciaCarta();
+
+			imagen = FuncionesScrapeoComunes.getImagenFromPuppeteer(urlReferencia, scriptPath);
 		}
 		actualizarPortadaCartas(codigoNuevoCarta, imagen);
 		cartaOriginal.setDireccionImagenCarta(urlFinal);
@@ -761,7 +771,8 @@ public class AccionFuncionesComunes {
 							String tipoTienda = obtenerNombreTienda(linea);
 
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
-								ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
+								Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("",
+										"100%", 100.0));
 								return;
 							}
 							List<Carta> listaOriginal = obtenerCartaInfo(linea, true, tipoTienda);
@@ -780,7 +791,6 @@ public class AccionFuncionesComunes {
 						Utilidades.manejarExcepcion(e);
 					}
 				} else {
-
 					listaCartasDatabase.forEach(carta -> {
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
@@ -801,20 +811,24 @@ public class AccionFuncionesComunes {
 		boolean cartaDuplicada = false;
 
 		for (Carta cartaExistente : cartaInfo) {
-			String referenciaExistente = obtenerReferenciaBase(cartaExistente.getUrlReferenciaCarta());
+			String tipoTienda = obtenerNombreTienda(cartaExistente.getUrlReferenciaCarta());
 
-			if (referenciaExistente.equals(referenciaNueva)) {
-				if (cartaNueva.getUrlReferenciaCarta().endsWith("?isFoil=Y")) {
-					if (cartaExistente.getPrecioCartaFoil().equals("0.0")) {
-						cartaExistente.setPrecioCartaFoil(cartaNueva.getPrecioCartaFoil());
+			if (tipoTienda.equalsIgnoreCase("cardMarket")) {
+				String referenciaExistente = obtenerReferenciaBase(cartaExistente.getUrlReferenciaCarta());
+
+				if (referenciaExistente.equals(referenciaNueva)) {
+					if (cartaNueva.getUrlReferenciaCarta().endsWith("?isFoil=Y")) {
+						if (cartaExistente.getPrecioCartaFoil().equals("0.0")) {
+							cartaExistente.setPrecioCartaFoil(cartaNueva.getPrecioCartaFoil());
+						}
+					} else {
+						if (cartaExistente.getPrecioCartaNormal().equals("0.0")) {
+							cartaExistente.setPrecioCartaNormal(cartaNueva.getPrecioCartaNormal());
+						}
 					}
-				} else {
-					if (cartaExistente.getPrecioCartaNormal().equals("0.0")) {
-						cartaExistente.setPrecioCartaNormal(cartaNueva.getPrecioCartaNormal());
-					}
+					cartaDuplicada = true;
+					break;
 				}
-				cartaDuplicada = true;
-				break;
 			}
 		}
 
@@ -832,7 +846,11 @@ public class AccionFuncionesComunes {
 				String urlImagen = WebScrapGoogleCardMarket.extraerImagen(carta);
 				carta.setDireccionImagenCarta(urlImagen);
 			}
-			AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
+
+			if (!carta.getNomCarta().isEmpty()) {
+				AccionFuncionesComunes.procesarCartaPorCodigo(carta, false);
+			}
+
 		} else if (tipoUpdate.equalsIgnoreCase("actualizar portadas")) {
 			String tipoTienda = determinarTipoTienda(carta.getUrlReferenciaCarta());
 			AccionFuncionesComunes.actualizarCartasPortadas(carta, tipoTienda);
@@ -1047,7 +1065,7 @@ public class AccionFuncionesComunes {
 				nav.cerrarCargaCartas();
 			} else {
 				if (tipoUpdate.isEmpty()) {
-					Thread.currentThread().interrupt();
+
 					getReferenciaVentana().getTablaBBDD().setDisable(false);
 					cambiarEstadoBotones(false);
 
@@ -1058,6 +1076,7 @@ public class AccionFuncionesComunes {
 
 					AlarmaList.detenerAnimacionCarga(getReferenciaVentana().getProgresoCarga());
 					AlarmaList.detenerAnimacionCargaImagen(getReferenciaVentana().getCargaImagen());
+					Thread.currentThread().interrupt();
 				} else {
 					String cadenaAfirmativo = "Cancelada la actualización de la base de datos.";
 					AlarmaList.iniciarAnimacionAvanzado(getReferenciaVentana().getProntInfoEspecial(),
@@ -1088,7 +1107,6 @@ public class AccionFuncionesComunes {
 				cambiarEstadoBotones(false);
 				getReferenciaVentana().getMenuImportarFicheroCodigoBarras().setDisable(false);
 			} else {
-
 				referenciaVentanaPrincipal.getProntInfoTextArea().clear();
 				referenciaVentanaPrincipal.getProntInfoTextArea().setText(null);
 				referenciaVentanaPrincipal.getProntInfoTextArea().setOpacity(0);

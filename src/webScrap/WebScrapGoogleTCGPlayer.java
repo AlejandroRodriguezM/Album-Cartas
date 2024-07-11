@@ -26,13 +26,9 @@ public class WebScrapGoogleTCGPlayer {
 			}
 		};
 
-		task.setOnSucceeded(e -> {
-			future.complete(task.getValue());
-		});
+		task.setOnSucceeded(e -> future.complete(task.getValue()));
 
-		task.setOnFailed(e -> {
-			future.completeExceptionally(task.getException());
-		});
+		task.setOnFailed(e -> future.completeExceptionally(task.getException()));
 
 		new Thread(task).start();
 
@@ -41,7 +37,7 @@ public class WebScrapGoogleTCGPlayer {
 
 	private static Carta processLine(String url) {
 		String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap3.js";
-		List<String> data = FuncionesScrapeoComunes.getCartaFromPuppeteer(url,scriptPath);
+		List<String> data = FuncionesScrapeoComunes.getCartaFromPuppeteer(url, scriptPath);
 
 		// Variables para almacenar los valores extraídos
 		String titulo = "";
