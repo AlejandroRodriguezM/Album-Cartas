@@ -16,7 +16,7 @@ public class DBUtilidades {
 	private static AccionReferencias referenciaVentana = getReferenciaVentana();
 
 	public enum TipoBusqueda {
-		POSESION, KEY_ISSUE, COMPLETA, VENDIDOS, COMPRADOS, PUNTUACION, FIRMADOS, GUARDADOS, ELIMINAR
+		COMPLETA, ELIMINAR
 	}
 
 	public static void setParameters(PreparedStatement ps, Carta datos, boolean includeID) throws SQLException {

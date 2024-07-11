@@ -645,45 +645,6 @@ public class MenuPrincipalController implements Initializable {
 	}
 
 	/**
-	 * Funcion que al pulsar el boton de 'botonPuntuacion' se muestran aquellos
-	 * comics que tienen una puntuacion
-	 *
-	 * @param event
-	 * @throws SQLException
-	 */
-	@FXML
-	void comicsPuntuacion(ActionEvent event) {
-		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.PUNTUACION);
-	}
-
-	/**
-	 * Funcion que al pulsar el boton de 'botonVentas' se muestran aquellos comics
-	 * que han sido vendidos
-	 *
-	 * @param event
-	 * @throws SQLException
-	 */
-	@FXML
-	void comicsVendidos(ActionEvent event) {
-		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.VENDIDOS);
-	}
-
-	/**
-	 * Funcion que al pulsar el boton de 'botonVentas' se muestran aquellos comics
-	 * que han sido vendidos
-	 *
-	 * @param event
-	 * @throws SQLException
-	 */
-	@FXML
-	void comicsFirmados(ActionEvent event) {
-		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.FIRMADOS);
-	}
-
-	/**
 	 * Funcion que al pulsar el boton de 'botonVentas' se muestran aquellos comics
 	 * que han sido vendidos
 	 *
@@ -694,19 +655,6 @@ public class MenuPrincipalController implements Initializable {
 	void comicsComprados(ActionEvent event) {
 		enviarReferencias();
 		imprimirCartasEstado(TipoBusqueda.COMPLETA);
-	}
-
-	/**
-	 * Funcion que al pulsar el boton de 'botonVentas' se muestran aquellos comics
-	 * que han sido vendidos
-	 *
-	 * @param event
-	 * @throws SQLException
-	 */
-	@FXML
-	void comicsEnPosesion(ActionEvent event) {
-		enviarReferencias();
-		imprimirCartasEstado(TipoBusqueda.POSESION);
 	}
 
 	@FXML
@@ -733,8 +681,6 @@ public class MenuPrincipalController implements Initializable {
 		List<Carta> listaCartas;
 
 		String sentenciaSQL = DBUtilidades.construirSentenciaSQL(tipoBusqueda);
-
-		System.out.println(sentenciaSQL);
 
 		listaCartas = SelectManager.verLibreria(sentenciaSQL, false);
 
@@ -971,8 +917,9 @@ public class MenuPrincipalController implements Initializable {
 					Utilidades.manejarExcepcion(e);
 				}
 			});
-
+			borradoTablaThread.setDaemon(true); // Marcar el hilo como demonio
 			borradoTablaThread.start();
+
 		} catch (Exception e) {
 			Utilidades.manejarExcepcion(e);
 		}
@@ -1094,7 +1041,6 @@ public class MenuPrincipalController implements Initializable {
 			});
 
 			lecturaTask.setOnRunning(e -> {
-
 				estadoStage().setOnCloseRequest(event -> {
 					lecturaTask.cancel(true);
 					Utilidades.cerrarCargaCartas();
@@ -1124,7 +1070,9 @@ public class MenuPrincipalController implements Initializable {
 			});
 
 			// Iniciar la tarea principal de importación en un hilo separado
-			new Thread(lecturaTask).start();
+			Thread hiloImportacion = new Thread(lecturaTask);
+			hiloImportacion.setDaemon(true); // Marcar el hilo como demonio
+			hiloImportacion.start();
 		}
 	}
 
@@ -1217,7 +1165,8 @@ public class MenuPrincipalController implements Initializable {
 		double total = preciosNormalSuma + preciosFoilSuma;
 		total = Math.round(total * 100.0) / 100.0;
 
-		String mensaje ="Precio total de las cartas son: \n" + "Normal: " + preciosNormalSuma + "€\n" + "Foil: " + preciosFoilSuma + "€\nTotal: " + total + "€\n" + "\n" + "\n";
+		String mensaje = "Precio total de las cartas son: \n" + "Normal: " + preciosNormalSuma + "€\n" + "Foil: "
+				+ preciosFoilSuma + "€\nTotal: " + total + "€\n" + "\n" + "\n";
 
 		AlarmaList.detenerAnimacion();
 		AlarmaList.mostrarMensajePront(mensaje, true, prontInfo);
