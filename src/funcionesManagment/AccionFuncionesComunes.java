@@ -27,7 +27,6 @@ import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
 import dbmanager.DatabaseManagerDAO;
 import dbmanager.ListasCartasDAO;
-import dbmanager.SelectManager;
 import dbmanager.UpdateManager;
 import ficherosFunciones.FuncionesFicheros;
 import funcionesAuxiliares.Utilidades;
