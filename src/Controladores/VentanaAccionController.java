@@ -422,7 +422,7 @@ public class VentanaAccionController implements Initializable {
 		if (getCartaCache() != null) {
 			ImagenAmpliadaController.cartaInfo = getCartaCache();
 			if (guardarReferencia().getImagenCarta().getOpacity() != 0) {
-				nav.verVentanaImagen();
+				Ventanas.verVentanaImagen();
 			}
 		}
 	}

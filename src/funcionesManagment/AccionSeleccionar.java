@@ -75,15 +75,17 @@ public class AccionSeleccionar {
 			Utilidades.cambiarVisibilidad(elementos[0], false);
 
 		}
-		
+
 		getReferenciaVentana().getImagenCarta().setOnMouseClicked(event -> {
-			String idCarta = newSelection.getIdCarta();
-			Carta carta = SelectManager.cartaDatos(idCarta);
+
+			if (!esPrincipal && newSelection.getIdCarta().isEmpty()) {
+				return;
+			}
+
+			Carta carta = newSelection;
 			ImagenAmpliadaController.cartaInfo = carta;
 			Ventanas.verVentanaImagen();
-
 			getReferenciaVentana().getImagenCarta().setVisible(false);
-			
 			AccionControlUI.limpiarAutorellenos(esPrincipal);
 		});
 	}
