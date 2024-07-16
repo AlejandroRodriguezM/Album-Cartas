@@ -2223,7 +2223,7 @@ public class Utilidades {
 
 	public static String nombreDB() {
 		String nombreCompletoDB = FuncionesFicheros.datosEnvioFichero();
-		if (!nombreCompletoDB.isEmpty()) {
+		if (nombreCompletoDB != null && !nombreCompletoDB.isEmpty()) {
 			String nombreCortado[] = nombreCompletoDB.split("\\.");
 			String nombredb = nombreCortado[0];
 			return nombredb;

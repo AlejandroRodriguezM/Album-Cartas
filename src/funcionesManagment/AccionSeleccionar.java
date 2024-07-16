@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Controladores.ImagenAmpliadaController;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
@@ -12,6 +13,7 @@ import dbmanager.DBUtilidades.TipoBusqueda;
 import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import funcionesAuxiliares.Utilidades;
+import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
@@ -73,6 +75,17 @@ public class AccionSeleccionar {
 			Utilidades.cambiarVisibilidad(elementos[0], false);
 
 		}
+		
+		getReferenciaVentana().getImagenCarta().setOnMouseClicked(event -> {
+			String idCarta = newSelection.getIdCarta();
+			Carta carta = SelectManager.cartaDatos(idCarta);
+			ImagenAmpliadaController.cartaInfo = carta;
+			Ventanas.verVentanaImagen();
+
+			getReferenciaVentana().getImagenCarta().setVisible(false);
+			
+			AccionControlUI.limpiarAutorellenos(esPrincipal);
+		});
 	}
 
 	public static void actualizarRefrenciaClick(AccionReferencias referenciaFXML) {

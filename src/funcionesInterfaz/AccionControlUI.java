@@ -428,6 +428,13 @@ public class AccionControlUI {
 	public static void limpiarAutorellenos(boolean esPrincipal) {
 
 		if (esPrincipal) {
+			referenciaVentana.getProntInfoTextArea().clear();
+			referenciaVentana.getProntInfoTextArea().setText(null);
+			referenciaVentana.getProntInfoTextArea().setOpacity(0);
+			referenciaVentana.getTablaBBDD().getItems().clear();
+			referenciaVentana.getTablaBBDD().refresh();
+			referenciaVentana.getImagenCarta().setImage(null);
+			referenciaVentana.getImagenCarta().setOpacity(0);
 			return;
 		}
 
