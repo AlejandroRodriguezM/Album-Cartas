@@ -41,6 +41,7 @@ public class AccionSeleccionar {
 		Utilidades.comprobacionListaCartas();
 		getReferenciaVentana().getImagenCarta().setOpacity(1);
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
+		
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
 		@SuppressWarnings("unchecked")
 		final List<Node>[] elementos = new ArrayList[1];
@@ -52,7 +53,7 @@ public class AccionSeleccionar {
 
 		if (scene != null) {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-
+				getReferenciaVentana().getImagenCarta().setVisible(true);
 				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
 					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
 					if (!esPrincipal) {

@@ -228,6 +228,7 @@ public class WebScrapGoogleCardMarket {
 		String precioFoil = "0.0";
 
 		for (String line : data) {
+			
 			if (line.startsWith("Referencia: ")) {
 				referencia = line.substring("Referencia: ".length()).trim();
 			} else if (line.startsWith("Nombre: ")) {

@@ -64,6 +64,7 @@ public class AccionControlUI {
 		Carta cartaTempTemp = Carta.obtenerCarta(idCarta);
 		if (cartaTempTemp != null) {
 			rellenarDatos(cartaTempTemp);
+
 			return true;
 		}
 		return false;
@@ -603,7 +604,7 @@ public class AccionControlUI {
 				.addListener((obs, oldSelection, newSelection) -> {
 
 					if (newSelection != null) {
-						//Esto algo hace pero seguramente cambie de idea. Mejor no tocar
+						// Esto algo hace pero seguramente cambie de idea. Mejor no tocar
 //						Carta idRow = referenciaVentana.getTablaBBDD().getSelectionModel().getSelectedItem();
 					}
 				});
