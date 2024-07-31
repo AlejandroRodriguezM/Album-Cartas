@@ -76,9 +76,12 @@ public class WebScrapGoogleTCGPlayer {
 			}
 		}
 
-		return new Carta.CartaBuilder("", titulo).numCarta(numero).editorialCarta(categoria).coleccionCarta(coleccion)
-				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
-				.urlReferenciaCarta(referencia).direccionImagenCarta(direccionImagen).normasCarta(normas).build();
+		Carta carta = new Carta.CartaBuilder("", titulo).numCarta(numero).editorialCarta(categoria)
+				.coleccionCarta(coleccion).rarezaCarta(rareza).precioCartaNormal(precioNormal)
+				.precioCartaFoil(precioFoil).urlReferenciaCarta(referencia).direccionImagenCarta(direccionImagen)
+				.normasCarta(normas).build();
+		carta.sustituirCaracteres(carta);
+		return carta;
 	}
 
 	public static String getUrlImagen(String datos) {

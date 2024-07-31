@@ -60,6 +60,11 @@ public class AccionSeleccionar {
 						if ("modificar".equals(AccionFuncionesComunes.TIPO_ACCION)) {
 							AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
 						}
+						
+						if (!getReferenciaVentana().getIdCartaTratarTextField().getText().isEmpty()) {
+							Utilidades.cambiarVisibilidad(elementos[0], false);
+						}
+						
 						// Borrar cualquier mensaje de error presente
 						AccionFuncionesComunes.borrarErrores();
 						AccionControlUI.validarCamposClave(true);

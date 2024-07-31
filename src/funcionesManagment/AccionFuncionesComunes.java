@@ -777,6 +777,9 @@ public class AccionFuncionesComunes {
 
 							// Procesar y fusionar duplicados
 							for (Carta carta : listaOriginal) {
+
+								carta.sustituirCaracteres(carta);
+
 								agregarCartaConDuplicados(listaSinDuplicados, carta);
 								mensajesCargaCartas(carta, tipoUpdate);
 
@@ -790,9 +793,8 @@ public class AccionFuncionesComunes {
 					}
 				} else {
 					listaCartasDatabase.forEach(carta -> {
-						
-						
-						
+						carta.sustituirCaracteres(carta);
+
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 							return; // Salir del forEach si el Task está cancelado
@@ -989,8 +991,8 @@ public class AccionFuncionesComunes {
 					}
 				}
 
-				getReferenciaVentanaPrincipal().getProntInfoTextArea().setDisable(false);
-				getReferenciaVentanaPrincipal().getProntInfoTextArea().setOpacity(1);
+//				getReferenciaVentanaPrincipal().getProntInfoTextArea().setDisable(false);
+//				getReferenciaVentanaPrincipal().getProntInfoTextArea().setOpacity(1);
 
 				AlarmaList.mostrarMensajePront("Se estan cargando los datos", true,
 						getReferenciaVentanaPrincipal().getProntInfoTextArea());

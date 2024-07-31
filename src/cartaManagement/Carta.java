@@ -378,6 +378,22 @@ public class Carta implements Cloneable {
 		return contenidoCarta.toString();
 	}
 
+	// Método para sustituir comillas dobles, comillas simples y punto y coma por
+	// una cadena vacía
+	public void sustituirCaracteres(Carta carta) {
+		carta.setIdCarta(carta.getIdCarta().replaceAll("[\"';]", ""));
+		carta.setNomCarta(carta.getNomCarta().replaceAll("[\"';]", ""));
+		carta.setNumCarta(carta.getNumCarta().replaceAll("[\"';]", ""));
+		carta.setEditorialCarta(carta.getEditorialCarta().replaceAll("[\"';]", ""));
+		carta.setColeccionCarta(carta.getColeccionCarta().replaceAll("[\"';]", ""));
+		carta.setRarezaCarta(carta.getRarezaCarta().replaceAll("[\"';]", ""));
+		carta.setPrecioCartaNormal(carta.getPrecioCartaNormal().replaceAll("[\"';]", ""));
+		carta.setPrecioCartaFoil(carta.getPrecioCartaFoil().replaceAll("[\"';]", ""));
+		carta.setUrlReferenciaCarta(carta.getUrlReferenciaCarta().replaceAll("[\"';]", ""));
+		carta.setDireccionImagenCarta(carta.getDireccionImagenCarta().replaceAll("[\"';]", ""));
+		carta.setNormasCarta(carta.getNormasCarta().replaceAll("[\"';]", ""));
+	}
+
 	/**
 	 * Genera una representación en forma de cadena de texto del cómic, incluyendo
 	 * sus atributos no nulos.
