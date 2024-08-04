@@ -33,7 +33,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/JavaFX/lib/javafx.fxml.jar">
+	<classpathentry kind="lib" path="C:/Program Files/Java/Plugins/JavaFX/lib/javafx.fxml.jar" sourcepath="C:/Users/mrmis/.m2/repository/org/openjfx/javafx-fxml/22/javafx-fxml-22-sources.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Controladores.ImagenAmpliadaController;
 import alarmas.AlarmaList;
 import cartaManagement.Carta;
 import dbmanager.CartaManagerDAO;
@@ -12,6 +13,7 @@ import dbmanager.DBUtilidades.TipoBusqueda;
 import dbmanager.ListasCartasDAO;
 import dbmanager.SelectManager;
 import funcionesAuxiliares.Utilidades;
+import funcionesAuxiliares.Ventanas;
 import funcionesInterfaz.AccionControlUI;
 import funcionesInterfaz.FuncionesTableView;
 import javafx.collections.FXCollections;
@@ -39,6 +41,7 @@ public class AccionSeleccionar {
 		Utilidades.comprobacionListaCartas();
 		getReferenciaVentana().getImagenCarta().setOpacity(1);
 		Carta newSelection = getReferenciaVentana().getTablaBBDD().getSelectionModel().getSelectedItem();
+		
 		Scene scene = getReferenciaVentana().getTablaBBDD().getScene();
 		@SuppressWarnings("unchecked")
 		final List<Node>[] elementos = new ArrayList[1];
@@ -50,13 +53,18 @@ public class AccionSeleccionar {
 
 		if (scene != null) {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-
+				getReferenciaVentana().getImagenCarta().setVisible(true);
 				if (!getReferenciaVentana().getTablaBBDD().isHover()) {
 					getReferenciaVentana().getTablaBBDD().getSelectionModel().clearSelection();
 					if (!esPrincipal) {
 						if ("modificar".equals(AccionFuncionesComunes.TIPO_ACCION)) {
 							AccionControlUI.mostrarOpcion(AccionFuncionesComunes.TIPO_ACCION);
 						}
+						
+						if (!getReferenciaVentana().getIdCartaTratarTextField().getText().isEmpty()) {
+							Utilidades.cambiarVisibilidad(elementos[0], false);
+						}
+						
 						// Borrar cualquier mensaje de error presente
 						AccionFuncionesComunes.borrarErrores();
 						AccionControlUI.validarCamposClave(true);
@@ -73,6 +81,19 @@ public class AccionSeleccionar {
 			Utilidades.cambiarVisibilidad(elementos[0], false);
 
 		}
+
+		getReferenciaVentana().getImagenCarta().setOnMouseClicked(event -> {
+
+			if (!esPrincipal && newSelection.getIdCarta().isEmpty()) {
+				return;
+			}
+
+			Carta carta = newSelection;
+			ImagenAmpliadaController.cartaInfo = carta;
+			Ventanas.verVentanaImagen();
+			getReferenciaVentana().getImagenCarta().setVisible(false);
+			AccionControlUI.limpiarAutorellenos(esPrincipal);
+		});
 	}
 
 	public static void actualizarRefrenciaClick(AccionReferencias referenciaFXML) {

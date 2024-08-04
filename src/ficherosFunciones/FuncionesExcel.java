@@ -326,11 +326,12 @@ public class FuncionesExcel {
 	private int escribirDatosCartas(List<Carta> listaCartas, Sheet hoja,
 			AtomicReference<CargaCartasController> cargaCartasControllerRef, File directorioImagenes) {
 		int indiceFinal = 1; // Comenzar desde 1 para omitir la fila de encabezado
-		for (Carta comic : listaCartas) {
+		for (Carta carta : listaCartas) {
+			carta.sustituirCaracteres(carta);
 			Row fila = hoja.createRow(indiceFinal);
-			llenarFilaConDatos(comic, fila);
+			llenarFilaConDatos(carta, fila);
 
-			cargaCartas(comic, cargaCartasControllerRef, directorioImagenes, false);
+			cargaCartas(carta, cargaCartasControllerRef, directorioImagenes, false);
 
 			indiceFinal++;
 
@@ -450,13 +451,13 @@ public class FuncionesExcel {
 						return;
 					}
 
-					Carta comicNuevo = CartaFichero.datosCartaFichero(lineText);
-
-					if (comicNuevo != null) {
-						InsertManager.insertarDatos(comicNuevo, true);
+					Carta cartaNuevo = CartaFichero.datosCartaFichero(lineText);
+					cartaNuevo.sustituirCaracteres(cartaNuevo);
+					if (cartaNuevo != null) {
+						InsertManager.insertarDatos(cartaNuevo, true);
 					}
 
-					cargaCartas(comicNuevo, cargaCartasControllerRef, directorioRef.get(), true);
+					cargaCartas(cartaNuevo, cargaCartasControllerRef, directorioRef.get(), true);
 
 				} catch (Exception e) {
 					// Manejar cualquier excepción durante el procesamiento de la línea
@@ -490,7 +491,7 @@ public class FuncionesExcel {
 		if (comicNuevo == null || cargaCartasControllerRef == null) {
 			return;
 		}
-
+		comicNuevo.sustituirCaracteres(comicNuevo);
 		// Obtener nombre de portada y nombre modificado
 		String nombrePortada = "";
 		String nombreModificado = "";

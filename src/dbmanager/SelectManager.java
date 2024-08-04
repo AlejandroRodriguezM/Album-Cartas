@@ -88,37 +88,37 @@ public class SelectManager {
 		return carta;
 	}
 
-    /**
-     * Comprueba si un identificador de carta existe en la base de datos.
-     *
-     * @param identificador El identificador de la carta a comprobar.
-     * @return true si el identificador existe, false en caso contrario.
-     */
-    public static boolean comprobarIdentificadorCarta(String identificador) {
-    	
-        if (identificador == null || identificador.trim().isEmpty()) {
-            return false; // Si el identificador es nulo o está vacío, se considera que no existe
-        }
+	/**
+	 * Comprueba si un identificador de carta existe en la base de datos.
+	 *
+	 * @param identificador El identificador de la carta a comprobar.
+	 * @return true si el identificador existe, false en caso contrario.
+	 */
+	public static boolean comprobarIdentificadorCarta(String identificador) {
+
+		if (identificador == null || identificador.trim().isEmpty()) {
+			return false; // Si el identificador es nulo o está vacío, se considera que no existe
+		}
 
 		try (Connection conn = ConectManager.conexion();
 				PreparedStatement preparedStatement = conn.prepareStatement(SENTENCIA_CONTAR_CARTAS_POR_ID)) {
 
-            preparedStatement.setString(1, identificador.trim());
+			preparedStatement.setString(1, identificador.trim());
 
-            try (ResultSet rs = preparedStatement.executeQuery()) {
-            	            	
-                return rs.next(); // Si hay una fila, el identificador existe
-            }
-        } catch (SQLException e) {
-            Utilidades.manejarExcepcion(e);
-            // Manejar error de sintaxis SQL de manera específica
-        } catch (Exception e) {
-            Utilidades.manejarExcepcion(e);
-            // Manejar otros errores genéricos
-        }
+			try (ResultSet rs = preparedStatement.executeQuery()) {
 
-        return false;
-    }
+				return rs.next(); // Si hay una fila, el identificador existe
+			}
+		} catch (SQLException e) {
+			Utilidades.manejarExcepcion(e);
+			// Manejar error de sintaxis SQL de manera específica
+		} catch (Exception e) {
+			Utilidades.manejarExcepcion(e);
+			// Manejar otros errores genéricos
+		}
+
+		return false;
+	}
 
 	/**
 	 * Obtiene la dirección de la portada de un cómic.
@@ -206,18 +206,11 @@ public class SelectManager {
 	 * @throws SQLException
 	 */
 	public static List<Carta> libreriaSeleccionado(String datoSeleccionado) {
-		String sentenciaSQL = "SELECT * FROM albumbbdd WHERE "
-		        + "numCarta = '" + datoSeleccionado + "' OR "
-		        + "coleccionCarta LIKE '%" + datoSeleccionado + "%' OR "
-		        + "rarezaCarta LIKE '%" + datoSeleccionado + "%' OR "
-		        + "esFoilCarta = '" + datoSeleccionado + "' OR "
-		        + "editorialCarta = '" + datoSeleccionado + "' OR "
-		        + "gradeoCarta LIKE '%" + datoSeleccionado + "%' OR "
-		        + "estadoCarta LIKE '%" + datoSeleccionado + "%' OR "
-		        + "precioCarta = '" + datoSeleccionado + "' OR "
-		        + "urlReferenciaCarta LIKE '%" + datoSeleccionado + "%' OR "
-		        + "direccionImagenCarta LIKE '%" + datoSeleccionado + "%' "
-		        + "ORDER BY nomCarta ASC, numCarta ASC, esFoilCarta ASC";
+		String sentenciaSQL = "SELECT * FROM albumbbdd WHERE " + "nomCarta = '" + datoSeleccionado + "' OR "
+				+ "numCarta = '" + datoSeleccionado + "' OR " + "editorialCarta = '" + datoSeleccionado + "' OR "
+				+ "coleccionCarta LIKE '%" + datoSeleccionado + "%' OR " + "rarezaCarta = '" + datoSeleccionado
+				+ "' OR " + "precioCartaFoil = '" + datoSeleccionado + "' OR " + "precioCartaNormal = '"
+				+ datoSeleccionado + "'" + " ORDER BY nomCarta ASC, numCarta ASC";
 
 		return verLibreria(sentenciaSQL, false);
 	}

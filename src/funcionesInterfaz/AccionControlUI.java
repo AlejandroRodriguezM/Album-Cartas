@@ -64,6 +64,7 @@ public class AccionControlUI {
 		Carta cartaTempTemp = Carta.obtenerCarta(idCarta);
 		if (cartaTempTemp != null) {
 			rellenarDatos(cartaTempTemp);
+
 			return true;
 		}
 		return false;
@@ -428,6 +429,13 @@ public class AccionControlUI {
 	public static void limpiarAutorellenos(boolean esPrincipal) {
 
 		if (esPrincipal) {
+			referenciaVentana.getProntInfoTextArea().clear();
+			referenciaVentana.getProntInfoTextArea().setText(null);
+			referenciaVentana.getProntInfoTextArea().setOpacity(0);
+			referenciaVentana.getTablaBBDD().getItems().clear();
+			referenciaVentana.getTablaBBDD().refresh();
+			referenciaVentana.getImagenCarta().setImage(null);
+			referenciaVentana.getImagenCarta().setOpacity(0);
 			return;
 		}
 
@@ -596,7 +604,7 @@ public class AccionControlUI {
 				.addListener((obs, oldSelection, newSelection) -> {
 
 					if (newSelection != null) {
-						//Esto algo hace pero seguramente cambie de idea. Mejor no tocar
+						// Esto algo hace pero seguramente cambie de idea. Mejor no tocar
 //						Carta idRow = referenciaVentana.getTablaBBDD().getSelectionModel().getSelectedItem();
 					}
 				});

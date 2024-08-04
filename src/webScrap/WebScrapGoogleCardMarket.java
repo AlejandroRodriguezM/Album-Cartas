@@ -228,6 +228,7 @@ public class WebScrapGoogleCardMarket {
 		String precioFoil = "0.0";
 
 		for (String line : data) {
+
 			if (line.startsWith("Referencia: ")) {
 				referencia = line.substring("Referencia: ".length()).trim();
 			} else if (line.startsWith("Nombre: ")) {
@@ -261,9 +262,13 @@ public class WebScrapGoogleCardMarket {
 			}
 
 		}
-		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
-				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
-				.urlReferenciaCarta(referencia).direccionImagenCarta(imagen).normasCarta(normas).build();
+
+		Carta carta = new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial)
+				.coleccionCarta(coleccion).rarezaCarta(rareza).precioCartaNormal(precioNormal)
+				.precioCartaFoil(precioFoil).urlReferenciaCarta(referencia).direccionImagenCarta(imagen)
+				.normasCarta(normas).build();
+		carta.sustituirCaracteres(carta);
+		return carta;
 	}
 
 	public static String limpiarTexto(String texto) {

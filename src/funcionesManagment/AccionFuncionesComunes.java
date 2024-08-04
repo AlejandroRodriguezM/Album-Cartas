@@ -423,9 +423,9 @@ public class AccionFuncionesComunes {
 			getReferenciaVentana().getBotonEliminarImportadoCarta().setVisible(false);
 
 			ListasCartasDAO.cartasImportados.clear();
-			getReferenciaVentana().getTablaBBDD().getItems().clear();
-			getReferenciaVentana().getTablaBBDD().refresh();
 		}
+		getReferenciaVentana().getTablaBBDD().getItems().clear();
+		getReferenciaVentana().getTablaBBDD().refresh();
 		getReferenciaVentana().getBotonClonarCarta().setVisible(false);
 		getReferenciaVentana().getProntInfoTextArea().setOpacity(0);
 		getReferenciaVentana().getTablaBBDD().refresh();
@@ -584,7 +584,6 @@ public class AccionFuncionesComunes {
 
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
-
 				if (tipoTienda.equalsIgnoreCase("CardMarket")) {
 					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(finalValorCodigo));
 				} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
@@ -597,6 +596,7 @@ public class AccionFuncionesComunes {
 				controlCargaCartas(enlaces.size());
 				nav.verCargaCartas(cargaCartasControllerRef);
 				for (String string : enlaces) {
+					System.out.println(string);
 					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(string));
 				}
 			}
@@ -768,7 +768,6 @@ public class AccionFuncionesComunes {
 						reader.lines().forEach(linea -> {
 
 							String tipoTienda = obtenerNombreTienda(linea);
-
 							if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 								Platform.runLater(() -> cargaCartasControllerRef.get().cargarDatosEnCargaCartas("",
 										"100%", 100.0));
@@ -778,6 +777,9 @@ public class AccionFuncionesComunes {
 
 							// Procesar y fusionar duplicados
 							for (Carta carta : listaOriginal) {
+
+								carta.sustituirCaracteres(carta);
+
 								agregarCartaConDuplicados(listaSinDuplicados, carta);
 								mensajesCargaCartas(carta, tipoUpdate);
 
@@ -791,6 +793,8 @@ public class AccionFuncionesComunes {
 					}
 				} else {
 					listaCartasDatabase.forEach(carta -> {
+						carta.sustituirCaracteres(carta);
+
 						if (isCancelled() || !getReferenciaVentana().getStageVentana().isShowing()) {
 							ListasCartasDAO.eliminarUltimaCartaImportada(); // Eliminar la última carta importada
 							return; // Salir del forEach si el Task está cancelado
@@ -987,8 +991,8 @@ public class AccionFuncionesComunes {
 					}
 				}
 
-				getReferenciaVentanaPrincipal().getProntInfoTextArea().setDisable(false);
-				getReferenciaVentanaPrincipal().getProntInfoTextArea().setOpacity(1);
+//				getReferenciaVentanaPrincipal().getProntInfoTextArea().setDisable(false);
+//				getReferenciaVentanaPrincipal().getProntInfoTextArea().setOpacity(1);
 
 				AlarmaList.mostrarMensajePront("Se estan cargando los datos", true,
 						getReferenciaVentanaPrincipal().getProntInfoTextArea());

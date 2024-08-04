@@ -74,10 +74,12 @@ public class WebScrapGoogleScryfall {
 			}
 		}
 
-		// Construimos y retornamos el objeto Carta
-		return new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial).coleccionCarta(coleccion)
-				.rarezaCarta(rareza).precioCartaNormal(precioNormal).precioCartaFoil(precioFoil)
-				.urlReferenciaCarta(referencia).direccionImagenCarta(imagen).normasCarta(normas).build();
+		Carta carta = new Carta.CartaBuilder("", nombre).numCarta(numero).editorialCarta(editorial)
+				.coleccionCarta(coleccion).rarezaCarta(rareza).precioCartaNormal(precioNormal)
+				.precioCartaFoil(precioFoil).urlReferenciaCarta(referencia).direccionImagenCarta(imagen)
+				.normasCarta(normas).build();
+		carta.sustituirCaracteres(carta);
+		return carta;
 	}
 
 	public static Carta devolverCartaBuscada(String urlCarta) {

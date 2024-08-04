@@ -1,37 +1,38 @@
 package UNIT_TEST;
 
-import java.io.IOException;
-
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.jsoup.HttpStatusException;
 
 public class testScrap {
-	
-	public static void main(String[] args) throws IOException {
-		
-		String url = "https://www.cardtrader.com/cards/sliver-overlord-scourge";
-		
-		Document doc = Jsoup.connect(url).get();
-		
-		// Seleccionar el elemento div con la clase blueprint-info
-		Element blueprintInfoDiv = doc.select("div.w-100.ml-3.mr-0.mr-md-3").first();
 
-		if (blueprintInfoDiv != null) {
-			// Obtener todos los elementos <br> dentro de blueprint-info
-			Elements brElements = blueprintInfoDiv.select("br");
-
-			// Buscar el texto que empieza con {3}
-			for (Element br : brElements) {
-				String text = br.text().trim();
-				System.out.println(text);
-				if (text.startsWith(" {3}")) {
-					System.out.println(text);
-				}
-			}
-		}
-		
-	}
-
+    public static void main(String[] args) {
+        String url = "https://www.cardladder.com/ladder/card/wkLhosA2Ha2UQtsiI9xG";
+        try {
+            // Conectarse a la URL
+            Connection connection = Jsoup.connect(url);
+            Connection.Response response = connection.execute();
+            
+            // Verificar el código de estado de la respuesta
+            int statusCode = response.statusCode();
+            if (statusCode == 403) {
+                System.out.println("La página tiene protección (Error 403 Forbidden).");
+            } else {
+                System.out.println("La página no tiene protección 403. Código de estado: " + statusCode);
+                // Puedes obtener el documento HTML si lo necesitas
+                Document document = connection.get();
+                // Realizar otras operaciones con el documento
+            }
+            
+        } catch (HttpStatusException e) {
+            if (e.getStatusCode() == 403) {
+                System.out.println("La página tiene protección (Error 403 Forbidden).");
+            } else {
+                System.out.println("HTTP error fetching URL. Status=" + e.getStatusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

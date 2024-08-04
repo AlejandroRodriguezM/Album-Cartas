@@ -74,7 +74,7 @@ public class Ventanas {
 
 	private Stage menuCodigoBarras = null;
 
-	private Stage accionCarta = null;
+	private static Stage accionCarta = null;
 
 	private Stage opcionesAvanzadasStage = null;
 
@@ -82,7 +82,7 @@ public class Ventanas {
 
 	private Stage menuPrincipal = null;
 
-	private Stage imagenAmpliada = null;
+	private static Stage imagenAmpliada = null;
 	private Stage opcionesDB = null;
 
 	private boolean ventanaCerrada = false; // Variable para almacenar el estado de la ventana
@@ -221,9 +221,11 @@ public class Ventanas {
 //		});
 	}
 
-	public void ventanaAbierta(Stage ventanaActual) {
+	public static synchronized void ventanaAbierta(Stage ventanaActual) {
 		if (ventanaActual != null) {
+			System.out.println("Je");
 			ventanaActual.close();
+			ventanaActual = null;
 		}
 	}
 
@@ -324,13 +326,13 @@ public class Ventanas {
 	 * Define el comportamiento de cierre de la ventana y actualiza la referencia a
 	 * la ventana actual.
 	 */
-	public void verVentanaImagen() {
+	public static synchronized void verVentanaImagen() {
 		try {
 			// Verifica si hay una ventana abierta y ciérrala si es necesario
 			ventanaAbierta(imagenAmpliada);
 
 			// Cargo la vista
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ventanas/ImagenAmpliadaCarta.fxml"));
+			FXMLLoader loader = new FXMLLoader(Ventanas.class.getResource("/ventanas/ImagenAmpliadaCarta.fxml"));
 
 			// Cargo el padre
 			Parent root = loader.load();
@@ -357,46 +359,48 @@ public class Ventanas {
 			});
 			ConectManager.resetConnection();
 		} catch (IOException ex) {
-			alertaException(ex.toString());
+//			alertaException(ex.toString());
 			ex.printStackTrace();
 		}
 	}
 
 	public static int verVentanaNumero() {
-	    try {
-	        TextInputDialog dialog = new TextInputDialog();
-	        dialog.setTitle("Entrada de Número");
-	        dialog.setHeaderText("Por favor, ingrese un número (mayor que 0 y máximo 10):");
-	        dialog.setContentText("Número:");
+		try {
+			TextInputDialog dialog = new TextInputDialog();
+			dialog.setTitle("Entrada de Número");
+			dialog.setHeaderText("Por favor, ingrese un número (mayor que 0 y máximo 10):");
+			dialog.setContentText("Número:");
 
-	        while (true) {
-	            Optional<String> result = dialog.showAndWait();
-	            
-	            if (result.isPresent()) {
-	                String input = result.get();
-	                if (isValidInteger(input)) {
-	                    int inputValue = Integer.parseInt(input);
-	                    if (inputValue > 0 && inputValue <= 10) {
-	                        boolean isConfirmed = mostrarDialogoConfirmacion("Confirmación",
-	                                "Se va a crear un clon de la carta un total de: " + inputValue + " veces. ¿Estas de acuerdo?");
-	                        if (isConfirmed) {
-	                            return inputValue;
-	                        }
-	                    } else {
-	                        mostrarAlerta("Entrada inválida", "Por favor, ingrese un número mayor que 0 y máximo 10.");
-	                    }
-	                } else {
-	                    mostrarAlerta("Entrada inválida", "Por favor, ingrese un número entero válido mayor que 0 y máximo 10.");
-	                }
-	            } else {
-	                return -1; // El diálogo fue cancelado
-	            }
-	        }
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	        mostrarAlerta("Error", "Ocurrió un error al procesar la entrada.");
-	    }
-	    return -1;
+			while (true) {
+				Optional<String> result = dialog.showAndWait();
+
+				if (result.isPresent()) {
+					String input = result.get();
+					if (isValidInteger(input)) {
+						int inputValue = Integer.parseInt(input);
+						if (inputValue > 0 && inputValue <= 10) {
+							boolean isConfirmed = mostrarDialogoConfirmacion("Confirmación",
+									"Se va a crear un clon de la carta un total de: " + inputValue
+											+ " veces. ¿Estas de acuerdo?");
+							if (isConfirmed) {
+								return inputValue;
+							}
+						} else {
+							mostrarAlerta("Entrada inválida", "Por favor, ingrese un número mayor que 0 y máximo 10.");
+						}
+					} else {
+						mostrarAlerta("Entrada inválida",
+								"Por favor, ingrese un número entero válido mayor que 0 y máximo 10.");
+					}
+				} else {
+					return -1; // El diálogo fue cancelado
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			mostrarAlerta("Error", "Ocurrió un error al procesar la entrada.");
+		}
+		return -1;
 	}
 
 	private static boolean isValidInteger(String input) {
@@ -570,8 +574,8 @@ public class Ventanas {
 	}
 
 	public void cerrarVentanaAccion() {
-		if (this.accionCarta != null) {
-			this.accionCarta.close();
+		if (Ventanas.accionCarta != null) {
+			Ventanas.accionCarta.close();
 		}
 	}
 
