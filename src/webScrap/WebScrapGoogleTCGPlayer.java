@@ -1,6 +1,7 @@
 package webScrap;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -10,29 +11,39 @@ import javafx.concurrent.Task;
 
 public class WebScrapGoogleTCGPlayer {
 
-	public static CompletableFuture<List<String>> urlTCG(String parametro) {
-		CompletableFuture<List<String>> future = new CompletableFuture<>();
+	public static List<String> urlTCG(String parametro) {
+	    CompletableFuture<List<String>> future = new CompletableFuture<>();
 
-		Task<List<String>> task = new Task<>() {
-			@Override
-			protected List<String> call() throws Exception {
-				String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(parametro); // Usar una nueva variable
-																								// aquí
-				String url = "https://www.tcgplayer.com/search/all/product?q=" + searchedCardName
-						+ "&ProductTypeName=Cards&page=1";
-				String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap4.js";
-				String command = "node " + scriptPath + " " + url;
-				return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
-			}
-		};
+	    Task<List<String>> task = new Task<>() {
+	        @Override
+	        protected List<String> call() throws Exception {
+	            String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(parametro);
+	            String url = "https://www.tcgplayer.com/search/all/product?q=" + searchedCardName
+	                    + "&ProductTypeName=Cards&page=1";
+	            String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap4.js";
+	            String command = "node " + scriptPath + " " + url;
+	            return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
+	        }
+	    };
 
-		task.setOnSucceeded(e -> future.complete(task.getValue()));
+	    task.setOnSucceeded(e -> {
+	        List<String> result = task.getValue();
+	        future.complete(result != null ? result : Collections.emptyList());
+	    });
 
-		task.setOnFailed(e -> future.completeExceptionally(task.getException()));
+	    task.setOnFailed(e -> future.completeExceptionally(task.getException()));
 
-		new Thread(task).start();
+	    Thread thread = new Thread(task);
+	    thread.setDaemon(true); // Configurar como daemon para no bloquear la terminación de la aplicación
+	    thread.start();
 
-		return future;
+	    try {
+	        return future.get(); // Bloquea hasta que el CompletableFuture esté completo
+	    } catch (Exception e) {
+	        // Manejar excepciones y retornar una lista vacía en caso de error
+	        e.printStackTrace();
+	        return Collections.emptyList();
+	    }
 	}
 
 	private static Carta processLine(String url) {

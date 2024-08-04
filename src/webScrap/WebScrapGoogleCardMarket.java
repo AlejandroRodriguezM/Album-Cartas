@@ -102,26 +102,34 @@ public class WebScrapGoogleCardMarket {
 		return enlacesFinales;
 	}
 
-	public static CompletableFuture<List<String>> iniciarBusquedaGoogle(String valorCodigo) {
+	public static List<String> iniciarBusquedaGoogle(String valorCodigo) {
 		CompletableFuture<List<String>> future = new CompletableFuture<>();
 
 		Task<List<String>> task = createGoogleSearchTask(valorCodigo);
+
+		// Set up the task's success and failure handlers
 		task.setOnSucceeded(e -> {
 			List<String> urls = task.getValue();
-			if (urls == null) {
-				future.complete(Collections.emptyList()); // Return an empty list if no results are found
-			} else {
-				future.complete(urls); // Completes the future with the results
-			}
+			future.complete(urls != null ? urls : Collections.emptyList());
 		});
+
 		task.setOnFailed(e -> {
-			future.completeExceptionally(task.getException()); // Completes the future with an exception if the task
-																// fails
+			future.completeExceptionally(task.getException());
 		});
 
-		new Thread(task).start();
+		// Create a new thread to run the task and set it as a daemon thread
+		Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
 
-		return future;
+		try {
+			// Wait for the CompletableFuture to complete and get the result
+			return future.get(); // This will block until the future is completed
+		} catch (Exception e) {
+			// Handle exceptions appropriately
+			e.printStackTrace();
+			return Collections.emptyList(); // Return an empty list or handle the error as needed
+		}
 	}
 
 	public static Task<List<String>> createGoogleSearchTask(String searchTerm) {
@@ -431,7 +439,7 @@ public class WebScrapGoogleCardMarket {
 				}
 
 				// Buscar enlaces que comiencen con "/url?q="
-				Pattern pattern = Pattern.compile("<a href=\"/url\\?q=(https://www.cardtrader.com/[^\"]+)\"");
+	            Pattern pattern = Pattern.compile("<a href=\"/url\\?q=(https://www.cardtrader.com/[^\"]*?/cards/[^\"]*)\"");
 				Matcher matcher = pattern.matcher(response.toString());
 
 				while (matcher.find()) {
@@ -460,10 +468,9 @@ public class WebScrapGoogleCardMarket {
 
 	public static String extraerImagen(Carta carta) {
 		String argument = "cardtrader+" + carta.getNomCarta().replace(" ", "+") + "+" + carta.getNumCarta() + "+"
-				+ carta.getColeccionCarta().replace(" ", "+");
+				+ carta.getColeccionCarta().replace(" ", "+").replace(",","");
 		String urlCarta = searchWebImagen(argument);
 		if (urlCarta.contains("/cards/")) {
-			System.out.println(urlCarta);
 			return extraerDatosImagen(urlCarta);
 		}
 		return "";

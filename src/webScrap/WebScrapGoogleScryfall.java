@@ -1,6 +1,7 @@
 package webScrap;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -10,30 +11,40 @@ import javafx.concurrent.Task;
 
 public class WebScrapGoogleScryfall {
 
-	public static CompletableFuture<List<String>> getCardLinks(String cardName) {
-		CompletableFuture<List<String>> future = new CompletableFuture<>();
+	public static List<String> getCardLinks(String cardName) {
+	    CompletableFuture<List<String>> future = new CompletableFuture<>();
 
-		Task<List<String>> task = new Task<>() {
-			@Override
-			protected List<String> call() throws Exception {
-				String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(cardName); // Usar una nueva variable
-																							// aquí
-				String searchUrl = String.format(
-						"https://scryfall.com/search?as=grid&order=released&q=%s&unique=prints",
-						searchedCardName.replace(" ", "+"));
-				String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap7.js";
-				String command = "node " + scriptPath + " " + searchUrl;
-				return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
-			}
-		};
+	    Task<List<String>> task = new Task<>() {
+	        @Override
+	        protected List<String> call() throws Exception {
+	            String searchedCardName = FuncionesScrapeoComunes.buscarEnGoogle(cardName);
+	            String searchUrl = String.format(
+	                "https://scryfall.com/search?as=grid&order=released&q=%s&unique=prints",
+	                searchedCardName.replace(" ", "+"));
+	            String scriptPath = FuncionesFicheros.rutaDestinoRecursos + File.separator + "scrap7.js";
+	            String command = "node " + scriptPath + " " + searchUrl;
+	            return FuncionesScrapeoComunes.executeScraping(command).get(); // Llamada a la función auxiliar
+	        }
+	    };
 
-		task.setOnSucceeded(e -> future.complete(task.getValue()));
+	    task.setOnSucceeded(e -> {
+	        List<String> result = task.getValue();
+	        future.complete(result != null ? result : Collections.emptyList());
+	    });
 
-		task.setOnFailed(e -> future.completeExceptionally(task.getException()));
+	    task.setOnFailed(e -> future.completeExceptionally(task.getException()));
 
-		new Thread(task).start();
+	    Thread thread = new Thread(task);
+	    thread.setDaemon(true); // Configurar como daemon para no bloquear la terminación de la aplicación
+	    thread.start();
 
-		return future;
+	    try {
+	        return future.get(); // Bloquea hasta que el CompletableFuture esté completo
+	    } catch (Exception e) {
+	        // Manejar excepciones y retornar una lista vacía en caso de error
+	        e.printStackTrace();
+	        return Collections.emptyList();
+	    }
 	}
 
 	public static Carta extraerDatosMTG(String url) {

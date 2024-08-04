@@ -744,7 +744,7 @@ public class VentanaAccionController implements Initializable {
 				enviarReferencias();
 				rellenarCombosEstaticos();
 				if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
-					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
+					AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero, "");
 				}
 
 			}
@@ -775,42 +775,64 @@ public class VentanaAccionController implements Initializable {
 
 			AccionFuncionesComunes.cargarRuning();
 
-			CompletableFuture<List<String>> future;
+			// Aquí se asigna el CompletableFuture, este es un ejemplo de cómo podría ser
+			// asignado:
+			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
 
-			if (tipoTienda.equalsIgnoreCase("Card Market")) {
-				future = WebScrapGoogleCardMarket.iniciarBusquedaGoogle(valorCodigo);
-			} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
-				future = WebScrapGoogleScryfall.getCardLinks(valorCodigo);
-			} else if (tipoTienda.equals("TCGPlayer")) {
-				future = WebScrapGoogleTCGPlayer.urlTCG(valorCodigo);
-			} else {
-				future = CompletableFuture.completedFuture(new ArrayList<>());
-			}
-
-			future.thenAccept(enlaces -> {
-
-				File fichero;
-				try {
-					fichero = createTempFile(enlaces);
-
-					if (fichero != null) {
-						enviarReferencias();
-						rellenarCombosEstaticos();
-						if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
-							AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero);
-						}
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (valorCodigo.contains("https:") || valorCodigo.contains("www.") || valorCodigo.contains(".com")) {
+					return devolverUrl(valorCodigo);
+				} else {
+					return obtenerEnlaces(valorCodigo, "");
 				}
 			});
 
-			future.exceptionally(ex -> {
-				ex.printStackTrace();
-				return null; // Manejar errores aquí según sea necesario
-			});
+			if (future != null) {
+				future.thenAccept(enlaces -> {
+					Platform.runLater(() -> { // Asegura que el código se ejecute en el hilo de aplicación
+						File fichero;
+						try {
+							fichero = createTempFile(enlaces);
+
+							if (fichero != null) {
+								enviarReferencias();
+								rellenarCombosEstaticos();
+								if (WebScrapNodeJSInstall.checkNodeJSVersion()) {
+									AccionFuncionesComunes.busquedaPorCodigoImportacion(fichero, tipoTienda);
+								}
+							}
+
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					});
+				});
+
+				future.exceptionally(ex -> {
+					ex.printStackTrace();
+					return null; // Manejar errores aquí según sea necesario
+				});
+			}
 		}
+	}
+
+	public static List<String> devolverUrl(String url) {
+		List<String> urlCarta = new ArrayList<>();
+		urlCarta.add(url);
+		return urlCarta;
+	}
+
+	// Ejemplo de método para obtener los enlaces
+	private List<String> obtenerEnlaces(String valorCodigo, String tipoTienda) {
+
+		if (tipoTienda.equalsIgnoreCase("")) {
+			return WebScrapGoogleCardMarket.iniciarBusquedaGoogle(valorCodigo);
+		} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
+			return WebScrapGoogleScryfall.getCardLinks(valorCodigo);
+		} else if (tipoTienda.equals("TCGPlayer")) {
+			return WebScrapGoogleTCGPlayer.urlTCG(valorCodigo);
+		}
+
+		return new ArrayList<>();
 	}
 
 	public File createTempFile(List<String> data) throws IOException {

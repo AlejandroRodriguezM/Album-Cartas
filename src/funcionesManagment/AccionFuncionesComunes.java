@@ -585,6 +585,7 @@ public class AccionFuncionesComunes {
 			List<Carta> cartaInfo = new ArrayList<>();
 			if (esImport) {
 				if (tipoTienda.equalsIgnoreCase("CardMarket")) {
+					finalValorCodigo = FuncionesScrapeoComunes.updateURL(finalValorCodigo);
 					cartaInfo.add(WebScrapGoogleCardMarket.extraerDatosMTG(finalValorCodigo));
 				} else if (tipoTienda.equalsIgnoreCase("ScryFall")) {
 					cartaInfo.add(WebScrapGoogleScryfall.devolverCartaBuscada(finalValorCodigo));
@@ -715,7 +716,7 @@ public class AccionFuncionesComunes {
 
 		controlCargaCartas(listaCartasDatabase.size());
 
-		Task<Void> tarea = createSearchTask(tipoUpdate, listaCartasDatabase);
+		Task<Void> tarea = createSearchTask(tipoUpdate, listaCartasDatabase, "");
 
 		handleTaskEvents(tarea, tipoUpdate);
 
@@ -725,7 +726,7 @@ public class AccionFuncionesComunes {
 	}
 
 	// ES ACCION
-	public static void busquedaPorCodigoImportacion(File file) {
+	public static void busquedaPorCodigoImportacion(File file, String tipoTienda) {
 
 		fichero = file;
 
@@ -733,7 +734,7 @@ public class AccionFuncionesComunes {
 
 		controlCargaCartas(numCargas);
 
-		Task<Void> tarea = createSearchTask("", null);
+		Task<Void> tarea = createSearchTask("", null, tipoTienda);
 
 		handleTaskEvents(tarea, "");
 
@@ -755,7 +756,8 @@ public class AccionFuncionesComunes {
 		mensajesUnicos.clear();
 	}
 
-	private static Task<Void> createSearchTask(String tipoUpdate, List<Carta> listaCartasDatabase) {
+	private static Task<Void> createSearchTask(String tipoUpdate, List<Carta> listaCartasDatabase,
+			String tipoTiendaInicial) {
 		return new Task<>() {
 			@Override
 			protected Void call() {
